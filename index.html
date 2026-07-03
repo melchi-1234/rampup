@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RampUp — MCAT prep that plays like a game</title>
+<meta name="description" content="RampUp is MCAT practice that feels like a game you actually want to open. Climb a learning path, keep your streak alive, and level up with Rampy. 108 questions, all four sections, fully free. Play in your browser." />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<meta property="og:title" content="RampUp — MCAT prep that plays like a game" />
+<meta property="og:description" content="Climb a learning path, keep your streak alive, and level up with Rampy. Play free in your browser." />
+<meta property="og:type" content="website" />
+<style>
+  :root{
+    --violet:#7c3aed; --violet-strong:#6d28d9; --violet-soft:#f1ebff; --lav:#a78bfa;
+    --ink:#181231; --muted:#6b6683; --faint:#9a95ad; --line:#eae6f4;
+    --bg:#ffffff; --wash:#f7f5fc; --amber:#f59e0b; --teal:#0d9488; --pink:#db2777; --orange:#ea580c;
+    --r:16px; --r-lg:22px; --r-xl:30px; --sh:0 4px 18px rgba(88,50,160,.10); --sh-lg:0 18px 50px rgba(88,50,160,.18);
+    --spring:cubic-bezier(.34,1.56,.64,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.6;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{letter-spacing:-.025em;line-height:1.1;margin:0}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:16px;border-radius:999px;
+    padding:14px 26px;border:none;cursor:pointer;transition:transform .18s var(--spring),box-shadow .18s ease;font-family:inherit}
+  .btn svg{width:19px;height:19px}
+  .btn.primary{background:linear-gradient(135deg,var(--lav),var(--violet-strong));color:#fff;box-shadow:0 8px 22px rgba(124,58,237,.35)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(124,58,237,.42)}
+  .btn.ghost{background:#fff;color:var(--violet);border:1.5px solid var(--line)}
+  .btn.ghost:hover{transform:translateY(-2px);border-color:var(--lav)}
+  .btn.lg{font-size:17px;padding:16px 30px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:13px;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--violet);background:var(--violet-soft);padding:7px 14px;border-radius:999px}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(160%) blur(14px);-webkit-backdrop-filter:saturate(160%) blur(14px);
+    background:rgba(255,255,255,.8);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px}
+  .brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--lav),var(--violet-strong));
+    display:grid;place-items:center;box-shadow:0 4px 12px rgba(124,58,237,.3)}
+  .brand .logo svg{width:20px;height:20px;color:#fff}
+  .navlinks{display:flex;align-items:center;gap:26px}
+  .navlinks a.txt{font-weight:700;font-size:15px;color:var(--muted)}
+  .navlinks a.txt:hover{color:var(--ink)}
+  @media(max-width:720px){ .navlinks a.txt{display:none} }
+
+  /* hero */
+  .hero{position:relative;padding:70px 0 40px;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;z-index:-1;
+    background:
+      radial-gradient(60% 50% at 78% 0%, #efe7ff 0%, transparent 60%),
+      radial-gradient(50% 45% at 10% 15%, #fdeecf 0%, transparent 55%),
+      radial-gradient(60% 60% at 50% 120%, #e9f7f4 0%, transparent 60%)}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+  .hero h1{font-size:clamp(38px,5.4vw,60px);font-weight:900}
+  .hero h1 .grad{background:linear-gradient(120deg,var(--violet),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .sub{font-size:clamp(17px,2.2vw,21px);color:var(--muted);margin:20px 0 28px;max-width:33ch}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .cta-note{font-size:13.5px;color:var(--faint);margin-top:16px;display:flex;align-items:center;gap:7px}
+  .cta-note svg{width:16px;height:16px;color:var(--teal)}
+  @media(max-width:860px){
+    .hero .wrap{grid-template-columns:1fr;text-align:center}
+    .hero .sub{margin-left:auto;margin-right:auto}
+    .cta-row{justify-content:center}
+    .cta-note{justify-content:center}
+  }
+
+  /* hero visual: phone + floaties */
+  .stage{position:relative;display:flex;justify-content:center;align-items:flex-end;min-height:520px}
+  .phone{position:relative;width:288px;border-radius:44px;background:#141018;padding:11px;
+    box-shadow:var(--sh-lg),0 0 0 2px rgba(0,0,0,.04);z-index:2}
+  .phone::before{content:"";position:absolute;top:20px;left:50%;transform:translateX(-50%);width:96px;height:26px;background:#141018;border-radius:0 0 16px 16px;z-index:3}
+  .phone img{width:100%;display:block;border-radius:33px}
+  .rampy-hero{position:absolute;left:-6%;bottom:2%;width:180px;z-index:4;filter:drop-shadow(0 16px 26px rgba(124,58,237,.32));animation:bob 3.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}
+  .floaty{position:absolute;z-index:5;background:#fff;border:1px solid var(--line);border-radius:16px;padding:11px 15px;
+    box-shadow:var(--sh);font-weight:800;font-size:15px;display:flex;align-items:center;gap:9px;animation:float 4s ease-in-out infinite}
+  .floaty .ico{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;color:#fff}
+  .floaty.xp{top:8%;right:-2%} .floaty.xp .ico{background:linear-gradient(135deg,#fbbf24,var(--amber))}
+  .floaty.streak{top:44%;right:-6%;animation-delay:1.2s} .floaty.streak .ico{background:linear-gradient(135deg,#fb7185,#f43f5e)}
+  .floaty.combo{bottom:16%;left:-4%;animation-delay:.6s} .floaty.combo .ico{background:linear-gradient(135deg,#a78bfa,var(--violet-strong))}
+  .floaty svg{width:19px;height:19px}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @media(max-width:860px){ .stage{margin-top:26px} .rampy-hero{width:130px;left:2%} }
+  @media(max-width:420px){ .phone{width:250px} .floaty{font-size:13px;padding:9px 12px} .floaty .ico{width:28px;height:28px} }
+
+  /* trust strip */
+  .trust{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--wash)}
+  .trust .wrap{display:flex;flex-wrap:wrap;justify-content:space-around;gap:18px;padding:26px 22px}
+  .trust .stat{text-align:center;min-width:120px}
+  .trust .n{font-size:30px;font-weight:900;letter-spacing:-.03em;background:linear-gradient(120deg,var(--violet),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .trust .l{font-size:13px;color:var(--muted);font-weight:700;margin-top:2px}
+
+  /* sections */
+  section.blk{padding:84px 0}
+  .head{text-align:center;max-width:640px;margin:0 auto 48px}
+  .head h2{font-size:clamp(28px,4vw,42px);font-weight:900;margin:16px 0 12px}
+  .head p{font-size:18px;color:var(--muted);margin:0}
+
+  /* features bento */
+  .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;box-shadow:var(--sh);
+    transition:transform .2s var(--spring),box-shadow .2s ease}
+  .card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
+  .card .ic{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;color:#fff;margin-bottom:16px}
+  .card .ic svg{width:26px;height:26px}
+  .card h3{font-size:19px;font-weight:850;margin-bottom:7px}
+  .card p{margin:0;color:var(--muted);font-size:15px}
+  .card.wide{grid-column:span 2}
+  .i-violet{background:linear-gradient(135deg,#8b5cf6,var(--violet-strong))}
+  .i-amber{background:linear-gradient(135deg,#fbbf24,var(--amber))}
+  .i-teal{background:linear-gradient(135deg,#2dd4bf,var(--teal))}
+  .i-pink{background:linear-gradient(135deg,#f472b6,var(--pink))}
+  .i-orange{background:linear-gradient(135deg,#fb923c,var(--orange))}
+  .i-ink{background:linear-gradient(135deg,#4b5563,#1f2937)}
+  @media(max-width:860px){ .bento{grid-template-columns:1fr 1fr} .card.wide{grid-column:span 2} }
+  @media(max-width:560px){ .bento{grid-template-columns:1fr} .card.wide{grid-column:span 1} }
+
+  /* positioning split */
+  .split{background:var(--wash);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .split .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;padding:84px 22px}
+  .split h2{font-size:clamp(26px,3.6vw,38px);font-weight:900;margin-bottom:16px}
+  .split p{color:var(--muted);font-size:17px;margin:0 0 14px}
+  .checks{list-style:none;padding:0;margin:22px 0 0}
+  .checks li{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;font-weight:600}
+  .checks .ck{flex:0 0 auto;width:26px;height:26px;border-radius:9px;background:var(--violet-soft);color:var(--violet);display:grid;place-items:center}
+  .checks .ck svg{width:16px;height:16px}
+  .split .art{display:flex;justify-content:center}
+  .split .phone{width:250px}
+  @media(max-width:860px){ .split .wrap{grid-template-columns:1fr;gap:34px} .split .art{order:-1} }
+
+  /* showcase */
+  .shots{display:flex;gap:20px;overflow-x:auto;padding:8px 22px 22px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .shots::-webkit-scrollbar{height:8px} .shots::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .shot{flex:0 0 auto;scroll-snap-align:center;text-align:center}
+  .shot .phone{width:230px}
+  .shot .cap{font-weight:800;font-size:14.5px;margin-top:14px;color:var(--ink)}
+  .shot .cap span{display:block;font-weight:600;color:var(--muted);font-size:13px}
+
+  /* CTA band */
+  .band{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--violet),var(--violet-strong));color:#fff;border-radius:var(--r-xl);
+    padding:60px 30px;text-align:center;margin:0 auto;max-width:1076px}
+  .band::after{content:"";position:absolute;right:-60px;top:-60px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.08)}
+  .band::before{content:"";position:absolute;left:-40px;bottom:-80px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.07)}
+  .band h2{font-size:clamp(28px,4vw,42px);font-weight:900;position:relative}
+  .band p{font-size:18px;opacity:.92;margin:14px auto 26px;max-width:44ch;position:relative}
+  .band .btn.primary{background:#fff;color:var(--violet-strong);box-shadow:0 10px 30px rgba(0,0,0,.2);position:relative}
+  .band .btn.primary:hover{transform:translateY(-2px)}
+
+  /* footer */
+  footer{padding:52px 0 40px;color:var(--muted);font-size:14px}
+  footer .wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:30px;align-items:start}
+  footer .brand{color:var(--ink);margin-bottom:12px}
+  footer .disc{max-width:52ch;line-height:1.6}
+  footer .flinks{display:flex;flex-direction:column;gap:10px}
+  footer .flinks a{font-weight:700;color:var(--muted)} footer .flinks a:hover{color:var(--violet)}
+  footer .copy{margin-top:26px;border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:var(--faint)}
+  @media(max-width:640px){ footer .wrap{grid-template-columns:1fr} }
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s var(--spring)}
+  .rv.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important}
+    html{scroll-behavior:auto}
+    .rv{opacity:1;transform:none;transition:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+      RampUp
+    </a>
+    <div class="navlinks">
+      <a class="txt" href="#features">Features</a>
+      <a class="txt" href="#how">Why RampUp</a>
+      <a class="btn primary" href="app/" style="padding:11px 20px;font-size:15px">Play free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">🧬 Built for future doctors, years early</span>
+      <h1>MCAT prep that <span class="grad">plays like a game</span></h1>
+      <p class="sub">Climb a learning path, keep your streak alive, and level up with Rampy. Real practice across all four sections, disguised as the app you actually want to open.</p>
+      <div class="cta-row">
+        <a class="btn primary lg" href="app/">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Play free in your browser
+        </a>
+        <a class="btn ghost lg" href="#features">See how it works</a>
+      </div>
+      <div class="cta-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        No account, no download, no cost. Works offline once it loads.
+      </div>
+    </div>
+    <div class="stage">
+      <div class="phone"><img src="assets/2-path.jpg" alt="RampUp learning path with Rampy the mascot" /></div>
+      <img class="rampy-hero" src="assets/rampy.png" alt="Rampy, the RampUp mascot" />
+      <div class="floaty xp"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12z"/></svg></span>+120 XP</div>
+      <div class="floaty streak"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 3 4 4.5 4 8a4 4 0 0 1-1.2 2.9c.4-1.4-.3-2.6-1.3-3.4.2 1.7-.8 2.7-1.9 3.4-1 .7-2.1 1.6-2.1 3.1a3.5 3.5 0 0 0 7 .2c0-3-2-4-1.8-6.6C15 14 16.5 15.4 16.5 18A6.5 6.5 0 1 1 6 13c0-4 4-4.5 6-11z"/></svg></span>7 day streak</div>
+      <div class="floaty combo"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12z"/></svg></span>Combo x5</div>
+    </div>
+  </div>
+</header>
+
+<div class="trust">
+  <div class="wrap">
+    <div class="stat"><div class="n">108</div><div class="l">practice questions</div></div>
+    <div class="stat"><div class="n">4</div><div class="l">MCAT sections</div></div>
+    <div class="stat"><div class="n">16</div><div class="l">achievements</div></div>
+    <div class="stat"><div class="n">$0</div><div class="l">forever free</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">accounts needed</div></div>
+  </div>
+</div>
+
+<section class="blk" id="features">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="eyebrow">The loop</span>
+      <h2>Studying that hooks like your favorite app</h2>
+      <p>Every piece of the game loop is here, wrapped around real MCAT content that actually teaches.</p>
+    </div>
+    <div class="bento">
+      <div class="card wide rv">
+        <div class="ic i-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg></div>
+        <h3>Climb the learning path</h3>
+        <p>Your home is a path that winds through every MCAT section. Clear a node's bite-sized session to unlock the next, ace it for gold, and watch your progress build like levels in a game.</p>
+      </div>
+      <div class="card rv">
+        <div class="ic i-amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12z"/></svg></div>
+        <h3>XP, levels &amp; combos</h3>
+        <p>Earn XP for every correct answer, chain combos for bonus points, and climb from Pre-Pre-Med to Future Doctor.</p>
+      </div>
+      <div class="card rv">
+        <div class="ic i-orange"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 3 4 4.5 4 8a4 4 0 0 1-1.2 2.9c.4-1.4-.3-2.6-1.3-3.4.2 1.7-.8 2.7-1.9 3.4-1 .7-2.1 1.6-2.1 3.1a3.5 3.5 0 0 0 7 .2c0-3-2-4-1.8-6.6C15 14 16.5 15.4 16.5 18A6.5 6.5 0 1 1 6 13c0-4 4-4.5 6-11z"/></svg></div>
+        <h3>Streaks with freezes</h3>
+        <p>Build a daily habit. Miss a day and a streak freeze saves you, so one busy afternoon never erases your momentum.</p>
+      </div>
+      <div class="card rv">
+        <div class="ic i-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></div>
+        <h3>Spaced repetition</h3>
+        <p>Miss a question and it comes back right before you would forget it, so the things you get wrong become the things you remember.</p>
+      </div>
+      <div class="card rv">
+        <div class="ic i-pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.5 14a5 5 0 1 0-7 0c.7.6 1 1.2 1 2h5c0-.8.3-1.4 1-2z"/></svg></div>
+        <h3>Explain from scratch</h3>
+        <p>Stuck with no idea where to start? Tap once for a plain-language breakdown that builds the concept up from zero.</p>
+      </div>
+      <div class="card wide rv">
+        <div class="ic i-ink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+        <h3>Private by design</h3>
+        <p>No account, no sign-up, no tracking. Everything you do stays on your device, and once the page loads it keeps working with no connection at all. It is your study buddy, not a data funnel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="split" id="how">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Why RampUp</span>
+      <h2>Made for students who are ahead of the curve</h2>
+      <p>Most MCAT prep throws full-difficulty passages at you before you have had the coursework. RampUp meets you where you are, then grows as your classes do.</p>
+      <ul class="checks">
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Adaptive difficulty rises when you are on a roll and eases back when you are not.</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Preview mode lets you peek into subjects you have not taken yet, starting gently.</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Original questions across Chem/Phys, Bio/Biochem, Psych/Soc, and CARS.</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>A dashboard that shows your accuracy by section as you go.</span></li>
+      </ul>
+    </div>
+    <div class="art">
+      <div class="phone"><img src="assets/3-question.jpg" alt="A RampUp practice question with an explanation" /></div>
+    </div>
+  </div>
+</section>
+
+<section class="blk">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="eyebrow">A look inside</span>
+      <h2>Small sessions, big payoff</h2>
+      <p>Ten questions at a time, a satisfying finish, and Rampy cheering you on.</p>
+    </div>
+  </div>
+  <div class="shots">
+    <div class="shot rv"><div class="phone"><img src="assets/1-onboarding.jpg" alt="Onboarding: what year are you in" /></div><div class="cap">Meets you where you are<span>Tuned to your coursework</span></div></div>
+    <div class="shot rv"><div class="phone"><img src="assets/2-path.jpg" alt="The learning path" /></div><div class="cap">Climb the path<span>Unlock nodes, earn gold</span></div></div>
+    <div class="shot rv"><div class="phone"><img src="assets/3-question.jpg" alt="Answering a question" /></div><div class="cap">Learn every miss<span>Explain-from-scratch on tap</span></div></div>
+    <div class="shot rv"><div class="phone"><img src="assets/4-summary.jpg" alt="Session celebration screen" /></div><div class="cap">Celebrate the win<span>XP, accuracy, best combo</span></div></div>
+    <div class="shot rv"><div class="phone"><img src="assets/5-awards.jpg" alt="Achievements shelf" /></div><div class="cap">Collect achievements<span>16 badges to chase</span></div></div>
+  </div>
+</section>
+
+<section class="blk" style="padding-top:20px">
+  <div class="wrap">
+    <div class="band rv">
+      <h2>Start your first climb</h2>
+      <p>Open RampUp right now, answer your first ten questions, and see how good a study streak can feel.</p>
+      <a class="btn primary lg" href="app/">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Play free in your browser
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="brand"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span> RampUp</div>
+      <p class="disc">RampUp is an independent study aid. It is not affiliated with, endorsed by, or sponsored by the Association of American Medical Colleges (AAMC), which administers the MCAT exam. "MCAT" is used only to describe the exam this app helps you prepare for.</p>
+    </div>
+    <div class="flinks">
+      <a href="app/">Play the app</a>
+      <a href="#features">Features</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </div>
+  <div class="wrap"><div class="copy">© 2026 Melchior Goldfarb. Made with care for people who study early.</div></div>
+</footer>
+
+<script>
+  (function(){
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold:.14 });
+    document.querySelectorAll(".rv").forEach(function(el){ io.observe(el); });
+  })();
+</script>
+</body>
+</html>
