@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>RampUp — MCAT practice, matched to where you are</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>RampUp, MCAT practice, matched to where you are</title>
 <style>
   :root{
     /* Brand: study violet + correct green (data-backed via ui-ux-pro-max) */
     --accent:#7c3aed; --accent-strong:#6d28d9; --accent-soft:#f2ecfe; --on-accent:#ffffff;
     --bg:#f7f5fc; --bg-glow:rgba(124,58,237,.10);
     --card:#ffffff; --surface:#f5f2fc; --surface-2:#efeafb;
-    --text:#171423; --muted:#6b6880; --faint:#9c99ad; --border:#eae5f6; --border-strong:#ddd6ee;
+    --text:#171423; --muted:#6b6880; --faint:#6f6c82; --border:#eae5f6; --border-strong:#ddd6ee;
     --correct:#059669; --correct-soft:#e7f6ef; --incorrect:#e11d48; --incorrect-soft:#fdeaef;
     --warn:#b45309; --warn-soft:#fbf1e3; --info:#0e7490; --info-soft:#e2f4f8; --star:#f59e0b;
     /* category accents */
@@ -26,12 +26,13 @@
     --dur-fast:120ms; --dur:200ms; --dur-slow:340ms;
     --ease:cubic-bezier(.22,1,.36,1); --spring:cubic-bezier(.34,1.4,.5,1);
   }
-  @media (prefers-color-scheme: dark){
-    :root{
+  /* Dark theme applies when data-theme="dark" is set on <html> (a tiny inline
+     script below resolves the System/Light/Dark preference before first paint). */
+  :root[data-theme="dark"]{
       --accent:#a78bfa; --accent-strong:#c4b5fd; --accent-soft:#241c3a; --on-accent:#160f28;
       --bg:#0c0a14; --bg-glow:rgba(139,92,246,.16);
       --card:#17141f; --surface:#1c1830; --surface-2:#241f38;
-      --text:#eeecf6; --muted:#a7a2ba; --faint:#726d86; --border:#2a2440; --border-strong:#372f52;
+      --text:#eeecf6; --muted:#a7a2ba; --faint:#8f8aa3; --border:#2a2440; --border-strong:#372f52;
       --correct:#34d399; --correct-soft:#122a20; --incorrect:#fb7185; --incorrect-soft:#2c1620;
       --warn:#fbbf24; --warn-soft:#2a2110; --info:#67e8f9; --info-soft:#0c2b31; --star:#fbbf24;
       --c-chem:#a78bfa; --c-bio:#2dd4bf; --c-psych:#f472b6; --c-cars:#fb923c;
@@ -39,7 +40,6 @@
       --sh-2:0 2px 8px rgba(0,0,0,.44);
       --sh-3:0 16px 40px rgba(0,0,0,.5), 0 4px 12px rgba(0,0,0,.4);
       --sh-accent:0 10px 26px rgba(124,58,237,.5);
-    }
   }
   *{box-sizing:border-box}
   [hidden]{display:none !important}
@@ -59,8 +59,11 @@
   #app{position:relative; z-index:1; max-width:720px; margin:0 auto; padding:22px 18px 72px}
   /* native-app polish (web-safe: insets are 0 on desktop web) */
   html,body{overscroll-behavior:none}
-  body{touch-action:manipulation; -webkit-touch-callout:none}
-  .btn,.iconbtn,.chip,.pill,.starbtn,.seg button,.option,.mode-card,.fchk,.toggle,.choice .ltr,.kbd,.cat-tag,.qcount,.brand,.mi,.dot{-webkit-user-select:none; user-select:none}
+  body{touch-action:manipulation; -webkit-tap-highlight-color:transparent}
+  .btn,.iconbtn,.chip,.pill,.starbtn,.seg button,.option,.mode-card,.fchk,.toggle,.choice .ltr,.kbd,.cat-tag,.qcount,.brand,.mi,.dot{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
+  /* keyboard-shortcut help is meaningless on a touch device with no keyboard */
+  @media (hover:none) and (pointer:coarse){ #kbdRow{display:none} }
+  .seg button{min-height:44px}
   @supports (padding:env(safe-area-inset-top)){
     #app{padding-top:calc(22px + env(safe-area-inset-top)); padding-bottom:calc(72px + env(safe-area-inset-bottom))}
     .topbar,.statusbar,.sessbar,.exambar{margin-top:calc(-22px - env(safe-area-inset-top))}
@@ -142,7 +145,7 @@
   .btn:disabled{opacity:.42; cursor:default}
   .grow{flex:1}
 
-  .iconbtn{display:inline-grid; place-items:center; width:40px; height:40px; border-radius:var(--r-sm); border:1.5px solid var(--border-strong);
+  .iconbtn{display:inline-grid; place-items:center; width:44px; height:44px; border-radius:var(--r-sm); border:1.5px solid var(--border-strong);
     background:var(--card); color:var(--muted); cursor:pointer; font-size:19px; transition:all var(--dur-fast) var(--ease)}
   .iconbtn:hover{color:var(--accent); border-color:var(--accent); transform:translateY(-1px)}
   .iconbtn.on{color:var(--accent); border-color:var(--accent); background:var(--accent-soft)}
@@ -172,12 +175,15 @@
   .qmeta{display:flex; align-items:center; gap:8px; margin-bottom:16px; flex-wrap:wrap}
   .qmeta .spacer{flex:1}
   .cat-tag{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:800; letter-spacing:.03em; text-transform:uppercase;
-    color:#fff; padding:4px 10px; border-radius:var(--pill); background:var(--tagc,var(--accent))}
+    color:#fff; text-shadow:0 1px 1.5px rgba(0,0,0,.30); padding:4px 10px; border-radius:var(--pill); background:var(--tagc,var(--accent))}
   .cat-tag .dotc{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.85)}
   .cat-tag.chem{--tagc:var(--c-chem)} .cat-tag.bio{--tagc:var(--c-bio)} .cat-tag.psych{--tagc:var(--c-psych)} .cat-tag.cars{--tagc:var(--c-cars)}
+  /* dark theme lightens the accents, so use dark text on the tag for AA contrast */
+  :root[data-theme="dark"] .cat-tag{color:#160f28; text-shadow:none}
+  :root[data-theme="dark"] .cat-tag .dotc{background:rgba(0,0,0,.5)}
   .course-tag{font-size:12.5px; color:var(--faint); font-weight:650}
   .qcount{font-size:12px; color:var(--faint); font-weight:750; font-variant-numeric:tabular-nums}
-  .starbtn{display:inline-grid; place-items:center; width:34px; height:34px; border-radius:9px; background:transparent; border:none; cursor:pointer;
+  .starbtn{display:inline-grid; place-items:center; width:44px; height:44px; border-radius:11px; background:transparent; border:none; cursor:pointer;
     font-size:19px; color:var(--faint); transition:all var(--dur-fast) var(--spring)}
   .starbtn:hover{color:var(--star); background:var(--surface); transform:scale(1.1)}
   .starbtn.on{color:var(--star)}
@@ -194,7 +200,8 @@
   .passage{background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:var(--r-sm);
     padding:15px 17px; margin-bottom:18px; font-size:14.5px; color:var(--text); line-height:1.65; white-space:pre-wrap; overflow-wrap:anywhere}
   .passage .plabel{display:flex; align-items:center; gap:6px; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin-bottom:8px}
-  .qtext{font-size:20px; line-height:1.4; margin:0 0 20px; letter-spacing:-.01em; font-weight:700}
+  .qtext{font-size:20px; line-height:1.4; margin:0 0 20px; letter-spacing:-.01em; font-weight:700; overflow-wrap:anywhere}
+  .choice, .exp, .notes li{overflow-wrap:anywhere}
 
   .choices{margin-bottom:8px; display:flex; flex-direction:column; gap:11px}
   .choice{display:flex; align-items:center; gap:13px; width:100%; text-align:left; border:1.5px solid var(--border-strong); border-radius:var(--r);
@@ -318,7 +325,7 @@
   }
 
   /* ============================================================
-     v2 — Duolingo-grade: game loop, progression, juice, mascot, path
+     v2, Duolingo-grade: game loop, progression, juice, mascot, path
      ============================================================ */
   /* confetti overlay */
   #confetti{position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:9000}
@@ -326,7 +333,7 @@
   /* topbar progression chips */
   .chip.xp{background:color-mix(in srgb,#f59e0b 15%,var(--card)); color:#b45309}
   .chip.xp .ico{color:#f59e0b}
-  @media (prefers-color-scheme: dark){ .chip.xp{background:#2a2110; color:#fbbf24} }
+  :root[data-theme="dark"] .chip.xp{background:#2a2110; color:#fbbf24}
   .chip.lvl{background:var(--accent-soft); color:var(--accent); font-weight:800}
 
   /* ---- Mascot (Rampy): inline SVG, expression via [data-mood] ---- */
@@ -375,9 +382,9 @@
 
   /* ---- Session player: progress bar ---- */
   .sessbar{position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px;
-    margin:-22px -18px 18px; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;
+    margin:-22px -18px 18px; margin-top:calc(-22px - env(safe-area-inset-top,0px)); padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;
     background:color-mix(in srgb,var(--bg) 85%,transparent); backdrop-filter:saturate(160%) blur(12px); -webkit-backdrop-filter:saturate(160%) blur(12px)}
-  .sessbar .x{display:inline-grid; place-items:center; width:34px; height:34px; flex:0 0 auto; border-radius:10px; border:none; background:transparent; color:var(--muted); cursor:pointer; font-size:20px}
+  .sessbar .x{display:inline-grid; place-items:center; width:44px; height:44px; flex:0 0 auto; border-radius:12px; border:none; background:transparent; color:var(--muted); cursor:pointer; font-size:20px}
   .sessbar .x:hover{color:var(--text); background:var(--surface)}
   .sessbar .track{flex:1; height:14px; border-radius:var(--pill); background:var(--surface-2); overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,.06)}
   .sessbar .fill{height:100%; border-radius:var(--pill); background:linear-gradient(90deg,#a78bfa,#7c3aed); transition:width .45s var(--ease); position:relative}
@@ -404,7 +411,7 @@
   .sumstat .l{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:4px; font-weight:800}
   .levelup{display:flex; align-items:center; gap:12px; justify-content:center; background:linear-gradient(135deg,#fef3c7,#fde68a); color:#92400e;
     border-radius:var(--r); padding:14px; margin-bottom:14px; font-weight:800; animation:rampyPop .6s var(--spring)}
-  @media (prefers-color-scheme: dark){ .levelup{background:linear-gradient(135deg,#3a2c0a,#4a3810); color:#fbbf24} }
+  :root[data-theme="dark"] .levelup{background:linear-gradient(135deg,#3a2c0a,#4a3810); color:#fbbf24}
   .milestone{display:flex; align-items:center; gap:10px; justify-content:center; background:var(--warn-soft); color:var(--warn); border-radius:var(--r); padding:13px; margin-bottom:14px; font-weight:800}
   .newbadges{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:16px}
 
@@ -454,7 +461,7 @@
 
   /* status topbar (v2, non-interactive) + bottom tab nav */
   .statusbar{position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between; gap:10px;
-    margin:-22px -18px 18px; padding:calc(12px + env(safe-area-inset-top,0px)) 18px 12px;
+    margin:-22px -18px 18px; margin-top:calc(-22px - env(safe-area-inset-top,0px)); padding:calc(12px + env(safe-area-inset-top,0px)) 18px 12px;
     background:color-mix(in srgb,var(--bg) 84%,transparent); backdrop-filter:saturate(160%) blur(12px); -webkit-backdrop-filter:saturate(160%) blur(12px); border-bottom:1px solid var(--border)}
   .statusbar .chips{display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end}
   #tabnav{position:sticky; bottom:0; z-index:30; display:flex; justify-content:space-around; gap:4px;
@@ -490,11 +497,9 @@
   .combo{color:#c2410c}
   .sumstat.xp .n{color:#b45309}
   .xpfloat{color:#b45309}
-  @media (prefers-color-scheme: dark){
-    .combo{color:#fb923c}
-    .sumstat.xp .n{color:#fbbf24}
-    .xpfloat{color:#fbbf24}
-  }
+  :root[data-theme="dark"] .combo{color:#fb923c}
+  :root[data-theme="dark"] .sumstat.xp .n{color:#fbbf24}
+  :root[data-theme="dark"] .xpfloat{color:#fbbf24}
 
   /* ================= PRACTICE TESTS ================= */
   /* hub */
@@ -522,10 +527,10 @@
   .testcard .go .ico{width:20px; height:20px}
 
   /* exam runner top bar */
-  .exambar{display:flex; align-items:center; gap:10px; margin:-22px -18px 16px; padding:calc(14px + env(safe-area-inset-top,0px)) 18px 14px;
+  .exambar{display:flex; align-items:center; gap:10px; margin:-22px -18px 16px; margin-top:calc(-22px - env(safe-area-inset-top,0px)); padding:calc(14px + env(safe-area-inset-top,0px)) 18px 14px;
     background:color-mix(in srgb,var(--bg) 88%,transparent); backdrop-filter:saturate(160%) blur(12px); -webkit-backdrop-filter:saturate(160%) blur(12px);
     border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20}
-  .exambar .x{background:none; border:none; font-size:26px; line-height:1; color:var(--faint); cursor:pointer; padding:0 4px}
+  .exambar .x{display:inline-grid; place-items:center; width:44px; height:44px; flex:0 0 auto; background:none; border:none; font-size:26px; line-height:1; color:var(--muted); cursor:pointer; padding:0}
   .exambar .track{flex:1; height:9px; border-radius:6px; background:var(--surface-2); overflow:hidden}
   .exambar .fill{height:100%; border-radius:6px; background:linear-gradient(90deg,var(--accent),var(--accent-strong)); transition:width .3s var(--spring)}
   .exambar .qn{font-weight:800; font-size:13px; color:var(--muted); flex:0 0 auto; min-width:44px; text-align:center}
@@ -553,7 +558,7 @@
   .readiness.building{background:var(--incorrect-soft); color:var(--incorrect)}
   .tres .rsub{color:var(--muted); font-size:13px; margin:0 auto; max-width:34ch}
   .tres .disc{color:var(--faint); font-size:11.5px; margin-top:6px}
-  .tstat-row{display:flex; gap:10px; justify-content:center; margin:14px 0}
+  .tstat-row{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:14px 0}
   .tstat{background:var(--surface); border-radius:var(--r); padding:10px 16px; min-width:84px}
   .tstat .n{font-size:20px; font-weight:850} .tstat .l{font-size:11.5px; color:var(--muted); font-weight:700}
   .tsec{margin:16px 0}
@@ -577,6 +582,19 @@
   .titem .yours.bad{color:var(--incorrect); font-weight:700} .titem .theirs{color:var(--correct); font-weight:700}
   .titem .exp{color:var(--text); margin-top:8px}
 </style>
+<script>
+  /* Resolve theme (System/Light/Dark) before first paint to avoid a flash. */
+  (function(){
+    try{
+      var p = localStorage.getItem('rampup_theme') || 'system';
+      var dark = p === 'dark' || (p === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    }catch(e){
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.setAttribute('data-theme','dark');
+    }
+  })();
+</script>
 </head>
 <body>
 <div id="app">
@@ -606,19 +624,28 @@
   <section id="onboarding" hidden>
     <div class="ob-head">
       <div class="brand"><span class="logo"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span> RampUp</div>
-      <div class="tagline">MCAT practice across all four sections, tuned to your coursework and open to the road ahead.</div>
-      <div class="progress"><div class="bar" id="pbar"></div></div>
+      <div class="tagline">Free, adaptive MCAT practice across all four sections. No account, nothing leaves your phone.</div>
+      <div class="progress" id="obProgress"><div class="bar" id="pbar"></div></div>
       <div class="steplabel" id="stepLabel">Step 1 of 3</div>
     </div>
     <div class="ob-body">
-      <div class="step" data-step="1">
+      <div class="step" data-step="0">
+        <h2>Welcome to RampUp</h2>
+        <p class="sub">Free MCAT practice that plays like a game. Real questions across all four sections, every answer explained from scratch, and it adapts to the classes you've taken. No account, nothing leaves your phone.</p>
+        <div class="welcome-stats">
+          <div class="ws"><div class="n">4</div><div class="l">MCAT sections</div></div>
+          <div class="ws"><div class="n">220+</div><div class="l">Questions</div></div>
+          <div class="ws"><div class="n">Free</div><div class="l">No account</div></div>
+        </div>
+      </div>
+      <div class="step" data-step="1" hidden>
         <h2>What year are you in?</h2>
         <p class="sub">Just so we understand your stage. There's no wrong answer, and everyone starts somewhere.</p>
         <div class="option-grid" id="gradeGrid"></div>
       </div>
       <div class="step" data-step="2" hidden>
         <h2>Which courses have you taken, or are taking now?</h2>
-        <p class="sub">Mark what you've done. This sets your starting difficulty per subject. Courses you haven't taken yet still show up as <b>Preview</b> questions so you can get ahead, starting gently. (All physics here is MCAT-style algebra-based, no calculus.)</p>
+        <p class="sub">Mark what you've done. This sets your starting difficulty per subject. Courses you haven't taken yet still show up as <b>Preview</b> questions so you can get ahead, starting gently. (All physics here is MCAT-style algebra-based, no calculus.) Not sure, or just starting out? Leave them all on <b>Not yet</b> and we'll ease you into everything.</p>
         <div id="courseList"></div>
         <div class="always-note"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><div><b>CARS</b> (Critical Analysis &amp; Reasoning) needs no coursework, so it's always included.</div></div>
       </div>
@@ -686,14 +713,22 @@
           <button class="toggle" id="soundToggle" aria-label="Toggle sound effects"></button>
         </div>
         <div class="set-row">
+          <div class="lbl"><b>Appearance</b><span class="d">Match your device, or force light or dark.</span></div>
+          <div class="seg" id="themeSeg">
+            <button type="button" data-theme-pref="system">System</button>
+            <button type="button" data-theme-pref="light">Light</button>
+            <button type="button" data-theme-pref="dark">Dark</button>
+          </div>
+        </div>
+        <div class="set-row">
           <div class="lbl"><b>Daily goal</b><span class="d">How many questions you're aiming for each day.</span></div>
           <div class="seg" id="goalSeg"></div>
         </div>
         <div class="set-row">
-          <div class="lbl"><b>Edit my courses &amp; confidence</b><span class="d">Update what you've taken as your coursework grows — your stats and review pile are kept.</span></div>
+          <div class="lbl"><b>Edit my courses &amp; confidence</b><span class="d">Update what you've taken as your coursework grows. Your stats and review pile are kept.</span></div>
           <button class="btn ghost sm" id="editCoursesBtn">Edit setup</button>
         </div>
-        <div class="set-row">
+        <div class="set-row" id="kbdRow">
           <div class="lbl"><b>Keyboard shortcuts</b>
             <div class="kbd-help">
               <span class="kbd">1</span>–<span class="kbd">4</span> or <span class="kbd">A</span>–<span class="kbd">D</span> answer &nbsp;·&nbsp;
@@ -712,7 +747,7 @@
       <div id="dashContent"></div>
     </div>
 
-    <div class="footer-note" id="footNote">No account, no backend — your progress stays on this device.</div>
+    <div class="footer-note" id="footNote">No account, no backend. Your progress stays on this device.</div>
 
     <!-- bottom tab nav -->
     <nav id="tabnav">
@@ -727,13 +762,13 @@
 
 <script>
 /* ============================================================
-   RampUp — single-file MCAT practice app (all four sections)
+   RampUp, single-file MCAT practice app (all four sections)
    ============================================================ */
 
 /* ===== QUESTION BANK (adversarially audited) =====
    Each item: subject, course, difficulty (easy|medium|hard),
    choices[4], answer (0-based index), explanation (why the key is right),
-   notes[4] (aligned to choices — why each is right/wrong),
+   notes[4] (aligned to choices, why each is right/wrong),
    confidence: "high" | "review" (review = flagged for the user to double-check).
 */
 const QUESTIONS = [
@@ -1494,10 +1529,10 @@ const SUBJECTS = [
   { name:"Sociology",         category:"Psych/Soc",   courses:["Introductory Sociology"] }
 ];
 const COURSE_HINTS = {
-  "Physics I":"Algebra-based mechanics: kinematics, forces, energy, momentum, fluids. ≈ AP Physics 1 or first-semester college. No calculus — matches the MCAT.",
+  "Physics I":"Algebra-based mechanics: kinematics, forces, energy, momentum, fluids. ≈ AP Physics 1 or first-semester college. No calculus, matches the MCAT.",
   "Physics II":"Algebra-based electricity & magnetism, circuits, waves, sound, optics, thermodynamics. ≈ AP Physics 2 or second-semester college.",
   "Organic Chemistry I":"Structure, bonding, nomenclature, isomerism & stereochemistry, basic reactions.",
-  "Organic Chemistry II":"Reaction types & mechanisms, spectroscopy (IR / ¹H NMR), separations — at MCAT depth.",
+  "Organic Chemistry II":"Reaction types & mechanisms, spectroscopy (IR / ¹H NMR), separations, at MCAT depth.",
   "Biochemistry":"Amino acids & protein structure, enzymes & kinetics (conceptual), metabolism overview."
 };
 const SUBJECT_CATEGORY = (() => {
@@ -1595,7 +1630,7 @@ function saveState(){ if (!state.persist || !STORAGE_OK) return; try { localStor
 function loadState(){
   try {
     const raw = localStorage.getItem(LS_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw){ try { return JSON.parse(raw); } catch(e){ /* corrupt v2 save: fall through instead of nuking all progress */ } }
     // migrate from v1: earn retroactive XP for work already done.
     // Write the migrated save under the v2 key BEFORE removing v1, so a crash
     // between the two steps can never lose progress.
@@ -1656,7 +1691,7 @@ function todayStr(){ const d = new Date(); return d.getFullYear() + "-" + String
 function dayGap(a,b){ return Math.round((Date.parse(b+"T00:00:00") - Date.parse(a+"T00:00:00")) / 86400000); }
 
 /* ============================================================
-   Icons (inline SVG, Lucide-style — no emoji as functional icons)
+   Icons (inline SVG, Lucide-style, no emoji as functional icons)
    ============================================================ */
 const _svg = (inner, o) => `<svg class="ico${o&&o.cls?" "+o.cls:""}" viewBox="0 0 24 24" fill="${o&&o.fill?o.fill:"none"}" stroke="${o&&o.fill?"none":"currentColor"}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
 const ICONS = {
@@ -1696,7 +1731,7 @@ ICONS.lock = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7
 ICONS.clipboard = '<rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="m9.5 12.5 1.8 1.8 3.5-3.6"/>';
 
 /* ============================================================
-   v2 — Progression: XP & levels
+   v2, Progression: XP & levels
    ============================================================ */
 const XP_CORRECT = 10, XP_REVIEW_BONUS = 5, XP_SESSION_DONE = 10, XP_PERFECT = 20, XP_GOAL = 15;
 const LEVEL_TITLES = ["Pre-Pre-Med","Note-Taker","Flashcard Fiend","Lab Rat","Synapse Builder","Section Slayer","Passage Prowler","Curve Breaker","Diagnostic Demon","Future Doctor","MCAT Machine"];
@@ -1724,7 +1759,7 @@ function addXp(n){
 }
 
 /* ============================================================
-   v2 — Juice: WebAudio SFX (synthesized, offline) + haptics
+   v2, Juice: WebAudio SFX (synthesized, offline) + haptics
    ============================================================ */
 const SFX = (() => {
   let ctx = null;
@@ -1777,7 +1812,7 @@ function haptic(kind){
 }
 
 /* ============================================================
-   v2 — Juice: confetti
+   v2, Juice: confetti
    ============================================================ */
 const REDUCED_MOTION = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function scrollTopSmart(){ window.scrollTo({ top:0, behavior: REDUCED_MOTION ? "auto" : "smooth" }); }
@@ -1827,7 +1862,7 @@ function confettiRain(){
 }
 
 /* ============================================================
-   v2 — Rampy the mascot (inline SVG, mood-driven)
+   v2, Rampy the mascot (inline SVG, mood-driven)
    ============================================================ */
 function rampySvg(mood, cls){
   const m = mood || "happy";
@@ -1861,7 +1896,7 @@ function rampySvg(mood, cls){
 }
 
 /* ============================================================
-   v2 — Achievements
+   v2, Achievements
    ============================================================ */
 const ACHIEVEMENTS = [
   { id:"first_session", ic:"rocket",   t:"First Steps",      d:"Finish your first session" },
@@ -1936,7 +1971,7 @@ function renderAchievements(){
 }
 
 /* ============================================================
-   v2 — Toast + floating XP
+   v2, Toast + floating XP
    ============================================================ */
 function toast(msg){
   const t = document.createElement("div"); t.className = "toast"; t.textContent = msg;
@@ -1955,7 +1990,7 @@ function xpFloat(amount, el){
 }
 
 /* ============================================================
-   v2 — Session engine
+   v2, Session engine
    ============================================================ */
 const SESSION_LEN = 10;
 function learnRemaining(){
@@ -1966,8 +2001,8 @@ function startSession(kind, opts){
   opts = opts || {};
   if (state.focus.size === 0){ toast("Pick at least one section first."); return; }
   state.sessionFocus = opts.node ? new Set([opts.node.section]) : null;
-  if (kind === "review" && pileInFocus().length === 0){ state.sessionFocus = null; toast("Your review pile is empty — nice! Learn something new."); return; }
-  if (kind === "starred" && starredInFocus().length === 0){ state.sessionFocus = null; toast("No bookmarks yet — tap the star on any question."); return; }
+  if (kind === "review" && pileInFocus().length === 0){ state.sessionFocus = null; toast("Your review pile is empty, nice! Learn something new."); return; }
+  if (kind === "starred" && starredInFocus().length === 0){ state.sessionFocus = null; toast("No bookmarks yet, tap the star on any question."); return; }
   const replay = !!opts.allowSeen;
   if ((kind === "learn" || kind === "mixed") && !replay && learnRemaining() === 0){
     if (opts.node){ replayNode(opts, kind); return; }   // node replays serve seen questions
@@ -2048,7 +2083,7 @@ function renderSessionSummary(s, perfect){
   const mood = perfect || acc >= 90 ? "celebrate" : acc >= 60 ? "happy" : "think";
   const title = perfect ? "PERFECT!" : acc >= 90 ? "Outstanding!" : acc >= 70 ? "Great session!" : acc >= 50 ? "Solid work!" : "Keep climbing!";
   const sub = perfect ? "Every single one right. Rampy is losing his mind."
-    : acc >= 70 ? "You're building real momentum." : acc >= 50 ? "Every rep counts — misses go to your review pile." : "The review pile will turn these into wins.";
+    : acc >= 70 ? "You're building real momentum." : acc >= 50 ? "Every rep counts, misses go to your review pile." : "The review pile will turn these into wins.";
   let html = `<div class="sumcard">
       ${rampySvg(mood, mood === "celebrate" ? "pop" : "bob")}
       <div class="sumtitle">${esc(title)}</div>
@@ -2058,7 +2093,7 @@ function renderSessionSummary(s, perfect){
         <div class="sumstat acc"><div class="n">${acc}%</div><div class="l">Accuracy</div></div>
         <div class="sumstat best"><div class="n">${s.maxCombo}</div><div class="l">Best combo</div></div>
       </div>`;
-  if (s.leveledTo) html += `<div class="levelup">${icon("trophy")} Level ${s.leveledTo} — ${esc(levelTitle(s.leveledTo))}!</div>`;
+  if (s.leveledTo) html += `<div class="levelup">${icon("trophy")} Level ${s.leveledTo}, ${esc(levelTitle(s.leveledTo))}!</div>`;
   if (s.milestone) html += `<div class="milestone">${icon("flame")} ${s.milestone}-day streak!${s.milestone >= 7 ? " +1 streak freeze earned." : ""}</div>`;
   if (s.newBadges.length) html += `<div class="newbadges">${s.newBadges.map(b => `<span class="badge-chip"><span class="e">${icon(b.ic)}</span>${esc(b.t)}</span>`).join("")}</div>`;
   html += `<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
@@ -2089,7 +2124,7 @@ function renderSessionSummary(s, perfect){
 }
 
 /* ============================================================
-   v2 — Learning path
+   v2, Learning path
    ============================================================ */
 const UNIT_CLASS = { "Chem/Phys":"", "Bio/Biochem":"bio", "Psych/Soc":"psych", "CARS":"cars" };
 function unitNodeCount(section){
@@ -2138,11 +2173,11 @@ function bindPathNodes(wrap){
 }
 
 /* ============================================================
-   v2 — Home (session launcher)
+   v2, Home (session launcher)
    ============================================================ */
 function greeting(){
   const due = dueInFocusCount();
-  if (state.day.streak >= 3 && state.day.todayCount === 0) return "Day " + state.day.streak + " — keep the flame alive!";
+  if (state.day.streak >= 3 && state.day.todayCount === 0) return "Day " + state.day.streak + ", keep the flame alive!";
   if (due > 0) return due + (due === 1 ? " review is" : " reviews are") + " ripe. Clear them while they're fresh.";
   if (state.day.todayCount >= state.day.goal && state.day.goal > 0) return "Daily goal smashed. You're ahead of the curve.";
   if (state.totalAnswered === 0) return "Ready for your first climb?";
@@ -2188,7 +2223,7 @@ function renderHome(){
         <span style="flex:1;min-width:0"><span class="st">Bookmarked</span><span class="sd" style="display:block">${stars ? stars + " starred" : "Star questions to fill this"}</span></span>
       </button>
     </div>
-    <h3 style="margin:20px 0 10px">Focus — which MCAT sections</h3>
+    <h3 style="margin:20px 0 10px">Focus, which MCAT sections</h3>
     <div class="focus-checks" id="homeFocus"></div>`;
   wrap.innerHTML = html;
   wrap.querySelectorAll(".sesscard").forEach(b => b.addEventListener("click", () => startSession(b.dataset.kind)));
@@ -2286,7 +2321,7 @@ function renderSummary(){
       const preview = isPreview(name); const d = startingDifficulty(name);
       const line = document.createElement("div"); line.className = "sline" + (preview ? " preview" : "");
       const tag = name === "CARS" ? "always included, reasoning practice"
-        : preview ? "Preview — you haven't started this yet, so we begin easy"
+        : preview ? "Preview, you haven't started this yet, so we begin easy"
         : "starts at " + diffLabel(d) + ", matched to your confidence";
       line.innerHTML = `<span class="dot">${icon(preview ? "rocket" : (name==="CARS" ? "book" : "trending"))}</span><div>
           <b>${esc(name)}</b> <span class="course-tag">· ${esc(cat.key)}</span><div class="note">${esc(tag)}.</div></div>`;
@@ -2312,12 +2347,22 @@ function validateStep(step){
 function goToStep(n){
   state.step = n;
   document.querySelectorAll(".step").forEach(el => { el.hidden = Number(el.dataset.step) !== n; });
+  // Re-render inputs from current state on every entry so the Edit-setup flow
+  // (a returning user jumping back to step 1) shows their real grade/courses,
+  // not the blank boot-time render.
+  if (n === 1) renderGrade();
+  if (n === 2) renderCourses();
   if (n === 3) renderConfidence();
   if (n === 4) renderSummary();
-  $("#backBtn").hidden = n === 1;
-  $("#nextBtn").textContent = n === 4 ? (state.editing ? "Save & practice →" : "Start practicing →") : "Next";
-  $("#pbar").style.width = (n >= 4 ? 100 : Math.round((n/3)*100)) + "%";
-  $("#stepLabel").textContent = n >= 4 ? "You're all set!" : `Step ${n} of 3`;
+  const welcome = n === 0;
+  $("#backBtn").hidden = n <= 1;
+  $("#nextBtn").textContent = welcome ? "Let's go →" : (n === 4 ? (state.editing ? "Save & practice →" : "Start practicing →") : "Next");
+  $("#obProgress").style.display = welcome ? "none" : "";
+  $("#stepLabel").style.display = welcome ? "none" : "";
+  if (!welcome){
+    $("#pbar").style.width = (n >= 4 ? 100 : Math.round((n/3)*100)) + "%";
+    $("#stepLabel").textContent = n >= 4 ? "You're all set!" : `Step ${n} of 3`;
+  }
   clearError(); scrollTopSmart();
 }
 $("#nextBtn").addEventListener("click", () => {
@@ -2403,7 +2448,7 @@ function serveFresh(){
     // pool ran dry mid-session: wrap up with what we have
     const s = state.session;
     if (s && s.done > 0){ s.len = s.done; finishSession(); }
-    else { state.session = null; toast("Nothing to practice here yet — try another mode."); showHome(); }
+    else { state.session = null; toast("Nothing to practice here yet, try another mode."); showHome(); }
     return;
   }
   state.servedKeys.add(q.key);
@@ -2427,8 +2472,8 @@ function goBack(){ if (state.cursor > 0){ state.cursor--; renderEntry(state.hist
 function renderEntry(entry){
   const q = entry.q, card = $("#questionCard"), catCls = CAT_CLASS[q.category] || "chem";
   card.style.setProperty("--card-accent", CAT_ACCENT[catCls] || "var(--accent)");
-  const reviewTag = q.confidence === "review" ? `<span class="pill review-flag" title="We're not fully certain about this one — double-check it.">${icon("alert")} Double-check</span>` : "";
-  const previewTag = state.preview[q.subject] ? `<span class="pill preview" title="You haven't taken this subject yet — stretch practice.">${icon("rocket")} Preview</span>` : "";
+  const reviewTag = q.confidence === "review" ? `<span class="pill review-flag" title="We're not fully certain about this one, double-check it.">${icon("alert")} Double-check</span>` : "";
+  const previewTag = state.preview[q.subject] ? `<span class="pill preview" title="You haven't taken this subject yet, stretch practice.">${icon("rocket")} Preview</span>` : "";
   const dueTag = (state.mode === "review") ? `<span class="pill tolearn" title="From your spaced-repetition review pile.">${icon("repeat")} Review</span>` : "";
   const starOn = state.bookmarks.has(q.key);
   const passageHtml = q.passage ? `<div class="passage"><div class="plabel">${icon("book")} ${q.category === "CARS" ? "Passage" : "Stimulus"}</div>${esc(q.passage)}</div>` : "";
@@ -2445,7 +2490,7 @@ function renderEntry(entry){
     ${passageHtml}
     <h2 class="qtext">${esc(q.question)}</h2>
     <div class="choices"></div>
-    ${entry.answered ? "" : `<button class="idk" id="idkBtn">${icon("help")} I don't know — explain it</button>`}
+    ${entry.answered ? "" : `<button class="idk" id="idkBtn">${icon("help")} I don't know, explain it</button>`}
     <div class="reveal" hidden></div>
     <div class="qfoot">
       <button class="btn ghost" id="backQ">${icon("arrowLeft")} Back</button>
@@ -2580,7 +2625,7 @@ function applyReveal(entry){
     if (i === q.answer){ b.classList.add("correct","justpicked"); b.insertAdjacentHTML("beforeend", `<span class="mark ok">${icon("check")} Correct</span>`); b.setAttribute("aria-label", "Correct answer: " + q.choices[i]); }
     else if (i === chosen){ b.classList.add("wrong"); b.insertAdjacentHTML("beforeend", `<span class="mark no">${icon("x")} Your pick</span>`); b.setAttribute("aria-label", "Your answer, incorrect: " + q.choices[i]); }
   });
-  const verdict = idk ? { cls:"idk", ic:"help", txt:"No worries — here's how to think about it" }
+  const verdict = idk ? { cls:"idk", ic:"help", txt:"No worries, here's how to think about it" }
     : correct ? { cls:"ok", ic:"check", txt:"Correct" } : { cls:"no", ic:"x", txt:"Not quite" };
   const breakdownHtml = q.breakdown ? `<details class="bd" ${idk ? "open" : ""}><summary>${icon("bulb")} <span>Explain this from scratch</span><span class="chev">${icon("chevron")}</span></summary><div class="bd-body">${esc(q.breakdown)}</div></details>` : "";
   let changeNote = "";
@@ -2588,9 +2633,9 @@ function applyReveal(entry){
   if (entry.note === "down") changeNote = `<div class="levelnote down">${icon("arrowDown")} Easing ${esc(q.subject)} back to ${diffLabel(state.difficulty[q.subject])} to rebuild.</div>`;
   if (entry.note === "mcat")  changeNote = `<div class="levelnote mcat">${icon("trophy")} You reached MCAT level in ${esc(q.subject)}. These are real exam-style questions now.</div>`;
   const srs = state.srs[q.key];
-  const srsnote = srs ? `<div class="srsnote">${icon("repeat")} In your review pile — next up in about ${relTime(srs.due)}.</div>`
+  const srsnote = srs ? `<div class="srsnote">${icon("repeat")} In your review pile, next up in about ${relTime(srs.due)}.</div>`
     : (correct ? `<div class="srsnote">${icon("check")} Not in your review pile. Nice.</div>` : "");
-  const flag = q.confidence === "review" ? `<div class="flagnote">${icon("flag")} Flagged for review — double-check this one against a trusted source.</div>` : "";
+  const flag = q.confidence === "review" ? `<div class="flagnote">${icon("flag")} Flagged for review, double-check this one against a trusted source.</div>` : "";
   const s = state.session;
   if (s && s.done >= s.len){ const nb = card.querySelector("#nextQ"); if (nb) nb.innerHTML = `See results ${icon("trophy")}`; }
   const rev = card.querySelector(".reveal"); rev.hidden = false;
@@ -2602,7 +2647,7 @@ function applyReveal(entry){
     ${changeNote}${srsnote}${flag}`;
   if (idk){
     const u = document.createElement("span"); u.className = "undo"; u.id = "undoIdk";
-    u.innerHTML = `${icon("undo")} Undo — let me try answering myself`; u.setAttribute("role","button"); u.tabIndex = 0;
+    u.innerHTML = `${icon("undo")} Undo, let me try answering myself`; u.setAttribute("role","button"); u.tabIndex = 0;
     u.addEventListener("click", undoIdk);
     u.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); undoIdk(); } });
     rev.appendChild(u);
@@ -2650,7 +2695,7 @@ function updateTopbar(){
 function updateFootNote(){
   $("#footNote").textContent = !STORAGE_OK ? "Progress can't be saved in this browser, so it resets when you close the tab."
     : state.persist ? "Progress saves automatically on this device only. Manage it in Settings."
-    : "Saving is off — progress resets when you close the tab. Turn it on in Settings.";
+    : "Saving is off, progress resets when you close the tab. Turn it on in Settings.";
 }
 function renderDashboard(){
   const wrap = $("#dashContent");
@@ -2699,7 +2744,7 @@ function renderDashboard(){
   wrap.innerHTML = html;
 }
 /* ============================================================
-   v2 — Practice Tests (unlockable, exam-mode, scored report)
+   v2, Practice Tests (unlockable, exam-mode, scored report)
    ============================================================ */
 const XP_TEST_CORRECT = 5, XP_TEST_DONE = 15;
 const READINESS = [
@@ -3038,12 +3083,38 @@ function showWelcome(saved){
   $("#welcomeFresh").addEventListener("click", () => { clearSaved(); $("#welcome").hidden = true; $("#onboarding").hidden = false; goToStep(1); }, { once:true });
 }
 
+// Appearance preference (System / Light / Dark). The <head> inline script already
+// applied the resolved theme before paint; here we wire the Settings control and
+// keep 'system' live-following the OS.
+function applyTheme(pref){
+  const dark = pref === "dark" || (pref === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+}
+(function initTheme(){
+  let pref = "system";
+  try { pref = localStorage.getItem("rampup_theme") || "system"; } catch(e){}
+  const seg = document.getElementById("themeSeg");
+  const btns = seg ? Array.from(seg.querySelectorAll("button")) : [];
+  const mark = p => btns.forEach(b => b.classList.toggle("on", b.dataset.themePref === p));
+  mark(pref);
+  btns.forEach(b => b.addEventListener("click", () => {
+    const p = b.dataset.themePref;
+    try { localStorage.setItem("rampup_theme", p); } catch(e){}
+    applyTheme(p); mark(p);
+  }));
+  if (window.matchMedia){
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onOS = () => { let cur = "system"; try { cur = localStorage.getItem("rampup_theme") || "system"; } catch(e){} if (cur === "system") applyTheme("system"); };
+    if (mq.addEventListener) mq.addEventListener("change", onOS); else if (mq.addListener) mq.addListener(onOS);
+  }
+})();
+
 renderGrade();
 renderCourses();
 STORAGE_OK = canStore();
 const _saved = STORAGE_OK ? loadState() : null;
 if (_saved && _saved.onboarded){ showWelcome(_saved); }
-else { $("#onboarding").hidden = false; goToStep(1); }
+else { $("#onboarding").hidden = false; goToStep(0); }
 </script>
 </body>
 </html>
