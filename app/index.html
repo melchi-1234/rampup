@@ -429,13 +429,12 @@
   .cc-hint{font-size:12px; color:var(--faint); margin-top:14px}
   /* per-question value: a real price decal, not a footnote */
   .testcard.prem{position:relative}
-  .decal{display:inline-flex; align-items:center; gap:7px; margin-left:2px;
-    padding:6px 12px 6px 11px; border-radius:13px; text-align:left; vertical-align:middle;
+  .decal{display:inline-flex; flex-direction:column; align-items:flex-start; gap:1px; margin-left:2px;
+    padding:7px 13px; border-radius:13px; text-align:left; vertical-align:middle;
     background:linear-gradient(135deg,#059669,#0d9488); color:#fff;
     box-shadow:0 4px 12px rgba(5,150,105,.30), 0 1px 0 rgba(255,255,255,.45) inset}
-  .decal b{font-family:var(--font-round); font-size:19px; font-weight:850; line-height:1; letter-spacing:-.02em}
-  .decal i{font-style:normal; font-size:9px; font-weight:800; line-height:1.1; letter-spacing:.03em;
-    text-transform:uppercase; opacity:.95; white-space:nowrap}
+  .decal b{font-family:var(--font-round); font-size:16.5px; font-weight:850; line-height:1.15; letter-spacing:-.015em}
+  .decal i{font-style:normal; font-size:11px; font-weight:700; line-height:1.2; opacity:.92; white-space:nowrap}
   .tag.ppq{color:var(--c-bio); background:color-mix(in srgb,var(--c-bio) 13%,var(--card));
     border-color:color-mix(in srgb,var(--c-bio) 30%,transparent); font-weight:800}
   .valuebanner{display:flex; align-items:center; gap:13px; width:100%; text-align:left; cursor:pointer;
@@ -443,10 +442,8 @@
     background:linear-gradient(135deg,color-mix(in srgb,#059669 13%,var(--card)),color-mix(in srgb,#0d9488 8%,var(--card)));
     font:inherit; transition:transform .15s, box-shadow .15s}
   .valuebanner:hover{transform:translateY(-2px); box-shadow:0 12px 26px rgba(5,150,105,.20)}
-  .vb-num{font-family:var(--font-round); font-size:34px; font-weight:850; line-height:1; letter-spacing:-.03em;
-    color:#059669; flex:0 0 auto}
   .vb-txt{flex:1; min-width:0; display:flex; flex-direction:column; gap:3px}
-  .vb-txt b{font-size:15.5px; font-weight:800; color:var(--text)}
+  .vb-txt b{font-family:var(--font-round); font-size:19px; font-weight:850; color:#059669; letter-spacing:-.015em}
   .vb-txt span{font-size:12.5px; color:var(--muted); line-height:1.45}
   .vb-go{flex:0 0 auto; color:#059669} .vb-go svg{width:19px; height:19px}
   .pw-value{font-size:13px; color:var(--muted); text-align:center; margin:8px 0 2px; line-height:1.5}
@@ -454,8 +451,8 @@
   .pw-value.sm{font-size:12px; margin-top:4px; opacity:.9}
   :root[data-theme="dark"] .decal{background:linear-gradient(135deg,#10b981,#14b8a6); color:#04241b;
     box-shadow:0 4px 14px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.25) inset}
-  :root[data-theme="dark"] .vb-num,
-  :root[data-theme="dark"] .vb-go{color:#34d399}
+  :root[data-theme="dark"] .vb-go,
+  :root[data-theme="dark"] .vb-txt b{color:#34d399}
   :root[data-theme="dark"] .valuebanner{border-color:color-mix(in srgb,#34d399 30%,transparent)}
   .cc-step{font-size:11px; font-weight:800; color:var(--faint); letter-spacing:.04em}
   .cc-dots{display:flex; gap:6px; justify-content:center; margin:2px 0 16px}
@@ -4834,9 +4831,8 @@ function renderTestHub(){
       : `<button class="btn primary sm" id="getProTop">Unlock all · Pro ${PRICE.pro}</button>`}</div>
     <p class="footer-note" style="margin:0 0 10px;text-align:left">Brand-new held-out questions, timed like the real exam, with a projected score. ${proOwned?"":"Buy a tier, or unlock everything with Pro."}</p>
     ${proOwned ? "" : `<button class="valuebanner" id="getProBanner">
-        <span class="vb-num">${valueOff("pro")}%</span>
-        <span class="vb-txt"><b>less per question with Pro</b>
-          <span>All ${valueTable()["pro"].q} questions for ${PRICE.pro} · ${centsPerQ("pro")}&cent; each, vs ${centsPerQ("short_bundle")}&cent; buying short exams</span></span>
+        <span class="vb-txt"><b>Pro is ${valueOff("pro")}% cheaper</b>
+          <span>(${centsPerQ("pro")}&cent; vs ${centsPerQ("short_bundle")}&cent; a question · all ${valueTable()["pro"].q} for ${PRICE.pro})</span></span>
         <span class="vb-go">${icon("arrowRight")}</span></button>`}`;
   PREM_TIERS.forEach(tier => {
     const exams = PREMIUM_TESTS.filter(t => t.tier === tier.key);
@@ -4850,9 +4846,9 @@ function renderTestHub(){
       const vsku = tier.key==="short" ? "short_bundle" : t.id;
       const off = valueOff(vsku);
       const decal = (!owned && off >= 10)
-        ? `<span class="decal"><b>${off}%</b><i>less per<br>question</i></span>` : "";
-      const ppq = (!owned) ? `<span class="tag ppq">${centsPerQ(vsku)}&cent; a question</span>` : "";
-      const meta = `<span class="tag">${n} question${n===1?"":"s"}</span>${t.timeLabel?`<span class="tag">${t.timeLabel}</span>`:""}${badge}${ppq}${decal}`;
+        ? `<span class="decal"><b>${off}% cheaper</b><i>${centsPerQ(vsku)}&cent; vs ${centsPerQ("short_bundle")}&cent; a question</i></span>`
+        : (!owned ? `<span class="tag ppq">${centsPerQ(vsku)}&cent; a question</span>` : "");
+      const meta = `<span class="tag">${n} question${n===1?"":"s"}</span>${t.timeLabel?`<span class="tag">${t.timeLabel}</span>`:""}${badge}${decal}`;
       cardsT += `<button class="testcard prem ${owned?"":"lockedpro"}" data-prem="${t.id}">
         <span class="ti">${icon(owned ? t.icon : "lock")}</span>
         <span class="tbody"><span class="tt">${esc(t.title)} ${owned?"":'<span class="protag">PRO</span>'}</span>
@@ -4902,10 +4898,10 @@ function openPaywall(t){   // t = a PREMIUM_TESTS def, or null for the "Pro" ent
       <p class="pw-sub">${pwSub}</p>
       <ul class="pw-perks">${perks}</ul>
       <button class="btn primary pw-pro" data-buy="pro"><span>Get RampUp Pro</span><span class="pr">${PRICE.pro}</span></button>
-      <p class="pw-value">${valueTable()["pro"].q} questions total · ${centsPerQ("pro")}&cent; each · <b>${valueOff("pro")}% less per question</b> than buying short exams one at a time</p>
+      <p class="pw-value"><b>${valueOff("pro")}% cheaper</b> (${centsPerQ("pro")}&cent; vs ${centsPerQ("short_bundle")}&cent; a question)</p>
       ${single}
       ${t && valueOff(t.tier==="short" ? "short_bundle" : t.id) >= 10
-          ? `<p class="pw-value sm">That's ${centsPerQ(t.tier==="short" ? "short_bundle" : t.id)}&cent; per question, ${valueOff(t.tier==="short" ? "short_bundle" : t.id)}% less than the short exams.</p>` : ""}
+          ? `<p class="pw-value sm">${valueOff(t.tier==="short" ? "short_bundle" : t.id)}% cheaper (${centsPerQ(t.tier==="short" ? "short_bundle" : t.id)}&cent; vs ${centsPerQ("short_bundle")}&cent; a question)</p>` : ""}
       <div class="pw-foot">
         <button class="linkbtn" id="pwRestore">Restore purchases</button>
         <span class="dot">·</span>
