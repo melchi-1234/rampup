@@ -427,12 +427,36 @@
   .cc-btns{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
   .cc-btns .btn{min-height:48px}
   .cc-hint{font-size:12px; color:var(--faint); margin-top:14px}
-  .tag.value{color:var(--c-bio); background:color-mix(in srgb,var(--c-bio) 13%,var(--card));
-    border-color:color-mix(in srgb,var(--c-bio) 32%,transparent); font-weight:800}
-  .tag.value.big{display:inline-block; margin-top:6px; font-size:12px; padding:5px 10px}
+  /* per-question value: a real price decal, not a footnote */
+  .testcard.prem{position:relative}
+  .decal{display:inline-flex; align-items:center; gap:7px; margin-left:2px;
+    padding:6px 12px 6px 11px; border-radius:13px; text-align:left; vertical-align:middle;
+    background:linear-gradient(135deg,#059669,#0d9488); color:#fff;
+    box-shadow:0 4px 12px rgba(5,150,105,.30), 0 1px 0 rgba(255,255,255,.45) inset}
+  .decal b{font-family:var(--font-round); font-size:19px; font-weight:850; line-height:1; letter-spacing:-.02em}
+  .decal i{font-style:normal; font-size:9px; font-weight:800; line-height:1.1; letter-spacing:.03em;
+    text-transform:uppercase; opacity:.95; white-space:nowrap}
+  .tag.ppq{color:var(--c-bio); background:color-mix(in srgb,var(--c-bio) 13%,var(--card));
+    border-color:color-mix(in srgb,var(--c-bio) 30%,transparent); font-weight:800}
+  .valuebanner{display:flex; align-items:center; gap:13px; width:100%; text-align:left; cursor:pointer;
+    margin:0 0 16px; padding:13px 15px; border-radius:var(--r-lg); border:1.5px solid color-mix(in srgb,#059669 34%,transparent);
+    background:linear-gradient(135deg,color-mix(in srgb,#059669 13%,var(--card)),color-mix(in srgb,#0d9488 8%,var(--card)));
+    font:inherit; transition:transform .15s, box-shadow .15s}
+  .valuebanner:hover{transform:translateY(-2px); box-shadow:0 12px 26px rgba(5,150,105,.20)}
+  .vb-num{font-family:var(--font-round); font-size:34px; font-weight:850; line-height:1; letter-spacing:-.03em;
+    color:#059669; flex:0 0 auto}
+  .vb-txt{flex:1; min-width:0; display:flex; flex-direction:column; gap:3px}
+  .vb-txt b{font-size:15.5px; font-weight:800; color:var(--text)}
+  .vb-txt span{font-size:12.5px; color:var(--muted); line-height:1.45}
+  .vb-go{flex:0 0 auto; color:#059669} .vb-go svg{width:19px; height:19px}
   .pw-value{font-size:13px; color:var(--muted); text-align:center; margin:8px 0 2px; line-height:1.5}
   .pw-value b{color:var(--c-bio)}
   .pw-value.sm{font-size:12px; margin-top:4px; opacity:.9}
+  :root[data-theme="dark"] .decal{background:linear-gradient(135deg,#10b981,#14b8a6); color:#04241b;
+    box-shadow:0 4px 14px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.25) inset}
+  :root[data-theme="dark"] .vb-num,
+  :root[data-theme="dark"] .vb-go{color:#34d399}
+  :root[data-theme="dark"] .valuebanner{border-color:color-mix(in srgb,#34d399 30%,transparent)}
   .cc-step{font-size:11px; font-weight:800; color:var(--faint); letter-spacing:.04em}
   .cc-dots{display:flex; gap:6px; justify-content:center; margin:2px 0 16px}
   .cc-dot{width:7px; height:7px; border-radius:50%; background:var(--border-strong); transition:transform .2s, background .2s}
@@ -4807,9 +4831,13 @@ function renderTestHub(){
   const proOwned = hasPro();
   let premHtml = `<div class="prem-head"><h3 style="margin:24px 0 2px">RampUp Pro exams</h3>
     ${proOwned ? `<span class="tag best">${icon("check")} Pro active</span>`
-      : `<button class="btn primary sm" id="getProTop">Unlock all · Pro ${PRICE.pro}</button>
-         <span class="tag value big">${valueOff("pro")}% less per question than buying short exams</span>`}</div>
-    <p class="footer-note" style="margin:0 0 14px;text-align:left">Brand-new held-out questions, timed like the real exam, with a projected score. ${proOwned?"":"Buy a tier, or unlock everything with Pro."}</p>`;
+      : `<button class="btn primary sm" id="getProTop">Unlock all · Pro ${PRICE.pro}</button>`}</div>
+    <p class="footer-note" style="margin:0 0 10px;text-align:left">Brand-new held-out questions, timed like the real exam, with a projected score. ${proOwned?"":"Buy a tier, or unlock everything with Pro."}</p>
+    ${proOwned ? "" : `<button class="valuebanner" id="getProBanner">
+        <span class="vb-num">${valueOff("pro")}%</span>
+        <span class="vb-txt"><b>less per question with Pro</b>
+          <span>All ${valueTable()["pro"].q} questions for ${PRICE.pro} · ${centsPerQ("pro")}&cent; each, vs ${centsPerQ("short_bundle")}&cent; buying short exams</span></span>
+        <span class="vb-go">${icon("arrowRight")}</span></button>`}`;
   PREM_TIERS.forEach(tier => {
     const exams = PREMIUM_TESTS.filter(t => t.tier === tier.key);
     let cardsT = "";
@@ -4819,9 +4847,12 @@ function renderTestHub(){
       const badge = owned
         ? (sc ? `<span class="tag best">Best ${projectedScore(sc.best)} · ${sc.best}%</span>` : `<span class="tag">Unlocked</span>`)
         : `<span class="tag pro">${priceBadge}</span>`;
-      const off = valueOff(tier.key==="short" ? "short_bundle" : t.id);
-      const valTag = (!owned && off >= 10) ? `<span class="tag value">${off}% less per question</span>` : "";
-      const meta = `<span class="tag">${n} question${n===1?"":"s"}</span>${t.timeLabel?`<span class="tag">${t.timeLabel}</span>`:""}${badge}${valTag}`;
+      const vsku = tier.key==="short" ? "short_bundle" : t.id;
+      const off = valueOff(vsku);
+      const decal = (!owned && off >= 10)
+        ? `<span class="decal"><b>${off}%</b><i>less per<br>question</i></span>` : "";
+      const ppq = (!owned) ? `<span class="tag ppq">${centsPerQ(vsku)}&cent; a question</span>` : "";
+      const meta = `<span class="tag">${n} question${n===1?"":"s"}</span>${t.timeLabel?`<span class="tag">${t.timeLabel}</span>`:""}${badge}${ppq}${decal}`;
       cardsT += `<button class="testcard prem ${owned?"":"lockedpro"}" data-prem="${t.id}">
         <span class="ti">${icon(owned ? t.icon : "lock")}</span>
         <span class="tbody"><span class="tt">${esc(t.title)} ${owned?"":'<span class="protag">PRO</span>'}</span>
@@ -4848,6 +4879,7 @@ function renderTestHub(){
     if (ownsExam(t.id)) startTest(t); else openPaywall(t);
   }));
   const gp = wrap.querySelector("#getProTop"); if (gp) gp.addEventListener("click", () => openPaywall(null));
+  const gb = wrap.querySelector("#getProBanner"); if (gb) gb.addEventListener("click", () => openPaywall(null));
   const hero = wrap.querySelector(".tests-hero .rampy"); if (hero){ hero.style.width="56px"; hero.style.height="56px"; }
 }
 function openPaywall(t){   // t = a PREMIUM_TESTS def, or null for the "Pro" entry point
