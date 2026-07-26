@@ -427,6 +427,12 @@
   .cc-btns{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
   .cc-btns .btn{min-height:48px}
   .cc-hint{font-size:12px; color:var(--faint); margin-top:14px}
+  .tag.value{color:var(--c-bio); background:color-mix(in srgb,var(--c-bio) 13%,var(--card));
+    border-color:color-mix(in srgb,var(--c-bio) 32%,transparent); font-weight:800}
+  .tag.value.big{display:inline-block; margin-top:6px; font-size:12px; padding:5px 10px}
+  .pw-value{font-size:13px; color:var(--muted); text-align:center; margin:8px 0 2px; line-height:1.5}
+  .pw-value b{color:var(--c-bio)}
+  .pw-value.sm{font-size:12px; margin-top:4px; opacity:.9}
   .cc-step{font-size:11px; font-weight:800; color:var(--faint); letter-spacing:.04em}
   .cc-dots{display:flex; gap:6px; justify-content:center; margin:2px 0 16px}
   .cc-dot{width:7px; height:7px; border-radius:50%; background:var(--border-strong); transition:transform .2s, background .2s}
@@ -2897,6 +2903,36 @@ const PRODUCTS = {
 };
 const PRICE = { pro:"$19.99", short_bundle:"$4.99", hx1:"$3.99", hx2:"$3.99", fx1:"$7.99", fx2:"$7.99" };
 const SHORT_EXAMS = ["sx1","sx2","sx3"];   // the short-exam bundle grants these
+
+/* Per-question value. Computed live from PRICE and the real question counts, so
+   the badges can never drift out of true if a price or a section plan changes.
+   The baseline is whichever SKU costs the MOST per question; everything cheaper
+   is expressed as "% less per question" — an accurate comparison between our own
+   options, not a struck-through former price (which never existed). */
+function skuQuestionCount(sku){
+  const plan = p => p.reduce((a,s) => a + s.count, 0);
+  if (sku === "short_bundle") return SHORT_EXAMS.reduce((a,id) => a + premiumFor(id).length, 0);
+  if (sku === "hx1" || sku === "hx2") return plan(HALF_PLAN);
+  if (sku === "fx1" || sku === "fx2") return plan(FULL_PLAN);
+  if (sku === "pro") return ["short_bundle","hx1","hx2","fx1","fx2"].reduce((a,k) => a + skuQuestionCount(k), 0);
+  return 0;
+}
+function priceNum(sku){ return parseFloat(String(PRICE[sku] || "").replace(/[^0-9.]/g, "")) || 0; }
+let _valueCache = null;
+function valueTable(){
+  if (_valueCache) return _valueCache;
+  const t = {};
+  Object.keys(PRICE).forEach(k => {
+    const n = skuQuestionCount(k);
+    if (n > 0) t[k] = { q:n, ppq: priceNum(k) / n };
+  });
+  const worst = Object.keys(t).reduce((a,b) => t[a].ppq >= t[b].ppq ? a : b);
+  Object.keys(t).forEach(k => { t[k].off = Math.round((1 - t[k].ppq / t[worst].ppq) * 100); });
+  _valueCache = t; return t;
+}
+function valueOff(sku){ const v = valueTable()[sku]; return v ? v.off : 0; }
+function perQuestion(sku){ const v = valueTable()[sku]; return v ? v.ppq : 0; }
+function centsPerQ(sku){ return (perQuestion(sku) * 100).toFixed(1); }
 const ent = { pro:false, exams:new Set() };
 function entLoad(){
   try { const r = localStorage.getItem(ENT_KEY); if (r){ const o = JSON.parse(r);
@@ -4771,7 +4807,8 @@ function renderTestHub(){
   const proOwned = hasPro();
   let premHtml = `<div class="prem-head"><h3 style="margin:24px 0 2px">RampUp Pro exams</h3>
     ${proOwned ? `<span class="tag best">${icon("check")} Pro active</span>`
-      : `<button class="btn primary sm" id="getProTop">Unlock all · Pro ${PRICE.pro}</button>`}</div>
+      : `<button class="btn primary sm" id="getProTop">Unlock all · Pro ${PRICE.pro}</button>
+         <span class="tag value big">${valueOff("pro")}% less per question than buying short exams</span>`}</div>
     <p class="footer-note" style="margin:0 0 14px;text-align:left">Brand-new held-out questions, timed like the real exam, with a projected score. ${proOwned?"":"Buy a tier, or unlock everything with Pro."}</p>`;
   PREM_TIERS.forEach(tier => {
     const exams = PREMIUM_TESTS.filter(t => t.tier === tier.key);
@@ -4782,7 +4819,9 @@ function renderTestHub(){
       const badge = owned
         ? (sc ? `<span class="tag best">Best ${projectedScore(sc.best)} · ${sc.best}%</span>` : `<span class="tag">Unlocked</span>`)
         : `<span class="tag pro">${priceBadge}</span>`;
-      const meta = `<span class="tag">${n} question${n===1?"":"s"}</span>${t.timeLabel?`<span class="tag">${t.timeLabel}</span>`:""}${badge}`;
+      const off = valueOff(tier.key==="short" ? "short_bundle" : t.id);
+      const valTag = (!owned && off >= 10) ? `<span class="tag value">${off}% less per question</span>` : "";
+      const meta = `<span class="tag">${n} question${n===1?"":"s"}</span>${t.timeLabel?`<span class="tag">${t.timeLabel}</span>`:""}${badge}${valTag}`;
       cardsT += `<button class="testcard prem ${owned?"":"lockedpro"}" data-prem="${t.id}">
         <span class="ti">${icon(owned ? t.icon : "lock")}</span>
         <span class="tbody"><span class="tt">${esc(t.title)} ${owned?"":'<span class="protag">PRO</span>'}</span>
@@ -4831,7 +4870,10 @@ function openPaywall(t){   // t = a PREMIUM_TESTS def, or null for the "Pro" ent
       <p class="pw-sub">${pwSub}</p>
       <ul class="pw-perks">${perks}</ul>
       <button class="btn primary pw-pro" data-buy="pro"><span>Get RampUp Pro</span><span class="pr">${PRICE.pro}</span></button>
+      <p class="pw-value">${valueTable()["pro"].q} questions total · ${centsPerQ("pro")}&cent; each · <b>${valueOff("pro")}% less per question</b> than buying short exams one at a time</p>
       ${single}
+      ${t && valueOff(t.tier==="short" ? "short_bundle" : t.id) >= 10
+          ? `<p class="pw-value sm">That's ${centsPerQ(t.tier==="short" ? "short_bundle" : t.id)}&cent; per question, ${valueOff(t.tier==="short" ? "short_bundle" : t.id)}% less than the short exams.</p>` : ""}
       <div class="pw-foot">
         <button class="linkbtn" id="pwRestore">Restore purchases</button>
         <span class="dot">·</span>
