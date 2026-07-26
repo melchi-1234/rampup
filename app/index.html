@@ -2914,10 +2914,21 @@ function entReset(){ ent.pro = false; ent.exams = new Set(); entSave(); }   // d
    getProducts() / buy(productId) / restore() / redeemCode(code)
    ============================================================ */
 const DEV_PURCHASE = false;   // true ONLY for local QA; MUST be false in every shipped build
-const PROMO_CODES = {         // owner's intentional free-unlock channel (works in production)
-  "RAMPUPPRO":"pro", "SHORTFREE":"short_bundle",
-  "HX1FREE":"hx1", "HX2FREE":"hx2", "FX1FREE":"fx1", "FX2FREE":"fx2"
+const PROMO_HASHES = {
+  "c1948f1fc438e895a6e37fcdbfaffcc9e510d6fdede4c2454498741a18cbbc6a":"pro",
+  "60c2f47355053d7585268caa271e9ecd2b4a606612583c9b34af3e32963c7d4b":"short_bundle",
+  "f90c5a085855f4849a021045467e08d1953053e9e176c1e4763efbfd138748ad":"hx1",
+  "5d6fc8a0eaec8d1e488fbdbdbf4022308e69cde79126ea3945f0e225dff0ffda":"hx2",
+  "615191b43f25702bea9e7017c348cd2dc39b0d6962cf70acb8122d86b50152e6":"fx1",
+  "98d34ee268ab7391f3d93482024a32410a191f74f69449e85db741aca57c3548":"fx2",
 };
+// Only SHA-256 hashes ship in the app, so reading the source does not reveal a
+// working code. Codes are 8 random chars from a 30-char alphabet (6.5e11 space),
+// which is not guessable by hand. They still unlock on-device only.
+async function sha256Hex(txt){
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(txt));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+}
 function grantByProduct(pid){                     // pid = a PRODUCTS value or a short id
   const short = (pid === PRODUCTS.pro || pid === "pro") ? "pro"
     : Object.keys(PRODUCTS).find(k => PRODUCTS[k] === pid) || pid;
@@ -2926,9 +2937,13 @@ function grantByProduct(pid){                     // pid = a PRODUCTS value or a
   if (["hx1","hx2","fx1","fx2"].includes(short)){ grantExam(short); return short; }
   return null;
 }
-function redeemCodeShared(code){
-  const c = String(code || "").trim().toUpperCase();
-  const target = PROMO_CODES[c];
+async function redeemCodeShared(code){
+  const c = String(code || "").trim().toUpperCase().replace(/\s+/g, "");
+  if (!c) return { ok:false, reason:"invalid" };
+  if (!(window.crypto && crypto.subtle)) return { ok:false, reason:"unavailable" };
+  let h;
+  try { h = await sha256Hex(c); } catch(e){ return { ok:false, reason:"unavailable" }; }
+  const target = PROMO_HASHES[h];
   if (!target) return { ok:false, reason:"invalid" };
   const g = grantByProduct(target);
   return g ? { ok:true, granted:g } : { ok:false, reason:"invalid" };
@@ -2939,7 +2954,7 @@ const StubProvider = {
   async getProducts(){ return Object.keys(PRICE).map(k => ({ id:k, price:PRICE[k] })); },
   async buy(short){ const g = grantByProduct(short); return g ? { ok:true, granted:g } : { ok:false, reason:"invalid" }; },
   async restore(){ return { ok:true, granted:[ ...(hasPro()?["pro"]:[]), ...ent.exams ] }; },
-  async redeemCode(code){ return redeemCodeShared(code); }
+  async redeemCode(code){ return await redeemCodeShared(code); }
 };
 // Stripe (web): real Payment Links. A completed payment redirects back with a
 // session_id, which is verified server-side (VERIFY_ENDPOINT) before anything unlocks.
@@ -2965,7 +2980,7 @@ const StripeProvider = {
     return { ok:true, pending:true };
   },
   async restore(){ return { ok:true, granted:[ ...(hasPro()?["pro"]:[]), ...ent.exams ] }; },
-  async redeemCode(code){ return redeemCodeShared(code); }
+  async redeemCode(code){ return await redeemCodeShared(code); }
 };
 // StoreKit (iOS): native StoreKit 2 via the RampUpIAP plugin (see AppDelegate.swift).
 let _iap = null;
@@ -3008,7 +3023,7 @@ const StoreKitProvider = {
     if (iap){ try { const res = await iap.restore(); applyOwnedProductIds(res && res.owned); } catch(e){} }
     return { ok:true, granted:[ ...(hasPro()?["pro"]:[]), ...ent.exams ] };
   },
-  async redeemCode(code){ return redeemCodeShared(code); }    // Apple offer codes handled here later
+  async redeemCode(code){ return await redeemCodeShared(code); }    // Apple offer codes handled here later
 };
 const isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 const purchases = DEV_PURCHASE ? StubProvider : (isNative ? StoreKitProvider : StripeProvider);
