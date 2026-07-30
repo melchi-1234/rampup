@@ -454,6 +454,42 @@
   :root[data-theme="dark"] .vb-go,
   :root[data-theme="dark"] .vb-txt b{color:#34d399}
   :root[data-theme="dark"] .valuebanner{border-color:color-mix(in srgb,#34d399 30%,transparent)}
+  /* PDF export: the PDF button on owned exam cards + the print-only document */
+  .testcard.prem.owned{position:relative}
+  .pdfbtn{position:absolute; top:12px; right:14px; z-index:2; display:inline-flex; align-items:center; gap:5px;
+    padding:6px 11px; border-radius:11px; font:inherit; font-size:12px; font-weight:800; cursor:pointer;
+    color:var(--accent); background:var(--violet-soft,color-mix(in srgb,var(--accent) 12%,var(--card)));
+    border:1px solid color-mix(in srgb,var(--accent) 30%,transparent); transition:transform .12s, background .12s}
+  .pdfbtn:hover{transform:translateY(-1px); background:color-mix(in srgb,var(--accent) 20%,var(--card))}
+  .pdfbtn svg{width:14px; height:14px}
+  #printRoot{display:none}
+  @media print{
+    body > *:not(#printRoot){display:none !important}
+    #printRoot{display:block !important; color:#111; background:#fff;
+      font-family:Georgia,'Times New Roman',serif; line-height:1.45}
+    @page{margin:16mm 14mm}
+    html,body{background:#fff !important}
+    #printRoot .pr-brand{font-family:'Nunito',sans-serif; font-weight:800; color:#6d28d9; font-size:15px; letter-spacing:-.01em}
+    #printRoot h1{font-size:25px; margin:6px 0 4px; font-family:'Nunito',sans-serif}
+    #printRoot .pr-sub{color:#333; font-size:13px; margin:0 0 16px}
+    #printRoot .pr-instr{font-size:12.5px; color:#222; line-height:1.55; margin:0 0 14px; padding-left:18px}
+    #printRoot .pr-disc{font-size:10px; color:#666; border-top:1px solid #ccc; padding-top:8px; margin-top:10px}
+    #printRoot .pr-cover{page-break-after:always}
+    #printRoot .pr-sec{font-size:16px; margin:0 0 2px; border-bottom:2px solid #6d28d9; padding-bottom:3px;
+      page-break-after:avoid; font-family:'Nunito',sans-serif}
+    #printRoot .pr-secmeta{font-size:11px; color:#666; margin:0 0 11px}
+    #printRoot .pr-passage{font-size:11.5px; line-height:1.5; background:#f5f4f8; border:1px solid #ddd;
+      padding:9px 11px; margin:11px 0; border-radius:4px; page-break-inside:avoid}
+    #printRoot .pr-q{page-break-inside:avoid; margin:0 0 11px}
+    #printRoot .pr-stem{font-size:12.5px; line-height:1.45; margin:0 0 4px}
+    #printRoot .pr-choices{list-style:none; margin:0; padding:0 0 0 20px; font-size:12.5px; line-height:1.5}
+    #printRoot .pr-choices li{margin:2px 0}
+    #printRoot .pr-let{font-weight:700; margin-right:4px}
+    #printRoot .pr-key{page-break-before:always}
+    #printRoot .pr-key h1{margin-bottom:8px}
+    #printRoot .pr-keysec{font-size:14px; margin:14px 0 4px; color:#6d28d9; font-family:'Nunito',sans-serif}
+    #printRoot .pr-ans{font-size:11px; line-height:1.45; margin:0 0 6px}
+  }
   .cc-step{font-size:11px; font-weight:800; color:var(--faint); letter-spacing:.04em}
   .cc-dots{display:flex; gap:6px; justify-content:center; margin:2px 0 16px}
   .cc-dot{width:7px; height:7px; border-radius:50%; background:var(--border-strong); transition:transform .2s, background .2s}
@@ -3176,7 +3212,8 @@ const ICONS = {
   undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h11a6 6 0 0 1 0 12h-3"/>',
   target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
   dash:'<rect x="3" y="3" width="8" height="9" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="12" width="8" height="9" rx="1.5"/><rect x="3" y="16" width="8" height="5" rx="1.5"/>',
-  bookmark:'<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>'
+  bookmark:'<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>'
 };
 function icon(name, cls){ return _svg(ICONS[name]||"", { cls }); }
 const _starPoly = '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>';
@@ -4810,6 +4847,79 @@ function renderTestResults(T, R){
   if (R.pct>=70 && !REDUCED_MOTION) setTimeout(confettiRain, 250);
   state.test = null;
 }
+
+/* ============================================================
+   Printable PDF export for exams. Builds the exam, lays it out for print
+   (passage once above its question cluster, continuous numbering, an answer
+   key at the end), and calls window.print() so the browser's own "Save as
+   PDF" handles the file. No library, so the bundle stays self-contained.
+   ============================================================ */
+const MCAT_SECTION_FULL = {
+  "Chem/Phys":"Chemical and Physical Foundations of Biological Systems",
+  "CARS":"Critical Analysis and Reasoning Skills",
+  "Bio/Biochem":"Biological and Biochemical Foundations of Living Systems",
+  "Psych/Soc":"Psychological, Social, and Biological Foundations of Behavior"
+};
+function ensurePrintRoot(){
+  let r = document.getElementById("printRoot");
+  if (!r){ r = document.createElement("div"); r.id = "printRoot"; document.body.appendChild(r); }
+  return r;
+}
+function printExam(t){
+  if (!t) return;
+  if (t.premium && !ownsExam(t.id)){ openPaywall(t); return; }
+  const queue = buildTestQueue(t);
+  if (!queue.length){ toast("This exam isn't ready to print yet."); return; }
+  const sections = [];
+  if (t.sectionPlan){
+    let i = 0;
+    t.sectionPlan.forEach(sp => { sections.push({ cat:sp.cat, minutes:sp.minutes, items:queue.slice(i, i+sp.count) }); i += sp.count; });
+  } else {
+    sections.push({ cat:null, minutes:null, items:queue });
+  }
+  const LET = ["A","B","C","D","E","F"];
+  const para = txt => esc(txt).replace(/\n+/g, "<br>");
+  let num = 0, body = "", key = "";
+  sections.forEach((sec, si) => {
+    const secName = sec.cat ? (MCAT_SECTION_FULL[sec.cat] || sec.cat) : "Questions";
+    body += `<h2 class="pr-sec">Section ${si+1}: ${esc(secName)}</h2>`
+          + `<p class="pr-secmeta">${sec.items.length} questions${sec.minutes?` &middot; ${sec.minutes} minutes`:""}</p>`;
+    key  += `<h3 class="pr-keysec">Section ${si+1}: ${esc(secName)}</h3>`;
+    let lastPassage = null;
+    sec.items.forEach(q => {
+      num++;
+      if (q.passage && q.passage !== lastPassage){ body += `<div class="pr-passage">${para(q.passage)}</div>`; lastPassage = q.passage; }
+      if (!q.passage) lastPassage = null;
+      body += `<div class="pr-q"><p class="pr-stem"><b>${num}.</b> ${esc(q.question)}</p>`
+            + `<ol class="pr-choices">${(q.choices||[]).map((c,i)=>`<li><span class="pr-let">${LET[i]}.</span> ${esc(c)}</li>`).join("")}</ol></div>`;
+      key += `<p class="pr-ans"><b>${num}. ${LET[q.answer]}</b>${q.explanation?` &mdash; ${esc(q.explanation)}`:""}</p>`;
+    });
+  });
+  const totalMin = t.sectionPlan ? t.sectionPlan.reduce((a,x)=>a+x.minutes,0) : null;
+  const hrs = totalMin ? (Math.round(totalMin/60*10)/10) : null;
+  const root = ensurePrintRoot();
+  root.innerHTML = `
+    <div class="pr-cover">
+      <div class="pr-brand">RampUp</div>
+      <h1>${esc(t.title)}</h1>
+      <p class="pr-sub">Printable practice exam &middot; ${queue.length} questions${hrs?` &middot; about ${hrs} hours`:""}</p>
+      <ul class="pr-instr">
+        <li>Answer on a separate sheet, then check the key at the end. Don't peek until you finish.</li>
+        ${totalMin?`<li>For a real simulation, give each section the time shown at its heading.</li>`:""}
+        <li>Questions are original to RampUp and written to match MCAT structure and level.</li>
+      </ul>
+      <p class="pr-disc">Not affiliated with or endorsed by the AAMC. MCAT is a registered trademark of the Association of American Medical Colleges. Printed from rampupmcat.com.</p>
+    </div>
+    <div class="pr-questions">${body}</div>
+    <div class="pr-key"><h1>Answer key &amp; explanations</h1>${key}</div>`;
+  const prevTitle = document.title;
+  document.title = "RampUp - " + t.title;
+  haptic("light");
+  setTimeout(() => { window.print(); }, 60);
+  const cleanup = () => { document.title = prevTitle; root.innerHTML = ""; window.removeEventListener("afterprint", cleanup); };
+  window.addEventListener("afterprint", cleanup);
+  setTimeout(cleanup, 60000);   // fallback if afterprint never fires (some mobile browsers)
+}
 function renderTestHub(){
   const wrap = $("#testsView");
   let cards = "";
@@ -4849,9 +4959,17 @@ function renderTestHub(){
         ? `<span class="decal"><b>${off}% cheaper</b><i>${centsPerQ(vsku)}&cent; vs ${centsPerQ("short_bundle")}&cent; a question</i></span>`
         : (!owned ? `<span class="tag ppq">${centsPerQ(vsku)}&cent; a question</span>` : "");
       const meta = `<span class="tag">${n} question${n===1?"":"s"}</span>${t.timeLabel?`<span class="tag">${t.timeLabel}</span>`:""}${badge}${decal}`;
-      cardsT += `<button class="testcard prem ${owned?"":"lockedpro"}" data-prem="${t.id}">
-        <span class="ti">${icon(owned ? t.icon : "lock")}</span>
-        <span class="tbody"><span class="tt">${esc(t.title)} ${owned?"":'<span class="protag">PRO</span>'}</span>
+      cardsT += owned
+        ? `<div class="testcard prem owned" data-prem="${t.id}">
+        <span class="ti">${icon(t.icon)}</span>
+        <span class="tbody"><span class="tt">${esc(t.title)}</span>
+          <span class="td">${esc(t.desc)}</span>
+          <span class="tmeta">${meta}</span></span>
+        <button class="pdfbtn" data-pdf="${t.id}" aria-label="Download printable PDF">${icon("download")} PDF</button>
+        <span class="go">${icon("arrowRight")}</span></div>`
+        : `<button class="testcard prem lockedpro" data-prem="${t.id}">
+        <span class="ti">${icon("lock")}</span>
+        <span class="tbody"><span class="tt">${esc(t.title)} <span class="protag">PRO</span></span>
           <span class="td">${esc(t.desc)}</span>
           <span class="tmeta">${meta}</span></span>
         <span class="go">${icon("arrowRight")}</span></button>`;
@@ -4873,6 +4991,11 @@ function renderTestHub(){
   wrap.querySelectorAll(".testcard.prem").forEach(b => b.addEventListener("click", () => {
     const t = PREMIUM_TESTS.find(x => x.id === b.dataset.prem);
     if (ownsExam(t.id)) startTest(t); else openPaywall(t);
+  }));
+  wrap.querySelectorAll(".pdfbtn").forEach(b => b.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const t = PREMIUM_TESTS.find(x => x.id === b.dataset.pdf);
+    if (t) printExam(t);
   }));
   const gp = wrap.querySelector("#getProTop"); if (gp) gp.addEventListener("click", () => openPaywall(null));
   const gb = wrap.querySelector("#getProBanner"); if (gb) gb.addEventListener("click", () => openPaywall(null));
