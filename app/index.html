@@ -3114,7 +3114,13 @@ const StoreKitProvider = {
   },
   async restore(){
     const iap = iapPlugin();
-    if (iap){ try { const res = await iap.restore(); applyOwnedProductIds(res && res.owned); } catch(e){} }
+    if (!iap) return { ok:false, reason:"unavailable" };
+    try {
+      const res = await iap.restore();
+      applyOwnedProductIds(res && res.owned);
+      // sync failed => don't claim they own nothing, it may be a network blip
+      if (res && res.synced === false && !(hasPro() || ent.exams.size)) return { ok:false, reason:"unavailable" };
+    } catch(e){ return { ok:false, reason:"unavailable" }; }
     return { ok:true, granted:[ ...(hasPro()?["pro"]:[]), ...ent.exams ] };
   },
   async redeemCode(code){ return await redeemCodeShared(code); }    // Apple offer codes handled here later
@@ -5099,6 +5105,7 @@ async function doBuy(short){
 async function doRestore(){
   const r = await purchases.restore();
   if (r && r.ok && (hasPro() || ent.exams.size)){ closeSheet(); toast("Purchases restored."); refreshAfterEntitlement(); }
+  else if (r && r.reason === "unavailable"){ toast("Couldn't reach the App Store. Check your connection and try again."); }
   else toast("No purchases found to restore.");
 }
 function openCodeEntry(){
