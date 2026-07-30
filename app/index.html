@@ -455,7 +455,8 @@
   :root[data-theme="dark"] .vb-txt b{color:#34d399}
   :root[data-theme="dark"] .valuebanner{border-color:color-mix(in srgb,#34d399 30%,transparent)}
   /* PDF export: the PDF button on owned exam cards + the print-only document */
-  .testcard.prem.owned{position:relative}
+  .testwrap{position:relative}
+  .testwrap .testcard{margin-bottom:12px}
   .pdfbtn{position:absolute; top:12px; right:14px; z-index:2; display:inline-flex; align-items:center; gap:5px;
     padding:6px 11px; border-radius:11px; font:inherit; font-size:12px; font-weight:800; cursor:pointer;
     color:var(--accent); background:var(--violet-soft,color-mix(in srgb,var(--accent) 12%,var(--card)));
@@ -3079,7 +3080,7 @@ const StripeProvider = {
 let _iap = null;
 function iapPlugin(){
   if (_iap === null){
-    try { _iap = (window.Capacitor && window.Capacitor.registerPlugin) ? window.Capacitor.registerPlugin("RampUpIAP") : false; }
+    try { _iap = nativePlugin("RampUpIAP"); }
     catch(e){ _iap = false; }
   }
   return _iap || null;
@@ -4912,13 +4913,64 @@ function printExam(t){
     </div>
     <div class="pr-questions">${body}</div>
     <div class="pr-key"><h1>Answer key &amp; explanations</h1>${key}</div>`;
+  haptic("light");
+  if (isNative) { deliverPdfNative(t, root); return; }
   const prevTitle = document.title;
   document.title = "RampUp - " + t.title;
-  haptic("light");
   setTimeout(() => { window.print(); }, 60);
   const cleanup = () => { document.title = prevTitle; root.innerHTML = ""; window.removeEventListener("afterprint", cleanup); };
   window.addEventListener("afterprint", cleanup);
   setTimeout(cleanup, 60000);   // fallback if afterprint never fires (some mobile browsers)
+}
+/* Pull the @media print rules straight off our own stylesheet so the native PDF
+   is styled from the same source as the web print output, no duplicated CSS. */
+function collectPrintCss(){
+  let css = "";
+  for (const sheet of document.styleSheets){
+    let rules; try { rules = sheet.cssRules; } catch(e){ continue; }
+    for (const r of rules){
+      const cond = r.conditionText || (r.media && r.media.mediaText) || "";
+      if (r.type === CSSRule.MEDIA_RULE && /print/.test(cond)){
+        for (const inner of r.cssRules) css += inner.cssText + "\n";
+      }
+    }
+  }
+  return css;
+}
+/* Native plugin lookup. This runtime exposes Capacitor.Plugins but NOT
+   Capacitor.registerPlugin (that only exists when the app bundles
+   @capacitor/core), so check Plugins first and fall back. */
+function nativePlugin(name){
+  const C = window.Capacitor;
+  if (!C) return false;
+  if (C.Plugins && C.Plugins[name]) return C.Plugins[name];
+  if (C.registerPlugin){ try { return C.registerPlugin(name); } catch(e){} }
+  return false;
+}
+let _pdfPlugin;
+function pdfPlugin(){
+  if (_pdfPlugin === undefined){
+    _pdfPlugin = nativePlugin("RampUpPDF");
+  }
+  return _pdfPlugin;
+}
+/* iOS: window.print() does nothing inside WKWebView, so hand the markup to the
+   native side, which renders a real PDF and opens the share sheet. */
+async function deliverPdfNative(t, root){
+  const p = pdfPlugin();
+  const doc = `<!doctype html><html><head><meta charset="utf-8">`
+    + `<meta name="viewport" content="width=612">`
+    + `<style>${collectPrintCss()}</style></head>`
+    + `<body><div id="printRoot">${root.innerHTML}</div></body></html>`;
+  root.innerHTML = "";
+  if (!p){ toast("Printing isn't available in this version."); return; }
+  toast("Building your PDF…");
+  try {
+    const r = await p.export({ html: doc, filename: "RampUp - " + t.title });
+    if (r && r.ok) haptic("success");
+  } catch(e){
+    toast((e && (e.message || e)) ? String(e.message || e) : "Could not create the PDF.");
+  }
 }
 function renderTestHub(){
   const wrap = $("#testsView");
@@ -4960,13 +5012,13 @@ function renderTestHub(){
         : (!owned ? `<span class="tag ppq">${centsPerQ(vsku)}&cent; a question</span>` : "");
       const meta = `<span class="tag">${n} question${n===1?"":"s"}</span>${t.timeLabel?`<span class="tag">${t.timeLabel}</span>`:""}${badge}${decal}`;
       cardsT += owned
-        ? `<div class="testcard prem owned" data-prem="${t.id}">
+        ? `<div class="testwrap"><button class="testcard prem" data-prem="${t.id}">
         <span class="ti">${icon(t.icon)}</span>
         <span class="tbody"><span class="tt">${esc(t.title)}</span>
           <span class="td">${esc(t.desc)}</span>
           <span class="tmeta">${meta}</span></span>
-        ${isNative ? "" : `<button class="pdfbtn" data-pdf="${t.id}" aria-label="Download printable PDF">${icon("download")} PDF</button>`}
-        <span class="go">${icon("arrowRight")}</span></div>`
+        <span class="go">${icon("arrowRight")}</span></button>
+        <button class="pdfbtn" data-pdf="${t.id}" aria-label="Download printable PDF">${icon("download")} PDF</button></div>`
         : `<button class="testcard prem lockedpro" data-prem="${t.id}">
         <span class="ti">${icon("lock")}</span>
         <span class="tbody"><span class="tt">${esc(t.title)} <span class="protag">PRO</span></span>
