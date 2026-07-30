@@ -4965,7 +4965,7 @@ function renderTestHub(){
         <span class="tbody"><span class="tt">${esc(t.title)}</span>
           <span class="td">${esc(t.desc)}</span>
           <span class="tmeta">${meta}</span></span>
-        <button class="pdfbtn" data-pdf="${t.id}" aria-label="Download printable PDF">${icon("download")} PDF</button>
+        ${isNative ? "" : `<button class="pdfbtn" data-pdf="${t.id}" aria-label="Download printable PDF">${icon("download")} PDF</button>`}
         <span class="go">${icon("arrowRight")}</span></div>`
         : `<button class="testcard prem lockedpro" data-prem="${t.id}">
         <span class="ti">${icon("lock")}</span>
