@@ -297,11 +297,13 @@
   .storage-status{display:flex; gap:7px; align-items:center; font-size:13px; color:var(--muted); margin-top:5px}
   .storage-status .btn.link{background:none; border:none; padding:0; font:inherit; font-size:13px; font-weight:800; color:var(--accent); cursor:pointer; text-decoration:underline; min-height:0}
   .datepick{display:inline-flex; gap:8px; align-items:center; flex-wrap:wrap}
-  .datepick input[type=date]{font:inherit; font-size:14px; font-weight:650; color:var(--text); background:var(--card);
+  .datepick input[type=date], .datepick input[type=time]{font:inherit; font-size:14px; font-weight:650; color:var(--text); background:var(--card);
     border:1.5px solid var(--border); border-radius:var(--r-sm); padding:9px 11px; min-height:44px; cursor:pointer}
-  .datepick input[type=date]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .datepick input[type=date]:focus-visible, .datepick input[type=time]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .datepick input:disabled{opacity:.5; cursor:not-allowed}
   /* The picker glyph is UA-drawn and stays black, so it vanishes on the dark card. */
-  :root[data-theme="dark"] .datepick input[type=date]{color-scheme:dark}
+  :root[data-theme="dark"] .datepick input[type=date],
+  :root[data-theme="dark"] .datepick input[type=time]{color-scheme:dark}
 
   /* Dashboard */
   .dash-hero{display:flex; gap:14px; align-items:stretch; margin-bottom:14px; flex-wrap:wrap}
@@ -963,6 +965,14 @@
           <div class="datepick">
             <input type="date" id="testDateInput" aria-label="My MCAT test date">
             <button class="btn ghost sm" id="testDateClear" type="button">Clear</button>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="lbl"><b>Daily reminder</b><span class="d">A nudge at the same time each day. Counts down your test date if you've set one.</span>
+            <span class="storage-status" id="remindStatus"></span></div>
+          <div class="datepick">
+            <input type="time" id="remindTime" aria-label="Reminder time">
+            <button class="toggle" id="remindToggle" aria-label="Toggle daily reminder"></button>
           </div>
         </div>
         <div class="set-row">
@@ -2910,6 +2920,7 @@ const state = {
   mode:"learn", focus:new Set(["Chem/Phys","Bio/Biochem","Psych/Soc","CARS"]),
   day:{ lastDay:null, streak:0, todayCount:0, goal:10 },
   testDate:null,          // optional "YYYY-MM-DD"; drives the countdown + goal suggestion
+  remind:{ on:false, time:"19:00" },   // daily local notification (native only)
   persist:true, view:"home",
   // v2 progression + game state
   xp:0, level:1, achievements:[], streakFreezes:2, sound:true,
@@ -2940,7 +2951,7 @@ function serialize(){
     celebratedStreak:state.celebratedStreak, previewAnswered:state.previewAnswered,
     reviewCleared:state.reviewCleared, perfectSessions:state.perfectSessions, path:state.path,
     testScores:state.testScores, testsCompleted:state.testsCompleted, conceptsSeen:state.conceptsSeen,
-    testDate:state.testDate };
+    testDate:state.testDate, remind:state.remind };
 }
 function saveState(){ if (!state.persist || !STORAGE_OK) return; try { localStorage.setItem(LS_KEY, JSON.stringify(serialize())); } catch(e){} }
 function loadState(){
@@ -3177,6 +3188,8 @@ function rehydrate(s){
   state.day = Object.assign({ lastDay:null, streak:0, todayCount:0, goal:10 }, s.day || {});
   if (typeof state.day.goal !== "number") state.day.goal = 10;
   state.testDate = /^\d{4}-\d{2}-\d{2}$/.test(s.testDate || "") ? s.testDate : null;
+  state.remind = Object.assign({ on:false, time:"19:00" }, s.remind || {});
+  if (!/^\d{2}:\d{2}$/.test(state.remind.time)) state.remind.time = "19:00";
   state.totalAnswered = s.totalAnswered || 0; state.totalCorrect = s.totalCorrect || 0; state.idkCount = s.idkCount || 0;
   state.mode = s.mode || "learn";
   state.focus = new Set(s.focus && s.focus.length ? s.focus : ["Chem/Phys","Bio/Biochem","Psych/Soc","CARS"]);
@@ -3196,6 +3209,8 @@ function rehydrate(s){
     if (!(name in state.preview)) state.preview[name] = isPreview(name);
     if (!state.stats[name]) state.stats[name] = { answered:0, correct:0, cRun:0, wRun:0 };
   });
+  // Re-arm the reminder window on every launch so it keeps sliding forward.
+  try { rescheduleReminders(); } catch(e){}
 }
 
 /* ============================================================
@@ -3233,6 +3248,75 @@ function suggestedGoal(){
     : d <= 30 ? 50 : d <= 60 ? 30 : d <= 120 ? 20 : d <= 240 ? 10 : 5;
   const want = Math.max(base, byDate);
   return GOAL_OPTIONS.reduce((best, g) => Math.abs(g - want) < Math.abs(best - want) ? g : best, GOAL_OPTIONS[0]);
+}
+
+/* ---- Daily reminder (iOS local notifications) ----
+   Scheduled as REMIND_DAYS separate one-shot notifications rather than one
+   repeating daily one: a repeat carries fixed text, and we want each night's
+   message to name the real number of days left. Re-armed on every launch and
+   whenever the date, goal, or time changes, so the window keeps sliding
+   forward. iOS holds 64 pending notifications, so 30 is comfortably inside. */
+const REMIND_ID_BASE = 8100, REMIND_DAYS = 30;
+function notifPlugin(){
+  const C = window.Capacitor;
+  if (!C || !C.isNativePlatform || !C.isNativePlatform()) return null;   // web can't fire these while closed
+  return (C.Plugins && C.Plugins.LocalNotifications) || null;
+}
+function remindSupported(){ return !!notifPlugin(); }
+function remindBody(daysLeft){
+  const goal = state.day.goal;
+  if (daysLeft === 0) return "Test day. You've got this.";
+  if (daysLeft !== null && daysLeft > 0)
+    return daysLeft + (daysLeft === 1 ? " day" : " days") + " to your MCAT. " + goal + " questions today?";
+  return goal + " questions today. Keep the streak going.";
+}
+// Returns how many notifications are actually pending with iOS afterwards, or
+// -1 if the plugin threw. Never assume a schedule() call worked: a silent
+// failure would leave the toggle claiming reminders are on when they are not.
+async function rescheduleReminders(){
+  const P = notifPlugin(); if (!P) return 0;
+  const all = []; for (let i = 0; i < REMIND_DAYS; i++) all.push({ id: REMIND_ID_BASE + i });
+  try { await P.cancel({ notifications: all }); } catch(e){}
+  if (!state.remind.on) return 0;
+  const hm = (state.remind.time || "19:00").split(":").map(Number);
+  const now = new Date(), out = [];
+  for (let i = 0; i < REMIND_DAYS; i++){
+    const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, hm[0], hm[1], 0, 0);
+    if (at.getTime() <= Date.now()) continue;              // today's slot already went by
+    const key = at.getFullYear() + "-" + String(at.getMonth()+1).padStart(2,"0") + "-" + String(at.getDate()).padStart(2,"0");
+    const dLeft = state.testDate ? dayGap(key, state.testDate) : null;
+    if (dLeft !== null && dLeft < 0) break;                // nothing to nag about after the exam
+    out.push({ id: REMIND_ID_BASE + i, title: "RampUp", body: remindBody(dLeft), schedule: { at } });
+  }
+  if (!out.length) return 0;
+  try {
+    await P.schedule({ notifications: out });
+    const pend = await P.getPending();
+    return (pend && pend.notifications) ? pend.notifications.length : 0;
+  } catch(e){ return -1; }
+}
+async function setRemindOn(on){
+  const P = notifPlugin();
+  if (on && P){
+    let perm = null;
+    try {
+      perm = await P.checkPermissions();
+      if (!perm || perm.display !== "granted") perm = await P.requestPermissions();
+    } catch(e){ perm = null; }
+    if (!perm || perm.display !== "granted"){
+      state.remind.on = false; renderSettings(); saveState();
+      toast("Notifications are off for RampUp. You can turn them on in iOS Settings.");
+      return;
+    }
+  }
+  state.remind.on = on;
+  const n = await rescheduleReminders();
+  if (on && n <= 0){            // permission said yes but iOS queued nothing
+    state.remind.on = false; renderSettings(); saveState();
+    toast("Couldn't schedule reminders on this device.");
+    return;
+  }
+  renderSettings(); saveState();
 }
 
 /* ============================================================
@@ -4451,6 +4535,29 @@ function renderTestDate(){
     : d === 0 ? `${icon("clock")} <span>Test day is today. Good luck!</span>`
     : `${icon("clock")} <span>${d} ${d === 1 ? "day" : "days"} to go &middot; ${esc(fmtTestDate(state.testDate))}</span>`;
 }
+function renderRemind(){
+  const tg = $("#remindToggle"), tm = $("#remindTime"), st = $("#remindStatus");
+  if (!tg) return;
+  const ok = remindSupported(), on = ok && state.remind.on;
+  tg.classList.toggle("on", on);
+  tg.disabled = !ok;
+  tg.style.opacity = ok ? "" : ".5";
+  tg.setAttribute("role", "switch"); tg.setAttribute("aria-checked", String(on));
+  tm.value = state.remind.time || "19:00";
+  tm.disabled = !ok || !on;
+  if (!ok){
+    st.innerHTML = `<span>Reminders need the RampUp iOS app. A browser can't send them once the tab is closed.</span>`;
+    return;
+  }
+  st.innerHTML = on
+    ? `${icon("check")} <span>We'll nudge you daily at ${esc(fmtClock(state.remind.time))}.</span>`
+    : `<span>Off. Turn it on to get a daily nudge.</span>`;
+}
+function fmtClock(hhmm){
+  const p = (hhmm || "19:00").split(":").map(Number);
+  const d = new Date(); d.setHours(p[0], p[1], 0, 0);
+  return d.toLocaleTimeString(undefined, { hour:"numeric", minute:"2-digit" });
+}
 function renderGoalSuggestion(){
   const el = $("#goalSuggest");
   if (!el) return;
@@ -4462,7 +4569,7 @@ function renderGoalSuggestion(){
   const why = daysUntilTest() > 0 ? "for your test date" : "for where you are in school";
   el.innerHTML = `<span>We'd suggest ${sug}/day ${why}.</span> <button type="button" class="btn link" id="goalApply">Use ${sug}</button>`;
   $("#goalApply").addEventListener("click", () => {
-    state.day.goal = sug; renderSettings(); updateTopbar(); saveState();
+    state.day.goal = sug; renderSettings(); updateTopbar(); saveState(); rescheduleReminders();
     toast("Daily goal set to " + sug + " questions.");
   });
 }
@@ -4474,11 +4581,12 @@ function renderSettings(){
   $("#storageStatus").innerHTML = !STORAGE_OK ? `${icon("alert")} <span>This browser blocks saving (private mode, or opening the file directly), so progress can't persist.</span>`
     : state.persist ? `${icon("check")} <span>Saving is on.</span>` : `<span>Saving is off.</span>`;
   renderTestDate();
+  renderRemind();
   const gs = $("#goalSeg"); gs.innerHTML = "";
   GOAL_OPTIONS.forEach(g => {
     const b = document.createElement("button"); b.textContent = g;
     if (state.day.goal === g) b.classList.add("on");
-    b.addEventListener("click", () => { state.day.goal = g; renderSettings(); updateTopbar(); saveState(); });
+    b.addEventListener("click", () => { state.day.goal = g; renderSettings(); updateTopbar(); saveState(); rescheduleReminders(); });
     gs.appendChild(b);
   });
   renderGoalSuggestion();
@@ -5253,10 +5361,16 @@ $("#editCoursesBtn").addEventListener("click", editCourses);
 $("#testDateInput").addEventListener("change", e => {
   const v = e.target.value;
   state.testDate = /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null;
-  renderSettings(); updateTopbar(); saveState();
+  renderSettings(); updateTopbar(); saveState(); rescheduleReminders();
 });
 $("#testDateClear").addEventListener("click", () => {
-  state.testDate = null; renderSettings(); updateTopbar(); saveState();
+  state.testDate = null; renderSettings(); updateTopbar(); saveState(); rescheduleReminders();
+});
+$("#remindToggle").addEventListener("click", () => { if (remindSupported()) setRemindOn(!state.remind.on); });
+$("#remindTime").addEventListener("change", e => {
+  if (!/^\d{2}:\d{2}$/.test(e.target.value)) return;
+  state.remind.time = e.target.value;
+  renderSettings(); saveState(); rescheduleReminders();
 });
 $("#resetBtn").addEventListener("click", resetAll);
 
