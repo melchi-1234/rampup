@@ -295,6 +295,13 @@
   .toggle.on::after{left:23px}
   .kbd-help{font-size:13.5px; color:var(--muted); line-height:2.2}
   .storage-status{display:flex; gap:7px; align-items:center; font-size:13px; color:var(--muted); margin-top:5px}
+  .storage-status .btn.link{background:none; border:none; padding:0; font:inherit; font-size:13px; font-weight:800; color:var(--accent); cursor:pointer; text-decoration:underline; min-height:0}
+  .datepick{display:inline-flex; gap:8px; align-items:center; flex-wrap:wrap}
+  .datepick input[type=date]{font:inherit; font-size:14px; font-weight:650; color:var(--text); background:var(--card);
+    border:1.5px solid var(--border); border-radius:var(--r-sm); padding:9px 11px; min-height:44px; cursor:pointer}
+  .datepick input[type=date]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  /* The picker glyph is UA-drawn and stays black, so it vanishes on the dark card. */
+  :root[data-theme="dark"] .datepick input[type=date]{color-scheme:dark}
 
   /* Dashboard */
   .dash-hero{display:flex; gap:14px; align-items:stretch; margin-bottom:14px; flex-wrap:wrap}
@@ -951,7 +958,16 @@
           <button class="btn ghost sm" id="proBtn">Manage</button>
         </div>
         <div class="set-row">
-          <div class="lbl"><b>Daily goal</b><span class="d">How many questions you're aiming for each day.</span></div>
+          <div class="lbl"><b>My test date</b><span class="d">Optional. Adds a countdown and tunes the daily goal we suggest.</span>
+            <span class="storage-status" id="testDateStatus"></span></div>
+          <div class="datepick">
+            <input type="date" id="testDateInput" aria-label="My MCAT test date">
+            <button class="btn ghost sm" id="testDateClear" type="button">Clear</button>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="lbl"><b>Daily goal</b><span class="d">How many questions you're aiming for each day.</span>
+            <span class="storage-status" id="goalSuggest"></span></div>
           <div class="seg" id="goalSeg"></div>
         </div>
         <div class="set-row">
@@ -2893,6 +2909,7 @@ const state = {
   rotation:0, reviewIdx:0, starIdx:0, mixCounter:0,
   mode:"learn", focus:new Set(["Chem/Phys","Bio/Biochem","Psych/Soc","CARS"]),
   day:{ lastDay:null, streak:0, todayCount:0, goal:10 },
+  testDate:null,          // optional "YYYY-MM-DD"; drives the countdown + goal suggestion
   persist:true, view:"home",
   // v2 progression + game state
   xp:0, level:1, achievements:[], streakFreezes:2, sound:true,
@@ -2922,7 +2939,8 @@ function serialize(){
     sound:state.sound, sessionsCompleted:state.sessionsCompleted, bestCombo:state.bestCombo,
     celebratedStreak:state.celebratedStreak, previewAnswered:state.previewAnswered,
     reviewCleared:state.reviewCleared, perfectSessions:state.perfectSessions, path:state.path,
-    testScores:state.testScores, testsCompleted:state.testsCompleted, conceptsSeen:state.conceptsSeen };
+    testScores:state.testScores, testsCompleted:state.testsCompleted, conceptsSeen:state.conceptsSeen,
+    testDate:state.testDate };
 }
 function saveState(){ if (!state.persist || !STORAGE_OK) return; try { localStorage.setItem(LS_KEY, JSON.stringify(serialize())); } catch(e){} }
 function loadState(){
@@ -3158,6 +3176,7 @@ function rehydrate(s){
   state.srs = s.srs || {}; state.bookmarks = new Set(s.bookmarks || []); state.servedKeys = new Set(s.servedKeys || []);
   state.day = Object.assign({ lastDay:null, streak:0, todayCount:0, goal:10 }, s.day || {});
   if (typeof state.day.goal !== "number") state.day.goal = 10;
+  state.testDate = /^\d{4}-\d{2}-\d{2}$/.test(s.testDate || "") ? s.testDate : null;
   state.totalAnswered = s.totalAnswered || 0; state.totalCorrect = s.totalCorrect || 0; state.idkCount = s.idkCount || 0;
   state.mode = s.mode || "learn";
   state.focus = new Set(s.focus && s.focus.length ? s.focus : ["Chem/Phys","Bio/Biochem","Psych/Soc","CARS"]);
@@ -3194,6 +3213,27 @@ function starredInFocus(){ return BANK.filter(q => state.bookmarks.has(q.key) &&
 function relTime(due){ const d = due - Date.now(); if (d <= 0) return "now"; const h = d/3600e3; if (h < 1) return Math.max(1,Math.round(d/60e3)) + " min"; if (h < 24) return Math.round(h) + " h"; return Math.round(h/24) + " d"; }
 function todayStr(){ const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
 function dayGap(a,b){ return Math.round((Date.parse(b+"T00:00:00") - Date.parse(a+"T00:00:00")) / 86400000); }
+
+/* ---- Optional test date: countdown + a daily goal that fits the runway ---- */
+// Local calendar days from today to the test. null when unset, negative once past.
+function daysUntilTest(){ return state.testDate ? dayGap(todayStr(), state.testDate) : null; }
+function testCountdownLabel(){
+  const d = daysUntilTest();
+  if (d === null || d < 0) return null;
+  return d === 0 ? "Test day" : d + (d === 1 ? " day" : " days");
+}
+// Where they are in school sets the floor; a real test date pushes it up as it
+// nears. A high schooler with no date sits at 5, a senior two weeks out at 50.
+const GRADE_BASE_GOAL = { "High school":5, "College freshman":10, "College sophomore":10,
+                          "College junior":20, "College senior":20, "Other":10 };
+function suggestedGoal(){
+  const base = GRADE_BASE_GOAL[state.grade] || 10;
+  const d = daysUntilTest();
+  const byDate = (d === null || d < 0) ? 0
+    : d <= 30 ? 50 : d <= 60 ? 30 : d <= 120 ? 20 : d <= 240 ? 10 : 5;
+  const want = Math.max(base, byDate);
+  return GOAL_OPTIONS.reduce((best, g) => Math.abs(g - want) < Math.abs(best - want) ? g : best, GOAL_OPTIONS[0]);
+}
 
 /* ============================================================
    Icons (inline SVG, Lucide-style, no emoji as functional icons)
@@ -3702,6 +3742,9 @@ function bindPathNodes(wrap){
    ============================================================ */
 function greeting(){
   const due = dueInFocusCount();
+  const dLeft = daysUntilTest();
+  if (dLeft === 0) return "Test day. You've got this.";
+  if (dLeft !== null && dLeft > 0 && dLeft <= 14) return dLeft + (dLeft === 1 ? " day" : " days") + " out. Make them count.";
   if (state.day.streak >= 3 && state.day.todayCount === 0) return "Day " + state.day.streak + ", keep the flame alive!";
   if (due > 0) return due + (due === 1 ? " review is" : " reviews are") + " ripe. Clear them while they're fresh.";
   if (state.day.todayCount >= state.day.goal && state.day.goal > 0) return "Daily goal smashed. You're ahead of the curve.";
@@ -3726,6 +3769,7 @@ function renderHome(){
         </div>
         <div class="prog-row">
           <span class="prog-pill" title="Daily goal">${icon("target")} ${today}/${goal} today</span>
+          ${testCountdownLabel() ? `<span class="prog-pill" title="Until your MCAT (${esc(state.testDate)})">${icon("clock")} ${esc(testCountdownLabel())}</span>` : ""}
           ${state.day.streak > 0 ? `<span class="prog-pill" title="Day streak">${icon("flame")} ${state.day.streak}d</span>` : ""}
           ${state.streakFreezes > 0 ? `<span class="prog-pill" title="Streak freezes: a missed day won't break your streak">${icon("snowflake")} ${state.streakFreezes}</span>` : ""}
         </div>
@@ -4389,6 +4433,39 @@ function applyReveal(entry){
 /* ============================================================
    Settings
    ============================================================ */
+function fmtTestDate(iso){
+  const p = iso.split("-").map(Number);
+  return new Date(p[0], p[1]-1, p[2]).toLocaleDateString(undefined, { month:"short", day:"numeric", year:"numeric" });
+}
+function renderTestDate(){
+  const inp = $("#testDateInput"), clr = $("#testDateClear"), st = $("#testDateStatus");
+  if (!inp) return;
+  // Don't let a stored past date fall outside the input's own range.
+  inp.min = (state.testDate && state.testDate < todayStr()) ? state.testDate : todayStr();
+  inp.value = state.testDate || "";
+  clr.style.display = state.testDate ? "" : "none";
+  const d = daysUntilTest();
+  st.innerHTML = !state.testDate
+    ? `<span>No date set. Add one for a countdown on your home screen.</span>`
+    : d < 0 ? `${icon("alert")} <span>${esc(fmtTestDate(state.testDate))} has passed. Clear it or pick a new date.</span>`
+    : d === 0 ? `${icon("clock")} <span>Test day is today. Good luck!</span>`
+    : `${icon("clock")} <span>${d} ${d === 1 ? "day" : "days"} to go &middot; ${esc(fmtTestDate(state.testDate))}</span>`;
+}
+function renderGoalSuggestion(){
+  const el = $("#goalSuggest");
+  if (!el) return;
+  const sug = suggestedGoal(), cur = state.day.goal;
+  if (sug === cur){
+    el.innerHTML = state.testDate ? `${icon("check")} <span>That matches the pace we'd suggest for your date.</span>` : "";
+    return;
+  }
+  const why = daysUntilTest() > 0 ? "for your test date" : "for where you are in school";
+  el.innerHTML = `<span>We'd suggest ${sug}/day ${why}.</span> <button type="button" class="btn link" id="goalApply">Use ${sug}</button>`;
+  $("#goalApply").addEventListener("click", () => {
+    state.day.goal = sug; renderSettings(); updateTopbar(); saveState();
+    toast("Daily goal set to " + sug + " questions.");
+  });
+}
 function renderSettings(){
   const t = $("#persistToggle"); t.classList.toggle("on", state.persist && STORAGE_OK); t.disabled = !STORAGE_OK;
   t.setAttribute("role", "switch"); t.setAttribute("aria-checked", String(state.persist && STORAGE_OK));
@@ -4396,6 +4473,7 @@ function renderSettings(){
   st.setAttribute("role", "switch"); st.setAttribute("aria-checked", String(state.sound));
   $("#storageStatus").innerHTML = !STORAGE_OK ? `${icon("alert")} <span>This browser blocks saving (private mode, or opening the file directly), so progress can't persist.</span>`
     : state.persist ? `${icon("check")} <span>Saving is on.</span>` : `<span>Saving is off.</span>`;
+  renderTestDate();
   const gs = $("#goalSeg"); gs.innerHTML = "";
   GOAL_OPTIONS.forEach(g => {
     const b = document.createElement("button"); b.textContent = g;
@@ -4403,6 +4481,7 @@ function renderSettings(){
     b.addEventListener("click", () => { state.day.goal = g; renderSettings(); updateTopbar(); saveState(); });
     gs.appendChild(b);
   });
+  renderGoalSuggestion();
   const ps = $("#proStatus"), pb = $("#proBtn");
   if (ps){ ps.innerHTML = hasPro() ? `${icon("check")} <span>RampUp Pro is active.</span>`
     : ent.exams.size ? `${icon("check")} <span>${ent.exams.size} exam${ent.exams.size===1?"":"s"} unlocked.</span>`
@@ -5171,6 +5250,14 @@ $("#tabSet").addEventListener("click", tabTo(showSettings));
 $("#persistToggle").addEventListener("click", togglePersist);
 $("#soundToggle").addEventListener("click", () => { state.sound = !state.sound; renderSettings(); saveState(); if (state.sound) SFX.tick(); });
 $("#editCoursesBtn").addEventListener("click", editCourses);
+$("#testDateInput").addEventListener("change", e => {
+  const v = e.target.value;
+  state.testDate = /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null;
+  renderSettings(); updateTopbar(); saveState();
+});
+$("#testDateClear").addEventListener("click", () => {
+  state.testDate = null; renderSettings(); updateTopbar(); saveState();
+});
 $("#resetBtn").addEventListener("click", resetAll);
 
 /* ============================================================
