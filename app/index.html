@@ -2843,7 +2843,7 @@ const DIFF_LABEL = { easy:"Easy", medium:"Medium", hard:"Hard", mcat:"MCAT" };
 const diffLabel = d => DIFF_LABEL[d] || d;
 const CLIMB_STREAK = { easy:2, medium:2, hard:3 };           // correct-in-a-row to climb from each tier (mcat = ceiling)
 const LETTERS = ["A","B","C","D"];
-const GOAL_OPTIONS = [5,10,15,20];
+const GOAL_OPTIONS = [5,10,20,30,50];
 // Spaced repetition (Leitner). Box 0..5 -> next-due offset; box 6 = graduated (leaves the pile).
 const SRS_INTERVALS = [0, 4*3600e3, 24*3600e3, 3*24*3600e3, 7*24*3600e3, 16*24*3600e3];
 const SRS_GRADUATE = 6;
@@ -3721,7 +3721,7 @@ function renderHome(){
         <div class="prog-row">
           <div class="lvlbar" title="${lvl.into} / ${lvl.need} XP to level ${lvl.level+1}">
             <div class="track"><div class="fill" style="width:${Math.min(100,(lvl.into/lvl.need)*100)}%"></div></div>
-            <span style="font-size:12px;font-weight:800;color:var(--muted)">${lvl.into}/${lvl.need}</span>
+            <span style="font-size:12px;font-weight:800;color:var(--muted);white-space:nowrap">${lvl.into}/${lvl.need} XP</span>
           </div>
         </div>
         <div class="prog-row">
