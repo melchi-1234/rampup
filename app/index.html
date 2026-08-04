@@ -804,6 +804,49 @@
   .titem .arow .lab{flex:0 0 84px; color:var(--muted); font-weight:700}
   .titem .yours.bad{color:var(--incorrect); font-weight:700} .titem .theirs{color:var(--correct); font-weight:700}
   .titem .exp{color:var(--text); margin-top:8px}
+
+/* EXPLAIN_CSS_START */
+/* ===== animated explainers ===== */
+details.ex{margin-top:14px; border:1px solid var(--border); border-radius:var(--r-sm); background:var(--surface); overflow:hidden}
+details.ex > summary{display:flex; align-items:center; gap:9px; cursor:pointer; padding:13px 15px; font-weight:750; font-size:14px; color:var(--accent); list-style:none}
+details.ex > summary::-webkit-details-marker{display:none}
+details.ex > summary .chev{margin-left:auto; transition:transform var(--dur) var(--ease)}
+details.ex[open] > summary .chev{transform:rotate(180deg)}
+details.ex[open] > summary{border-bottom:1px solid var(--border)}
+.ex-badge{font-size:10.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; padding:3px 7px; border-radius:var(--pill); background:var(--accent-soft); color:var(--accent)}
+.ex-body{padding:12px}
+.ex-load{color:var(--muted); font-size:13.5px; padding:10px 3px}
+.ex-err{color:var(--muted); font-size:13.5px; padding:10px 3px; line-height:1.6}
+
+/* video */
+video.ex-v{width:100%; display:block; border-radius:var(--r-sm); background:#14111D; aspect-ratio:16/9}
+
+/* vector stage */
+.ex-stage{position:relative; width:100%; aspect-ratio:16/9; background:var(--surface-2); border-radius:var(--r-sm); overflow:hidden}
+.ex-stage svg{width:100%; height:100%; display:block}
+/* elements that appear on a given step; the runtime flips opacity by data-from */
+.ex-stage svg [data-from]{opacity:0; transition:opacity .45s ease}
+.ex-cap{margin-top:9px; min-height:42px; display:flex; align-items:center; justify-content:center; text-align:center;
+  padding:9px 12px; background:var(--surface-2); border-radius:var(--r-sm); font-size:14px; font-weight:650; color:var(--text); line-height:1.45}
+.ex-ctl{display:flex; align-items:center; gap:10px; margin-top:9px}
+.ex-ctl button{border:1.5px solid var(--border-strong); background:var(--card); color:var(--text); border-radius:var(--pill);
+  min-height:38px; min-width:38px; padding:0 13px; font:inherit; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px}
+.ex-ctl button:hover{border-color:var(--accent); color:var(--accent)}
+.ex-track{flex:1; height:6px; border-radius:var(--pill); background:var(--surface-2); overflow:hidden; cursor:pointer}
+.ex-fill{display:block; height:100%; width:0; border-radius:var(--pill); background:var(--accent)}
+.ex-time{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; min-width:44px; text-align:right}
+
+/* transcript */
+details.ex-tr{margin-top:10px; border-top:1px dashed var(--border); padding-top:8px}
+details.ex-tr > summary{cursor:pointer; font-size:12.5px; font-weight:700; color:var(--muted); list-style:none; padding:4px 2px}
+details.ex-tr > summary::-webkit-details-marker{display:none}
+details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6px 2px 2px}
+
+@media (prefers-reduced-motion: reduce){
+  .ex-stage svg *{animation:none !important; transition:none !important}
+}
+
+/* EXPLAIN_CSS_END */
 </style>
 <script>
   /* Resolve theme (System/Light/Dark) before first paint to avoid a flash. */
@@ -4502,7 +4545,7 @@ function applyReveal(entry){
   const rev = card.querySelector(".reveal"); rev.hidden = false;
   rev.innerHTML = `
     <div class="verdict ${verdict.cls}">${icon(verdict.ic)} ${verdict.txt}</div>
-    ${breakdownHtml}
+    ${RU_EX.block(q.key)}${breakdownHtml}
     <p class="exp">${esc(q.explanation)}</p>
     <ul class="notes">${q.choices.map((c, i) => { const cls = i === q.answer ? "right" : (i === chosen && !correct ? "chosen-wrong" : ""); return `<li class="${cls}"><span class="nb">${LETTERS[i]}</span><span>${esc(q.notes[i] || "")}</span></li>`; }).join("")}</ul>
     ${changeNote}${srsnote}${flag}`;
@@ -4999,7 +5042,7 @@ function renderTestResults(T, R){
       <div class="body">
         <div class="arow"><span class="lab">Your answer</span><span class="yours ${ok?"":"bad"}">${esc(yourTxt)}</span></div>
         ${ok ? "" : `<div class="arow"><span class="lab">Correct</span><span class="theirs">${LETTERS[q.answer]}. ${esc(q.choices[q.answer])}</span></div>`}
-        <p class="exp" style="margin-top:8px">${esc(q.explanation)}</p>${bd}
+        <p class="exp" style="margin-top:8px">${esc(q.explanation)}</p>${RU_EX.block(q.key)}${bd}
       </div></details>`;
   });
   wrap.innerHTML = `<div class="card tres">
@@ -5475,6 +5518,242 @@ else { $("#onboarding").hidden = false; goToStep(0); }
 honorPurchaseReturn().then(g => { if (g){ try { afterUnlock(g); } catch(e){} } });
 // iOS: silently restore any App Store purchases this account already owns.
 if (isNative) syncNativeEntitlements();
+
+/* EXPLAIN_JS_START */
+const EXPLAINERS = {"k1w6g9zi":{"t":"m","d":41.23,"a":1},"k1x05nzu":{"t":"m","d":40.43,"a":1},"kldb514":{"t":"m","d":40.43,"a":1},"knr7i29":{"t":"m","d":36.3,"a":1},"kw4cqdt":{"t":"m","d":35.43,"a":1},"kxzexpn":{"t":"m","d":40.25,"a":1},"kueoin8":{"t":"m","d":44.49,"a":1},"k11d0zv5":{"t":"v","d":44.84,"a":1,"durs":[6.03,6.59,5.07,5.47,6.03,8.83,6.82],"tr":"Poverty and poor health travel together. The hard question is which one causes which. One story says being sick makes you poor. Illness costs you work and income, so you drift downward. The other says being poor makes you sick, through the conditions poverty brings. Correlation alone cannot separate them. You need to know who was sick first. So look at the design. At the start, both income groups had similar rates of chronic illness. Ten years later the low income group is forty percent sicker. Health did not come first. Income did. That rules out drift and supports social causation. The study design is what settles it."},"k12091r3":{"t":"v","d":41.16,"a":1,"durs":[4.43,6.11,3.87,4.99,6.51,3.23,12.02],"tr":"One bromobutane is primary. The carbon is out in the open. So backside attack is easy, and a primary carbocation is far too unstable to form. That rules out S N one and leaves S N two. S N two is bimolecular. One step, and the nucleophile is in it. So the rate law contains both. Rate equals k, substrate, nucleophile. Double the ethoxide and the rate doubles. Compare that with the tert butyl compound, which goes S N one. Its slow step is ionization alone, so nucleophile concentration does nothing."},"k12s3zlv":{"t":"v","d":43.24,"a":1,"durs":[9.15,3.63,4.11,6.91,6.75,5.07,7.62],"tr":"A linear pathway. Precursor, then X, then Y, then threonine, each step its own enzyme. Break one enzyme and everything downstream of it stops. Two clues. First, compound X piles up. Something is still making X, so the steps before X are fine. And nothing is consuming it. Second clue: feeding it Y rescues the cell, and so does threonine. But feeding X does not. Feeding X does nothing because the cell already has X and still cannot use it. So the block is between X and Y, which is enzyme two. The rescue point is always just after the break."},"k14jrf8f":{"t":"v","d":45.16,"a":1,"durs":[6.51,5.39,8.59,6.59,4.99,6.03,7.06],"tr":"A tertiary carbon is crowded. Nothing attacks it directly, so rule out S N two. Tert butoxide is a strong base, but a poor nucleophile toward hindered carbons. Strong base at high concentration means no waiting for a carbocation. So not S N one or E one. It is E two. The base pulls a proton as the bromide leaves, one step. Now which alkene. Normally the more substituted one, Zaitsev. But this base is bulky. It cannot reach the crowded proton, so it takes the one on the end. That gives the less substituted alkene, the Hofmann product. Bulky base is the signal."},"k1aj2mjz":{"t":"v","d":39.4,"a":1,"durs":[4.27,8.51,4.35,5.55,5.07,5.95,5.7],"tr":"Two groups of teenagers, all with a similar minor first offence. One group is formally processed and officially labeled delinquent. The other is handled quietly, with no label. Three years later the labeled group reoffends far more. Now, what was held constant. The offence was similar and the peer groups were comparable. So it is not that they were worse to begin with, and not that they fell in with worse friends. The one thing that differed is the label. It changed how they were treated and how they saw themselves. Labelling theory, and that second round of offending is secondary deviance."},"k1bdyyfl":{"t":"v","d":42.68,"a":1,"durs":[4.35,7.31,6.27,5.79,4.67,5.39,8.9],"tr":"Two separate findings, and the question is what they both point at. First: the drugs that best reduce hallucinations and delusions are the ones that block dopamine D two receptors. And the harder a drug blocks them, the better it works. The effect tracks the blocking. Second: drugs that boost dopamine can produce those same symptoms in people who did not have them. So block it and symptoms fall. Boost it and symptoms appear. Two independent arrows, pointing the same way. That convergence is the evidence. Excess dopamine activity, driving the positive symptoms. Not GABA, not serotonin, not acetylcholine."},"k1cn0d58":{"t":"v","d":40.44,"a":1,"durs":[5.87,8.03,3.63,3.79,7.31,2.75,9.06],"tr":"A primary alcohol, C three H eight O, so propan one ol. Oxidize a primary alcohol and there are two possible stopping points. Aldehyde, then carboxylic acid. P C C is the mild one. It stops at the aldehyde. The data agrees. Seventeen twenty five is a carbonyl. And a peak at nine point seven, integrating for one hydrogen. That is the aldehyde proton, and nothing else appears there. So compound Y is propanal. Chromic acid would have pushed it all the way to propanoic acid, with a broad O H band. The reagent chooses the stopping point."},"k1edpgjv":{"t":"v","d":44.44,"a":1,"durs":[5.87,5.47,7.79,4.51,8.43,5.95,6.42],"tr":"To weaken an argument you must know what it claims. Find that before reading any answer. The author says a map is not a record, it is an argument about what deserves to be seen. And underneath that sits the claim everything else rests on. Choosing is unavoidable. No map can stop choosing. Knock that out and the argument falls. Everything else is decoration. Now read the choices against it. Two mapmakers differing, and governments commissioning maps, both show selection happening. Readers trusting detailed maps is the author's own point, that completeness hides its selections. Only satellite mapping with no human choosing attacks that claim directly. That is A."},"k1gegf8b":{"t":"v","d":40.36,"a":1,"durs":[4.75,6.11,4.27,4.59,5.79,4.83,10.02],"tr":"At steady state a fully charged capacitor passes no current at all. So treat its branch as an open circuit. It is not in the current path. That leaves a simple series loop, two ohms plus four ohms. Twelve volts over six ohms. Two amps. The capacitor sits across the four ohm resistor, so it reads that resistor's voltage. Two amps times four ohms is eight volts. Not the full twelve. Then half C V squared. Half, times one hundred microfarads, times sixty four. Three point two millijoules."},"k1gh7b0j":{"t":"v","d":37.8,"a":1,"durs":[5.23,2.91,6.03,5.31,5.23,4.67,8.42],"tr":"The ribosome reads the message three letters at a time, from a fixed starting point. Insert one single nucleotide near the start. Every codon after that point is now cut in a different place. The frame has shifted. So the amino acids downstream are not slightly wrong. They are entirely different. And in a scrambled frame, a stop codon usually turns up early by pure chance. Translation halts there, so the protein comes out short and nonfunctional. That is a frameshift. Not silent, not missense. Those change one codon. This changes all of them."},"k1iradkh":{"t":"v","d":44.76,"a":1,"durs":[4.27,6.27,4.99,4.43,6.59,8.67,9.54],"tr":"Both electrodes are silver. Same metal, same half reaction. So the standard potential is exactly zero. Identical electrodes cannot have a difference. But there is still a voltage, because the two sides have different silver concentrations. A concentration cell runs in whichever direction evens the two sides out. To even them out, the concentrated side must lose silver ions. So reduction happens there. Now the size. Q is the dilute over the concentrated. Zero point zero one over one, so log Q is negative two. n is one here, so the factor is the full zero point zero five nine two. Times two is zero point one one eight volts."},"k1j0ormc":{"t":"v","d":35.24,"a":1,"durs":[2.19,1.71,5.63,4.27,8.19,5.23,8.02],"tr":"Sally puts her marble in the basket. Then Sally leaves the room. While she is gone, Anne moves the marble into the box. Sally does not see this. Sally comes back. The child is asked where Sally will look for it. Most three year olds say the box. They report where the marble actually is, because they cannot separate what they know from what Sally knows. Most five year olds say the basket. They can hold the idea that Sally believes something false. That is theory of mind. Not conservation, not object permanence, and it arrives around ages four to five."},"k1j4nhti":{"t":"v","d":43.4,"a":1,"durs":[3.87,8.43,5.31,4.51,8.27,4.35,8.66],"tr":"The rate law comes from the slow step. Only the slow step. The slow step is N two O two plus O two. So rate equals k two, N two O two, O two. But N two O two is an intermediate, made and consumed inside the mechanism. An intermediate can never appear in a rate law. You cannot measure it. So use the fast equilibrium to replace it. K equals N two O two over N O squared. Rearranged, N two O two equals K times N O squared. Substitute back and rate equals k, N O squared, O two. Second order in N O, first in O two."},"k1j9ubkl":{"t":"v","d":40.28,"a":1,"durs":[3.79,7.39,3.47,10.51,3.07,4.35,7.7],"tr":"Meat powder makes a dog salivate with no training at all. Anything that works without training is the unconditioned stimulus. The drooling it causes is the unconditioned response. The tone means nothing at first. It is neutral. Pair the tone with the meat enough times and the tone alone causes salivation. Now it is the conditioned stimulus, and that salivation the conditioned response. Then they ring the tone over and over with no meat. The salivation fades and stops. That fading is extinction. Meat powder is the unconditioned stimulus, the fading is extinction. The trap is calling the meat a response."},"k1jvw9rh":{"t":"v","d":38.92,"a":1,"durs":[3.71,2.99,6.03,4.43,7.79,6.91,7.06],"tr":"E standard assumes every concentration is one molar. Copper two plus is a reactant in this cell. Q is products over reactants. One point zero over zero point one zero is ten. Q above one means a reactant is thin. Voltage goes down. Nernst: E equals E standard, minus zero point zero five nine two over n, times log Q. n is two, so the factor is zero point zero two nine six. Log ten is one. So it drops about zero point zero three volts. Not zero six: n divides, it does not double."},"k1jy8hf":{"t":"v","d":40.12,"a":1,"durs":[5.95,5.79,5.31,4.03,6.43,5.55,7.06],"tr":"Two groups, same city, same highway, and surveys show equally strong grievances. That equality is the whole design. It removes anger as an explanation. One group has experienced organizers, donors, office space and civic ties. The other has committed volunteers and almost nothing else. The resourced group succeeds. So the difference cannot be how strongly anyone felt. Relative deprivation would predict success from grievance. But grievance was held equal. Movements succeed on money, leadership and networks. Resource mobilisation theory."},"k1kchybv":{"t":"v","d":40.84,"a":1,"durs":[4.03,7.63,5.23,7.07,5.63,4.83,6.42],"tr":"Floating means the buoyant force exactly balances the weight. Weight is object density times full volume. Buoyancy is fluid density times submerged volume. Cancel g and rearrange, and everything collapses to one ratio. The fraction submerged equals object density over fluid density. Nothing else appears. In water: six hundred over one thousand. Sixty percent submerged. In oil: six hundred over nine hundred. Sixty seven percent. Thinner fluid, so it sits deeper. Viscosity never enters it, only density."},"k1kw175w":{"t":"v","d":44.84,"a":1,"durs":[7.63,4.03,6.51,6.91,6.03,6.99,6.74],"tr":"Two opposing enzymes. P F K one runs glycolysis forward, F B Pase one runs it back. They act on the same pair of molecules, in opposite directions. High A M P means low energy. Normally it turns one on and the other off. One signal, two opposite responses. That is what keeps only one direction running. This mutant F B Pase one ignores A M P. So it stays on. Now both run at once. Forward costs energy, backward gives less back. Net result: wasted energy and heat, no progress either way. A futile cycle."},"k1lvrl7o":{"t":"v","d":42.76,"a":1,"durs":[5.31,6.11,6.11,5.79,7.07,7.23,5.14],"tr":"A functions question is about the passage's shape. Track what each part does. Part one presents a familiar view. Authenticity means stripping away pretence to reach a true self. Part two raises a problem. If every layer is contingent, the stripping never reaches bottom. Part three offers a different account. Authenticity as owning your commitments openly instead. So: view, problem, alternative. Notice it never declares the first view false. That rules out the strong options. It does not prove no self exists, and it does not defend the traditional view. Question one conception, offer an alternative. Choice one."},"k1msxvsk":{"t":"v","d":44.84,"a":1,"durs":[4.67,4.11,9.95,6.35,4.11,7.87,7.78],"tr":"A galvanic cell is two half cells joined by a wire and a salt bridge. To find the anode, compare the two standard reduction potentials. Copper is positive zero point three four. Zinc is negative zero point seven six. The more negative one holds its electrons least tightly. Oxidation always happens at the anode. So zinc is the anode, and copper is the cathode. Electrons leave the zinc and travel through the wire to the copper. Cell potential is cathode minus anode. That is zero point three four, minus negative zero point seven six. Which is positive one point one zero volts. Subtracting the negative is what saves you from zero point four two."},"k1nomaen":{"t":"v","d":44.92,"a":1,"durs":[6.67,6.51,4.11,5.39,6.91,5.87,9.46],"tr":"The author gives a definition. Your job is to hold each option against it, not to judge on vibes. He says the frame argues that what is inside deserves sustained attention. That is its normal job. Abuse is when it lends borrowed gravity to something that has not earned it. Two matters here. The work must be undeserving, and the reverence must come from the setting. Now test them. A masterwork losing force without a frame shows the power, not the abuse. Ordinary cloth in a gallery is his own example of the power, and he does not call it abuse. A shallow work drawing crowds because of an imposing setting. Undeserving, and it is the setting doing it. Three."},"k1nrnply":{"t":"v","d":42.68,"a":1,"durs":[5.95,4.19,3.79,8.67,8.11,4.03,7.94],"tr":"Two resistors in parallel, six ohms and three ohms, across twelve volts. Parallel resistance is not the sum. Add the reciprocals. One over six plus one over three is one half. So R total is two ohms. Notice it is smaller than either resistor. That is always true in parallel. Now power. Every resistor sees the full twelve volts, so use P equals V squared over R. Twelve squared is one hundred forty four. Divided by two. Seventy two watts. The trap is adding the resistances to get nine ohms, which would give sixteen."},"k1qxpotd":{"t":"v","d":40.12,"a":1,"durs":[6.43,8.83,3.23,4.83,4.43,4.67,7.7],"tr":"This molecule has two different proton environments. One hydrogen on the left carbon, two on the right. The n plus one rule counts the protons on the neighboring carbon. Not the ones on its own carbon. That is the trap. The lone hydrogen's neighbor carries two protons. So n is two, n plus one is three, and it appears as a triplet. The two hydrogens on the right have a neighbor carrying only one proton. So n is one, n plus one is two, and they appear as a doublet. Triplet for the single hydrogen, doublet for the pair. Count the neighbors, never your own carbon."},"k1r1vts5":{"t":"v","d":44.36,"a":1,"durs":[5.31,6.03,8.51,6.83,3.87,7.07,6.74],"tr":"Both compounds start dissolved in ether. Both are neutral, so both are happy there. Shake with bicarbonate. The question is which one it can deprotonate. The benchmark is carbonic acid, p k a six point three five. Bicarbonate can take a proton from anything below that. The benzoic acid is four point four. Below the benchmark, so it gets deprotonated. Charged now, so it leaves the ether and moves into the water. The phenol is ten point two. Far above the benchmark, so bicarbonate cannot touch it. It stays neutral and stays in the ether. Only the carboxylic acid moves."},"k1rmh5gq":{"t":"v","d":40.04,"a":1,"durs":[5.95,4.51,6.11,5.47,6.35,3.79,7.86],"tr":"Two compounds in ether. Aniline is a weak base. Naphthalene is neutral. Shake with hydrochloric acid. Acid protonates a base. Aniline's nitrogen takes the proton and becomes anilinium, which carries a positive charge. Charged means water soluble. It leaves the ether and drops into the aqueous layer. Naphthalene has nothing to protonate, so it stays in the ether. That is the separation. Now to get the amine back, you have to reverse the step that moved it. Add base. Sodium hydroxide gives back neutral aniline. More acid would keep it stuck."},"k1s0rcf2":{"t":"v","d":44.36,"a":1,"durs":[6.03,7.55,3.71,7.07,5.71,6.99,7.3],"tr":"In isotonic saline the cell keeps its shape. Sodium and chloride cannot cross the membrane. Solution Y has three hundred millimolar urea. That is a lot of solute, so its osmolarity is high. But urea crosses this membrane freely and rapidly. So it equilibrates. Same concentration inside as outside, which means it pulls water in neither direction. Tonicity only counts solutes that cannot cross. Urea contributes nothing. That leaves the cell's own trapped proteins and ions as the only effective solutes, so water floods in. And the cell bursts. High osmolarity, and still hypotonic. Those are two different things."},"k1sjknib":{"t":"v","d":35.8,"a":1,"durs":[5.07,6.59,2.19,5.79,5.15,5.55,5.46],"tr":"Health tracks income. The question is what shape that relationship has. One possibility is a threshold. Poverty hurts you, and above the line everyone is about the same. That is not what they found. Every step up the ladder came with better health. Every single step. Including at the top. High earners were healthier than the merely comfortable. So there is no line where it stops mattering. It is continuous all the way up. That is a social gradient in health, and it survived controlling for medical care."},"k1u4ay63":{"t":"v","d":43.64,"a":1,"durs":[5.79,6.51,5.15,7.55,6.67,5.79,6.18],"tr":"Mandelic acid, p k a three point four, in bicarbonate at p H eight. p H well above the p k a, so it is deprotonated and water soluble. So it moves into the aqueous layer. That part is ordinary extraction. Now the real question. It is a racemic mixture, so does one enantiomer move and not the other? No. Enantiomers have identical p k a values. Mirror images, identical energies. And bicarbonate is achiral. It has no handedness, so it cannot tell left from right. Both enantiomers move together. To separate them you need something chiral."},"k1vysj0p":{"t":"v","d":36.84,"a":1,"durs":[6.19,4.91,3.31,2.91,5.95,6.19,7.38],"tr":"Taste paired with nausea. One trial, hours apart, and the rats avoid it for life. Now a light and a sound paired with the same nausea. Barely learned at all. Flip it. Taste paired with shock also fails. But light and sound paired with shock works fine. So it is not about timing or repetition. Some pairings are simply learned more easily than others. An animal that links a flavour to feeling sick avoids the poison. That is worth being born knowing. That is biological preparedness, the Garcia effect. Evolution pre-wired which pairs are easy."},"k1wiqp2h":{"t":"v","d":40.04,"a":1,"durs":[5.95,5.23,5.15,6.19,5.87,5.71,5.94],"tr":"Simple task, well practiced. As arousal rises, performance just keeps improving. Complex task, unfamiliar. It peaks in the middle, then falls off. So arousal is not simply good or simply bad. It depends on the task. That inverted U, and the fact that its peak moves with difficulty, is the Yerkes Dodson law. For a hard task the best arousal is low. For an easy one it is high. The distractors do not describe a curve at all. Drive reduction is about returning to balance. Whenever you see performance peaking at a middle level of arousal, that is Yerkes Dodson."},"k1wl78zt":{"t":"v","d":43.88,"a":1,"durs":[5.31,7.63,5.95,6.03,6.99,4.99,6.98],"tr":"Replication makes two sister chromatids that are, at that moment, identical copies. Then prophase one. Crossing over happens, and it happens between NON sister chromatids of the two homologues. So one sister of a chromosome trades a segment with the homologue. Its partner does not. If that swap covers a heterozygous gene, one sister now carries a different allele from the other. The sisters are no longer identical. And that happened in meiosis one, long before they separate. They do not separate until anaphase two, which is why the student's claim fails. This is exactly why a crossover between a gene and its centromere matters. It makes the sisters differ."},"k1wz6t44":{"t":"v","d":42.92,"a":1,"durs":[4.91,6.67,6.51,5.39,7.23,6.67,5.54],"tr":"Four days without food. The liver is making glucose from scratch. To count, a carbon source has to enter at or above pyruvate and survive the trip. Fatty acids become acetyl Co A, and that step throws away carbon as C O two. That decarboxylation is irreversible. There is no way back to pyruvate. So palmitate and acetyl Co A are both out. Even-chain fat cannot become net glucose. Leucine is out too. Purely ketogenic, so it also ends up only as acetyl Co A. Glycerol works. The fat's backbone, straight in, nothing lost."},"k31nazy":{"t":"v","d":39.32,"a":1,"durs":[2.67,7.39,6.51,6.99,4.43,5.79,5.54],"tr":"Start with a folded, working protein. Urea unfolds it, and the reducing agent breaks its disulfide bonds. It goes limp and stops working. Crucially, the peptide bonds are untouched. The sequence of amino acids is still intact. Now remove both agents, slowly, and add nothing else. No template, no machinery. It refolds by itself into the same shape and gets its activity back. Nothing was there to tell it how. The only information present was the sequence. So the primary sequence contains everything needed to specify the folded structure."},"kbw8acc":{"t":"v","d":43.16,"a":1,"durs":[2.75,4.91,9.15,7.31,7.63,4.51,6.9],"tr":"Go group by group. One rule. Above the pKa, the proton is gone. Below it, the proton stays. Alpha carboxyl at three point one, aspartate at three point nine. Both far below the pH, both negative one. Histidine at six point zero is also below the pH. Mostly deprotonated, essentially neutral. The alpha amino at eight point zero is above the pH, so it keeps its proton. Positive one. Lysine at ten point five stays protonated too. Another positive one. Two negatives, two positives, histidine neutral. Do not assume histidine is charged."},"kdajmkn":{"t":"v","d":40.68,"a":1,"durs":[3.23,4.99,6.75,6.19,6.19,5.47,7.86],"tr":"Three clues, and each one eliminates something. First, uptake rises then flattens out. It saturates. Saturation means a limited number of proteins, all busy. Simple diffusion never saturates. Second, a similar sugar competes and slows it down. So the binding site is specific. Third, cyanide does nothing. Block A T P and the transport carries on. So it is not active transport, primary or secondary. Those need energy. A protein, specific, saturable, no energy, down the gradient. Facilitated diffusion."},"kdlefyu":{"t":"v","d":41.4,"a":1,"durs":[5.63,6.11,4.03,5.63,6.11,4.91,8.98],"tr":"Two identical glasses, same amount of juice. The child agrees they match. Pour one into a tall narrow glass while the child watches. Nothing is added, nothing is lost. The child now says the tall one has more, because it is higher. That is a failure of conservation. Quantity stays the same when only appearance changes. The child also cannot describe how the scene looks from someone else's seat. That is egocentrism. Both are hallmarks of the preoperational stage, roughly ages two to seven. Preoperational, and specifically a lack of conservation. Object permanence is much earlier and is not what failed here."},"kdulooi":{"t":"v","d":43.0,"a":1,"durs":[5.71,7.15,4.19,3.63,8.91,5.39,8.02],"tr":"Rank by the atom directly attached to the stereocenter. Nothing else yet. Oxygen is eight, the highest here, so the hydroxyl is number one. Hydrogen is always last. Two groups both attach through carbon. Tied so far. Break the tie by listing what each of those carbons holds. The C H two Br carbon holds bromine, hydrogen, hydrogen. The tert butyl carbon holds carbon, carbon, carbon. Compare the highest in each. Bromine thirty five beats carbon six. So it outranks tert butyl, even though tert butyl is bulkier. Only atomic number matters."},"ke9xvns":{"t":"v","d":44.52,"a":1,"durs":[8.43,4.59,5.63,6.91,5.23,5.79,7.94],"tr":"C three H six O. Count degrees of unsaturation and you get exactly one. So there is one ring or one double bond somewhere. Just one. The infrared shows a strong band at seventeen fifteen. That is a carbonyl. That carbonyl uses up the one degree of unsaturation. Nothing else can be unsaturated. And there is no broad band up in the O H region, so it is not an alcohol. Now the N M R. One single peak, integrating for all six hydrogens. All six identical, with no neighbors to split them. Two methyls either side of a carbonyl. Acetone."},"kghhntw":{"t":"v","d":41.48,"a":1,"durs":[4.75,5.95,5.15,5.07,4.91,6.35,9.3],"tr":"Both solutions are three hundred milliosmolar. Identical on paper. But osmolarity counts every particle. Tonicity counts only the ones that cannot cross. Sucrose cannot cross the membrane, so all three hundred of it stays outside and counts. It balances the cell's own solutes, so nothing moves. The cell is fine. Urea crosses freely, so it flows in until it is equal on both sides. Equal on both sides means it pulls water in neither direction. Effectively it counts as zero. So the cell's own solutes are unopposed, water floods in, and it bursts. Same osmolarity, opposite outcomes."},"ki31peh":{"t":"v","d":41.64,"a":1,"durs":[7.87,7.71,5.55,4.19,2.59,5.87,7.86],"tr":"P F K one has two separate sites. A catalytic site that does the chemistry, and a regulatory site that listens. High A T P binds the regulatory site and slows the enzyme down. Plenty of energy, so stop making more. In this mutant only the regulatory site is broken. The catalytic site is untouched. So the enzyme still works normally. Same V max, same K m. It just cannot hear the signal to stop. So when A T P rises sharply, glycolysis does not slow down the way it should. A broken brake, not a broken engine. This is the committed step, so it is where the brake belongs."},"kjmvt80":{"t":"v","d":44.28,"a":1,"durs":[3.23,6.99,5.71,7.15,6.51,7.07,7.62],"tr":"Two numbers tell you which kind of inhibitor this is. V max drops from one hundred to forty. The enzyme's ceiling has fallen. K m stays at zero point five. Substrate binds exactly as well as before. A competitive inhibitor sits in the active site, so it raises K m. K m did not move. There is also a direct test in the data. Piling on substrate does not restore V max. If they were competing for one site, enough substrate would always win. It does not. So drug D binds somewhere else entirely. Noncompetitive, and substrate cannot outrun it."},"kjumqxm":{"t":"v","d":43.96,"a":1,"durs":[6.75,3.79,7.23,6.43,5.07,7.15,7.54],"tr":"A muscle cell goes from rest to hard contraction. Four things change at once. Energy falls, citrate falls, and A M P rises. High energy inhibits P F K one. So the falling level lifts that brake. Citrate inhibits it too, signalling downstream is full. A second brake lifted. And A M P directly activates it. The accelerator goes down. Two brakes off and the accelerator on. Every signal points the same way, which is why flux surges. Committed, because glucose six phosphate has other fates. Past this step it does not."},"kjz0can":{"t":"v","d":36.6,"a":1,"durs":[5.31,4.43,3.07,4.91,5.31,6.27,7.3],"tr":"The passage hands you a chain of three claims. Follow it and something breaks. One: if an act is genuinely good, it is what we ought to do. Two: what we ought to do is our duty. So a heroic act, which is genuinely good, is therefore a duty. But three: the heroic act was admirable precisely because nobody could demand it. Duty is exactly what can be demanded. So the theory erases the thing that made the act admirable. That is the difficulty, and that is choice three. The others describe things the passage never claims."},"kkyp6p2":{"t":"v","d":43.24,"a":1,"durs":[6.91,5.39,5.07,7.23,3.95,5.87,8.82],"tr":"Colorless N two O four turns into brown N O two. The forward reaction is endothermic. Endothermic forward means heat behaves like a reactant. Treat it as one on the left. Now cool the tube. You are removing heat, so you are removing a reactant. Le Chatelier: the system shifts away from the side you removed from. It shifts back toward N two O four. Less N O two means less brown. The gas goes paler. And here is the part people miss. Temperature is the one change that alters K itself. Concentration or pressure shifts a system within a fixed K. Cooling an endothermic reaction lowers K c."},"kkz2rje":{"t":"v","d":41.24,"a":1,"durs":[6.75,5.71,4.43,6.27,5.31,5.15,7.62],"tr":"The question says primarily because. So there is one reason in the passage and you have to land on it. What does this author value in a ruin? Not the decay itself. The gap. His line: the broken statue invites us to supply what it was. And in supplying it, the beholder becomes, briefly, a maker. The viewer gets to participate. Restoration fills the gap in. He says it dismisses the beholder from the work. So the loss is the participation, not the decay. That is choice three. One is close and it is the trap. It describes what restoration does, but not why he calls it a loss."},"knx6ju1":{"t":"v","d":42.44,"a":1,"durs":[6.27,4.43,5.95,6.03,4.35,7.47,7.94],"tr":"An implies question asks what follows from a specific phrase. Take it literally first. A rehearsal is practice, and practice points at a later performance. So the metaphor is not about the past at all. It says nostalgia trains you for something ahead. The passage already tells you what for. Learning to notice the worth of an ordinary day before it is gone. Follow that forward and you get someone who values ordinary present moments more. Now check the others. Two says nostalgia is more reliable than memory, which the phrase never touches. D says ordinary days are objectively more valuable. He says we fail to notice, not that they rank higher."},"kp6y084":{"t":"v","d":39.72,"a":1,"durs":[7.15,6.03,4.67,4.27,6.91,4.75,5.94],"tr":"Pre messenger R N A has exons and introns. The spliceosome cuts the introns out in the nucleus. It finds each intron by its boundaries. The three prime end is a conserved A G. Mutate that A G and the spliceosome cannot see where the intron ends. So it skips that splice. The intron stays in the finished message. Now the ribosome reads it. And the ribosome cannot remove introns. That is not its job. Introns are under no pressure to keep the reading frame or avoid stop codons. So you usually get a premature stop or a frameshift, and a truncated broken protein."},"kqyblur":{"t":"v","d":40.44,"a":1,"durs":[5.23,5.87,6.35,5.55,4.67,5.39,7.38],"tr":"Medicalization: moral failings get redefined as medical disorders. Heavy drinking, restlessness in children, shyness. All now diagnosable. Every perspective can describe that fact. The question is which one the concern matches. Functionalism asks how the sick role keeps society stable. Not a worry. Interactionism looks at how a diagnosis gets negotiated between doctor and patient. But the stated concern is expanding authority and social control over ordinary life. Power and control is conflict theory. Match the lens to the concern, not to the topic."},"kw0b4dq":{"t":"v","d":43.72,"a":1,"durs":[4.91,6.35,4.75,6.59,9.55,6.43,5.14],"tr":"Rotenone blocks complex one, so the electron transport chain stops. That chain was recycling N A D H back to N A D plus. Now it cannot. So N A D H piles up and N A D plus runs out. Why that matters: glycolysis consumes N A D plus at the G A P D H step. No N A D plus, no glycolysis. And glycolysis is now the only A T P source. So the cell reduces pyruvate to lactate. That reaction regenerates N A D plus. Lactate is not the point. Recycling N A D plus is."},"kw92ria":{"t":"v","d":37.32,"a":1,"durs":[4.27,5.79,5.39,3.79,5.47,5.63,6.98],"tr":"An early nonsense mutation puts a stop codon where it does not belong. So the ribosome should stop early, and the message should be destroyed by nonsense mediated decay. On paper you get essentially no enzyme. But the child has about five percent. The resolution is that translation is not perfectly faithful. Occasionally a transfer R N A slips into the stop codon instead of the release factor. The ribosome reads straight through and finishes the whole protein. That is read through. Rare, so only a few percent. But a few percent of an enzyme is often enough to soften a disease."},"kwqtg9u":{"t":"v","d":40.84,"a":1,"durs":[3.79,7.07,5.71,4.43,4.51,4.59,10.74],"tr":"The agency exists to help clients. That is the goal. So it writes procedures. Forms, checklists, a thick manual. These are means to that goal. Then supervisors start evaluating staff on whether the forms are filled in exactly right. Now the measurable thing is the paperwork, so that is what people optimise. Eventually completing the form correctly has replaced actually helping anyone. The means has become the end. That is goal displacement. The distractors are close. Rationalization and McDonaldization describe efficiency spreading. Only goal displacement names this swap."},"kwupo64":{"t":"v","d":42.68,"a":1,"durs":[4.99,3.63,6.99,6.27,5.71,7.07,8.02],"tr":"V max is the top speed. K m is the substrate needed for half of it. Here V max falls but K m does not move. K m unchanged means substrate still binds as well as before. Affinity is untouched. So it is not fighting substrate for the active site. A competitor would raise K m. On a Lineweaver Burk plot the x intercept is negative one over K m. Which is why the two lines cross exactly on the x axis. That crossing is the tell. Noncompetitive. It binds elsewhere, and binds free enzyme and E S complex equally well."},"kxdawb9":{"t":"v","d":41.4,"a":1,"durs":[4.83,7.55,5.47,4.19,4.11,7.15,8.1],"tr":"Electron transport pumps protons out of the matrix, building a gradient. Normally those protons only get back in through ATP synthase, and that is what makes ATP. Add a lipid soluble weak acid. It ferries protons straight back across. The gradient collapses, bypassing ATP synthase entirely. So ATP synthesis falls. No gradient left to drive it. But oxygen use rises. The gradient was the brake on electron transport, and it is gone. Oxygen up, ATP down, energy leaves as heat. Brown fat does this on purpose."},"kxov3es":{"t":"v","d":41.48,"a":1,"durs":[5.39,4.83,6.03,6.19,5.39,5.87,7.78],"tr":"The key word is disconnected. Once it is isolated, the charge has nowhere to go. So Q is fixed. That decides which energy formula you use. There are three forms of the same equation, and they are only interchangeable while everything is constant. Half C V squared is the one for a capacitor still held at a fixed voltage. That is not this. Use Q squared over two C, because Q is what is actually fixed here. The dielectric multiplies C by four. C is on the bottom, so the energy divides by four. Sixteen joules becomes four. The slab is pulled in, and that work comes out of the stored energy."},"kygdeat":{"t":"v","d":39.16,"a":1,"durs":[6.59,4.83,5.15,6.51,4.03,5.39,6.66],"tr":"Both alleles are already in the population. Dark and light beetles both exist before anything changes. Soot darkens the bark. Now light beetles stand out and dark ones are hidden. Birds eat what they can see. That is the mechanism, and it is not random. So the dark allele climbs. The population shifts toward one extreme, which is directional selection. Then pollution laws clean the bark, and the advantage flips back. The light allele recovers. Selection reversed because the environment reversed. That reversal rules out drift, which is random, and mutation, which does not respond to need."},"kzlg77p":{"t":"v","d":43.56,"a":1,"durs":[8.27,5.39,8.35,5.15,4.19,3.95,8.26],"tr":"Tertiary carbon, weak nucleophile, polar protic solvent. That combination means S N one. S N one goes in two steps, and the first one is the chlorine leaving on its own. What is left is a carbocation, and a carbocation is flat. Three groups, all in one plane. Flat means the stereocenter is gone. There is no longer a left or a right. Water can now attack from above or from below, with equal ease. So you get both enantiomers in roughly equal amounts. A racemic mixture, and optically inactive. Inversion would mean S N two, which a tertiary carbon blocks."}};
+/* ============================================================
+   Animated explainers — lazy loader + vector timeline engine
+   ------------------------------------------------------------
+   Nothing here touches the network until the user opens the
+   disclosure. Assets arrive via <script src> and media elements,
+   never fetch(), so this still works from file://.
+   ============================================================ */
+const RU_EX = (function(){
+  const defs = {}, waiting = {}, styled = {};
+
+  /* each explain/x/<key>.js ends with a call to this */
+  function reg(key, def){
+    defs[key] = def;
+    (waiting[key] || []).forEach(cb => cb(def));
+    delete waiting[key];
+  }
+
+  function load(key, cb, onerr){
+    if (defs[key]) return cb(defs[key]);
+    (waiting[key] = waiting[key] || []).push(cb);
+    if (document.querySelector('script[data-ex="' + key + '"]')) return;
+    const s = document.createElement("script");
+    s.src = "explain/x/" + key + ".js";
+    s.dataset.ex = key;
+    s.onerror = () => { delete waiting[key]; onerr(); };
+    document.head.appendChild(s);
+  }
+
+  /* the app's ICONS map has no play glyph, so this matches _svg()'s shape */
+  const PLAY_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+    + 'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+    + '<polygon points="6 3 20 12 6 21 6 3"/></svg>';
+
+  const fmt = t => Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0");
+  const reduced = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function transcriptHtml(def, key){
+    /* Prefer the build-derived transcript: it is assembled from the exact
+       lines that were spoken, so it cannot drift from the audio the way a
+       hand-written one silently does after a rewording. */
+    const meta = (typeof EXPLAINERS !== "undefined" && EXPLAINERS[key]) || {};
+    const text = meta.tr || def.transcript;
+    if (!text) return "";
+    return '<details class="ex-tr"><summary>Read the transcript</summary><p>'
+      + text.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])) + "</p></details>";
+  }
+
+  /* ---------- video ---------- */
+  function mountVideo(host, key, def){
+    host.innerHTML = '<video class="ex-v" controls playsinline preload="metadata" '
+      + 'src="explain/m/' + key + '.mp4"></video>' + transcriptHtml(def, key);
+  }
+
+  /* ---------- vector timeline ---------- */
+  function mountVector(host, key, def){
+    if (!styled[key] && def.css){
+      const st = document.createElement("style");
+      st.textContent = def.css;
+      document.head.appendChild(st);
+      styled[key] = true;
+    }
+    host.innerHTML =
+      '<div class="ex-stage">' + def.svg + '</div>' +
+      '<div class="ex-cap"></div>' +
+      '<div class="ex-ctl">' +
+        '<button type="button" class="ex-play" aria-label="Play">&#9654; Play</button>' +
+        '<span class="ex-track"><span class="ex-fill"></span></span>' +
+        '<span class="ex-time">0:00</span>' +
+      '</div>' + transcriptHtml(def, key);
+
+    const svg   = host.querySelector("svg");
+    const cap   = host.querySelector(".ex-cap");
+    const btn   = host.querySelector(".ex-play");
+    const fill  = host.querySelector(".ex-fill");
+    const time  = host.querySelector(".ex-time");
+    const track = host.querySelector(".ex-track");
+    const steps = def.steps;
+    svg.setAttribute("data-x", key);
+
+    /* When the explanation is narrated, the VOICE is the clock: step
+       boundaries come from the measured beat lengths and the audio element's
+       own currentTime drives everything. That keeps caption, drawing and
+       speech locked together the way a video inherently is.
+       With no narration, fall back to the module's own step times. */
+    const meta  = (typeof EXPLAINERS !== "undefined" && EXPLAINERS[key]) || {};
+    const durs  = meta.durs || null;
+    let bounds = null, total = def.dur;
+    if (durs && durs.length === steps.length){
+      bounds = []; let acc = 0;
+      for (const d of durs){ bounds.push(acc); acc += d; }
+      total = acc;
+    }
+
+    let au = null;
+    if (meta.a){
+      au = new Audio("explain/a/" + key + ".m4a");
+      au.preload = "metadata";
+      au.addEventListener("error", () => { au = null; });   // silent, not broken
+      /* requestAnimationFrame is paused in a hidden tab and throttled on some
+         mobile browsers, so drive off the audio's own progress events too.
+         Reading currentTime rather than accumulating elapsed time is what
+         makes the scene re-sync instantly instead of drifting. */
+      au.addEventListener("timeupdate", () => { if (playing) paint(); });
+    }
+
+    /* Step-gated visibility, declared on the element instead of in CSS.
+       data-from="2"        → appears at step 2 and stays
+       data-from="2" data-to="4" → only visible for steps 2 through 4
+       Every scene was otherwise hand-writing ~30 lines of selector lists to
+       say the same thing, which is where the copy-paste mistakes lived. */
+    const gated = svg.querySelectorAll("[data-from]");
+    function applyGates(i){
+      for (const el of gated){
+        const from = +el.dataset.from;
+        const to = el.dataset.to === undefined ? Infinity : +el.dataset.to;
+        el.style.opacity = (i >= from && i <= to) ? "1" : "0";
+      }
+    }
+
+    let t = 0, playing = false, raf = null, last = 0;
+
+    function stepAt(sec){
+      let i = 0;
+      if (bounds){
+        for (let k = 0; k < bounds.length; k++) if (sec >= bounds[k]) i = k;
+        return i;
+      }
+      for (let k = 0; k < steps.length; k++) if (sec >= steps[k].t) i = k;
+      return i;
+    }
+    function paint(){
+      if (au && playing) t = au.currentTime;
+      const i = stepAt(t);
+      if (svg.dataset.step !== String(i)){
+        svg.dataset.step = i;
+        cap.textContent = steps[i].cap;
+        applyGates(i);
+      }
+      const p = Math.max(0, Math.min(1, t / total));
+      fill.style.width = (p * 100).toFixed(2) + "%";
+      time.textContent = fmt(t);
+    }
+    function tick(ts){
+      if (!playing) return;
+      if (au){
+        t = au.currentTime;                 // the voice keeps time
+      } else {
+        if (!last) last = ts;
+        t += (ts - last) / 1000; last = ts;
+      }
+      if (t >= total){ t = total; paint(); stop(true); return; }
+      paint();
+      raf = requestAnimationFrame(tick);
+    }
+    function play(){
+      if (t >= total) t = 0;
+      playing = true; last = 0;
+      if (au){
+        au.currentTime = t;
+        const p = au.play();
+        if (p && p.catch) p.catch(() => { au = null; });   // blocked: run silent
+      }
+      btn.innerHTML = "&#10073;&#10073; Pause";
+      btn.setAttribute("aria-label", "Pause");
+      raf = requestAnimationFrame(tick);
+    }
+    function stop(ended){
+      playing = false;
+      if (raf) cancelAnimationFrame(raf);
+      if (au) au.pause();
+      btn.innerHTML = ended ? "&#8635; Replay" : "&#9654; Play";
+      btn.setAttribute("aria-label", ended ? "Replay" : "Play");
+    }
+    btn.addEventListener("click", () => playing ? stop(false) : play());
+    track.addEventListener("click", e => {
+      const r = track.getBoundingClientRect();
+      t = Math.max(0, Math.min(total, ((e.clientX - r.left) / r.width) * total));
+      if (au) au.currentTime = t;
+      paint(); if (!playing) stop(t >= total);
+    });
+    host._exStop = () => stop(false);
+
+    if (reduced()){
+      /* honour the OS setting: land on the finished diagram, no motion, no autoplay */
+      t = total; paint(); stop(true);
+    } else {
+      paint(); play();
+    }
+  }
+
+  function mount(host, key){
+    host.innerHTML = '<div class="ex-load">Loading the explanation…</div>';
+    load(key, def => {
+      if (def.video) mountVideo(host, key, def);
+      else mountVector(host, key, def);
+    }, () => {
+      host.innerHTML = '<div class="ex-err">Could not load this explanation. '
+        + 'The written breakdown below covers the same reasoning.</div>';
+    });
+  }
+
+  /* One delegated listener covers every place a breakdown is rendered
+     (practice reveal and exam review), now and later. `toggle` does not
+     bubble, so it is captured. */
+  document.addEventListener("toggle", e => {
+    const d = e.target;
+    if (!(d instanceof HTMLElement) || !d.classList || !d.classList.contains("ex")) return;
+    const host = d.querySelector(".ex-body");
+    if (!host) return;
+    if (d.open){
+      if (!host.dataset.mounted){ host.dataset.mounted = "1"; mount(host, d.dataset.key); }
+    } else {
+      if (host._exStop) host._exStop();
+      const v = host.querySelector("video"); if (v) v.pause();
+    }
+  }, true);
+
+  /* markup for a breakdown screen; empty string when the question has none */
+  function block(key){
+    const meta = (typeof EXPLAINERS !== "undefined") && EXPLAINERS[key];
+    if (!meta) return "";
+    const secs = Math.round(meta.d);
+    const badge = meta.a ? '<span class="ex-badge">narrated</span>' : "";
+    return '<details class="ex" data-key="' + key + '">'
+      + '<summary>' + PLAY_ICO + ' <span>Watch a ' + secs + '-second explanation</span>'
+      + badge + '<span class="chev">' + icon("chevron") + '</span></summary>'
+      + '<div class="ex-body"></div></details>';
+  }
+
+  return { reg, block };
+})();
+
+/* EXPLAIN_JS_END */
 </script>
 </body>
 </html>
