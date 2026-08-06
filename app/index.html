@@ -3131,12 +3131,12 @@ function entReset(){ ent.pro = false; ent.exams = new Set(); entSave(); }   // d
    ============================================================ */
 const DEV_PURCHASE = false;   // true ONLY for local QA; MUST be false in every shipped build
 const PROMO_HASHES = {
-  "c1948f1fc438e895a6e37fcdbfaffcc9e510d6fdede4c2454498741a18cbbc6a":"pro",
-  "60c2f47355053d7585268caa271e9ecd2b4a606612583c9b34af3e32963c7d4b":"short_bundle",
-  "f90c5a085855f4849a021045467e08d1953053e9e176c1e4763efbfd138748ad":"hx1",
-  "5d6fc8a0eaec8d1e488fbdbdbf4022308e69cde79126ea3945f0e225dff0ffda":"hx2",
-  "615191b43f25702bea9e7017c348cd2dc39b0d6962cf70acb8122d86b50152e6":"fx1",
-  "98d34ee268ab7391f3d93482024a32410a191f74f69449e85db741aca57c3548":"fx2",
+  "9e62877ff4c6f8b184d92eca163094b9bb9f272059b87131bef22dc11ed8b869": "pro",
+  "23a58af8faffa1d2e2ead77e89fcb38904e861770f5942766a1aadd8f0d5b2d8": "short_bundle",
+  "bb1b67bbbf8283cde4ce3e763341d93e4dcdcfa6973c8a1e5d1162062219008c": "hx1",
+  "a678d410175a212334c1b90d0cfbace16cdc6ddda8d6c58fb418bc0089192bc9": "hx2",
+  "8c386b89afc1f439a5633eeedb61edd6e1f407587d871c6189622ebeb75f1c0b": "fx1",
+  "d29483395b995bacc4c56587112702bc259798d2c9b01cdcbfb08551d1e4823c": "fx2",
 };
 // Only SHA-256 hashes ship in the app, so reading the source does not reveal a
 // working code. Codes are 8 random chars from a 30-char alphabet (6.5e11 space),
@@ -3154,7 +3154,11 @@ function grantByProduct(pid){                     // pid = a PRODUCTS value or a
   return null;
 }
 async function redeemCodeShared(code){
-  const c = String(code || "").trim().toUpperCase().replace(/\s+/g, "");
+  // Strip everything that is not a letter or digit, not just whitespace.
+  // Codes are printed as RU-XXXX-XXXX, and hyphens were significant: typing
+  // RUNRXZJRVD failed while RU-NRXZ-JRVD worked. The stored hashes are minted
+  // from this same normalised form, so both spellings now redeem.
+  const c = String(code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (!c) return { ok:false, reason:"invalid" };
   if (!(window.crypto && crypto.subtle)) return { ok:false, reason:"unavailable" };
   let h;
@@ -5693,7 +5697,7 @@ function openReceiptEntry(){
 }
 function openCodeEntry(){
   openSheet(`<div class="paywall"><h2 id="sheetTitle">Enter a code</h2>
-    <input id="codeInput" class="codefield" placeholder="Your code" autocapitalize="characters" autocomplete="off" />
+    <input id="codeInput" class="codefield" placeholder="Your code" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" />
     <button class="btn primary" id="codeGo" style="width:100%;margin-top:12px">Unlock</button>
     <button class="linkbtn" id="codeBack" style="margin-top:12px">Back</button></div>`);
   try { $("#codeInput").focus(); } catch(e){}
