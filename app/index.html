@@ -3745,7 +3745,13 @@ function startSession(kind, opts){
   const replay = !!opts.allowSeen;
   if ((kind === "learn" || kind === "mixed") && !replay && learnRemaining() === 0){
     if (opts.node){ replayNode(opts, kind); return; }   // node replays serve seen questions
-    state.servedKeys.clear();   // pool exhausted: recycle for mastery, like Duolingo repeats
+    // Recycle only the pool that ran out, which is the same pool
+    // learnRemaining() just counted. This used to clear the whole set, so
+    // narrowing to a single section - CARS is 26 questions in the free bank -
+    // erased the seen-record for all four and re-served everything the user
+    // had ever answered, resetting their coverage counters with it.
+    const spent = new Set(state.activeSubjects.filter(s => state.focus.has(categoryOfSubject(s))));
+    BANK.forEach(q => { if (spent.has(q.subject) && inFocus(q)) state.servedKeys.delete(q.key); });
     toast("You've seen everything! Recycling questions for mastery.");
   }
   state.mode = kind;
@@ -4602,6 +4608,11 @@ function updateDay(){
     const gap = state.day.lastDay ? dayGap(state.day.lastDay, t) : null;
     if (gap === 1) state.day.streak++;
     else if (gap === 2 && state.streakFreezes > 0){ state.streakFreezes--; state.day.streak++; state.day.usedFreeze = true; }
+    // A gap of 0 or less means the calendar moved BACKWARDS - flying west, or a
+    // clock correction. The user did not miss a day, so keep the streak and do
+    // not spend a freeze. Without this, landing in New York from Tokyo turned a
+    // 45-day streak into 1.
+    else if (gap !== null && gap <= 0){ /* keep the streak */ }
     else { state.day.streak = 1; state.celebratedStreak = 0; }
     state.day.lastDay = t; state.day.todayCount = 0; state.day.goalXp = false;
   }
