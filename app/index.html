@@ -2986,6 +2986,10 @@ try { PREMIUM_QUESTIONS = JSON.parse(decodeURIComponent(escape(atob(PREMIUM_B64 
 const PREMIUM_BANK = PREMIUM_QUESTIONS.map(q => Object.assign(normalizeQ(q), { exam:q.exam }));
 function premiumFor(examId){ return PREMIUM_BANK.filter(q => q.exam === examId); }
 BANK.forEach((q, i) => { q.id = i; });
+// Which keys belong to the FREE bank. servedKeys also collects premium exam
+// questions, which are not in BANK and can never appear in Learn, so any
+// free-bank coverage measure has to filter by this rather than trust the size.
+const BANK_KEYS = new Set(BANK.map(q => q.key));
 
 function subjectsWithQuestions(){
   const set = new Set(BANK.map(q => q.subject));
@@ -3705,8 +3709,14 @@ function checkAchievements(){
   if (state.bestCombo >= 10) earn("combo_10");
   if (state.level >= 5)  earn("level_5");
   if (state.level >= 10) earn("level_10");
-  if (state.servedKeys.size >= 50) earn("q_50");
-  if (state.servedKeys.size >= BANK.length) earn("q_all");
+  // Count only what these badges actually claim: questions from the free bank.
+  // finishTest records premium exam questions in servedKeys as well, and they
+  // are not in BANK, so the raw size handed out "See every question in the
+  // bank" to a Pro user who sat two full-lengths and never opened Learn.
+  let seenInBank = 0;
+  state.servedKeys.forEach(k => { if (BANK_KEYS.has(k)) seenInBank++; });
+  if (seenInBank >= 50) earn("q_50");
+  if (seenInBank >= BANK.length) earn("q_all");
   if (state.reviewCleared >= 1) earn("reviewer");
   if (state.previewAnswered >= 10) earn("preview_10");
   if (state.perfectSessions >= 1) earn("perfect");
