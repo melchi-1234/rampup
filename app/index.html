@@ -552,7 +552,13 @@
              letter-spacing:.04em; text-transform:uppercase; color:var(--muted)}
   .watch-n{padding:1px 7px; border-radius:999px; background:var(--surface-2); font-size:11.5px; letter-spacing:0}
   .watch-row{margin:0 0 8px}
-  .watch-ti{flex:1; min-width:0; font-weight:700}
+  .watch-tw{flex:1; min-width:0; display:flex; flex-direction:column; gap:3px}
+  .watch-ti{font-weight:700}
+  .watch-q{font-size:12.5px; font-weight:600; color:var(--muted); line-height:1.45}
+  .watch-intro{padding:14px 16px; margin:0 0 18px; border-radius:var(--r); background:var(--surface-2);
+               border:1px solid var(--border-strong)}
+  .watch-intro p{margin:0 0 9px; font-size:14px; line-height:1.6; color:var(--muted)}
+  .watch-intro p:last-child{margin-bottom:0}
   .watch-lock{text-align:center; padding:26px 20px; border-radius:var(--r); background:var(--surface-2);
               border:1px solid var(--border-strong)}
   .watch-lock-i svg{width:30px; height:30px; opacity:.55; margin-bottom:8px}
@@ -3935,7 +3941,7 @@ function renderHome(){
     </button>
     ${explainerCount() ? `<button class="testcard" id="homeWatch" style="margin:8px 0 4px">
       <span class="ti">${icon("bulb")}</span>
-      <span class="tbody"><span class="tt">Watch${hasPro() ? "" : ` <span class="protag">PRO</span>`}</span><span class="td">${explainerCount()} narrated animations. Browse them all by subject.</span></span>
+      <span class="tbody"><span class="tt">Watch</span><span class="td">${explainerCount()} narrated animations, free. Every hardest-tier question, explained.</span></span>
       <span class="go">${icon("arrowRight")}</span>
     </button>` : ""}
     <h3 style="margin:18px 0 8px">Extras</h3>
@@ -4362,27 +4368,27 @@ function watchShelf(){
   order.forEach(s => by[s].sort((a, b) => a.title.localeCompare(b.title)));
   return order.map(s => ({ subject:s, items:by[s] }));
 }
+/* A title alone does not tell you what an explanation is FOR, so every row
+   carries the question it answers. Keys are keyOf(question), so the bank
+   resolves them directly. */
+function watchQuestion(key){
+  const q = BANK.find(x => x.key === key);
+  if (!q) return "";
+  let t = q.question.replace(/\s+/g, " ").trim();
+  return t.length > 132 ? t.slice(0, 130).replace(/\s+\S*$/, "") + "…" : t;
+}
 function renderWatchShelf(wrap){
   const groups = watchShelf();
   const total = groups.reduce((n, g) => n + g.items.length, 0);
-  let h = lessonTabs("watch") + `<div class="lib-head"><h2>Watch</h2>
-    <p class="lib-tag">${total} animated explanations, every one narrated. Browse by subject.</p></div>`;
-
-  if (!hasPro()){
-    // Invite, never punish: show exactly what is on the shelf, then offer it.
-    h += `<div class="watch-lock">
-      <div class="watch-lock-i">${icon("lock")}</div>
-      <div class="watch-lock-t">Browse every explanation <span class="protag">PRO</span></div>
-      <div class="watch-lock-d">You already get the explanation on any question that has one, free.
-        Pro lets you watch all ${total} straight through, without hunting for the question first.</div>
-      <div class="watch-lock-grid">`;
-    groups.forEach(g => { h += `<span class="watch-chip">${esc(g.subject)} · ${g.items.length}</span>`; });
-    h += `</div><button class="btn primary" id="watchUnlock">See what Pro includes</button></div>`;
-    wrap.innerHTML = h;
-    bindLessonTabs(wrap);
-    const u = $("#watchUnlock"); if (u) u.addEventListener("click", () => { SFX.tick(); openPaywall(null); });
-    return;
-  }
+  let h = lessonTabs("watch") + `<div class="lib-head"><h2>Watch</h2></div>
+    <div class="watch-intro">
+      <p>Every question in the two hardest tiers has a short animated explanation, narrated
+         start to finish. They walk through the reasoning and name the trap in the tempting
+         wrong answer, so the next question of that type is easier.</p>
+      <p>These are the same explanations that appear under a question once you have answered
+         it. This is simply all ${total} of them in one place, grouped by subject, so you can
+         watch a topic straight through without hunting for the question first.</p>
+    </div>`;
 
   groups.forEach(g => {
     h += `<div class="watch-sub">${esc(g.subject)} <span class="watch-n">${g.items.length}</span></div>`;
@@ -4390,8 +4396,11 @@ function renderWatchShelf(wrap){
       // The player binds a delegated, capturing "toggle" listener to anything
       // shaped like this, so the shelf needs no player API: class="ex",
       // data-key, and a .ex-body to mount into.
+      const q = watchQuestion(it.key);
       h += `<details class="ex watch-row" data-key="${esc(it.key)}">
-        <summary>${icon("bulb")} <span class="watch-ti">${esc(it.title)}</span>
+        <summary>${icon("bulb")}
+          <span class="watch-tw"><span class="watch-ti">${esc(it.title)}</span>
+            ${q ? `<span class="watch-q">${esc(q)}</span>` : ""}</span>
           <span class="ex-badge">${it.secs}s</span>
           <span class="chev">${icon("chevron")}</span></summary>
         <div class="ex-body"></div></details>`;
@@ -5426,8 +5435,9 @@ function openPaywall(t){   // t = a PREMIUM_TESTS def, or null for the "Pro" ent
     "Every exam: 3 short, 2 half-length, 2 full-length (and any we add)",
     "Projected 472 to 528 score, section by section",
     "A readiness dashboard that tracks your trend"
-  ].concat(explainerCount() ? [`Browse all ${explainerCount()} narrated animations in one place`] : [])
-   .map(p => `<li>${icon("check")} ${p}</li>`).join("");
+  // The Watch library used to be listed here. It is free now, so claiming it
+  // as a Pro perk would be selling something the user already has.
+  ].map(p => `<li>${icon("check")} ${p}</li>`).join("");
   const pwSub = !t ? "Everything premium, one time, yours for good."
     : tier==="short" ? "A quick mixed sitting of brand-new questions. This unlocks all 3 short exams."
     : tier==="half" ? "A four-section, roughly four-hour half-length at real exam pacing."
