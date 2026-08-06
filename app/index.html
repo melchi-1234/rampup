@@ -3294,10 +3294,27 @@ function rehydrate(s){
   state.testScores = s.testScores || {}; state.testsCompleted = s.testsCompleted || 0;
   state.conceptsSeen = s.conceptsSeen || {};
   state.activeSubjects = subjectsWithQuestions();
+  /* Defaults have to reach INSIDE these objects, not just check that one is
+     present. Every top-level saved key already defaults, but nested shapes were
+     adopted verbatim, and an old save whose stats lack cRun/wRun made `s.cRun++`
+     produce NaN - so the climb test never passed and the ladder froze. Twelve
+     correct in a row and still on easy. It repaired itself on the first WRONG
+     answer, which means it only ever hit the strongest returning users. */
+  const num = v => (typeof v === "number" && isFinite(v) && v >= 0) ? v : 0;
   state.activeSubjects.forEach(name => {
-    if (!state.difficulty[name]) state.difficulty[name] = startingDifficulty(name);
+    // A stored tier outside the ladder can never climb, and drops to the floor
+    // on one bad streak, because bump() indexes DIFF_ORDER.
+    if (DIFF_ORDER.indexOf(state.difficulty[name]) === -1) state.difficulty[name] = startingDifficulty(name);
     if (!(name in state.preview)) state.preview[name] = isPreview(name);
-    if (!state.stats[name]) state.stats[name] = { answered:0, correct:0, cRun:0, wRun:0 };
+    const st = state.stats[name] || {};
+    state.stats[name] = { answered:num(st.answered), correct:num(st.correct),
+                          cRun:num(st.cRun), wRun:num(st.wRun) };
+  });
+  // Same defect in the review pile: a non-numeric box or due can never come up
+  // for review, never graduates, and renders "next up in about NaN d".
+  Object.keys(state.srs).forEach(k => {
+    const e = state.srs[k];
+    if (!e || !isFinite(e.box) || !isFinite(e.due)) state.srs[k] = { box:0, due:Date.now() };
   });
   // Re-arm the reminder window on every launch so it keeps sliding forward.
   try { rescheduleReminders(); } catch(e){}
