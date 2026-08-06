@@ -5387,7 +5387,13 @@ function printExam(t){
     sections.push({ cat:null, minutes:null, items:queue });
   }
   const LET = ["A","B","C","D","E","F"];
-  const para = txt => esc(txt).replace(/\n+/g, "<br>");
+  // `\n+` is greedy, so a blank line between paragraphs collapsed to a single
+  // break and 32 of the premium passages printed as one run-on block. On screen
+  // they are white-space:pre-wrap and correct. Worst on CARS, where the
+  // paragraph structure is part of the argument being asked about.
+  const para = txt => esc(txt).replace(/\r\n?/g, "\n")
+                              .replace(/\n{2,}/g, "<br><br>")
+                              .replace(/\n/g, "<br>");
   let num = 0, body = "", key = "";
   sections.forEach((sec, si) => {
     const secName = sec.cat ? (MCAT_SECTION_FULL[sec.cat] || sec.cat) : "Questions";
