@@ -3255,26 +3255,39 @@ async function honorPurchaseReturn(){
   const cleanUrl = () => { try { history.replaceState(null, "", location.pathname + location.hash); } catch(e){} };
   if (!VERIFY_ENDPOINT){ cleanUrl(); return null; }   // verifier not configured; never unlock on the URL alone
   toast("Verifying your purchase…");
+  const r = await verifySession(sid);
+  if (r.ok){ cleanUrl(); return r.granted; }    // unlocked, so the token has done its job
+  // Keep session_id for everything else. It is the ONLY thing that can redeem a
+  // payment that already went through, and every other outcome is retryable: a
+  // Stripe 5xx, a product name that does not match the worker's map (fixable in
+  // the dashboard, then a refresh unlocks), a payment still settling, a body we
+  // could not parse. The worker answers HTTP 200 for most of those, so clearing
+  // on any parseable response left a charged customer with no way back and no
+  // error on refresh - it just silently did nothing.
+  toast(r.reason === "network"
+    ? "Purchase check failed. Refresh to retry, or email " + SUPPORT_EMAIL + " if you were charged."
+    : "We couldn't confirm that purchase yet. Refresh to retry, or email " + SUPPORT_EMAIL + " if you were charged.");
+  return null;
+}
+/* One place decides what counts as paid. Both the post-checkout return and the
+   manual "I already paid" path go through this, so they cannot drift. */
+async function verifySession(sid){
+  if (!sid || !VERIFY_ENDPOINT) return { ok:false, reason:"nosid" };
   try {
     const res = await fetch(VERIFY_ENDPOINT + "?session_id=" + encodeURIComponent(sid), { cache:"no-store" });
     const data = await res.json().catch(() => null);
     if (data && data.ok && data.paid && data.product){
       const g = grantByProduct(data.product);
-      if (g){ cleanUrl(); return g; }           // unlocked, so the token has done its job
+      return g ? { ok:true, granted:g } : { ok:false, reason:"unknown_product" };
     }
-    // Keep session_id for everything else. It is the ONLY thing that can redeem
-    // a payment that already went through, and every other outcome here is
-    // retryable: a Stripe 5xx, a product name that does not match the worker's
-    // map (fixable in the dashboard, then a refresh unlocks), a payment still
-    // settling, a body we could not parse. The worker answers HTTP 200 for most
-    // of those, so clearing on any parseable response left a charged customer
-    // with no way back and no error on refresh - it just silently did nothing.
-    toast("We couldn't confirm that purchase yet. Refresh to retry, or email " + SUPPORT_EMAIL + " if you were charged.");
-  } catch(e){
-    toast("Purchase check failed. Refresh to retry, or email " + SUPPORT_EMAIL + " if you were charged.");
-    // leave session_id in the URL so a refresh retries the verification
-  }
-  return null;
+    return { ok:false, reason:"unconfirmed" };
+  } catch(e){ return { ok:false, reason:"network" }; }
+}
+/* Take a whole Stripe receipt or return URL, not just a bare id. Asking someone
+   to find the id inside a URL is how a recovery path goes unused. */
+function sessionIdFrom(text){
+  const m = String(text || "").match(/cs_[A-Za-z0-9_]+/);
+  return m ? m[0] : null;
 }
 function rehydrate(s){
   state.grade = s.grade; state.courses = Object.assign(state.courses, s.courses || {}); state.confidence = s.confidence || {};
@@ -5604,10 +5617,35 @@ async function doBuy(short){
   else { toast("That didn't go through. Try again."); }
 }
 async function doRestore(){
+  // On the web there is no account and nothing server-side keyed to this
+  // browser, so "restore" could only ever re-read local state - which told a
+  // genuine customer on a new device "No purchases found to restore", and on
+  // the other branch blamed the App Store on a Stripe path. Their receipt is
+  // the real proof of purchase, so ask for it.
+  if (!isNative){ openReceiptEntry(); return; }
   const r = await purchases.restore();
   if (r && r.ok && (hasPro() || ent.exams.size)){ closeSheet(); toast("Purchases restored."); refreshAfterEntitlement(); }
   else if (r && r.reason === "unavailable"){ toast("Couldn't reach the App Store. Check your connection and try again."); }
   else toast("No purchases found to restore.");
+}
+function openReceiptEntry(){
+  openSheet(`<div class="paywall"><h2 id="sheetTitle">Already paid?</h2>
+    <p class="pw-sub">Paste the link from your Stripe receipt email, or the address you landed on after paying. We'll check it and unlock this device.</p>
+    <input id="rcptInput" class="codefield" placeholder="https://… or cs_…" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" />
+    <button class="btn primary" id="rcptGo" style="width:100%;margin-top:12px">Unlock</button>
+    <button class="linkbtn" id="rcptBack" style="margin-top:12px">Back</button></div>`);
+  try { $("#rcptInput").focus(); } catch(e){}
+  $("#rcptGo").addEventListener("click", async () => {
+    const sid = sessionIdFrom($("#rcptInput").value);
+    if (!sid){ toast("That doesn't look like a Stripe receipt link. It contains a code starting with cs_."); return; }
+    toast("Checking your receipt…");
+    const r = await verifySession(sid);
+    if (r.ok){ closeSheet(); afterUnlock(r.granted); return; }
+    toast(r.reason === "network"
+      ? "Couldn't reach the checker. Check your connection and try again."
+      : "We couldn't confirm that receipt. Email " + SUPPORT_EMAIL + " and we'll unlock it.");
+  });
+  $("#rcptBack").addEventListener("click", () => openPaywall(null));
 }
 function openCodeEntry(){
   openSheet(`<div class="paywall"><h2 id="sheetTitle">Enter a code</h2>
