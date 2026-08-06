@@ -475,7 +475,18 @@
   #printRoot{display:none}
   @media print{
     body > *:not(#printRoot){display:none !important}
+    /* A child selector cannot match a pseudo-element, so the rule above left
+       body::before (the fixed, full-viewport ambient glow) alive. Being
+       positioned with z-index:0, it paints ON TOP of #printRoot, which is
+       static. Chrome usually rasterises it as a translucent gradient and
+       nobody notices; on a long export it degrades to an OPAQUE WHITE fill
+       and wipes every page — right page count, nothing on any of them. */
+    html::before, html::after, body::before, body::after{
+      content:none !important; display:none !important; background:none !important}
+    /* Belt and braces: nothing may paint above the export, whatever survives.
+       Every app layer (confetti 9000, sheets 9500, toasts 9600) sits below. */
     #printRoot{display:block !important; color:#111; background:#fff;
+      position:relative; z-index:2147483647;
       font-family:Georgia,'Times New Roman',serif; line-height:1.45}
     @page{margin:16mm 14mm}
     html,body{background:#fff !important}
