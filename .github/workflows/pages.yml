@@ -1,0 +1,42 @@
+# Publish rampupmcat.com.
+#
+# The legacy Pages builder became unreliable for this repo: every push failed
+# its first build with duration 0ms and no message, one build took 586s against
+# a 600s limit, and one stalled for 40 minutes without publishing. The site is
+# ~43 MB, most of it the explanation videos under app/explain, and the legacy
+# builder re-processes all of it every time.
+#
+# This uploads the repo as a static artifact instead, which skips that builder
+# entirely. There is no Jekyll step, matching the .nojekyll file at the root.
+name: Deploy to Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; queue them instead of cancelling, so a push is
+# never silently dropped.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
