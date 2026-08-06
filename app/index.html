@@ -5566,6 +5566,9 @@ function openPaywall(t){   // t = a PREMIUM_TESTS def, or null for the "Pro" ent
       <div class="pw-mascot">${rampySvg("grad","bob")}</div>
       <h2 id="sheetTitle">${t ? esc(t.title) : "RampUp Pro"}</h2>
       <p class="pw-sub">${pwSub}</p>
+      ${(!isNative && !STORAGE_OK)
+          ? `<p class="pw-sub" style="color:var(--incorrect)">${icon("alert")} This browser is blocking storage, so a purchase couldn't be saved on this device. Turn off private browsing, or use the RampUp app.</p>`
+          : ""}
       <ul class="pw-perks">${perks}</ul>
       <button class="btn primary pw-pro" data-buy="pro"><span>Get RampUp Pro</span><span class="pr">${PRICE.pro}</span></button>
       <p class="pw-value"><b>${valueOff("pro")}% cheaper</b> (${centsPerQ("pro")}&cent; vs ${centsPerQ("short_bundle")}&cent; a question)</p>
@@ -5584,6 +5587,15 @@ function openPaywall(t){   // t = a PREMIUM_TESTS def, or null for the "Pro" ent
   $("#pwCode").addEventListener("click", openCodeEntry);
 }
 async function doBuy(short){
+  // A web purchase is remembered only in localStorage, and entSave() swallows
+  // the failure. With storage blocked - Private Browsing, or the file opened
+  // directly - the unlock survives exactly one page view and then vanishes,
+  // after a real charge. Refuse the sale instead of taking money we cannot
+  // honour. Native is unaffected: StoreKit restores those entitlements.
+  if (!isNative && !STORAGE_OK){
+    toast("This browser is blocking storage, so a purchase couldn't be saved here. Turn off private browsing, or use the RampUp app.");
+    return;
+  }
   const r = await purchases.buy(short);
   if (r && r.pending) return;                       // Stripe redirect in flight
   if (r && r.ok){ closeSheet(); afterUnlock(r.granted); }
