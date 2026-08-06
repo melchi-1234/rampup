@@ -203,6 +203,8 @@
   .pill.review-flag{background:var(--warn-soft); color:var(--warn); border:1px solid color-mix(in srgb,var(--warn) 30%,transparent)}
   .pill.preview{background:var(--info-soft); color:var(--info)}
   .pill.tolearn{background:var(--accent-soft); color:var(--accent)}
+  /* "you have finished this level", not "you were demoted" */
+  .pill.cleared{background:var(--info-soft); color:var(--info); font-weight:700}
 
   .passage{background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:var(--r-sm);
     padding:15px 17px; margin-bottom:18px; font-size:14.5px; color:var(--text); line-height:1.65; white-space:pre-wrap; overflow-wrap:anywhere}
@@ -4234,6 +4236,23 @@ function difficultyPreference(d){
                    hard:["hard","mcat","medium","easy"], mcat:["mcat","hard","medium","easy"] };
   return orders[d] || orders.medium;
 }
+/* The ladder falls through to easier tiers when the earned one runs dry, and
+   said nothing about it. The top tier is only 6-11 questions per subject, so a
+   strong student clears it in about 40 questions and then quietly gets served
+   below their level while the Dashboard still shows the tier they earned.
+   Measured on a user at mcat in all eight subjects: the first 40 questions were
+   100% mcat, by 100 it was almost all hard, and 61% of 160 came in under their
+   own tier. These two let the app say so instead. */
+function tierRemaining(subjectName){
+  const d = state.difficulty[subjectName];
+  return BANK.filter(q => q.subject === subjectName && q.difficulty === d
+                          && !state.servedKeys.has(q.key)).length;
+}
+function belowEarnedTier(q){
+  const earned = state.difficulty[q.subject];
+  if (!earned) return false;
+  return DIFF_ORDER.indexOf(q.difficulty) < DIFF_ORDER.indexOf(earned);
+}
 function pickForSubjectLearn(subjectName){
   const allowSeen = state.session && state.session.allowSeen;
   const inThisSession = new Set(state.history.map(e => e.q.key));
@@ -4635,6 +4654,9 @@ function renderEntry(entry){
   const reviewTag = q.confidence === "review" ? `<span class="pill review-flag" title="We're not fully certain about this one, double-check it.">${icon("alert")} Double-check</span>` : "";
   const previewTag = state.preview[q.subject] ? `<span class="pill preview" title="You haven't taken this subject yet, stretch practice.">${icon("rocket")} Preview</span>` : "";
   const dueTag = (state.mode === "review") ? `<span class="pill tolearn" title="From your spaced-repetition review pile.">${icon("repeat")} Review</span>` : "";
+  const earnedTag = belowEarnedTier(q)
+    ? `<span class="pill cleared" title="You've answered every ${esc(diffLabel(state.difficulty[q.subject]))} ${esc(q.subject)} question we have, so this one is from the tier below. Your level hasn't dropped.">${icon("check")} ${esc(diffLabel(state.difficulty[q.subject]))} cleared</span>`
+    : "";
   const starOn = state.bookmarks.has(q.key);
   const passageHtml = q.passage ? `<div class="passage"><div class="plabel">${icon("book")} ${q.category === "CARS" ? "Passage" : "Stimulus"}</div>${esc(q.passage)}</div>` : "";
   card.innerHTML = `
@@ -4644,7 +4666,7 @@ function renderEntry(entry){
       <span class="qcount" title="Question in this session">#${state.cursor + 1}</span>
       <span class="spacer"></span>
       <span class="pill ${q.difficulty}" title="This question's difficulty">${diffLabel(q.difficulty)}</span>
-      ${previewTag}${dueTag}${reviewTag}
+      ${previewTag}${dueTag}${reviewTag}${earnedTag}
       <button class="starbtn ${starOn ? "on" : ""}" id="starBtn" title="Bookmark (S)" aria-label="Bookmark this question" aria-pressed="${starOn}">${starIcon(starOn)}</button>
     </div>
     ${passageHtml}
@@ -5013,7 +5035,11 @@ function renderDashboard(){
       const st = state.stats[s] || {}; const spct = st.answered ? Math.round((st.correct/st.answered)*100) : 0;
       const prev = state.preview[s] ? `<span class="pill preview">Preview</span>` : "";
       html += `<div class="srow"><span class="sn">${esc(s)} ${prev}</span>
-        <span class="sr"><span class="pill ${state.difficulty[s]}">${diffLabel(state.difficulty[s])}</span>
+        <span class="sr"><span class="pill ${state.difficulty[s]}">${diffLabel(state.difficulty[s])}</span>${
+          (function(){ const left = tierRemaining(s);
+            // Show the cliff before they walk off it, then say so plainly.
+            if (left === 0) return `<span class="pill cleared" title="You've answered every question we have at this level in ${esc(s)}. Until we add more, you'll get the tier below.">cleared</span>`;
+            return left <= 3 ? `<span class="pill cleared" title="Questions left at this level in ${esc(s)}.">${left} left</span>` : ""; })()}
         <span class="bartrack"><span class="barfill" style="width:${st.answered ? spct : 0}%"></span></span>
         <span>${st.answered ? spct + "%" : "—"}</span></span></div>`;
     });
