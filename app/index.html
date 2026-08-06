@@ -474,7 +474,12 @@
   .pdfbtn svg{width:14px; height:14px}
   #printRoot{display:none}
   @media print{
-    body > *:not(#printRoot){display:none !important}
+    /* Only an export may hide the app. #printRoot does not exist until an
+       export builds it, so hiding every body child unconditionally meant an
+       ordinary Cmd+P on a fresh session printed ONE BLANK PAGE - and after any
+       export it printed the stale 230-question exam instead of the screen. */
+    body.exporting > *:not(#printRoot){display:none !important}
+    body:not(.exporting) #printRoot{display:none !important}
     /* A child selector cannot match a pseudo-element, so the rule above left
        body::before (the fixed, full-viewport ambient glow) alive. Being
        positioned with z-index:0, it paints ON TOP of #printRoot, which is
@@ -5324,6 +5329,24 @@ function ensurePrintRoot(){
   if (!r){ r = document.createElement("div"); r.id = "printRoot"; document.body.appendChild(r); }
   return r;
 }
+/* Stage an export with a class instead of by emptying #printRoot, because
+   Chrome re-rasterises the LIVE DOM when Save is clicked - clearing early is
+   exactly what produced a 77-page PDF with nothing on any page.
+   For the same reason the class is NOT released on `afterprint`: that fires
+   when the dialog closes, which can be before the save has been rendered, and
+   releasing early would print the app into the customer's exam. Release it on
+   the next thing the user actually does instead. The print dialog is browser
+   chrome, so no pointer or key event reaches the page while it is open. */
+function beginExport(){
+  document.body.classList.add("exporting");
+  const release = () => {
+    document.body.classList.remove("exporting");
+    document.removeEventListener("pointerdown", release, true);
+    document.removeEventListener("keydown", release, true);
+  };
+  document.addEventListener("pointerdown", release, true);
+  document.addEventListener("keydown", release, true);
+}
 function printExam(t){
   if (!t) return;
   if (t.premium && !ownsExam(t.id)){ openPaywall(t); return; }
@@ -5375,6 +5398,7 @@ function printExam(t){
   if (isNative) { deliverPdfNative(t, root); return; }
   const prevTitle = document.title;
   document.title = "RampUp - " + t.title;
+  beginExport();
   setTimeout(() => { window.print(); }, 60);
   // NEVER empty #printRoot while a print may still be in flight. Chrome
   // paginates for the preview but re-rasterizes the live DOM when you finally
@@ -5427,7 +5451,10 @@ async function deliverPdfNative(t, root){
   const doc = `<!doctype html><html><head><meta charset="utf-8">`
     + `<meta name="viewport" content="width=612">`
     + `<style>${collectPrintCss()}</style></head>`
-    + `<body><div id="printRoot">${root.innerHTML}</div></body></html>`;
+    // The print CSS copied above only reveals #printRoot inside body.exporting,
+    // so this standalone document has to declare it too or the native PDF
+    // renders empty.
+    + `<body class="exporting"><div id="printRoot">${root.innerHTML}</div></body></html>`;
   root.innerHTML = "";
   if (!p){ toast("Printing isn't available in this version."); return; }
   toast("Building your PDF…");
