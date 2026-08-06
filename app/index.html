@@ -4319,6 +4319,7 @@ function lessonCourses(){
 }
 function showLessons(tab){ state.lessonView = { tab: tab || "concepts", course:null, concept:null }; switchView("lessons", renderLessons, "lessonsView"); }
 function renderLessons(){
+  stopAllExplainers();          // Read/Watch toggle and entitlement repaints
   const wrap = $("#lessonsView");
   const nav = state.lessonView || (state.lessonView = { tab:"concepts", course:null, concept:null });
   if (nav.tab === "watch") return renderWatchShelf(wrap);
@@ -5543,7 +5544,21 @@ function syncChrome(){
     ? "tabWatch" : tabMap[state.view];
   if (lit){ const b = $("#"+lit); if (b){ b.classList.add("on"); b.setAttribute("aria-current", "page"); } }
 }
+/* An Audio object outlives the element that created it. Replacing a view's
+   innerHTML detaches the row WITHOUT firing a `toggle`, so the player never
+   hears about it and the narration keeps talking over whatever the user
+   opened next. Measured: leaving the Watch tab mid-scene left it running at
+   2.4s → 3.7s → 5.3s. Stop everything before any teardown. */
+function stopAllExplainers(){
+  document.querySelectorAll(".ex").forEach(d => {
+    const host = d.querySelector(".ex-body");
+    if (!host) return;
+    if (host._exStop) host._exStop();
+    const v = host.querySelector("video"); if (v) v.pause();
+  });
+}
 function switchView(view, renderFn, elId){
+  stopAllExplainers();
   state.view = view;
   if (renderFn) renderFn();
   hideViews(); const el = $("#"+elId); el.hidden = false; syncChrome();
