@@ -3303,7 +3303,7 @@ function rehydrate(s){
   state.srs = s.srs || {}; state.bookmarks = new Set(s.bookmarks || []); state.servedKeys = new Set(s.servedKeys || []);
   state.day = Object.assign({ lastDay:null, streak:0, todayCount:0, goal:10 }, s.day || {});
   if (typeof state.day.goal !== "number") state.day.goal = 10;
-  state.testDate = /^\d{4}-\d{2}-\d{2}$/.test(s.testDate || "") ? s.testDate : null;
+  state.testDate = validDateStr(s.testDate) ? s.testDate : null;
   state.remind = Object.assign({ on:false, time:"19:00" }, s.remind || {});
   if (!/^\d{2}:\d{2}$/.test(state.remind.time)) state.remind.time = "19:00";
   state.totalAnswered = s.totalAnswered || 0; state.totalCorrect = s.totalCorrect || 0; state.idkCount = s.idkCount || 0;
@@ -3362,6 +3362,17 @@ function relTime(due){ const d = due - Date.now(); if (d <= 0) return "now"; con
 function todayStr(){ const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
 function dayGap(a,b){ return Math.round((Date.parse(b+"T00:00:00") - Date.parse(a+"T00:00:00")) / 86400000); }
 
+/* A regex only proves the SHAPE of a date. "0000-00-00" passes it, survives
+   into state, and renders "NaN days" on the Home screen, so check that it is a
+   real calendar day and that it round-trips (which also rejects 2027-02-30,
+   where Date silently rolls forward to March). */
+function validDateStr(v){
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(v || "")) return false;
+  const d = new Date(v + "T00:00:00");
+  if (isNaN(d.getTime())) return false;
+  const back = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  return back === v;
+}
 /* ---- Optional test date: countdown + a daily goal that fits the runway ---- */
 // Local calendar days from today to the test. null when unset, negative once past.
 function daysUntilTest(){ return state.testDate ? dayGap(todayStr(), state.testDate) : null; }
@@ -4436,9 +4447,14 @@ function bindLessonTabs(wrap){
 // name. Reading it early throws a ReferenceError, which killed the entire app
 // with a blank screen and no console error. The try/catch makes this callable
 // from anywhere, at any time.
+/* null means "cannot tell yet", not "none". EXPLAINERS is a const declared at
+   the very end of the script, and `typeof` does NOT shield you from a temporal
+   dead zone the way it shields an undeclared name - reading it early throws,
+   and answering 0 to that made callers act as though there were no
+   explanations at all. */
 function explainerCount(){
   try { return typeof EXPLAINERS === "undefined" ? 0 : Object.keys(EXPLAINERS).length; }
-  catch(e){ return 0; }
+  catch(e){ return null; }
 }
 const WATCH_ORDER = ["Biology","Biochemistry","General Chemistry","Organic Chemistry",
                      "Physics","Psychology","Sociology","CARS"];
@@ -4983,12 +4999,14 @@ function renderDashboard(){
     </div>`;
   CATEGORIES.forEach(cat => {
     const subs = state.activeSubjects.filter(s => categoryOfSubject(s) === cat.key); if (!subs.length) return;
-    let ans = 0, cor = 0; subs.forEach(s => { ans += state.stats[s].answered; cor += state.stats[s].correct; });
+    // A sibling line guards this same access; one missing stats object here
+    // blanked the whole Dashboard.
+    let ans = 0, cor = 0; subs.forEach(s => { const st = state.stats[s] || {}; ans += st.answered||0; cor += st.correct||0; });
     const cpct = ans ? Math.round((cor/ans)*100) : 0;
     html += `<div class="cat-card"><div class="chead"><span class="name"><span class="cat-tag ${cat.cls}"><span class="dotc"></span>${esc(cat.key)}</span></span>
         <span class="acc">${ans ? cpct + "% · " + ans + " done" : "not started"}</span></div>`;
     subs.forEach(s => {
-      const st = state.stats[s]; const spct = st.answered ? Math.round((st.correct/st.answered)*100) : 0;
+      const st = state.stats[s] || {}; const spct = st.answered ? Math.round((st.correct/st.answered)*100) : 0;
       const prev = state.preview[s] ? `<span class="pill preview">Preview</span>` : "";
       html += `<div class="srow"><span class="sn">${esc(s)} ${prev}</span>
         <span class="sr"><span class="pill ${state.difficulty[s]}">${diffLabel(state.difficulty[s])}</span>
@@ -5381,8 +5399,13 @@ function printExam(t){
   if (!queue.length){ toast("This exam isn't ready to print yet."); return; }
   const sections = [];
   if (t.sectionPlan){
-    let i = 0;
-    t.sectionPlan.forEach(sp => { sections.push({ cat:sp.cat, minutes:sp.minutes, items:queue.slice(i, i+sp.count) }); i += sp.count; });
+    // Group by the category actually present, the way startTest does, instead
+    // of slicing by the PLANNED count. If a pool ever comes up short the slices
+    // desynchronise and questions print under the wrong section heading, with
+    // continuous numbering and a matching key - so it looks perfectly correct.
+    t.sectionPlan.forEach(sp => {
+      sections.push({ cat:sp.cat, minutes:sp.minutes, items:queue.filter(q => q.category === sp.cat) });
+    });
   } else {
     sections.push({ cat:null, minutes:null, items:queue });
   }
@@ -5417,7 +5440,7 @@ function printExam(t){
     <div class="pr-cover">
       <div class="pr-brand">RampUp</div>
       <h1>${esc(t.title)}</h1>
-      <p class="pr-sub">Printable practice exam &middot; ${queue.length} questions${hrs?` &middot; about ${hrs} hours`:""}</p>
+      <p class="pr-sub">Printable practice exam &middot; ${queue.length} questions${hrs?` &middot; ${hrs} hours of section time`:""}</p>
       <ul class="pr-instr">
         <li>Answer on a separate sheet, then check the key at the end. Don't peek until you finish.</li>
         ${totalMin?`<li>For a real simulation, give each section the time shown at its heading.</li>`:""}
@@ -5707,7 +5730,12 @@ function syncChrome(){
   ["tabHome","tabWatch","tabTests","tabAch","tabDash","tabSet"].forEach(id => { const b = $("#"+id); if (b){ b.classList.remove("on"); b.removeAttribute("aria-current"); } });
   // A build without the patch step has no explainers, so the tab would lead
   // nowhere. Decided here rather than at script-parse time — see explainerCount.
-  { const w = $("#tabWatch"); if (w) w.hidden = !explainerCount(); }
+  // Only hide the tab when we KNOW there is nothing to watch. EXPLAINERS is a
+  // const appended at the end of the script, so on the ?session_id= boot path
+  // syncChrome runs while it is still in its temporal dead zone and the count
+  // reads 0 - which hid a tab with 121 explanations behind it until the user
+  // happened to tap another tab.
+  { const w = $("#tabWatch"), n = explainerCount(); if (w && n !== null) w.hidden = !n; }
   // Lessons is one view with two shelves, so the lit tab follows the shelf.
   const lit = (state.view === "lessons" && state.lessonView && state.lessonView.tab === "watch")
     ? "tabWatch" : tabMap[state.view];
@@ -5764,7 +5792,7 @@ $("#soundToggle").addEventListener("click", () => { state.sound = !state.sound; 
 $("#editCoursesBtn").addEventListener("click", editCourses);
 $("#testDateInput").addEventListener("change", e => {
   const v = e.target.value;
-  state.testDate = /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null;
+  state.testDate = validDateStr(v) ? v : null;
   renderSettings(); updateTopbar(); saveState(); rescheduleReminders();
 });
 $("#testDateClear").addEventListener("click", () => {
