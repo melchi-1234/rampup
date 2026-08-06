@@ -4542,6 +4542,10 @@ function goBack(){ if (state.cursor > 0){ state.cursor--; renderEntry(state.hist
    Practice rendering
    ============================================================ */
 function renderEntry(entry){
+  // This replaces the whole card, which detaches any open explainer without
+  // firing `toggle`. Tapping Next while one was playing used to leave the
+  // narration running over the next question with nothing able to stop it.
+  stopAllExplainers();
   const q = entry.q, card = $("#questionCard"), catCls = CAT_CLASS[q.category] || "chem";
   card.style.setProperty("--card-accent", CAT_ACCENT[catCls] || "var(--accent)");
   const reviewTag = q.confidence === "review" ? `<span class="pill review-flag" title="We're not fully certain about this one, double-check it.">${icon("alert")} Double-check</span>` : "";
@@ -5567,6 +5571,13 @@ function syncChrome(){
    opened next. Measured: leaving the Watch tab mid-scene left it running at
    2.4s → 3.7s → 5.3s. Stop everything before any teardown. */
 function stopAllExplainers(){
+  // Ask the player first: it keeps its own registry of live scenes, which is
+  // the only thing that still reaches narration whose row has already been
+  // re-rendered out of the document. The DOM sweep below is the fallback for
+  // rows that never registered.
+  // RU_EX is a top-level `const`, which is NOT a property of window, so a
+  // `window.RU_EX` guard here is always false and silently does nothing.
+  try { if (typeof RU_EX !== "undefined" && RU_EX.stopAll) RU_EX.stopAll(); } catch(e){}
   document.querySelectorAll(".ex").forEach(d => {
     const host = d.querySelector(".ex-body");
     if (!host) return;
@@ -5733,6 +5744,28 @@ const EXPLAINERS = {"k1w6g9zi":{"t":"m","d":41.23,"a":1,"n":"Hess's law: burning
 const RU_EX = (function(){
   const defs = {}, waiting = {}, styled = {};
 
+  /* Every mounted scene registers its stop here.
+     The DOM is not a usable handle on a playing scene. An Audio object outlives
+     the element that created it, and replacing a view's innerHTML detaches the
+     row WITHOUT firing `toggle`, so a stop path that has to find a node loses
+     the moment anything re-renders — the narration then plays on with nothing
+     left that can reach it. Answering a question and tapping Next did exactly
+     that, and no amount of navigating afterwards could silence it. */
+  const live = new Set();
+
+  function stopAll(except){
+    live.forEach(e => {
+      if (e.host === except) return;
+      try { e.stop(); } catch(err){}
+      // A detached host can never be reached or replayed again, so drop it.
+      if (!document.contains(e.host)) live.delete(e);
+    });
+  }
+  function register(host, stop){
+    live.forEach(e => { if (e.host === host) live.delete(e); });
+    live.add({ host: host, stop: stop });
+  }
+
   /* each explain/x/<key>.js ends with a call to this */
   function reg(key, def){
     defs[key] = def;
@@ -5774,6 +5807,8 @@ const RU_EX = (function(){
   function mountVideo(host, key, def){
     host.innerHTML = '<video class="ex-v" controls playsinline preload="metadata" '
       + 'src="explain/m/' + key + '.mp4"></video>' + transcriptHtml(def, key);
+    const v = host.querySelector("video");
+    register(host, () => { if (v) v.pause(); });
   }
 
   /* ---------- vector timeline ---------- */
@@ -5904,11 +5939,13 @@ const RU_EX = (function(){
       paint(); if (!playing) stop(t >= total);
     });
     host._exStop = () => stop(false);
+    register(host, () => stop(false));
 
     if (reduced()){
       /* honour the OS setting: land on the finished diagram, no motion, no autoplay */
       t = total; paint(); stop(true);
     } else {
+      host._exPlay = play;      // reopening a row should play, not sit frozen
       paint(); play();
     }
   }
@@ -5916,6 +5953,11 @@ const RU_EX = (function(){
   function mount(host, key){
     host.innerHTML = '<div class="ex-load">Loading the explanation…</div>';
     load(key, def => {
+      /* The module can arrive after the user has moved on, and the row it was
+         mounting into may already have been re-rendered away. Mounting into a
+         detached host would start narration for a screen nobody is looking at,
+         and register a scene nothing can reach. */
+      if (!document.contains(host)) return;
       if (def.video) mountVideo(host, key, def);
       else mountVector(host, key, def);
     }, () => {
@@ -5929,11 +5971,23 @@ const RU_EX = (function(){
      bubble, so it is captured. */
   document.addEventListener("toggle", e => {
     const d = e.target;
-    if (!(d instanceof HTMLElement) || !d.classList || !d.classList.contains("ex")) return;
+    if (!(d instanceof HTMLElement) || !d.classList) return;
+    if (!d.classList.contains("ex")){
+      /* A breakdown can sit inside another <details> (exam review wraps each
+         item in one). Collapsing the wrapper hides the player without closing
+         the .ex inside it, so the narration keeps going from somewhere the
+         user can no longer see or pause. */
+      if (d.tagName === "DETAILS" && !d.open){
+        d.querySelectorAll(".ex .ex-body").forEach(h => { if (h._exStop) h._exStop(); });
+      }
+      return;
+    }
     const host = d.querySelector(".ex-body");
     if (!host) return;
     if (d.open){
+      stopAll(host);        // never let two explanations talk over each other
       if (!host.dataset.mounted){ host.dataset.mounted = "1"; mount(host, d.dataset.key); }
+      else if (host._exPlay) host._exPlay();
     } else {
       if (host._exStop) host._exStop();
       const v = host.querySelector("video"); if (v) v.pause();
@@ -5952,7 +6006,7 @@ const RU_EX = (function(){
       + '<div class="ex-body"></div></details>';
   }
 
-  return { reg, block };
+  return { reg, block, stopAll };
 })();
 
 /* EXPLAIN_JS_END */
