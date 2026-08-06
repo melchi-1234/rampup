@@ -4633,8 +4633,17 @@ function recordAnswer(q, correct, idk, entry){
     s.correct++; state.totalCorrect++; s.cRun++; s.wRun = 0; state.streak++;
     if (sess){ sess.combo++; sess.maxCombo = Math.max(sess.maxCombo, sess.combo); state.bestCombo = Math.max(state.bestCombo, sess.combo); }
     gained = XP_CORRECT + (sess && sess.combo >= 2 ? Math.min(sess.combo - 1, 5) : 0) + (state.mode === "review" ? XP_REVIEW_BONUS : 0);
+    // Only a review that was actually DUE advances the box. The review pile is
+    // served whether or not anything is due, so without this a card could go
+    // from new to graduated in six answers inside one sitting - the intervals
+    // were correct and simply never enforced. Practising early is still
+    // welcome, it just does not shorten the schedule.
     const e = state.srs[q.key];
-    if (e){ const nb = e.box + 1; if (nb >= SRS_GRADUATE) delete state.srs[q.key]; else state.srs[q.key] = { box:nb, due:Date.now() + SRS_INTERVALS[nb] }; }
+    if (e && e.due <= Date.now()){
+      const nb = e.box + 1;
+      if (nb >= SRS_GRADUATE) delete state.srs[q.key];
+      else state.srs[q.key] = { box:nb, due:Date.now() + SRS_INTERVALS[nb] };
+    }
   } else {
     s.cRun = 0; s.wRun++; state.streak = 0;
     if (sess) sess.combo = 0;
