@@ -3253,12 +3253,18 @@ async function honorPurchaseReturn(){
   try {
     const res = await fetch(VERIFY_ENDPOINT + "?session_id=" + encodeURIComponent(sid), { cache:"no-store" });
     const data = await res.json().catch(() => null);
-    cleanUrl();                                 // got a response; drop the param so a refresh cannot re-trigger
     if (data && data.ok && data.paid && data.product){
       const g = grantByProduct(data.product);
-      if (g) return g;
+      if (g){ cleanUrl(); return g; }           // unlocked, so the token has done its job
     }
-    toast("We couldn't confirm that purchase. If you were charged, email " + SUPPORT_EMAIL + " and we'll unlock it.");
+    // Keep session_id for everything else. It is the ONLY thing that can redeem
+    // a payment that already went through, and every other outcome here is
+    // retryable: a Stripe 5xx, a product name that does not match the worker's
+    // map (fixable in the dashboard, then a refresh unlocks), a payment still
+    // settling, a body we could not parse. The worker answers HTTP 200 for most
+    // of those, so clearing on any parseable response left a charged customer
+    // with no way back and no error on refresh - it just silently did nothing.
+    toast("We couldn't confirm that purchase yet. Refresh to retry, or email " + SUPPORT_EMAIL + " if you were charged.");
   } catch(e){
     toast("Purchase check failed. Refresh to retry, or email " + SUPPORT_EMAIL + " if you were charged.");
     // leave session_id in the URL so a refresh retries the verification
