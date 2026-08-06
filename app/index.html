@@ -3385,6 +3385,11 @@ async function rescheduleReminders(){
     return (pend && pend.notifications) ? pend.notifications.length : 0;
   } catch(e){ return -1; }
 }
+/* rescheduleReminders deliberately queues nothing once the test date has gone
+   by. That is a policy, not a failure, but it looked identical to one: it
+   returned 0, so the toggle flipped itself back off and blamed the device,
+   which was simply untrue and threw away the setting as well. */
+function remindersPaused(){ const d = daysUntilTest(); return d !== null && d < 0; }
 async function setRemindOn(on){
   const P = notifPlugin();
   if (on && P){
@@ -3401,11 +3406,15 @@ async function setRemindOn(on){
   }
   state.remind.on = on;
   const n = await rescheduleReminders();
-  if (on && n <= 0){            // permission said yes but iOS queued nothing
+  if (on && n <= 0 && !remindersPaused()){   // permission said yes but iOS queued nothing
     state.remind.on = false; renderSettings(); saveState();
     toast("Couldn't schedule reminders on this device.");
     return;
   }
+  // Keep the setting on while it is paused, so reminders resume by themselves
+  // the moment a new test date is set.
+  if (on && remindersPaused())
+    toast("Your test date has passed, so reminders are paused. Set a new one and they'll start again.");
   renderSettings(); saveState();
 }
 
@@ -4785,7 +4794,11 @@ function renderRemind(){
     return;
   }
   st.innerHTML = on
-    ? `${icon("check")} <span>We'll nudge you daily at ${esc(fmtClock(state.remind.time))}.</span>`
+    // Never promise a nudge that is not scheduled. Past the test date nothing
+    // is queued, and this line used to claim a daily reminder anyway.
+    ? (remindersPaused()
+        ? `<span>Paused, your test date has passed. Set a new test date and daily reminders start again.</span>`
+        : `${icon("check")} <span>We'll nudge you daily at ${esc(fmtClock(state.remind.time))}.</span>`)
     : `<span>Off. Turn it on to get a daily nudge.</span>`;
 }
 function fmtClock(hhmm){
