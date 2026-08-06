@@ -5,7 +5,7 @@ RU_EX.reg("k1mlajjk", {
   css: `
 svg[data-x="k1mlajjk"]{font-family:inherit}
 svg[data-x="k1mlajjk"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1mlajjk"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1mlajjk"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1mlajjk"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1mlajjk"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -46,43 +46,43 @@ svg[data-x="k1mlajjk"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <g data-from="2">
     <rect x="24" y="76" width="288" height="54" rx="10" fill="var(--incorrect)" fill-opacity=".12"
           stroke="var(--incorrect)" stroke-width="2"/>
-    <text class="lbl" x="168" y="100" text-anchor="middle" fill="var(--incorrect)">DECLARATIVE</text>
-    <text class="sm"  x="168" y="120" text-anchor="middle" fill="var(--incorrect)">she could state it &#8212; she cannot</text>
+    <text class="lbl" x="168" y="100" text-anchor="middle" style="fill:var(--incorrect)">DECLARATIVE</text>
+    <text class="sm"  x="168" y="120" text-anchor="middle" style="fill:var(--incorrect)">she could state it &#8212; she cannot</text>
     <line x1="58" y1="185" x2="180" y2="185" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="58" y1="221" x2="180" y2="221" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="190" y="190" fill="var(--incorrect)">declarative</text>
-    <text class="sm" x="190" y="226" fill="var(--incorrect)">declarative</text>
+    <text class="sm" x="190" y="190" style="fill:var(--incorrect)">declarative</text>
+    <text class="sm" x="190" y="226" style="fill:var(--incorrect)">declarative</text>
   </g>
 
   <!-- beat 4: what each would actually have looked like -->
   <g data-from="3">
-    <text class="sm" x="330" y="190" fill="var(--incorrect)">she would recite the sequence</text>
-    <text class="sm" x="330" y="226" fill="var(--incorrect)">the summer she learned it, not the skill</text>
+    <text class="sm" x="330" y="190" style="fill:var(--incorrect)">she would recite the sequence</text>
+    <text class="sm" x="330" y="226" style="fill:var(--incorrect)">the summer she learned it, not the skill</text>
   </g>
 
   <!-- beat 5: working memory fails on timescale; procedural is the fit -->
   <g data-from="4">
     <line x1="58" y1="257" x2="180" y2="257" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="190" y="262" fill="var(--incorrect)">seconds-long buffer</text>
-    <text class="sm" x="330" y="262" fill="var(--incorrect)">memorized years ago, not seconds</text>
+    <text class="sm" x="190" y="262" style="fill:var(--incorrect)">seconds-long buffer</text>
+    <text class="sm" x="330" y="262" style="fill:var(--incorrect)">memorized years ago, not seconds</text>
 
     <rect x="328" y="76" width="288" height="54" rx="10" fill="var(--correct)" fill-opacity=".16"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="472" y="100" text-anchor="middle" fill="var(--correct)">NONDECLARATIVE</text>
-    <text class="sm"  x="472" y="120" text-anchor="middle" fill="var(--correct)">procedural &#183; skills and actions</text>
+    <text class="lbl" x="472" y="100" text-anchor="middle" style="fill:var(--correct)">NONDECLARATIVE</text>
+    <text class="sm"  x="472" y="120" text-anchor="middle" style="fill:var(--correct)">procedural &#183; skills and actions</text>
 
     <rect x="24" y="280" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39"  y="298" text-anchor="middle" fill="var(--correct)">D</text>
-    <text class="lbl" x="62"  y="298" fill="var(--correct)">procedural</text>
-    <text class="sm"  x="190" y="298" fill="var(--correct)">nondeclarative</text>
-    <text class="sm"  x="330" y="298" fill="var(--correct)">the skill lives in the hands</text>
+    <text class="lbl" x="39"  y="298" text-anchor="middle" style="fill:var(--correct)">D</text>
+    <text class="lbl" x="62"  y="298" style="fill:var(--correct)">procedural</text>
+    <text class="sm"  x="190" y="298" style="fill:var(--correct)">nondeclarative</text>
+    <text class="sm"  x="330" y="298" style="fill:var(--correct)">the skill lives in the hands</text>
   </g>
 
   <!-- beat 6: the rule -->
   <g data-from="5">
     <rect x="24" y="316" width="592" height="32" rx="10" fill="var(--correct)" fill-opacity=".12"/>
-    <text class="lbl" x="320" y="338" text-anchor="middle" fill="var(--correct)">Shows up in doing but not in telling &#8594; nondeclarative.</text>
+    <text class="lbl" x="320" y="338" text-anchor="middle" style="fill:var(--correct)">Shows up in doing but not in telling &#8594; nondeclarative.</text>
   </g>
 </svg>`,
   steps: [

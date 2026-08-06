@@ -6,7 +6,7 @@ RU_EX.reg("kqsyp9f", {
   css: `
 svg[data-x="kqsyp9f"]{font-family:inherit}
 svg[data-x="kqsyp9f"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kqsyp9f"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kqsyp9f"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kqsyp9f"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kqsyp9f"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -21,7 +21,7 @@ svg[data-x="kqsyp9f"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <line x1="210" y1="96" x2="242" y2="74" stroke="var(--text)" stroke-width="2"/>
   <line x1="210" y1="104" x2="242" y2="126" stroke="var(--text)" stroke-width="2"/>
   <rect x="242" y="62" width="38" height="22" rx="6" fill="var(--accent)" fill-opacity=".2"/>
-  <text class="lbl" x="248" y="78" fill="var(--accent)">H*</text>
+  <text class="lbl" x="248" y="78" style="fill:var(--accent)">H*</text>
   <text class="sm" x="112" y="78" text-anchor="end">H cis</text>
   <text class="sm" x="112" y="130" text-anchor="end">H trans</text>
   <text class="sm" x="248" y="130">CO&#8322;CH&#8323;</text>
@@ -44,10 +44,10 @@ svg[data-x="kqsyp9f"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <!-- beat 2: the two neighbors are not the same proton twice -->
   <g data-from="1">
     <rect x="74" y="62" width="42" height="22" rx="6" fill="var(--warn)" fill-opacity=".18"/>
-    <text class="sm" x="112" y="78" text-anchor="end" fill="var(--warn)">H cis</text>
+    <text class="sm" x="112" y="78" text-anchor="end" style="fill:var(--warn)">H cis</text>
     <rect x="58" y="114" width="58" height="22" rx="6" fill="var(--warn)" fill-opacity=".18"/>
-    <text class="sm" x="112" y="130" text-anchor="end" fill="var(--warn)">H trans</text>
-    <text class="sm" x="24" y="178" fill="var(--warn)">not equivalent: one cis, one trans</text>
+    <text class="sm" x="112" y="130" text-anchor="end" style="fill:var(--warn)">H trans</text>
+    <text class="sm" x="24" y="178" style="fill:var(--warn)">not equivalent: one cis, one trans</text>
   </g>
 
   <!-- beat 3: different geometry, different coupling constant -->
@@ -69,25 +69,25 @@ svg[data-x="kqsyp9f"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <line x1="465" y1="128" x2="465" y2="168" stroke="var(--accent)" stroke-width="3"/>
     <line x1="487" y1="128" x2="487" y2="168" stroke="var(--accent)" stroke-width="3"/>
     <line x1="519" y1="128" x2="519" y2="168" stroke="var(--accent)" stroke-width="3"/>
-    <text class="sm" x="556" y="150" fill="var(--accent)">4 lines</text>
+    <text class="sm" x="556" y="150" style="fill:var(--accent)">4 lines</text>
     <rect x="24" y="190" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="208" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm" x="232" y="208" fill="var(--correct)">&#10003; two unequal J &#8594; four equal lines</text>
+    <text class="lbl" x="39" y="208" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm" x="232" y="208" style="fill:var(--correct)">&#10003; two unequal J &#8594; four equal lines</text>
   </g>
 
   <!-- beat 5: what n+1 quietly assumes, and what a double bond does not block -->
   <g data-from="4">
     <line x1="60" y1="235" x2="224" y2="235" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="60" y1="267" x2="224" y2="267" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="232" y="240" fill="var(--incorrect)">n+1 assumes the two share one J</text>
-    <text class="sm" x="232" y="272" fill="var(--incorrect)">three-bond vinyl coupling is large</text>
+    <text class="sm" x="232" y="240" style="fill:var(--incorrect)">n+1 assumes the two share one J</text>
+    <text class="sm" x="232" y="272" style="fill:var(--incorrect)">three-bond vinyl coupling is large</text>
   </g>
 
   <!-- beat 6: count couplings, not neighbors -->
   <g data-from="5">
     <line x1="60" y1="299" x2="224" y2="299" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="232" y="304" fill="var(--incorrect)">both terminal H&#8217;s are three bonds away</text>
+    <text class="sm" x="232" y="304" style="fill:var(--incorrect)">both terminal H&#8217;s are three bonds away</text>
     <rect x="24" y="320" width="592" height="30" rx="10" fill="var(--accent)" fill-opacity=".12"/>
     <text class="lbl" x="320" y="340" text-anchor="middle">count distinct coupling constants, not neighbors</text>
   </g>

@@ -554,7 +554,19 @@
   .watch-row{margin:0 0 8px}
   .watch-tw{flex:1; min-width:0; display:flex; flex-direction:column; gap:3px}
   .watch-ti{font-weight:700}
-  .watch-q{font-size:12.5px; font-weight:600; color:var(--muted); line-height:1.45}
+  .watch-q{font-size:13px; font-weight:650; color:var(--text); opacity:.72; line-height:1.45}
+  /* the whole question, shown once the row is open */
+  .watch-full{padding:2px 2px 12px; border-bottom:1px dashed var(--border-strong); margin-bottom:12px}
+  .watch-psg{margin:0 0 9px; padding:10px 12px; border-radius:10px; background:var(--surface-2);
+             font-size:13.5px; line-height:1.6; color:var(--text); opacity:.85}
+  .watch-stem{margin:0 0 9px; font-size:14.5px; font-weight:700; line-height:1.5; color:var(--text)}
+  .watch-ch{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:5px}
+  .watch-ch li{display:flex; gap:9px; font-size:13.5px; font-weight:600; line-height:1.5;
+               color:var(--text); opacity:.8}
+  .watch-ch li span{flex:none; width:19px; height:19px; border-radius:6px; background:var(--surface-2);
+                    font-size:11.5px; font-weight:800; display:grid; place-items:center; margin-top:1px}
+  .watch-ch li.on{opacity:1; font-weight:700; color:var(--correct)}
+  .watch-ch li.on span{background:color-mix(in srgb,var(--correct) 22%,transparent); color:var(--correct)}
   .watch-intro{padding:14px 16px; margin:0 0 18px; border-radius:var(--r); background:var(--surface-2);
                border:1px solid var(--border-strong)}
   .watch-intro p{margin:0 0 9px; font-size:14px; line-height:1.6; color:var(--muted)}
@@ -4365,9 +4377,15 @@ function watchShelf(){
    resolves them directly. */
 function watchQuestion(key){
   const q = BANK.find(x => x.key === key);
-  if (!q) return "";
-  let t = q.question.replace(/\s+/g, " ").trim();
-  return t.length > 132 ? t.slice(0, 130).replace(/\s+\S*$/, "") + "…" : t;
+  if (!q) return null;
+  const full = q.question.replace(/\s+/g, " ").trim();
+  return {
+    full,
+    short: full.length > 108 ? full.slice(0, 106).replace(/\s+\S*$/, "") + "…" : full,
+    passage: q.passage ? q.passage.replace(/\s+/g, " ").trim() : "",
+    choices: q.choices || [],
+    answer: q.answer
+  };
 }
 function renderWatchShelf(wrap){
   const groups = watchShelf();
@@ -4389,13 +4407,23 @@ function renderWatchShelf(wrap){
       // shaped like this, so the shelf needs no player API: class="ex",
       // data-key, and a .ex-body to mount into.
       const q = watchQuestion(it.key);
+      // The full question lives OUTSIDE .ex-body, because the player owns that
+      // element and overwrites it on mount. Collapsed you get a one-line
+      // preview; opened you get the whole thing, passage included.
+      const LET = ["A","B","C","D","E","F"];
+      const full = q ? `<div class="watch-full">
+          ${q.passage ? `<p class="watch-psg">${esc(q.passage)}</p>` : ""}
+          <p class="watch-stem">${esc(q.full)}</p>
+          <ol class="watch-ch">${q.choices.map((c, i) =>
+            `<li${i === q.answer ? ' class="on"' : ""}><span>${LET[i]}</span>${esc(c)}</li>`).join("")}</ol>
+        </div>` : "";
       h += `<details class="ex watch-row" data-key="${esc(it.key)}">
         <summary>${icon("bulb")}
           <span class="watch-tw"><span class="watch-ti">${esc(it.title)}</span>
-            ${q ? `<span class="watch-q">${esc(q)}</span>` : ""}</span>
+            ${q ? `<span class="watch-q">${esc(q.short)}</span>` : ""}</span>
           <span class="ex-badge">${it.secs}s</span>
           <span class="chev">${icon("chevron")}</span></summary>
-        <div class="ex-body"></div></details>`;
+        ${full}<div class="ex-body"></div></details>`;
     });
   });
   wrap.innerHTML = h;

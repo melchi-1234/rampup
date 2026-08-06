@@ -6,7 +6,7 @@ RU_EX.reg("k1msxvsk", {
   css: `
 svg[data-x="k1msxvsk"]{font-family:inherit}
 svg[data-x="k1msxvsk"] .lbl{fill:var(--text);font-size:15px;font-weight:700}
-svg[data-x="k1msxvsk"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1msxvsk"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1msxvsk"] .glass{fill:var(--card);stroke:var(--border-strong);stroke-width:2}
 svg[data-x="k1msxvsk"] .soln{fill:var(--accent);opacity:.14}
 svg[data-x="k1msxvsk"] .metal{fill:var(--muted);stroke:var(--text);stroke-width:1.5}
@@ -75,26 +75,26 @@ svg[data-x="k1msxvsk"][data-step="6"] .ans{opacity:1}
   <!-- names -->
   <text class="lbl" x="128" y="322" text-anchor="middle">Zn | Zn²⁺</text>
   <text class="lbl" x="512" y="322" text-anchor="middle">Cu | Cu²⁺</text>
-  <text class="pot sm" x="128" y="342" text-anchor="middle" fill="var(--incorrect)">E° = −0.76 V</text>
-  <text class="pot sm" x="512" y="342" text-anchor="middle" fill="var(--correct)">E° = +0.34 V</text>
+  <text class="pot sm" x="128" y="342" text-anchor="middle" style="fill:var(--incorrect)">E° = −0.76 V</text>
+  <text class="pot sm" x="512" y="342" text-anchor="middle" style="fill:var(--correct)">E° = +0.34 V</text>
   <!-- roles -->
   <g class="role">
     <rect x="58" y="86" width="96" height="26" rx="13" fill="var(--incorrect)" opacity=".16"/>
-    <text class="sm" x="106" y="104" text-anchor="middle" fill="var(--incorrect)">ANODE</text>
+    <text class="sm" x="106" y="104" text-anchor="middle" style="fill:var(--incorrect)">ANODE</text>
     <rect x="470" y="86" width="118" height="26" rx="13" fill="var(--correct)" opacity=".16"/>
-    <text class="sm" x="529" y="104" text-anchor="middle" fill="var(--correct)">CATHODE</text>
+    <text class="sm" x="529" y="104" text-anchor="middle" style="fill:var(--correct)">CATHODE</text>
   </g>
   <g class="halfrx">
     <text class="sm" x="128" y="230" text-anchor="middle">Zn → Zn²⁺ + 2e⁻</text>
     <text class="sm" x="512" y="230" text-anchor="middle">Cu²⁺ + 2e⁻ → Cu</text>
   </g>
-  <text class="sm" x="320" y="176" text-anchor="middle" fill="var(--accent)" class="el-lbl">e⁻ flow →</text>
+  <text class="sm" x="320" y="176" text-anchor="middle" class="el-lbl" style="fill:var(--accent)">e⁻ flow →</text>
   <!-- result -->
   <text class="eq lbl" x="320" y="258" text-anchor="middle">E°cell = E°cathode − E°anode</text>
   <text class="eq sm" x="320" y="280" text-anchor="middle">= 0.34 − (−0.76)</text>
   <g class="ans">
     <rect x="238" y="292" width="164" height="34" rx="17" fill="var(--correct)" opacity=".16"/>
-    <text class="lbl" x="320" y="315" text-anchor="middle" fill="var(--correct)">= +1.10 V</text>
+    <text class="lbl" x="320" y="315" text-anchor="middle" style="fill:var(--correct)">= +1.10 V</text>
   </g>
 </svg>`,
   steps: [

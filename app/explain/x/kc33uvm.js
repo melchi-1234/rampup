@@ -5,7 +5,7 @@ RU_EX.reg("kc33uvm", {
   css: `
 svg[data-x="kc33uvm"]{font-family:inherit}
 svg[data-x="kc33uvm"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kc33uvm"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kc33uvm"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kc33uvm"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kc33uvm"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -15,7 +15,7 @@ svg[data-x="kc33uvm"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <!-- the rule -->
   <g data-from="1">
     <rect x="24" y="42" width="592" height="30" rx="10" fill="var(--accent)" fill-opacity=".14"/>
-    <text class="lbl" x="320" y="62" text-anchor="middle" fill="var(--accent)">elevation counts PARTICLES &#8212; compare i &#215; m, never m on its own</text>
+    <text class="lbl" x="320" y="62" text-anchor="middle" style="fill:var(--accent)">elevation counts PARTICLES &#8212; compare i &#215; m, never m on its own</text>
   </g>
 
   <!-- fixed columns: solution | m | i | product -->
@@ -39,18 +39,18 @@ svg[data-x="kc33uvm"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="4">
     <text class="sm" x="24"  y="220">0.05 m Na&#8322;SO&#8324;</text>
     <text class="sm" x="280" y="220">0.05</text>
-    <text class="sm" x="360" y="220" fill="var(--warn)">3</text>
-    <text class="lbl" x="440" y="220" fill="var(--warn)">0.15</text>
-    <text class="sm" x="510" y="220" fill="var(--warn)">high i, low m</text>
+    <text class="sm" x="360" y="220" style="fill:var(--warn)">3</text>
+    <text class="lbl" x="440" y="220" style="fill:var(--warn)">0.15</text>
+    <text class="sm" x="510" y="220" style="fill:var(--warn)">high i, low m</text>
   </g>
   <g data-from="5">
     <rect x="18" y="240" width="598" height="34" rx="10" fill="var(--correct)" fill-opacity=".18"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="sm"  x="24"  y="262" fill="var(--correct)">0.10 m CaCl&#8322;</text>
-    <text class="sm"  x="280" y="262" fill="var(--correct)">0.10</text>
-    <text class="sm"  x="360" y="262" fill="var(--correct)">3</text>
-    <text class="lbl" x="440" y="262" fill="var(--correct)">0.30</text>
-    <text class="sm"  x="510" y="262" fill="var(--correct)">highest</text>
+    <text class="sm"  x="24"  y="262" style="fill:var(--correct)">0.10 m CaCl&#8322;</text>
+    <text class="sm"  x="280" y="262" style="fill:var(--correct)">0.10</text>
+    <text class="sm"  x="360" y="262" style="fill:var(--correct)">3</text>
+    <text class="lbl" x="440" y="262" style="fill:var(--correct)">0.30</text>
+    <text class="sm"  x="510" y="262" style="fill:var(--correct)">highest</text>
     <text class="sm"  x="24" y="300">three particles AND the full molality &#8212; that is what wins it</text>
   </g>
 </svg>`,

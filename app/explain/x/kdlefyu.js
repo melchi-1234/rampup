@@ -51,23 +51,23 @@ svg[data-x="kdlefyu"][data-step="5"] .stage,svg[data-x="kdlefyu"][data-step="6"]
 
   <g class="says">
     <rect x="424" y="96" width="196" height="46" rx="16" fill="var(--incorrect)" opacity=".14"/>
-    <text class="lbl" x="522" y="116" text-anchor="middle" fill="var(--incorrect)">“the tall one has more”</text>
-    <text class="sm"  x="522" y="134" text-anchor="middle" fill="var(--incorrect)">because it is higher</text>
+    <text class="lbl" x="522" y="116" text-anchor="middle" style="fill:var(--incorrect)">“the tall one has more”</text>
+    <text class="sm"  x="522" y="134" text-anchor="middle" style="fill:var(--incorrect)">because it is higher</text>
   </g>
 
   <g class="verdict">
     <text class="lbl" x="424" y="176">judging by ONE dimension</text>
     <text class="sm"  x="424" y="196">height, ignoring width</text>
-    <text class="lbl" x="424" y="222" fill="var(--accent)">= lack of conservation</text>
+    <text class="lbl" x="424" y="222" style="fill:var(--accent)">= lack of conservation</text>
   </g>
   <g class="ego">
     <text class="sm" x="424" y="252">also can't say how it looks</text>
     <text class="sm" x="424" y="270">from someone else's seat</text>
-    <text class="lbl" x="424" y="292" fill="var(--accent)">= egocentrism</text>
+    <text class="lbl" x="424" y="292" style="fill:var(--accent)">= egocentrism</text>
   </g>
   <g class="stage">
     <rect x="24" y="304" width="380" height="30" rx="15" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="214" y="324" text-anchor="middle" fill="var(--accent)">both are preoperational, roughly ages 2 to 7</text>
+    <text class="lbl" x="214" y="324" text-anchor="middle" style="fill:var(--accent)">both are preoperational, roughly ages 2 to 7</text>
   </g>
 </svg>`,
   steps: [

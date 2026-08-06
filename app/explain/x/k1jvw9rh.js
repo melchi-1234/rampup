@@ -19,8 +19,8 @@ svg[data-x="k1jvw9rh"] .bar{transition:height .7s ease, y .7s ease}
     <text class="lbl" x="40" y="128">= [Zn²⁺]/[Cu²⁺] = 1.0 / 0.10 = 10</text>
   </g>
   <g data-from="3">
-    <text class="lbl" x="344" y="108" fill="var(--warn)">Q &gt; 1</text>
-    <text class="sm"  x="344" y="128" fill="var(--warn)">a reactant is scarce → voltage falls</text>
+    <text class="lbl" x="344" y="108" style="fill:var(--warn)">Q &gt; 1</text>
+    <text class="sm"  x="344" y="128" style="fill:var(--warn)">a reactant is scarce → voltage falls</text>
   </g>
 
   <g data-from="4">
@@ -41,13 +41,13 @@ svg[data-x="k1jvw9rh"] .bar{transition:height .7s ease, y .7s ease}
   <g data-from="6">
     <rect x="546" y="164" width="52" height="136" rx="6" fill="var(--correct)" opacity=".8"/>
     <text class="sm" x="572" y="318" text-anchor="middle">1.07 V</text>
-    <text class="lbl" x="572" y="150" text-anchor="middle" fill="var(--incorrect)">&darr; 0.03</text>
+    <text class="lbl" x="572" y="150" text-anchor="middle" style="fill:var(--incorrect)">&darr; 0.03</text>
   </g>
 
   <g data-from="6">
     <rect x="24" y="300" width="400" height="46" rx="16" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="224" y="320" text-anchor="middle" fill="var(--accent)">about 0.03 V lower, not 0.06</text>
-    <text class="sm"  x="224" y="338" text-anchor="middle" fill="var(--accent)">n DIVIDES the factor, it does not double it</text>
+    <text class="lbl" x="224" y="320" text-anchor="middle" style="fill:var(--accent)">about 0.03 V lower, not 0.06</text>
+    <text class="sm"  x="224" y="338" text-anchor="middle" style="fill:var(--accent)">n DIVIDES the factor, it does not double it</text>
   </g>
 </svg>`,
   steps: [

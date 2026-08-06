@@ -26,38 +26,38 @@ svg[data-x="k1edpgjv"] .box{fill:var(--surface-2);stroke:var(--border-strong);st
   <g data-from="2">
     <rect x="24" y="116" width="592" height="52" rx="14"
           fill="var(--accent)" fill-opacity=".18" stroke="var(--accent)" stroke-width="2.5"/>
-    <text class="tag" x="40" y="136" fill="var(--accent)">LOAD-BEARING</text>
-    <text class="lbl" x="320" y="156" text-anchor="middle" fill="var(--accent)">choosing is unavoidable — no map can stop choosing</text>
+    <text class="tag" x="40" y="136" style="fill:var(--accent)">LOAD-BEARING</text>
+    <text class="lbl" x="320" y="156" text-anchor="middle" style="fill:var(--accent)">choosing is unavoidable — no map can stop choosing</text>
   </g>
-  <text class="sm" x="320" y="186" text-anchor="middle" data-from="3" fill="var(--incorrect)">knock this out and everything above it falls</text>
+  <text class="sm" x="320" y="186" text-anchor="middle" data-from="3" style="fill:var(--incorrect)">knock this out and everything above it falls</text>
 
   <!-- the four choices, placed relative to the claim -->
   <g data-from="4">
     <rect class="box" x="24" y="200" width="288" height="44" rx="12"/>
     <text class="sm" x="40" y="220">B · two mapmakers emphasise different things</text>
-    <text class="sm" x="40" y="236" fill="var(--incorrect)">that IS selection happening → supports him</text>
+    <text class="sm" x="40" y="236" style="fill:var(--incorrect)">that IS selection happening → supports him</text>
     <rect class="box" x="328" y="200" width="288" height="44" rx="12"/>
     <text class="sm" x="344" y="220">D · governments commissioned maps</text>
-    <text class="sm" x="344" y="236" fill="var(--incorrect)">interested selection → supports him</text>
+    <text class="sm" x="344" y="236" style="fill:var(--incorrect)">interested selection → supports him</text>
   </g>
   <g data-from="5">
     <rect class="box" x="24" y="252" width="288" height="44" rx="12"/>
     <text class="sm" x="40" y="272">C · readers trust detailed maps</text>
-    <text class="sm" x="40" y="288" fill="var(--incorrect)">his own point, restated back at him</text>
+    <text class="sm" x="40" y="288" style="fill:var(--incorrect)">his own point, restated back at him</text>
   </g>
 
   <g data-from="6">
     <rect x="328" y="252" width="288" height="44" rx="12"
           fill="var(--correct)" fill-opacity=".2" stroke="var(--correct)" stroke-width="2.5"/>
-    <text class="sm"  x="344" y="272" fill="var(--correct)">A · satellites record with no human choosing</text>
-    <text class="lbl" x="344" y="289" fill="var(--correct)">a map that never chose → the claim breaks</text>
+    <text class="sm"  x="344" y="272" style="fill:var(--correct)">A · satellites record with no human choosing</text>
+    <text class="lbl" x="344" y="289" style="fill:var(--correct)">a map that never chose → the claim breaks</text>
     <path d="M472 250 V172" stroke="var(--correct)" stroke-width="3" stroke-dasharray="6 4"/>
   </g>
 
   <text class="sm" x="320" y="322" text-anchor="middle" data-from="3">three choices describe selection · only one denies it is necessary</text>
   <g data-from="6">
     <rect x="120" y="330" width="400" height="26" rx="13" fill="var(--accent)" opacity=".16"/>
-    <text class="lbl" x="320" y="349" text-anchor="middle" fill="var(--accent)">find the load-bearing claim, then aim at it</text>
+    <text class="lbl" x="320" y="349" text-anchor="middle" style="fill:var(--accent)">find the load-bearing claim, then aim at it</text>
   </g>
 </svg>`,
   steps: [

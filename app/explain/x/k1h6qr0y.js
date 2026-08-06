@@ -6,7 +6,7 @@ RU_EX.reg("k1h6qr0y", {
   css: `
 svg[data-x="k1h6qr0y"]{font-family:inherit}
 svg[data-x="k1h6qr0y"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1h6qr0y"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1h6qr0y"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1h6qr0y"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1h6qr0y"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -19,13 +19,13 @@ svg[data-x="k1h6qr0y"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <rect x="332" y="44" width="284" height="46" rx="10" fill="var(--accent)" fill-opacity=".14"/>
     <text class="lbl" x="166" y="66" text-anchor="middle">the whole structure</text>
     <text class="sm"  x="166" y="84" text-anchor="middle">what a system needs, who holds power</text>
-    <text class="lbl" x="474" y="66" text-anchor="middle" fill="var(--accent)">face to face</text>
-    <text class="sm"  x="474" y="84" text-anchor="middle" fill="var(--accent)">meaning people build between them</text>
+    <text class="lbl" x="474" y="66" text-anchor="middle" style="fill:var(--accent)">face to face</text>
+    <text class="sm"  x="474" y="84" text-anchor="middle" style="fill:var(--accent)">meaning people build between them</text>
   </g>
 
   <!-- beat 3: which side the evidence sits on -->
   <g data-from="2">
-    <text class="sm" x="24" y="116" fill="var(--accent)">every symbol here was invented by the workers themselves, in the doing</text>
+    <text class="sm" x="24" y="116" style="fill:var(--accent)">every symbol here was invented by the workers themselves, in the doing</text>
   </g>
 
   <!-- the four perspectives -->
@@ -46,23 +46,23 @@ svg[data-x="k1h6qr0y"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <g data-from="3">
     <rect x="24" y="224" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="242" text-anchor="middle" fill="var(--correct)">C</text>
-    <text class="sm" x="330" y="242" fill="var(--correct)">shared symbols &#8594; shared identity</text>
+    <text class="lbl" x="39" y="242" text-anchor="middle" style="fill:var(--correct)">C</text>
+    <text class="sm" x="330" y="242" style="fill:var(--correct)">shared symbols &#8594; shared identity</text>
   </g>
 
   <!-- beat 5: the two structural ones -->
   <g data-from="4">
     <line x1="64" y1="195" x2="300" y2="195" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="64" y1="279" x2="300" y2="279" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="330" y="200" fill="var(--incorrect)">would ask who is exploiting whom</text>
-    <text class="sm" x="330" y="284" fill="var(--incorrect)">would ask what the factory needs</text>
+    <text class="sm" x="330" y="200" style="fill:var(--incorrect)">would ask who is exploiting whom</text>
+    <text class="sm" x="330" y="284" style="fill:var(--incorrect)">would ask what the factory needs</text>
   </g>
 
   <!-- beat 6: rational choice -->
   <g data-from="5">
     <line x1="64" y1="153" x2="300" y2="153" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="330" y="158" fill="var(--incorrect)">would price costs against benefits</text>
-    <text class="sm" x="24" y="326" fill="var(--accent)">none of those is what a private nickname is doing</text>
+    <text class="sm" x="330" y="158" style="fill:var(--incorrect)">would price costs against benefits</text>
+    <text class="sm" x="24" y="326" style="fill:var(--accent)">none of those is what a private nickname is doing</text>
   </g>
 </svg>`,
   steps: [

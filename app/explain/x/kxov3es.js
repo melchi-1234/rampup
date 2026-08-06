@@ -19,38 +19,38 @@ svg[data-x="kxov3es"] .box{fill:var(--surface-2);stroke:var(--border-strong);str
   <path d="M127 192 V224 H236" stroke="var(--muted)" stroke-width="2.5" fill="none"/>
   <line x1="228" y1="34" x2="252" y2="54" stroke="var(--incorrect)" stroke-width="3"/>
   <line x1="228" y1="214" x2="252" y2="234" stroke="var(--incorrect)" stroke-width="3"/>
-  <text class="lbl" x="264" y="48" fill="var(--incorrect)">disconnected</text>
-  <text class="sm"  x="264" y="66" fill="var(--incorrect)">the charge has nowhere to go</text>
+  <text class="lbl" x="264" y="48" style="fill:var(--incorrect)">disconnected</text>
+  <text class="sm"  x="264" y="66" style="fill:var(--incorrect)">the charge has nowhere to go</text>
 
   <text class="lbl" x="127" y="252" text-anchor="middle">32 μF · 1000 V · 16 J</text>
-  <text class="lbl" x="127" y="278" text-anchor="middle" data-from="1" fill="var(--accent)">Q is FIXED</text>
+  <text class="lbl" x="127" y="278" text-anchor="middle" data-from="1" style="fill:var(--accent)">Q is FIXED</text>
 
   <!-- which formula -->
   <text class="lbl" x="300" y="110" data-from="2">three forms of the same equation:</text>
   <g data-from="3">
     <rect class="box" x="300" y="124" width="150" height="40" rx="12"/>
-    <text class="big" x="375" y="151" text-anchor="middle" fill="var(--muted)">½CV²</text>
+    <text class="big" x="375" y="151" text-anchor="middle" style="fill:var(--muted)">½CV²</text>
     <line x1="308" y1="160" x2="442" y2="128" stroke="var(--incorrect)" stroke-width="3"/>
-    <text class="sm" x="462" y="150" fill="var(--incorrect)">only if V is held fixed</text>
+    <text class="sm" x="462" y="150" style="fill:var(--incorrect)">only if V is held fixed</text>
   </g>
   <g data-from="4">
     <rect class="box" x="300" y="176" width="150" height="40" rx="12"
           fill="var(--correct)" fill-opacity=".18" stroke="var(--correct)"/>
-    <text class="big" x="375" y="203" text-anchor="middle" fill="var(--correct)">Q²/2C</text>
-    <text class="sm" x="462" y="202" fill="var(--correct)">Q is what's fixed here</text>
+    <text class="big" x="375" y="203" text-anchor="middle" style="fill:var(--correct)">Q²/2C</text>
+    <text class="sm" x="462" y="202" style="fill:var(--correct)">Q is what's fixed here</text>
   </g>
 
   <!-- the dielectric -->
   <g data-from="5">
     <rect x="52" y="94" width="150" height="80" rx="4" fill="var(--accent)" opacity=".3"/>
-    <text class="sm" x="127" y="140" text-anchor="middle" fill="var(--accent)">κ = 4</text>
+    <text class="sm" x="127" y="140" text-anchor="middle" style="fill:var(--accent)">κ = 4</text>
     <text class="lbl" x="300" y="252">C × 4, and C is in the DENOMINATOR</text>
     <text class="sm"  x="300" y="272">so the energy divides by 4</text>
   </g>
 
   <g data-from="6">
     <rect x="300" y="288" width="300" height="46" rx="16" fill="var(--accent)" opacity=".16"/>
-    <text class="big" x="450" y="317" text-anchor="middle" fill="var(--accent)">16 J → 4 J</text>
+    <text class="big" x="450" y="317" text-anchor="middle" style="fill:var(--accent)">16 J → 4 J</text>
   </g>
 </svg>`,
   steps: [

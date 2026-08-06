@@ -13,11 +13,11 @@ svg[data-x="k1aj2mjz"] .bar{transition:height .8s ease, y .8s ease}
 
   <rect class="box" x="40" y="52" width="240" height="56" rx="14" data-from="1"/>
   <text class="lbl" x="160" y="76" text-anchor="middle" data-from="1">formally processed</text>
-  <text class="sm"  x="160" y="96" text-anchor="middle" data-from="1" fill="var(--incorrect)">officially labeled delinquent</text>
+  <text class="sm"  x="160" y="96" text-anchor="middle" data-from="1" style="fill:var(--incorrect)">officially labeled delinquent</text>
 
   <rect class="box" x="360" y="52" width="240" height="56" rx="14" data-from="1"/>
   <text class="lbl" x="480" y="76" text-anchor="middle" data-from="1">handled informally</text>
-  <text class="sm"  x="480" y="96" text-anchor="middle" data-from="1" fill="var(--correct)">no label</text>
+  <text class="sm"  x="480" y="96" text-anchor="middle" data-from="1" style="fill:var(--correct)">no label</text>
 
   <!-- outcome bars -->
   <g data-from="2">
@@ -26,7 +26,7 @@ svg[data-x="k1aj2mjz"] .bar{transition:height .8s ease, y .8s ease}
     <rect x="440" y="196" width="80" height="44" rx="6" fill="var(--muted)" opacity=".7"/>
     <text class="sm" x="160" y="260" text-anchor="middle">reoffending, 3 yrs</text>
     <text class="sm" x="480" y="260" text-anchor="middle">reoffending, 3 yrs</text>
-    <text class="lbl" x="160" y="132" text-anchor="middle" fill="var(--incorrect)">much higher</text>
+    <text class="lbl" x="160" y="132" text-anchor="middle" style="fill:var(--incorrect)">much higher</text>
   </g>
 
   <!-- what was held constant is the whole argument -->
@@ -34,16 +34,16 @@ svg[data-x="k1aj2mjz"] .bar{transition:height .8s ease, y .8s ease}
     <text class="sm" x="320" y="288" text-anchor="middle">held constant: offence seriousness &middot; peer group</text>
   </g>
   <g data-from="4">
-    <text class="sm" x="320" y="308" text-anchor="middle" fill="var(--muted)">so not &ldquo;they were worse already&rdquo;, and not &ldquo;they fell in with worse friends&rdquo;</text>
+    <text class="sm" x="320" y="308" text-anchor="middle" style="fill:var(--muted)">so not &ldquo;they were worse already&rdquo;, and not &ldquo;they fell in with worse friends&rdquo;</text>
   </g>
   <g data-from="5">
     <rect x="150" y="318" width="340" height="34" rx="17" fill="var(--accent)" opacity=".16"/>
-    <text class="lbl" x="320" y="341" text-anchor="middle" fill="var(--accent)">the only difference was the label itself</text>
+    <text class="lbl" x="320" y="341" text-anchor="middle" style="fill:var(--accent)">the only difference was the label itself</text>
   </g>
   <g data-from="6">
     <rect x="40" y="140" width="240" height="0.1" fill="none"/>
-    <text class="lbl" x="600" y="132" text-anchor="end" fill="var(--accent)">labelling theory</text>
-    <text class="sm"  x="600" y="152" text-anchor="end" fill="var(--accent)">round two = secondary deviance</text>
+    <text class="lbl" x="600" y="132" text-anchor="end" style="fill:var(--accent)">labelling theory</text>
+    <text class="sm"  x="600" y="152" text-anchor="end" style="fill:var(--accent)">round two = secondary deviance</text>
   </g>
 </svg>`,
   steps: [

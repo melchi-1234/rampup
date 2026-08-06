@@ -5,7 +5,7 @@ RU_EX.reg("k14l3q1s", {
   css: `
 svg[data-x="k14l3q1s"]{font-family:inherit}
 svg[data-x="k14l3q1s"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k14l3q1s"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k14l3q1s"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k14l3q1s"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k14l3q1s"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -54,8 +54,8 @@ svg[data-x="k14l3q1s"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
           stroke="var(--correct)" stroke-width="2"/>
     <rect x="36" y="138" width="28" height="24" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="1.5"/>
-    <text class="lbl" x="50" y="156" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm"  x="72" y="156" fill="var(--correct)">structure shapes behavior</text>
+    <text class="lbl" x="50" y="156" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm"  x="72" y="156" style="fill:var(--correct)">structure shapes behavior</text>
     <text class="sm"  x="44" y="184">1 supermarket / 40,000 people</text>
     <text class="sm"  x="44" y="204">few clinics nearby</text>
     <text class="sm"  x="44" y="224">limited transit to reach food</text>
@@ -64,21 +64,21 @@ svg[data-x="k14l3q1s"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <!-- beat 4: the passage pre-refutes the education answer -->
   <g data-from="3">
     <line x1="380" y1="151" x2="530" y2="151" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="344" y="176" fill="var(--incorrect)">they already know the advice</text>
+    <text class="sm" x="344" y="176" style="fill:var(--incorrect)">they already know the advice</text>
   </g>
 
   <!-- beat 5: genes and free choice both fail on the same facts -->
   <g data-from="4">
     <line x1="380" y1="221" x2="545" y2="221" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="344" y="246" fill="var(--incorrect)">a zip code is not a gene pool</text>
+    <text class="sm" x="344" y="246" style="fill:var(--incorrect)">a zip code is not a gene pool</text>
     <line x1="380" y1="291" x2="510" y2="291" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="344" y="316" fill="var(--incorrect)">one store is not a free choice</text>
+    <text class="sm" x="344" y="316" style="fill:var(--incorrect)">one store is not a free choice</text>
   </g>
 
   <!-- beat 6: the rule -->
   <g data-from="5">
-    <text class="lbl" x="24" y="278" fill="var(--accent)">knowledge present,</text>
-    <text class="lbl" x="24" y="298" fill="var(--accent)">behavior blocked</text>
+    <text class="lbl" x="24" y="278" style="fill:var(--accent)">knowledge present,</text>
+    <text class="lbl" x="24" y="298" style="fill:var(--accent)">behavior blocked</text>
     <text class="sm"  x="24" y="322">&#8594; the cause is upstream</text>
   </g>
 </svg>`,

@@ -5,7 +5,7 @@ RU_EX.reg("klbwnb4", {
   css: `
 svg[data-x="klbwnb4"]{font-family:inherit}
 svg[data-x="klbwnb4"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="klbwnb4"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="klbwnb4"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="klbwnb4"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="klbwnb4"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -50,10 +50,10 @@ svg[data-x="klbwnb4"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="1">
     <rect x="200" y="48" width="96" height="34" rx="10" fill="var(--incorrect)" fill-opacity=".16"
           stroke="var(--incorrect)" stroke-width="2"/>
-    <text class="lbl" x="248" y="70" text-anchor="middle" fill="var(--incorrect)">C=O</text>
-    <text class="sm"  x="248" y="102" text-anchor="middle" fill="var(--incorrect)">0 H</text>
+    <text class="lbl" x="248" y="70" text-anchor="middle" style="fill:var(--incorrect)">C=O</text>
+    <text class="sm"  x="248" y="102" text-anchor="middle" style="fill:var(--incorrect)">0 H</text>
     <line x1="60" y1="317" x2="337" y2="317" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="350" y="322" fill="var(--incorrect)">the carbonyl carries no H</text>
+    <text class="sm" x="350" y="322" style="fill:var(--incorrect)">the carbonyl carries no H</text>
   </g>
 
   <!-- beat 3: state the rule precisely -->
@@ -76,24 +76,24 @@ svg[data-x="klbwnb4"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
 
     <rect x="20" y="214" width="290" height="26" rx="8" fill="var(--correct)" fill-opacity=".16"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="37" y="232" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm"  x="60" y="232" fill="var(--correct)">3 signals: singlet, quartet, triplet</text>
-    <text class="sm"  x="350" y="232" fill="var(--correct)">matches n = 0, 3, 2</text>
+    <text class="lbl" x="37" y="232" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm"  x="60" y="232" style="fill:var(--correct)">3 signals: singlet, quartet, triplet</text>
+    <text class="sm"  x="350" y="232" style="fill:var(--correct)">matches n = 0, 3, 2</text>
   </g>
 
   <!-- beat 5: the two remaining slips -->
   <g data-from="4">
     <line x1="60" y1="257" x2="284" y2="257" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="350" y="262" fill="var(--incorrect)">the two CH&#8323; are not equivalent</text>
+    <text class="sm" x="350" y="262" style="fill:var(--incorrect)">the two CH&#8323; are not equivalent</text>
     <line x1="60" y1="287" x2="304" y2="287" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="350" y="292" fill="var(--incorrect)">counts groups, not hydrogens</text>
+    <text class="sm" x="350" y="292" style="fill:var(--incorrect)">counts groups, not hydrogens</text>
   </g>
 
   <!-- beat 6: coupling stops at the ester oxygen -->
   <g data-from="5">
     <line x1="297" y1="57" x2="311" y2="73" stroke="var(--incorrect)" stroke-width="2.5"/>
     <line x1="311" y1="57" x2="297" y2="73" stroke="var(--incorrect)" stroke-width="2.5"/>
-    <text class="lbl" x="24" y="346" fill="var(--accent)">coupling needs adjacent carbons &#183; it never crosses the O</text>
+    <text class="lbl" x="24" y="346" style="fill:var(--accent)">coupling needs adjacent carbons &#183; it never crosses the O</text>
   </g>
 </svg>`,
   steps: [

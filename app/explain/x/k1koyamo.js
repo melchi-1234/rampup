@@ -5,7 +5,7 @@ RU_EX.reg("k1koyamo", {
   css: `
 svg[data-x="k1koyamo"]{font-family:inherit}
 svg[data-x="k1koyamo"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1koyamo"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1koyamo"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1koyamo"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1koyamo"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -49,18 +49,18 @@ svg[data-x="k1koyamo"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <!-- beat 2: stage 1 runs high against high, so the gap is nothing -->
   <g data-from="1">
     <line x1="110" y1="90" x2="110" y2="104" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="90" y="118" fill="var(--incorrect)">both high</text>
-    <text class="sm" x="90" y="134" fill="var(--incorrect)">gap &#8776; 0</text>
+    <text class="sm" x="90" y="118" style="fill:var(--incorrect)">both high</text>
+    <text class="sm" x="90" y="134" style="fill:var(--incorrect)">gap &#8776; 0</text>
     <line x1="64" y1="268" x2="265" y2="268" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="336" y="273" fill="var(--incorrect)">equal deaths cancel &#8594; gap &#8776; 0</text>
+    <text class="sm" x="336" y="273" style="fill:var(--incorrect)">equal deaths cancel &#8594; gap &#8776; 0</text>
   </g>
 
   <!-- beat 3: deaths fall away from births -->
   <g data-from="2">
     <path d="M195,74 L260,76 L330,84 L330,148 L260,110 L195,84 Z"
           fill="var(--accent)" fill-opacity=".18"/>
-    <text class="sm" x="204" y="66" fill="var(--text)">births stay high</text>
-    <text class="sm" x="204" y="176" fill="var(--text)">deaths crash</text>
+    <text class="sm" x="204" y="66" style="fill:var(--text)">births stay high</text>
+    <text class="sm" x="204" y="176" style="fill:var(--text)">deaths crash</text>
   </g>
 
   <!-- beat 4: the widest gap is the peak rate, so A -->
@@ -70,21 +70,21 @@ svg[data-x="k1koyamo"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <line x1="322" y1="88" x2="322" y2="140" stroke="var(--correct)" stroke-width="2.5"/>
     <rect x="336" y="54" width="214" height="26" rx="8" fill="var(--surface-2)"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="443" y="72" text-anchor="middle" fill="var(--correct)">widest gap = peak rate</text>
+    <text class="lbl" x="443" y="72" text-anchor="middle" style="fill:var(--correct)">widest gap = peak rate</text>
     <rect x="24" y="226" width="30" height="24" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="243" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm" x="336" y="243" fill="var(--correct)">the widest gap in the model</text>
+    <text class="lbl" x="39" y="243" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm" x="336" y="243" style="fill:var(--correct)">the widest gap in the model</text>
   </g>
 
   <!-- beat 5: stage 3 closes the gap, stage 4 confuses size with rate -->
   <g data-from="4">
-    <text class="sm" x="372" y="180" fill="var(--incorrect)">gap narrows</text>
-    <text class="sm" x="478" y="186" fill="var(--incorrect)">gap &#8776; 0 again</text>
+    <text class="sm" x="372" y="180" style="fill:var(--incorrect)">gap narrows</text>
+    <text class="sm" x="478" y="186" style="fill:var(--incorrect)">gap &#8776; 0 again</text>
     <line x1="64" y1="298" x2="258" y2="298" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="64" y1="328" x2="265" y2="328" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="336" y="303" fill="var(--incorrect)">big SIZE is not a fast RATE</text>
-    <text class="sm" x="336" y="333" fill="var(--incorrect)">gap NARROWS &#8594; growth slows</text>
+    <text class="sm" x="336" y="303" style="fill:var(--incorrect)">big SIZE is not a fast RATE</text>
+    <text class="sm" x="336" y="333" style="fill:var(--incorrect)">gap NARROWS &#8594; growth slows</text>
   </g>
 
   <!-- beat 6: the takeaway -->

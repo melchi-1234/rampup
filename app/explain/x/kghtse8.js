@@ -5,7 +5,7 @@ RU_EX.reg("kghtse8", {
   css: `
 svg[data-x="kghtse8"]{font-family:inherit}
 svg[data-x="kghtse8"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kghtse8"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kghtse8"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kghtse8"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kghtse8"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -33,7 +33,7 @@ svg[data-x="kghtse8"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <!-- beat 2: phenoxide delocalizes, ethoxide does not -->
   <g data-from="1">
     <rect x="268" y="82" width="312" height="26" rx="5" fill="var(--accent)" fill-opacity=".16"/>
-    <text class="sm" x="424" y="100" text-anchor="middle" fill="var(--accent)">PhO&#8315; delocalizes, EtO&#8315; cannot</text>
+    <text class="sm" x="424" y="100" text-anchor="middle" style="fill:var(--accent)">PhO&#8315; delocalizes, EtO&#8315; cannot</text>
     <line x1="268" y1="112" x2="268" y2="124" stroke="var(--text)" stroke-width="2"/>
     <line x1="580" y1="112" x2="580" y2="124" stroke="var(--text)" stroke-width="2"/>
     <line x1="268" y1="124" x2="250" y2="132" stroke="var(--border-strong)" stroke-width="1.5"/>
@@ -47,7 +47,7 @@ svg[data-x="kghtse8"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <!-- beat 3: para nitro parks the charge on its own oxygens -->
   <g data-from="2">
     <rect x="112" y="82" width="156" height="26" rx="5" fill="var(--correct)" fill-opacity=".2"/>
-    <text class="sm" x="190" y="100" text-anchor="middle" fill="var(--correct)">NO&#8322; takes the charge</text>
+    <text class="sm" x="190" y="100" text-anchor="middle" style="fill:var(--correct)">NO&#8322; takes the charge</text>
     <line x1="112" y1="112" x2="112" y2="132" stroke="var(--text)" stroke-width="2"/>
     <text class="sm" x="112" y="144" text-anchor="middle">p-NO&#8322;-phenol</text>
     <text class="sm" x="112" y="160" text-anchor="middle">pKa &#8776; 7</text>
@@ -62,14 +62,14 @@ svg[data-x="kghtse8"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
 
     <rect x="410" y="176" width="206" height="54" rx="10" fill="var(--correct)" fill-opacity=".14"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="tag" x="426" y="198" fill="var(--correct)">FINAL ORDER</text>
-    <text class="sm"  x="426" y="220" fill="var(--correct)">NO&#8322; &gt; H &gt; CH&#8323; &#8811; EtOH</text>
+    <text class="tag" x="426" y="198" style="fill:var(--correct)">FINAL ORDER</text>
+    <text class="sm"  x="426" y="220" style="fill:var(--correct)">NO&#8322; &gt; H &gt; CH&#8323; &#8811; EtOH</text>
 
     <rect x="24" y="176" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="194" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="lbl" x="62" y="194" fill="var(--correct)">p-NO&#8322; &gt; PhOH &gt; p-CH&#8323; &gt; EtOH</text>
-    <text class="sm"  x="62" y="212" fill="var(--correct)">NO&#8322; withdraws by resonance</text>
+    <text class="lbl" x="39" y="194" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="lbl" x="62" y="194" style="fill:var(--correct)">p-NO&#8322; &gt; PhOH &gt; p-CH&#8323; &gt; EtOH</text>
+    <text class="sm"  x="62" y="212" style="fill:var(--correct)">NO&#8322; withdraws by resonance</text>
   </g>
 
   <!-- beat 5: each losing ranking flips one sign -->
@@ -77,9 +77,9 @@ svg[data-x="kghtse8"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <line x1="58" y1="231" x2="286" y2="231" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="58" y1="273" x2="286" y2="273" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="58" y1="315" x2="286" y2="315" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="62" y="254" fill="var(--incorrect)">methyl DONATES &#8212; it sits below phenol</text>
-    <text class="sm" x="62" y="296" fill="var(--incorrect)">bond strength is the wrong test; EtO&#8315; is bare</text>
-    <text class="sm" x="62" y="338" fill="var(--incorrect)">that N&#8314; PULLS charge in, never repels</text>
+    <text class="sm" x="62" y="254" style="fill:var(--incorrect)">methyl DONATES &#8212; it sits below phenol</text>
+    <text class="sm" x="62" y="296" style="fill:var(--incorrect)">bond strength is the wrong test; EtO&#8315; is bare</text>
+    <text class="sm" x="62" y="338" style="fill:var(--incorrect)">that N&#8314; PULLS charge in, never repels</text>
   </g>
 
   <!-- beat 6: the move that decides every one of these -->

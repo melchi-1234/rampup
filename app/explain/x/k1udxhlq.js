@@ -5,7 +5,7 @@ RU_EX.reg("k1udxhlq", {
   css: `
 svg[data-x="k1udxhlq"]{font-family:inherit}
 svg[data-x="k1udxhlq"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1udxhlq"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1udxhlq"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1udxhlq"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1udxhlq"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -18,8 +18,8 @@ svg[data-x="k1udxhlq"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <text class="sm" x="166" y="80" text-anchor="middle">face-to-face interaction fell</text>
   <rect x="332" y="40" width="284" height="48" rx="10" fill="var(--accent)" fill-opacity=".14"
         stroke="var(--accent)" stroke-width="1.5"/>
-  <text class="sm" x="474" y="62" text-anchor="middle" fill="var(--accent)">HER EXPLANATION &#8212; the target</text>
-  <text class="sm" x="474" y="80" text-anchor="middle" fill="var(--accent)">&#8230; because privacy was lost</text>
+  <text class="sm" x="474" y="62" text-anchor="middle" style="fill:var(--accent)">HER EXPLANATION &#8212; the target</text>
+  <text class="sm" x="474" y="80" text-anchor="middle" style="fill:var(--accent)">&#8230; because privacy was lost</text>
 
   <rect class="chip" x="24" y="192" width="30" height="26" rx="8"/>
   <rect class="chip" x="24" y="226" width="30" height="26" rx="8"/>
@@ -52,7 +52,7 @@ svg[data-x="k1udxhlq"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <!-- beat 3: the load-bearing assumption -->
   <g data-from="2">
     <rect x="24" y="146" width="592" height="30" rx="8" fill="var(--warn)" fill-opacity=".16"/>
-    <text class="sm" x="320" y="166" text-anchor="middle" fill="var(--warn)">ASSUMES: nothing else caused the drop</text>
+    <text class="sm" x="320" y="166" text-anchor="middle" style="fill:var(--warn)">ASSUMES: nothing else caused the drop</text>
   </g>
 
   <!-- beat 4: D supplies a rival cause, so the middle of the chain is optional -->
@@ -61,9 +61,9 @@ svg[data-x="k1udxhlq"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <line x1="340" y1="116" x2="428" y2="116" stroke="var(--incorrect)" stroke-width="2"/>
     <rect x="24" y="294" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39"  y="312" text-anchor="middle" fill="var(--correct)">D</text>
-    <text class="sm"  x="64"  y="312" fill="var(--correct)">a written-request policy landed too</text>
-    <text class="sm"  x="380" y="312" fill="var(--correct)">NEW info &#8212; a rival cause</text>
+    <text class="lbl" x="39"  y="312" text-anchor="middle" style="fill:var(--correct)">D</text>
+    <text class="sm"  x="64"  y="312" style="fill:var(--correct)">a written-request policy landed too</text>
+    <text class="sm"  x="380" y="312" style="fill:var(--correct)">NEW info &#8212; a rival cause</text>
   </g>
 
   <!-- beat 5: A, B and C are the passage read back to her -->
@@ -71,9 +71,9 @@ svg[data-x="k1udxhlq"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <line x1="60" y1="205" x2="300" y2="205" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="60" y1="239" x2="300" y2="239" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="60" y1="273" x2="300" y2="273" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="380" y="210" fill="var(--incorrect)">her own evidence, restated</text>
-    <text class="sm" x="380" y="244" fill="var(--incorrect)">that IS her premise</text>
-    <text class="sm" x="380" y="278" fill="var(--incorrect)">her account predicts this</text>
+    <text class="sm" x="380" y="210" style="fill:var(--incorrect)">her own evidence, restated</text>
+    <text class="sm" x="380" y="244" style="fill:var(--incorrect)">that IS her premise</text>
+    <text class="sm" x="380" y="278" style="fill:var(--incorrect)">her account predicts this</text>
   </g>
 
   <!-- beat 6: the rule -->

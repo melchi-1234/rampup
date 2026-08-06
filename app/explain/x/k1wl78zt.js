@@ -26,13 +26,13 @@ svg[data-x="k1wl78zt"] .cen{fill:var(--text)}
   <!-- true only before the crossover; leaving it up would contradict the
        rest of the scene, which is the whole point being made -->
   <text class="sm" x="170" y="278" text-anchor="middle" data-from="0" data-to="0">after replication, each pair of sisters is identical</text>
-  <text class="sm" x="170" y="278" text-anchor="middle" data-from="4" fill="var(--incorrect)">these two are no longer identical</text>
+  <text class="sm" x="170" y="278" text-anchor="middle" data-from="4" style="fill:var(--incorrect)">these two are no longer identical</text>
 
   <!-- the crossover: between the INNER two, which are non-sisters -->
   <g data-from="1">
     <path d="M112 104 Q170 92 228 104" stroke="var(--incorrect)" stroke-width="3" fill="none"/>
-    <text class="sm" x="170" y="84" text-anchor="middle" fill="var(--incorrect)">crossover</text>
-    <text class="sm" x="326" y="108" fill="var(--incorrect)">between NON-sister chromatids</text>
+    <text class="sm" x="170" y="84" text-anchor="middle" style="fill:var(--incorrect)">crossover</text>
+    <text class="sm" x="326" y="108" style="fill:var(--incorrect)">between NON-sister chromatids</text>
   </g>
 
   <!-- the swapped segment, above the centromere -->
@@ -46,20 +46,20 @@ svg[data-x="k1wl78zt"] .cen{fill:var(--text)}
     <rect x="326" y="150" width="290" height="70" rx="14" fill="var(--surface-2)"
           stroke="var(--border-strong)" stroke-width="1.6"/>
     <text class="sm"  x="342" y="172">the gene sits above the centromere</text>
-    <text class="lbl" x="342" y="196" fill="var(--incorrect)">so one sister now carries a</text>
-    <text class="lbl" x="342" y="212" fill="var(--incorrect)">different allele from its partner</text>
+    <text class="lbl" x="342" y="196" style="fill:var(--incorrect)">so one sister now carries a</text>
+    <text class="lbl" x="342" y="212" style="fill:var(--incorrect)">different allele from its partner</text>
   </g>
 
   <g data-from="4">
-    <text class="lbl" x="326" y="248" fill="var(--accent)">the sisters are no longer identical</text>
+    <text class="lbl" x="326" y="248" style="fill:var(--accent)">the sisters are no longer identical</text>
     <text class="sm"  x="326" y="266">and this happened in meiosis I</text>
   </g>
   <g data-from="5">
-    <text class="sm" x="326" y="290" fill="var(--muted)">they don't separate until anaphase II &mdash; long after</text>
+    <text class="sm" x="326" y="290" style="fill:var(--muted)">they don't separate until anaphase II &mdash; long after</text>
   </g>
   <g data-from="6">
     <rect x="24" y="312" width="592" height="34" rx="17" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="320" y="335" text-anchor="middle" fill="var(--accent)">a crossover between a gene and its centromere is exactly what makes sisters differ</text>
+    <text class="lbl" x="320" y="335" text-anchor="middle" style="fill:var(--accent)">a crossover between a gene and its centromere is exactly what makes sisters differ</text>
   </g>
 </svg>`,
   steps: [

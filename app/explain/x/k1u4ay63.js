@@ -31,13 +31,13 @@ svg[data-x="k1u4ay63"][data-step="6"] .en{transform:translate(0,96px);fill:var(-
 
   <!-- ordinary extraction logic -->
   <text class="lbl" x="240" y="66" data-from="0">pKa 3.4, and the solution is pH 8</text>
-  <text class="sm"  x="240" y="88" data-from="1" fill="var(--correct)">pH ≫ pKa → deprotonated → charged → water-soluble</text>
+  <text class="sm"  x="240" y="88" data-from="1" style="fill:var(--correct)">pH ≫ pKa → deprotonated → charged → water-soluble</text>
   <text class="sm"  x="240" y="110" data-from="2">so it moves into the aqueous layer. ordinary extraction.</text>
 
   <!-- the actual question -->
   <g data-from="3">
     <rect x="232" y="132" width="384" height="42" rx="14" fill="var(--warn)" opacity=".18"/>
-    <text class="lbl" x="424" y="158" text-anchor="middle" fill="var(--warn)">but it's racemic — does only ONE enantiomer move?</text>
+    <text class="lbl" x="424" y="158" text-anchor="middle" style="fill:var(--warn)">but it's racemic — does only ONE enantiomer move?</text>
   </g>
 
   <g data-from="4">
@@ -51,8 +51,8 @@ svg[data-x="k1u4ay63"][data-step="6"] .en{transform:translate(0,96px);fill:var(-
 
   <g data-from="6">
     <rect x="232" y="292" width="384" height="52" rx="16" fill="var(--accent)" opacity=".16"/>
-    <text class="lbl" x="424" y="314" text-anchor="middle" fill="var(--accent)">both move together — no resolution</text>
-    <text class="sm"  x="424" y="332" text-anchor="middle" fill="var(--accent)">separating enantiomers needs a CHIRAL agent</text>
+    <text class="lbl" x="424" y="314" text-anchor="middle" style="fill:var(--accent)">both move together — no resolution</text>
+    <text class="sm"  x="424" y="332" text-anchor="middle" style="fill:var(--accent)">separating enantiomers needs a CHIRAL agent</text>
   </g>
 </svg>`,
   steps: [

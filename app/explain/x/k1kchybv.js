@@ -16,7 +16,7 @@ svg[data-x="k1kchybv"] .cube{fill:var(--accent);opacity:.85;stroke:var(--text);s
   <line x1="38" y1="176" x2="210" y2="176" stroke="var(--accent)" stroke-width="2"/>
   <rect class="cube" x="94" y="140" width="90" height="90" rx="3"/>
   <text class="sm" x="124" y="292" text-anchor="middle">water · 1000</text>
-  <text class="lbl" x="124" y="108" text-anchor="middle" data-from="4" fill="var(--accent)">60% under</text>
+  <text class="lbl" x="124" y="108" text-anchor="middle" data-from="4" style="fill:var(--accent)">60% under</text>
 
   <!-- oil tank: 67% submerged, sits deeper -->
   <rect class="tank" x="256" y="120" width="180" height="150" rx="8"/>
@@ -24,23 +24,23 @@ svg[data-x="k1kchybv"] .cube{fill:var(--accent);opacity:.85;stroke:var(--text);s
   <line x1="260" y1="176" x2="432" y2="176" stroke="var(--warn)" stroke-width="2"/>
   <rect class="cube" x="316" y="146" width="90" height="90" rx="3" data-from="5"/>
   <text class="sm" x="346" y="292" text-anchor="middle">oil · 900</text>
-  <text class="lbl" x="346" y="108" text-anchor="middle" data-from="5" fill="var(--warn)">67% under</text>
+  <text class="lbl" x="346" y="108" text-anchor="middle" data-from="5" style="fill:var(--warn)">67% under</text>
 
   <!-- the derivation -->
   <text class="lbl" x="466" y="70" data-from="0">at equilibrium:</text>
   <text class="sm"  x="466" y="94" data-from="1">ρ_obj · V · g  =  ρ_fluid · V_sub · g</text>
-  <text class="sm"  x="466" y="118" data-from="2" fill="var(--muted)">cancel g, rearrange…</text>
+  <text class="sm"  x="466" y="118" data-from="2" style="fill:var(--muted)">cancel g, rearrange…</text>
   <g data-from="3">
     <rect x="452" y="132" width="168" height="52" rx="14" fill="var(--accent)" opacity=".16"/>
-    <text class="lbl" x="536" y="154" text-anchor="middle" fill="var(--accent)">V_sub / V</text>
-    <text class="big" x="536" y="176" text-anchor="middle" fill="var(--accent)">= ρ_obj / ρ_fluid</text>
+    <text class="lbl" x="536" y="154" text-anchor="middle" style="fill:var(--accent)">V_sub / V</text>
+    <text class="big" x="536" y="176" text-anchor="middle" style="fill:var(--accent)">= ρ_obj / ρ_fluid</text>
   </g>
   <text class="sm" x="466" y="212" data-from="4">600 / 1000 = 0.60</text>
-  <text class="sm" x="466" y="234" data-from="5" fill="var(--warn)">600 / 900 = 0.67</text>
+  <text class="sm" x="466" y="234" data-from="5" style="fill:var(--warn)">600 / 900 = 0.67</text>
 
   <g data-from="6">
     <rect x="34" y="312" width="586" height="38" rx="16" fill="var(--correct)" opacity=".18"/>
-    <text class="lbl" x="327" y="336" text-anchor="middle" fill="var(--correct)">thinner fluid → sits deeper · viscosity never enters the equation</text>
+    <text class="lbl" x="327" y="336" text-anchor="middle" style="fill:var(--correct)">thinner fluid → sits deeper · viscosity never enters the equation</text>
   </g>
 </svg>`,
   steps: [

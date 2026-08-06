@@ -5,7 +5,7 @@ RU_EX.reg("k1y8udt4", {
   css: `
 svg[data-x="k1y8udt4"]{font-family:inherit}
 svg[data-x="k1y8udt4"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1y8udt4"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1y8udt4"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1y8udt4"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1y8udt4"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -18,9 +18,9 @@ svg[data-x="k1y8udt4"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <rect x="408" y="34" width="160" height="52" rx="10" fill="var(--surface-2)"/>
   <text class="lbl" x="104" y="56" text-anchor="middle">enzyme</text>
   <text class="sm"  x="104" y="74" text-anchor="middle">full activity</text>
-  <text class="lbl" x="296" y="56" text-anchor="middle" fill="var(--incorrect)">+ EDTA</text>
+  <text class="lbl" x="296" y="56" text-anchor="middle" style="fill:var(--incorrect)">+ EDTA</text>
   <text class="sm"  x="296" y="74" text-anchor="middle">activity &#8594; zero</text>
-  <text class="lbl" x="488" y="56" text-anchor="middle" fill="var(--correct)">+ Mg&#178;&#8314;</text>
+  <text class="lbl" x="488" y="56" text-anchor="middle" style="fill:var(--correct)">+ Mg&#178;&#8314;</text>
   <text class="sm"  x="488" y="74" text-anchor="middle">FULL activity back</text>
   <line x1="188" y1="60" x2="206" y2="60" stroke="var(--border-strong)" stroke-width="2"/>
   <polygon points="214,60 204,55 204,65" fill="var(--border-strong)"/>
@@ -47,33 +47,33 @@ svg[data-x="k1y8udt4"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <text class="lbl" x="160" y="117" text-anchor="middle">PERMANENT damage</text>
     <rect x="320" y="96" width="272" height="32" rx="10" fill="var(--correct)" fill-opacity=".18"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="456" y="117" text-anchor="middle" fill="var(--correct)">REVERSIBLE loss</text>
-    <text class="sm"  x="456" y="145" text-anchor="middle" fill="var(--correct)">it came all the way back</text>
+    <text class="lbl" x="456" y="117" text-anchor="middle" style="fill:var(--correct)">REVERSIBLE loss</text>
+    <text class="sm"  x="456" y="145" text-anchor="middle" style="fill:var(--correct)">it came all the way back</text>
   </g>
 
   <!-- beat 3: apoenzyme plus cofactor rebuilds the holoenzyme -->
   <g data-from="2">
     <rect x="24" y="154" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="172" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm" x="300" y="172" fill="var(--correct)">apoenzyme + cofactor &#8594; holoenzyme</text>
+    <text class="lbl" x="39" y="172" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm" x="300" y="172" style="fill:var(--correct)">apoenzyme + cofactor &#8594; holoenzyme</text>
   </g>
 
   <!-- beat 4: denaturation lives on the permanent end -->
   <g data-from="3">
     <rect x="24" y="96" width="272" height="32" rx="10" fill="var(--incorrect)" fill-opacity=".12"
           stroke="var(--incorrect)" stroke-width="2"/>
-    <text class="lbl" x="160" y="117" text-anchor="middle" fill="var(--incorrect)">PERMANENT damage</text>
+    <text class="lbl" x="160" y="117" text-anchor="middle" style="fill:var(--incorrect)">PERMANENT damage</text>
     <line x1="64" y1="281" x2="292" y2="281" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="300" y="286" fill="var(--incorrect)">unfolding is not undone by a salt</text>
+    <text class="sm" x="300" y="286" style="fill:var(--incorrect)">unfolding is not undone by a salt</text>
   </g>
 
   <!-- beat 5: consumed vs reused, and the displacement bait -->
   <g data-from="4">
     <line x1="64" y1="243" x2="292" y2="243" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="300" y="248" fill="var(--incorrect)">a substrate is consumed; this was not</text>
+    <text class="sm" x="300" y="248" style="fill:var(--incorrect)">a substrate is consumed; this was not</text>
     <line x1="64" y1="205" x2="292" y2="205" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="300" y="210" fill="var(--incorrect)">displacing substrate would INHIBIT</text>
+    <text class="sm" x="300" y="210" style="fill:var(--incorrect)">displacing substrate would INHIBIT</text>
   </g>
 
   <!-- beat 6: the one-line rule -->

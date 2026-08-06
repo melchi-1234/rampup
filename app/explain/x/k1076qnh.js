@@ -6,7 +6,7 @@ RU_EX.reg("k1076qnh", {
   css: `
 svg[data-x="k1076qnh"]{font-family:inherit}
 svg[data-x="k1076qnh"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1076qnh"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1076qnh"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1076qnh"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1076qnh"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -28,18 +28,18 @@ svg[data-x="k1076qnh"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <!-- beat 2: molality needs KILOGRAMS -->
   <g data-from="1">
     <text class="sm" x="24" y="62">molality = moles per kilogram</text>
-    <text class="lbl" x="24" y="86" fill="var(--accent)">0.050 / 0.500 kg = 0.100 m</text>
-    <text class="sm" x="24" y="106" fill="var(--accent)">500 g is half a kilogram, so it doubles</text>
+    <text class="lbl" x="24" y="86" style="fill:var(--accent)">0.050 / 0.500 kg = 0.100 m</text>
+    <text class="sm" x="24" y="106" style="fill:var(--accent)">500 g is half a kilogram, so it doubles</text>
   </g>
 
   <!-- beat 3: count the particles -->
   <g data-from="2">
     <text class="lbl" x="24" y="146">Al&#8322;(SO&#8324;)&#8323; &#8594; 2 Al&#179;&#8314; + 3 SO&#8324;&#178;&#8315;</text>
-    <text class="sm" x="24" y="166" fill="var(--warn)">2 + 3 = 5 particles per formula unit</text>
+    <text class="sm" x="24" y="166" style="fill:var(--warn)">2 + 3 = 5 particles per formula unit</text>
     <line x1="374" y1="96"  x2="448" y2="96"  stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="374" y1="140" x2="448" y2="140" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="466" y="101" fill="var(--incorrect)">used i = 1</text>
-    <text class="sm" x="466" y="145" fill="var(--incorrect)">used i = 2</text>
+    <text class="sm" x="466" y="101" style="fill:var(--incorrect)">used i = 1</text>
+    <text class="sm" x="466" y="145" style="fill:var(--incorrect)">used i = 2</text>
   </g>
 
   <!-- beat 4: the product -->
@@ -50,19 +50,19 @@ svg[data-x="k1076qnh"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <!-- beat 5: freezing points only go DOWN -->
   <g data-from="4">
     <rect x="24" y="226" width="212" height="32" rx="16" fill="var(--correct)" fill-opacity=".16"/>
-    <text class="lbl" x="130" y="247" text-anchor="middle" fill="var(--correct)">0.00 &#8722; 0.93 = &#8722;0.93 &#176;C</text>
+    <text class="lbl" x="130" y="247" text-anchor="middle" style="fill:var(--correct)">0.00 &#8722; 0.93 = &#8722;0.93 &#176;C</text>
     <rect x="368" y="38" width="86" height="28" rx="14" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="411" y="57" text-anchor="middle" fill="var(--correct)">&#8722;0.93</text>
-    <text class="sm" x="466" y="57" fill="var(--correct)">0.93 below zero</text>
+    <text class="lbl" x="411" y="57" text-anchor="middle" style="fill:var(--correct)">&#8722;0.93</text>
+    <text class="sm" x="466" y="57" style="fill:var(--correct)">0.93 below zero</text>
   </g>
 
   <!-- beat 6: the near miss that skips the kilogram step -->
   <g data-from="5">
     <line x1="374" y1="184" x2="448" y2="184" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="466" y="189" fill="var(--incorrect)">skipped the kg step</text>
+    <text class="sm" x="466" y="189" style="fill:var(--incorrect)">skipped the kg step</text>
     <rect x="24" y="272" width="228" height="28" rx="6" fill="none" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="138" y="291" text-anchor="middle" fill="var(--incorrect)">5 &#215; 1.86 &#215; 0.050 = 0.465</text>
+    <text class="sm" x="138" y="291" text-anchor="middle" style="fill:var(--incorrect)">5 &#215; 1.86 &#215; 0.050 = 0.465</text>
   </g>
 </svg>`,
   steps: [

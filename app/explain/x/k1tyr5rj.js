@@ -6,7 +6,7 @@ RU_EX.reg("k1tyr5rj", {
   css: `
 svg[data-x="k1tyr5rj"]{font-family:inherit}
 svg[data-x="k1tyr5rj"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1tyr5rj"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1tyr5rj"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1tyr5rj"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1tyr5rj"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -37,21 +37,21 @@ svg[data-x="k1tyr5rj"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <!-- beat 2: everything protonated, net +2 -->
   <g data-from="1">
     <rect x="60" y="98" width="78" height="26" rx="5" fill="var(--incorrect)" fill-opacity=".16"/>
-    <text class="lbl" x="99" y="116" text-anchor="middle" fill="var(--incorrect)">+2</text>
+    <text class="lbl" x="99" y="116" text-anchor="middle" style="fill:var(--incorrect)">+2</text>
     <text class="sm" x="24" y="80">&#8722;COOH &#183; imidazole-H&#8314; &#183; &#8722;NH&#8323;&#8314;</text>
   </g>
 
   <!-- beat 3: past the first pKa, one charge gone -->
   <g data-from="2">
     <rect x="138" y="98" width="182" height="26" rx="5" fill="var(--warn)" fill-opacity=".16"/>
-    <text class="lbl" x="229" y="116" text-anchor="middle" fill="var(--warn)">+1</text>
+    <text class="lbl" x="229" y="116" text-anchor="middle" style="fill:var(--warn)">+1</text>
   </g>
 
   <!-- beat 4: past the side chain, net zero -->
   <g data-from="3">
     <rect x="320" y="98" width="139" height="26" rx="5" fill="var(--correct)" fill-opacity=".22"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="389" y="116" text-anchor="middle" fill="var(--correct)">0</text>
+    <text class="lbl" x="389" y="116" text-anchor="middle" style="fill:var(--correct)">0</text>
     <rect x="459" y="98" width="121" height="26" rx="5" fill="var(--surface-2)"/>
     <text class="lbl" x="519" y="116" text-anchor="middle">&#8722;1</text>
   </g>
@@ -60,18 +60,18 @@ svg[data-x="k1tyr5rj"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <g data-from="4">
     <path d="M320 62 L320 54 L459 54 L459 62" fill="none" stroke="var(--correct)" stroke-width="2"/>
     <line x1="389" y1="54" x2="389" y2="46" stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="389" y="40" text-anchor="middle" fill="var(--correct)">(6.0 + 9.2)/2 = 7.6</text>
+    <text class="lbl" x="389" y="40" text-anchor="middle" style="fill:var(--correct)">(6.0 + 9.2)/2 = 7.6</text>
     <rect x="24" y="272" width="80" height="28" rx="14" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="64" y="291" text-anchor="middle" fill="var(--correct)">7.6</text>
-    <text class="sm" x="124" y="291" fill="var(--correct)">the two pKa values flanking the zero band</text>
+    <text class="lbl" x="64" y="291" text-anchor="middle" style="fill:var(--correct)">7.6</text>
+    <text class="sm" x="124" y="291" style="fill:var(--correct)">the two pKa values flanking the zero band</text>
   </g>
 
   <!-- beat 6: where the near-misses come from -->
   <g data-from="5">
-    <text class="sm" x="124" y="219" fill="var(--incorrect)">(1.8 + 6.0)/2 &#8212; the pair around +1, not 0</text>
-    <text class="sm" x="124" y="255" fill="var(--incorrect)">&#8776; the mean of all three, 5.67 &#8212; averages too much</text>
-    <text class="sm" x="124" y="327" fill="var(--incorrect)">just a pKa, not an average of a pair</text>
+    <text class="sm" x="124" y="219" style="fill:var(--incorrect)">(1.8 + 6.0)/2 &#8212; the pair around +1, not 0</text>
+    <text class="sm" x="124" y="255" style="fill:var(--incorrect)">&#8776; the mean of all three, 5.67 &#8212; averages too much</text>
+    <text class="sm" x="124" y="327" style="fill:var(--incorrect)">just a pKa, not an average of a pair</text>
   </g>
 </svg>`,
   steps: [

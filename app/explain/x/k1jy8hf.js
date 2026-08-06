@@ -15,7 +15,7 @@ svg[data-x="k1jy8hf"] .box{fill:var(--surface-2);stroke:var(--border-strong);str
   <g data-from="1">
     <rect x="150" y="72" width="150" height="26" rx="8" fill="var(--warn)" opacity=".8"/>
     <rect x="340" y="72" width="150" height="26" rx="8" fill="var(--warn)" opacity=".8"/>
-    <text class="lbl" x="320" y="120" text-anchor="middle" fill="var(--warn)">identical &mdash; and that is the whole design</text>
+    <text class="lbl" x="320" y="120" text-anchor="middle" style="fill:var(--warn)">identical &mdash; and that is the whole design</text>
     <text class="sm"  x="320" y="138" text-anchor="middle">it removes anger as an explanation</text>
   </g>
 
@@ -36,15 +36,15 @@ svg[data-x="k1jy8hf"] .box{fill:var(--surface-2);stroke:var(--border-strong);str
     <rect x="440" y="258" width="52" height="16" rx="8" fill="var(--accent)" opacity=".85"/>
   </g>
 
-  <text class="lbl" x="167" y="302" text-anchor="middle" data-from="4" fill="var(--correct)">succeeds</text>
-  <text class="lbl" x="473" y="302" text-anchor="middle" data-from="4" fill="var(--incorrect)">does not</text>
-  <text class="sm"  x="320" y="302" text-anchor="middle" data-from="5" fill="var(--muted)">relative deprivation would</text>
-  <text class="sm"  x="320" y="316" text-anchor="middle" data-from="5" fill="var(--muted)">predict from grievance &mdash; but</text>
-  <text class="sm"  x="320" y="330" text-anchor="middle" data-from="5" fill="var(--muted)">grievance was held equal</text>
+  <text class="lbl" x="167" y="302" text-anchor="middle" data-from="4" style="fill:var(--correct)">succeeds</text>
+  <text class="lbl" x="473" y="302" text-anchor="middle" data-from="4" style="fill:var(--incorrect)">does not</text>
+  <text class="sm"  x="320" y="302" text-anchor="middle" data-from="5" style="fill:var(--muted)">relative deprivation would</text>
+  <text class="sm"  x="320" y="316" text-anchor="middle" data-from="5" style="fill:var(--muted)">predict from grievance &mdash; but</text>
+  <text class="sm"  x="320" y="330" text-anchor="middle" data-from="5" style="fill:var(--muted)">grievance was held equal</text>
 
   <g data-from="6">
     <rect x="130" y="318" width="380" height="34" rx="17" fill="var(--accent)" opacity=".16"/>
-    <text class="lbl" x="320" y="341" text-anchor="middle" fill="var(--accent)">resource mobilisation theory</text>
+    <text class="lbl" x="320" y="341" text-anchor="middle" style="fill:var(--accent)">resource mobilisation theory</text>
   </g>
 </svg>`,
   steps: [

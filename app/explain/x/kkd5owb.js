@@ -5,7 +5,7 @@ RU_EX.reg("kkd5owb", {
   css: `
 svg[data-x="kkd5owb"]{font-family:inherit}
 svg[data-x="kkd5owb"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kkd5owb"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kkd5owb"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kkd5owb"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kkd5owb"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -57,41 +57,41 @@ svg[data-x="kkd5owb"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <rect x="428" y="42" width="188" height="54" rx="10" fill="var(--correct)" fill-opacity=".14"
           stroke="var(--correct)" stroke-width="2"/>
     <text class="tag" x="442" y="64">AUTHOR'S TURN</text>
-    <text class="lbl" x="442" y="86" fill="var(--correct)">clock &#8594; behavior</text>
+    <text class="lbl" x="442" y="86" style="fill:var(--correct)">clock &#8594; behavior</text>
   </g>
 
   <!-- beat 4: origin and effect are two different questions -->
   <g data-from="3">
     <rect x="24" y="126" width="592" height="42" rx="10" fill="var(--surface-2)"/>
     <text class="tag" x="320" y="144" text-anchor="middle">TWO SEPARATE QUESTIONS</text>
-    <text class="sm" x="170" y="162" text-anchor="middle" fill="var(--text)">where it came from</text>
+    <text class="sm" x="170" y="162" text-anchor="middle" style="fill:var(--text)">where it came from</text>
     <text class="lbl" x="320" y="162" text-anchor="middle">&#8800;</text>
-    <text class="sm" x="470" y="162" text-anchor="middle" fill="var(--text)">what it later does</text>
+    <text class="sm" x="470" y="162" text-anchor="middle" style="fill:var(--text)">what it later does</text>
   </g>
 
   <!-- beat 5: each wrong choice is a stopping point -->
   <g data-from="4">
     <line x1="210" y1="96" x2="210" y2="108" stroke="var(--incorrect)" stroke-width="2"/>
     <line x1="412" y1="96" x2="412" y2="108" stroke="var(--incorrect)" stroke-width="2"/>
-    <text class="sm" x="210" y="120" text-anchor="end" fill="var(--incorrect)">A &#183; D stop here</text>
-    <text class="sm" x="412" y="120" text-anchor="end" fill="var(--incorrect)">C stops here</text>
+    <text class="sm" x="210" y="120" text-anchor="end" style="fill:var(--incorrect)">A &#183; D stop here</text>
+    <text class="sm" x="412" y="120" text-anchor="end" style="fill:var(--incorrect)">C stops here</text>
     <line x1="64" y1="192" x2="294" y2="192" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="64" y1="260" x2="345" y2="260" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="64" y1="294" x2="316" y2="294" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="400" y="197" fill="var(--incorrect)">stops at sentence one</text>
-    <text class="sm" x="400" y="265" fill="var(--incorrect)">stops at the concession</text>
-    <text class="sm" x="400" y="299" fill="var(--incorrect)">same side as A, softer</text>
+    <text class="sm" x="400" y="197" style="fill:var(--incorrect)">stops at sentence one</text>
+    <text class="sm" x="400" y="265" style="fill:var(--incorrect)">stops at the concession</text>
+    <text class="sm" x="400" y="299" style="fill:var(--incorrect)">same side as A, softer</text>
   </g>
 
   <!-- beat 6: the turn word is the marker -->
   <g data-from="5">
-    <text class="sm" x="428" y="120" fill="var(--correct)">&#8220;though&#8221; &#183; &#8220;after all&#8221;</text>
+    <text class="sm" x="428" y="120" style="fill:var(--correct)">&#8220;though&#8221; &#183; &#8220;after all&#8221;</text>
     <rect x="24" y="214" width="592" height="24" rx="8" fill="var(--correct)" fill-opacity=".14"/>
     <rect x="24" y="214" width="30" height="24" rx="8" fill="var(--correct)" fill-opacity=".22"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="231" text-anchor="middle" fill="var(--correct)">B</text>
-    <text class="sm" x="64" y="231" fill="var(--correct)">desire made it &#8594; then it shaped us</text>
-    <text class="sm" x="400" y="231" fill="var(--correct)">keeps BOTH arrows</text>
+    <text class="lbl" x="39" y="231" text-anchor="middle" style="fill:var(--correct)">B</text>
+    <text class="sm" x="64" y="231" style="fill:var(--correct)">desire made it &#8594; then it shaped us</text>
+    <text class="sm" x="400" y="231" style="fill:var(--correct)">keeps BOTH arrows</text>
     <rect x="24" y="314" width="592" height="34" rx="12" fill="var(--surface-2)"
           stroke="var(--correct)" stroke-width="1.5"/>
     <text class="lbl" x="320" y="336" text-anchor="middle">the considered view lives past the turn word</text>

@@ -4,7 +4,7 @@ RU_EX.reg("k1s0rcf2", {
   css: `
 svg[data-x="k1s0rcf2"]{font-family:inherit}
 svg[data-x="k1s0rcf2"] .lbl{fill:var(--text);font-size:15px;font-weight:700}
-svg[data-x="k1s0rcf2"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1s0rcf2"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1s0rcf2"] .dish{fill:var(--card);stroke:var(--border-strong);stroke-width:2}
 svg[data-x="k1s0rcf2"] .cell{fill:var(--incorrect);opacity:.55;stroke:var(--incorrect);stroke-width:2.5}
 svg[data-x="k1s0rcf2"] .urea{fill:var(--warn)}
@@ -72,20 +72,20 @@ svg[data-x="k1s0rcf2"][data-step="6"] .verdict{opacity:1}
 
   <!-- membrane is no barrier to urea -->
   <g class="cross">
-    <text class="sm" x="482" y="336" text-anchor="middle" fill="var(--warn)">
+    <text class="sm" x="482" y="336" text-anchor="middle" style="fill:var(--warn)">
       urea equilibrates across the membrane
     </text>
   </g>
 
   <g class="rule">
     <rect x="146" y="316" width="348" height="30" rx="15" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="320" y="336" text-anchor="middle" fill="var(--accent)">
+    <text class="lbl" x="320" y="336" text-anchor="middle" style="fill:var(--accent)">
       tonicity counts only solutes that CANNOT cross
     </text>
   </g>
   <g class="verdict">
     <rect x="392" y="132" width="180" height="34" rx="17" fill="var(--incorrect)" opacity=".18"/>
-    <text class="lbl" x="482" y="155" text-anchor="middle" fill="var(--incorrect)">the cell lyses</text>
+    <text class="lbl" x="482" y="155" text-anchor="middle" style="fill:var(--incorrect)">the cell lyses</text>
   </g>
 </svg>`,
   steps: [

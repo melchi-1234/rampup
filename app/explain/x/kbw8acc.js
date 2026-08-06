@@ -41,11 +41,11 @@ svg[data-x="kbw8acc"][data-step="6"] .tally{opacity:1}
   <text class="sm" x="460" y="60" text-anchor="end">12</text>
   <line class="phline" x1="372" y1="66" x2="372" y2="288"/>
   <rect x="330" y="30" width="84" height="22" rx="11" fill="var(--accent)" opacity=".16"/>
-  <text class="sm" x="372" y="46" text-anchor="middle" fill="var(--accent)">pH 7.4</text>
+  <text class="sm" x="372" y="46" text-anchor="middle" style="fill:var(--accent)">pH 7.4</text>
 
   <g class="rule">
-    <text class="sm" x="230" y="308" fill="var(--muted)">&larr; proton gone</text>
-    <text class="sm" x="460" y="308" text-anchor="end" fill="var(--muted)">keeps it &rarr;</text>
+    <text class="sm" x="230" y="308" style="fill:var(--muted)">&larr; proton gone</text>
+    <text class="sm" x="460" y="308" text-anchor="end" style="fill:var(--muted)">keeps it &rarr;</text>
   </g>
 
   <g class="grp g-cooh">
@@ -53,45 +53,45 @@ svg[data-x="kbw8acc"][data-step="6"] .tally{opacity:1}
     <text class="sm"  x="150" y="101">pKa 3.1</text>
     <line class="axis" x1="230" y1="96" x2="460" y2="96" stroke-width="1"/>
     <circle cx="289" cy="96" r="7" fill="var(--incorrect)"/>
-    <text class="lbl" x="616" y="101" text-anchor="end" fill="var(--incorrect)">&minus;1</text>
-    <text class="sm"  x="596" y="101" text-anchor="end" fill="var(--incorrect)">deprotonated</text>
+    <text class="lbl" x="616" y="101" text-anchor="end" style="fill:var(--incorrect)">&minus;1</text>
+    <text class="sm"  x="596" y="101" text-anchor="end" style="fill:var(--incorrect)">deprotonated</text>
   </g>
   <g class="grp g-asp">
     <text class="lbl" x="24" y="139">Asp side chain</text>
     <text class="sm"  x="150" y="139">pKa 3.9</text>
     <line class="axis" x1="230" y1="134" x2="460" y2="134" stroke-width="1"/>
     <circle cx="305" cy="134" r="7" fill="var(--incorrect)"/>
-    <text class="lbl" x="616" y="139" text-anchor="end" fill="var(--incorrect)">&minus;1</text>
-    <text class="sm"  x="596" y="139" text-anchor="end" fill="var(--incorrect)">deprotonated</text>
+    <text class="lbl" x="616" y="139" text-anchor="end" style="fill:var(--incorrect)">&minus;1</text>
+    <text class="sm"  x="596" y="139" text-anchor="end" style="fill:var(--incorrect)">deprotonated</text>
   </g>
   <g class="grp g-his">
     <text class="lbl" x="24" y="177">His side chain</text>
     <text class="sm"  x="150" y="177">pKa 6.0</text>
     <line class="axis" x1="230" y1="172" x2="460" y2="172" stroke-width="1"/>
     <circle cx="345" cy="172" r="7" fill="var(--muted)"/>
-    <text class="lbl" x="616" y="177" text-anchor="end" fill="var(--muted)">&asymp; 0</text>
-    <text class="sm"  x="590" y="177" text-anchor="end" fill="var(--muted)">~96% deprot.</text>
+    <text class="lbl" x="616" y="177" text-anchor="end" style="fill:var(--muted)">&asymp; 0</text>
+    <text class="sm"  x="590" y="177" text-anchor="end" style="fill:var(--muted)">~96% deprot.</text>
   </g>
   <g class="grp g-nh3">
     <text class="lbl" x="24" y="215">α-NH₃⁺</text>
     <text class="sm"  x="150" y="215">pKa 8.0</text>
     <line class="axis" x1="230" y1="210" x2="460" y2="210" stroke-width="1"/>
     <circle cx="383" cy="210" r="7" fill="var(--correct)"/>
-    <text class="lbl" x="616" y="215" text-anchor="end" fill="var(--correct)">+1</text>
-    <text class="sm"  x="596" y="215" text-anchor="end" fill="var(--correct)">protonated</text>
+    <text class="lbl" x="616" y="215" text-anchor="end" style="fill:var(--correct)">+1</text>
+    <text class="sm"  x="596" y="215" text-anchor="end" style="fill:var(--correct)">protonated</text>
   </g>
   <g class="grp g-lys">
     <text class="lbl" x="24" y="253">Lys side chain</text>
     <text class="sm"  x="150" y="253">pKa 10.5</text>
     <line class="axis" x1="230" y1="248" x2="460" y2="248" stroke-width="1"/>
     <circle cx="431" cy="248" r="7" fill="var(--correct)"/>
-    <text class="lbl" x="616" y="253" text-anchor="end" fill="var(--correct)">+1</text>
-    <text class="sm"  x="596" y="253" text-anchor="end" fill="var(--correct)">protonated</text>
+    <text class="lbl" x="616" y="253" text-anchor="end" style="fill:var(--correct)">+1</text>
+    <text class="sm"  x="596" y="253" text-anchor="end" style="fill:var(--correct)">protonated</text>
   </g>
 
   <g class="tally">
     <rect x="170" y="326" width="300" height="28" rx="14" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="320" y="345" text-anchor="middle" fill="var(--accent)">two &minus; · two + · His neutral</text>
+    <text class="lbl" x="320" y="345" text-anchor="middle" style="fill:var(--accent)">two &minus; · two + · His neutral</text>
   </g>
 </svg>`,
   steps: [

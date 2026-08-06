@@ -5,7 +5,7 @@ RU_EX.reg("k1duyy46", {
   css: `
 svg[data-x="k1duyy46"]{font-family:inherit}
 svg[data-x="k1duyy46"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1duyy46"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1duyy46"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1duyy46"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1duyy46"] .bond{stroke:var(--text);stroke-width:1.8;fill:none}
 `,
@@ -15,7 +15,7 @@ svg[data-x="k1duyy46"] .bond{stroke:var(--text);stroke-width:1.8;fill:none}
   <!-- beat 2: the rate law fixes the mechanism -->
   <g data-from="1">
     <rect x="24" y="42" width="592" height="32" rx="10" fill="var(--accent)" fill-opacity=".14"/>
-    <text class="lbl" x="320" y="63" text-anchor="middle" fill="var(--accent)">rate depends on BOTH &#8594; one concerted step &#8594; S&#8202;N&#8202;2</text>
+    <text class="lbl" x="320" y="63" text-anchor="middle" style="fill:var(--accent)">rate depends on BOTH &#8594; one concerted step &#8594; S&#8202;N&#8202;2</text>
   </g>
 
   <!-- the carbon, with the nucleophile coming in opposite the leaving group -->
@@ -26,8 +26,8 @@ svg[data-x="k1duyy46"] .bond{stroke:var(--text);stroke-width:1.8;fill:none}
   <g data-from="2">
     <line x1="180" y1="180" x2="292" y2="180" stroke="var(--correct)" stroke-width="2.5"/>
     <polygon points="292,175 303,180 292,185" fill="var(--correct)"/>
-    <text class="lbl" x="150" y="186" text-anchor="end" fill="var(--correct)">HO&#8315;</text>
-    <text class="sm"  x="230" y="164" text-anchor="middle" fill="var(--correct)">attacks the opposite face</text>
+    <text class="lbl" x="150" y="186" text-anchor="end" style="fill:var(--correct)">HO&#8315;</text>
+    <text class="sm"  x="230" y="164" text-anchor="middle" style="fill:var(--correct)">attacks the opposite face</text>
   </g>
 
   <!-- beat 4: the umbrella flip -->
@@ -36,21 +36,21 @@ svg[data-x="k1duyy46"] .bond{stroke:var(--text);stroke-width:1.8;fill:none}
     <path d="M303 192 q-14 22 -6 40" fill="none" stroke="var(--warn)" stroke-width="2"/>
     <line class="bond" x1="320" y1="163" x2="320" y2="132"/>
     <line class="bond" x1="320" y1="197" x2="320" y2="228"/>
-    <text class="sm" x="320" y="122" text-anchor="middle" fill="var(--warn)">the other three bonds sweep through</text>
-    <text class="sm" x="320" y="248" text-anchor="middle" fill="var(--warn)">like an umbrella caught in the wind</text>
+    <text class="sm" x="320" y="122" text-anchor="middle" style="fill:var(--warn)">the other three bonds sweep through</text>
+    <text class="sm" x="320" y="248" text-anchor="middle" style="fill:var(--warn)">like an umbrella caught in the wind</text>
   </g>
 
   <!-- beat 5: one clean inversion -->
   <g data-from="4">
     <rect x="24" y="278" width="300" height="34" rx="10" fill="var(--correct)" fill-opacity=".18"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="174" y="300" text-anchor="middle" fill="var(--correct)">(R) &#8594; (S)-butan-2-ol, inverted</text>
+    <text class="lbl" x="174" y="300" text-anchor="middle" style="fill:var(--correct)">(R) &#8594; (S)-butan-2-ol, inverted</text>
   </g>
 
   <!-- beat 6: why racemic is wrong here -->
   <g data-from="5">
-    <text class="sm" x="344" y="292" fill="var(--incorrect)">a racemic mix would need a FLAT carbocation,</text>
-    <text class="sm" x="344" y="310" fill="var(--incorrect)">attacked from both faces &#8212; that is S&#8202;N&#8202;1</text>
+    <text class="sm" x="344" y="292" style="fill:var(--incorrect)">a racemic mix would need a FLAT carbocation,</text>
+    <text class="sm" x="344" y="310" style="fill:var(--incorrect)">attacked from both faces &#8212; that is S&#8202;N&#8202;1</text>
   </g>
 </svg>`,
   steps: [

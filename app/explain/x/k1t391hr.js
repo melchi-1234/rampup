@@ -5,7 +5,7 @@ RU_EX.reg("k1t391hr", {
   css: `
 svg[data-x="k1t391hr"]{font-family:inherit}
 svg[data-x="k1t391hr"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1t391hr"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1t391hr"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1t391hr"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1t391hr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -32,8 +32,8 @@ svg[data-x="k1t391hr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
 
   <!-- beat 2: split the vocabulary, one term per finding -->
   <g data-from="1">
-    <text class="lbl" x="24"  y="104" fill="var(--accent)">ABSOLUTE &#183; did the floor rise?</text>
-    <text class="lbl" x="370" y="104" fill="var(--accent)">RELATIVE &#183; rank given your start</text>
+    <text class="lbl" x="24"  y="104" style="fill:var(--accent)">ABSOLUTE &#183; did the floor rise?</text>
+    <text class="lbl" x="370" y="104" style="fill:var(--accent)">RELATIVE &#183; rank given your start</text>
   </g>
 
   <!-- beat 3: the two chances, and the ratio between them -->
@@ -41,35 +41,35 @@ svg[data-x="k1t391hr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <text class="tag" x="24" y="128">CHANCE OF ENDING IN THE TOP QUINTILE</text>
     <text class="sm"  x="24" y="166">top-quintile origin</text>
     <rect x="24" y="172" width="320" height="26" rx="4" fill="var(--accent)" fill-opacity=".35"/>
-    <text class="lbl" x="356" y="191" fill="var(--accent)">40%</text>
+    <text class="lbl" x="356" y="191" style="fill:var(--accent)">40%</text>
     <text class="sm"  x="24" y="218">bottom-quintile origin</text>
     <rect x="24" y="224" width="64" height="26" rx="4" fill="var(--accent)" fill-opacity=".35"/>
-    <text class="lbl" x="100" y="243" fill="var(--accent)">8%</text>
-    <text class="lbl" x="390" y="217" fill="var(--accent)">&#8776; 5 : 1 origin gap</text>
+    <text class="lbl" x="100" y="243" style="fill:var(--accent)">8%</text>
+    <text class="lbl" x="390" y="217" style="fill:var(--accent)">&#8776; 5 : 1 origin gap</text>
 
     <rect x="18" y="256" width="226" height="24" rx="8" fill="var(--correct)" fill-opacity=".16"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="24" y="272" fill="var(--correct)">A</text>
-    <text class="sm"  x="44" y="272" fill="var(--correct)">absolute up, relative stuck</text>
-    <text class="sm"  x="330" y="272" fill="var(--correct)">the only reading that keeps both</text>
+    <text class="lbl" x="24" y="272" style="fill:var(--correct)">A</text>
+    <text class="sm"  x="44" y="272" style="fill:var(--correct)">absolute up, relative stuck</text>
+    <text class="sm"  x="330" y="272" style="fill:var(--correct)">the only reading that keeps both</text>
   </g>
 
   <!-- beat 4: the origin-blind benchmark, drawn across both bars -->
   <g data-from="3">
-    <text class="sm" x="192" y="146" fill="var(--warn)">20% = origin-blind benchmark</text>
+    <text class="sm" x="192" y="146" style="fill:var(--warn)">20% = origin-blind benchmark</text>
     <line x1="184" y1="152" x2="184" y2="248" stroke="var(--warn)" stroke-width="2" stroke-dasharray="5 4"/>
-    <text class="sm" x="390" y="191" fill="var(--warn)">double the benchmark</text>
-    <text class="sm" x="390" y="243" fill="var(--warn)">two fifths of it</text>
+    <text class="sm" x="390" y="191" style="fill:var(--warn)">double the benchmark</text>
+    <text class="sm" x="390" y="243" style="fill:var(--warn)">two fifths of it</text>
   </g>
 
   <!-- beat 5: where the other three readings break -->
   <g data-from="4">
     <line x1="44" y1="289" x2="235" y2="289" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="330" y="294" fill="var(--incorrect)">reads relative off absolute</text>
+    <text class="sm" x="330" y="294" style="fill:var(--incorrect)">reads relative off absolute</text>
     <line x1="44" y1="311" x2="241" y2="311" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="330" y="316" fill="var(--incorrect)">5 : 1 is the opposite of open</text>
+    <text class="sm" x="330" y="316" style="fill:var(--incorrect)">5 : 1 is the opposite of open</text>
     <line x1="44" y1="333" x2="255" y2="333" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="330" y="338" fill="var(--incorrect)">8% is far under the 20% bar</text>
+    <text class="sm" x="330" y="338" style="fill:var(--incorrect)">8% is far under the 20% bar</text>
   </g>
 
   <!-- beat 6: finding 1 never implies finding 2 loosened -->
@@ -77,7 +77,7 @@ svg[data-x="k1t391hr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <line x1="278" y1="58" x2="362" y2="58" stroke="var(--incorrect)" stroke-width="2"/>
     <line x1="312" y1="50" x2="328" y2="66" stroke="var(--incorrect)" stroke-width="2.5"/>
     <line x1="328" y1="50" x2="312" y2="66" stroke="var(--incorrect)" stroke-width="2.5"/>
-    <text class="sm" x="320" y="84" text-anchor="middle" fill="var(--incorrect)">not implied</text>
+    <text class="sm" x="320" y="84" text-anchor="middle" style="fill:var(--incorrect)">not implied</text>
   </g>
 </svg>`,
   steps: [

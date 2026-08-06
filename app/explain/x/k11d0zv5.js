@@ -34,7 +34,7 @@ svg[data-x="k11d0zv5"] .bar{transition:height .8s ease, y .8s ease}
     <rect x="150" y="230" width="52" height="56" rx="5" fill="var(--muted)" opacity=".7"/>
     <text class="sm" x="82"  y="304" text-anchor="middle">low income</text>
     <text class="sm" x="176" y="304" text-anchor="middle">high income</text>
-    <text class="lbl" x="128" y="214" text-anchor="middle" fill="var(--correct)">equally healthy</text>
+    <text class="lbl" x="128" y="214" text-anchor="middle" style="fill:var(--correct)">equally healthy</text>
   </g>
 
   <text class="sm" x="346" y="182" data-from="5">TEN YEARS LATER</text>
@@ -44,12 +44,12 @@ svg[data-x="k11d0zv5"] .bar{transition:height .8s ease, y .8s ease}
     <rect x="474" y="230" width="52" height="56" rx="5" fill="var(--muted)" opacity=".7"/>
     <text class="sm" x="406" y="304" text-anchor="middle">low income</text>
     <text class="sm" x="500" y="304" text-anchor="middle">high income</text>
-    <text class="lbl" x="406" y="188" text-anchor="middle" fill="var(--incorrect)">40% sicker</text>
+    <text class="lbl" x="406" y="188" text-anchor="middle" style="fill:var(--incorrect)">40% sicker</text>
   </g>
 
   <g data-from="6">
     <rect x="24" y="318" width="592" height="34" rx="17" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="320" y="341" text-anchor="middle" fill="var(--accent)">health didn't come first, income did &mdash; drift is ruled out, causation supported</text>
+    <text class="lbl" x="320" y="341" text-anchor="middle" style="fill:var(--accent)">health didn't come first, income did &mdash; drift is ruled out, causation supported</text>
   </g>
 </svg>`,
   steps: [

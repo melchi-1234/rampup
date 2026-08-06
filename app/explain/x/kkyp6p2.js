@@ -18,36 +18,36 @@ svg[data-x="kkyp6p2"][data-step="6"] #gas{fill-opacity:.14}
   <rect id="gas" x="62" y="64" width="84" height="222" rx="14" fill="#8a5a2b" fill-opacity=".55"/>
   <text class="sm" x="104" y="312" text-anchor="middle">sealed tube</text>
   <text class="sm" x="104" y="46" text-anchor="middle" data-from="0" data-to="2">pale brown at 25 °C</text>
-  <text class="sm" x="104" y="46" text-anchor="middle" data-from="4" fill="var(--accent)">paler</text>
+  <text class="sm" x="104" y="46" text-anchor="middle" data-from="4" style="fill:var(--accent)">paler</text>
 
   <!-- the equilibrium, with heat written in -->
   <text class="big" x="200" y="84">N₂O₄  ⇌  2 NO₂</text>
   <text class="sm"  x="200" y="106">colorless &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; brown</text>
-  <text class="lbl" x="200" y="140" data-from="1" fill="var(--warn)">endothermic → write heat as a reactant:</text>
-  <text class="big" x="200" y="170" data-from="1" fill="var(--warn)">N₂O₄ + heat ⇌ 2 NO₂</text>
+  <text class="lbl" x="200" y="140" data-from="1" style="fill:var(--warn)">endothermic → write heat as a reactant:</text>
+  <text class="big" x="200" y="170" data-from="1" style="fill:var(--warn)">N₂O₄ + heat ⇌ 2 NO₂</text>
 
   <g data-from="2">
-    <text class="lbl" x="200" y="212" fill="var(--accent)">cool it → you REMOVE heat</text>
+    <text class="lbl" x="200" y="212" style="fill:var(--accent)">cool it → you REMOVE heat</text>
     <text class="sm"  x="200" y="232">and heat is on the left, so you removed a reactant</text>
   </g>
   <g data-from="3">
     <path d="M420 250 H286" stroke="var(--accent)" stroke-width="3" fill="none" marker-end="url(#kkA)"/>
     <defs><marker id="kkA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
       orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker></defs>
-    <text class="lbl" x="200" y="268" fill="var(--accent)">shifts back toward N₂O₄</text>
+    <text class="lbl" x="200" y="268" style="fill:var(--accent)">shifts back toward N₂O₄</text>
   </g>
   <text class="lbl" x="200" y="292" data-from="4">less NO₂ → less brown</text>
 
   <!-- the part people miss -->
   <g data-from="5">
     <rect x="196" y="306" width="420" height="46" rx="16" fill="var(--incorrect)" opacity=".14"/>
-    <text class="lbl" x="406" y="326" text-anchor="middle" fill="var(--incorrect)">temperature is the ONE change that moves K itself</text>
-    <text class="sm"  x="406" y="344" text-anchor="middle" fill="var(--incorrect)">concentration and pressure only shift you within a fixed K</text>
+    <text class="lbl" x="406" y="326" text-anchor="middle" style="fill:var(--incorrect)">temperature is the ONE change that moves K itself</text>
+    <text class="sm"  x="406" y="344" text-anchor="middle" style="fill:var(--incorrect)">concentration and pressure only shift you within a fixed K</text>
   </g>
   <g data-from="6">
     <rect x="452" y="120" width="164" height="72" rx="16" fill="var(--accent)" opacity=".16"/>
-    <text class="lbl" x="534" y="148" text-anchor="middle" fill="var(--accent)">paler</text>
-    <text class="lbl" x="534" y="174" text-anchor="middle" fill="var(--accent)">AND Kc decreases</text>
+    <text class="lbl" x="534" y="148" text-anchor="middle" style="fill:var(--accent)">paler</text>
+    <text class="lbl" x="534" y="174" text-anchor="middle" style="fill:var(--accent)">AND Kc decreases</text>
   </g>
 </svg>`,
   steps: [

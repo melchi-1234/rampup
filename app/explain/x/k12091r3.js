@@ -18,23 +18,23 @@ svg[data-x="k12091r3"] .bond{stroke:var(--text);stroke-width:2.2}
   <line class="bond" x1="120" y1="106" x2="176" y2="106"/>
   <text class="sm" x="120" y="58" text-anchor="middle">H</text>
   <text class="sm" x="74" y="142">H</text>
-  <text class="lbl" x="190" y="112" fill="var(--incorrect)">Br</text>
+  <text class="lbl" x="190" y="112" style="fill:var(--incorrect)">Br</text>
   <text class="sm" x="120" y="160" text-anchor="middle">only H's around it</text>
 
   <g data-from="1">
     <path d="M34 106 H98" stroke="var(--correct)" stroke-width="3" marker-end="url(#k12A)"/>
     <defs><marker id="k12A" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
       orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--correct)"/></marker></defs>
-    <text class="sm" x="34" y="94" fill="var(--correct)">EtO⁻ attacks the back</text>
-    <text class="sm" x="120" y="182" text-anchor="middle" fill="var(--correct)">nothing in the way</text>
+    <text class="sm" x="34" y="94" style="fill:var(--correct)">EtO⁻ attacks the back</text>
+    <text class="sm" x="120" y="182" text-anchor="middle" style="fill:var(--correct)">nothing in the way</text>
   </g>
-  <text class="sm" x="120" y="204" text-anchor="middle" data-from="1" fill="var(--incorrect)">and a primary cation is far too unstable for SN1</text>
+  <text class="sm" x="120" y="204" text-anchor="middle" data-from="1" style="fill:var(--incorrect)">and a primary cation is far too unstable for SN1</text>
 
   <!-- the mechanism and its consequence -->
   <g data-from="2">
     <rect x="300" y="52" width="316" height="44" rx="14"
           fill="var(--correct)" fill-opacity=".18" stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="458" y="80" text-anchor="middle" fill="var(--correct)">SN2</text>
+    <text class="lbl" x="458" y="80" text-anchor="middle" style="fill:var(--correct)">SN2</text>
   </g>
   <text class="lbl" x="300" y="126" data-from="3">bimolecular &mdash; ONE step</text>
   <text class="sm"  x="300" y="146" data-from="3">substrate and nucleophile both in it</text>
@@ -42,7 +42,7 @@ svg[data-x="k12091r3"] .bond{stroke:var(--text);stroke-width:2.2}
   <text class="big" x="300" y="188" data-from="4">rate = k [substrate][EtO⁻]</text>
   <g data-from="5">
     <rect x="300" y="204" width="300" height="38" rx="14" fill="var(--accent)" opacity=".16"/>
-    <text class="lbl" x="450" y="229" text-anchor="middle" fill="var(--accent)">double the ethoxide → double the rate</text>
+    <text class="lbl" x="450" y="229" text-anchor="middle" style="fill:var(--accent)">double the ethoxide → double the rate</text>
   </g>
 
   <!-- contrast with the tertiary one -->
@@ -50,7 +50,7 @@ svg[data-x="k12091r3"] .bond{stroke:var(--text);stroke-width:2.2}
     <rect class="box" x="24" y="264" width="592" height="76" rx="16"/>
     <text class="lbl" x="44" y="290">contrast: tert-butyl bromide goes SN1</text>
     <text class="sm"  x="44" y="312">its slow step is the halide leaving, on its own &mdash; the nucleophile is not in it</text>
-    <text class="sm"  x="44" y="330" fill="var(--incorrect)">so for THAT one, changing the ethoxide concentration does nothing</text>
+    <text class="sm"  x="44" y="330" style="fill:var(--incorrect)">so for THAT one, changing the ethoxide concentration does nothing</text>
   </g>
 </svg>`,
   steps: [

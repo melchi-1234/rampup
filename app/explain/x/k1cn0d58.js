@@ -29,26 +29,26 @@ svg[data-x="k1cn0d58"] .node{fill:var(--surface-2);stroke:var(--border-strong);s
   <g data-from="2">
     <line x1="440" y1="86" x2="440" y2="150" stroke="var(--incorrect)" stroke-width="4"/>
     <rect x="248" y="90" width="160" height="52" rx="14" fill="none" stroke="var(--correct)" stroke-width="3"/>
-    <text class="lbl" x="440" y="176" text-anchor="middle" fill="var(--correct)">PCC is mild — it stops here</text>
+    <text class="lbl" x="440" y="176" text-anchor="middle" style="fill:var(--correct)">PCC is mild — it stops here</text>
   </g>
 
   <!-- the evidence -->
   <g data-from="3">
     <rect x="24" y="206" width="286" height="46" rx="14" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="167" y="234" text-anchor="middle" fill="var(--accent)">IR 1725 cm⁻¹ → a carbonyl</text>
+    <text class="lbl" x="167" y="234" text-anchor="middle" style="fill:var(--accent)">IR 1725 cm⁻¹ → a carbonyl</text>
   </g>
   <g data-from="4">
     <rect x="330" y="206" width="286" height="46" rx="14" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="473" y="228" text-anchor="middle" fill="var(--accent)">¹H NMR 9.7 ppm, 1 H</text>
-    <text class="sm"  x="473" y="245" text-anchor="middle" fill="var(--accent)">only an aldehyde proton appears there</text>
+    <text class="lbl" x="473" y="228" text-anchor="middle" style="fill:var(--accent)">¹H NMR 9.7 ppm, 1 H</text>
+    <text class="sm"  x="473" y="245" text-anchor="middle" style="fill:var(--accent)">only an aldehyde proton appears there</text>
   </g>
 
   <g data-from="5">
     <rect x="150" y="266" width="340" height="34" rx="17" fill="var(--correct)" opacity=".18"/>
-    <text class="lbl" x="320" y="289" text-anchor="middle" fill="var(--correct)">compound Y is propanal</text>
+    <text class="lbl" x="320" y="289" text-anchor="middle" style="fill:var(--correct)">compound Y is propanal</text>
   </g>
   <g data-from="6">
-    <text class="sm" x="320" y="322" text-anchor="middle" fill="var(--incorrect)">chromic acid would have gone all the way to the acid (broad O–H)</text>
+    <text class="sm" x="320" y="322" text-anchor="middle" style="fill:var(--incorrect)">chromic acid would have gone all the way to the acid (broad O–H)</text>
     <text class="sm" x="320" y="342" text-anchor="middle">the reagent chooses the stopping point, not the substrate</text>
   </g>
 </svg>`,

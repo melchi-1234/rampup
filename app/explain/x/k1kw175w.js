@@ -22,40 +22,40 @@ svg[data-x="k1kw175w"] .node{fill:var(--surface-2);stroke:var(--border-strong);s
 
   <!-- forward: PFK-1 -->
   <path d="M216 146 Q313 104 410 146" fill="none" stroke="var(--accent)" stroke-width="3.5" marker-start="url(#k1kA)"/>
-  <text class="lbl" x="313" y="98" text-anchor="middle" fill="var(--accent)">PFK-1</text>
+  <text class="lbl" x="313" y="98" text-anchor="middle" style="fill:var(--accent)">PFK-1</text>
   <text class="sm"  x="313" y="80" text-anchor="middle">glycolysis, forward · costs ATP</text>
 
   <!-- back: FBPase-1 -->
   <path d="M410 172 Q313 214 216 172" fill="none" stroke="var(--warn)" stroke-width="3.5" marker-start="url(#k1kB)"/>
-  <text class="lbl" x="313" y="234" text-anchor="middle" fill="var(--warn)">FBPase-1</text>
+  <text class="lbl" x="313" y="234" text-anchor="middle" style="fill:var(--warn)">FBPase-1</text>
   <text class="sm"  x="313" y="252" text-anchor="middle">gluconeogenesis, back</text>
   <text class="sm"  x="313" y="272" text-anchor="middle" data-from="1">same two molecules, opposite directions</text>
 
   <!-- the AMP signal -->
   <g data-from="2">
     <rect x="200" y="16" width="226" height="34" rx="16" fill="var(--incorrect)" opacity=".16"/>
-    <text class="lbl" x="313" y="39" text-anchor="middle" fill="var(--incorrect)">high AMP = low energy</text>
+    <text class="lbl" x="313" y="39" text-anchor="middle" style="fill:var(--incorrect)">high AMP = low energy</text>
   </g>
   <g data-from="3">
-    <text class="lbl" x="150" y="112" text-anchor="end" fill="var(--correct)">turns PFK-1 ON</text>
-    <text class="lbl" x="476" y="208" fill="var(--correct)">turns FBPase-1 OFF</text>
-    <text class="sm"  x="313" y="292" text-anchor="middle" fill="var(--correct)">one signal, two opposite responses — only one direction runs</text>
+    <text class="lbl" x="150" y="112" text-anchor="end" style="fill:var(--correct)">turns PFK-1 ON</text>
+    <text class="lbl" x="476" y="208" style="fill:var(--correct)">turns FBPase-1 OFF</text>
+    <text class="sm"  x="313" y="292" text-anchor="middle" style="fill:var(--correct)">one signal, two opposite responses — only one direction runs</text>
   </g>
 
   <!-- the mutation -->
   <g data-from="4">
     <rect x="416" y="192" width="170" height="30" rx="12" fill="var(--incorrect)" opacity=".18"/>
-    <text class="sm" x="501" y="212" text-anchor="middle" fill="var(--incorrect)">mutant: ignores AMP, stays ON</text>
+    <text class="sm" x="501" y="212" text-anchor="middle" style="fill:var(--incorrect)">mutant: ignores AMP, stays ON</text>
     <line x1="476" y1="216" x2="586" y2="196" stroke="var(--incorrect)" stroke-width="3"/>
   </g>
 
   <g data-from="5">
     <circle cx="313" cy="159" r="42" fill="none" stroke="var(--incorrect)" stroke-width="3" stroke-dasharray="9 7"/>
-    <text class="lbl" x="313" y="164" text-anchor="middle" fill="var(--incorrect)">both ON</text>
+    <text class="lbl" x="313" y="164" text-anchor="middle" style="fill:var(--incorrect)">both ON</text>
   </g>
   <g data-from="6">
     <rect x="90" y="308" width="460" height="42" rx="16" fill="var(--incorrect)" opacity=".16"/>
-    <text class="lbl" x="320" y="335" text-anchor="middle" fill="var(--incorrect)">a futile cycle: ATP burned, no net progress either way</text>
+    <text class="lbl" x="320" y="335" text-anchor="middle" style="fill:var(--incorrect)">a futile cycle: ATP burned, no net progress either way</text>
   </g>
 </svg>`,
   steps: [

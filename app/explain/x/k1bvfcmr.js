@@ -5,7 +5,7 @@ RU_EX.reg("k1bvfcmr", {
   css: `
 svg[data-x="k1bvfcmr"]{font-family:inherit}
 svg[data-x="k1bvfcmr"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1bvfcmr"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1bvfcmr"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1bvfcmr"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1bvfcmr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -14,7 +14,7 @@ svg[data-x="k1bvfcmr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
 
   <!-- base frame: the measurement -->
   <rect x="24" y="38" width="272" height="52" rx="10" fill="var(--surface-2)"/>
-  <text class="lbl" x="160" y="60" text-anchor="middle" fill="var(--incorrect)">Vmax &#8595; FELL</text>
+  <text class="lbl" x="160" y="60" text-anchor="middle" style="fill:var(--incorrect)">Vmax &#8595; FELL</text>
   <text class="sm"  x="160" y="79" text-anchor="middle">the ceiling rate dropped</text>
 
   <rect x="320" y="38" width="272" height="52" rx="10" fill="var(--surface-2)"/>
@@ -39,31 +39,31 @@ svg[data-x="k1bvfcmr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <g data-from="1">
     <rect x="320" y="38" width="272" height="52" rx="10" fill="var(--accent)" fill-opacity=".14"
           stroke="var(--accent)" stroke-width="2"/>
-    <text class="lbl" x="456" y="60" text-anchor="middle" fill="var(--accent)">Km &#8212; UNCHANGED</text>
+    <text class="lbl" x="456" y="60" text-anchor="middle" style="fill:var(--accent)">Km &#8212; UNCHANGED</text>
     <text class="sm"  x="456" y="79" text-anchor="middle">same [S] for half-maximal rate</text>
-    <text class="sm"  x="320" y="110" text-anchor="middle" fill="var(--accent)">&#8658; substrate binding was never touched</text>
+    <text class="sm"  x="320" y="110" text-anchor="middle" style="fill:var(--accent)">&#8658; substrate binding was never touched</text>
   </g>
 
   <!-- beat 3: the active-site competitor would have moved Km -->
   <g data-from="2">
     <line x1="64" y1="139" x2="328" y2="139" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="336" y="144" fill="var(--incorrect)">competitive: Km &#8593; and [S] rescues</text>
+    <text class="sm" x="336" y="144" style="fill:var(--incorrect)">competitive: Km &#8593; and [S] rescues</text>
   </g>
 
   <!-- beat 4: nothing rescues Vmax, so the site is elsewhere -->
   <g data-from="3">
     <rect x="24" y="210" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="228" text-anchor="middle" fill="var(--correct)">C</text>
-    <text class="sm" x="336" y="228" fill="var(--correct)">allosteric &#183; [S] cannot rescue</text>
+    <text class="lbl" x="39" y="228" text-anchor="middle" style="fill:var(--correct)">C</text>
+    <text class="sm" x="336" y="228" style="fill:var(--correct)">allosteric &#183; [S] cannot rescue</text>
   </g>
 
   <!-- beat 5: the activation bait and the destruction bait -->
   <g data-from="4">
     <line x1="64" y1="265" x2="328" y2="265" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="336" y="270" fill="var(--incorrect)">&#8593; affinity &#8658; Km &#8595; &#183; activation</text>
+    <text class="sm" x="336" y="270" style="fill:var(--incorrect)">&#8593; affinity &#8658; Km &#8595; &#183; activation</text>
     <line x1="64" y1="181" x2="328" y2="181" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="336" y="186" fill="var(--incorrect)">peptide cleavage = proteolysis</text>
+    <text class="sm" x="336" y="186" style="fill:var(--incorrect)">peptide cleavage = proteolysis</text>
   </g>
 
   <!-- beat 6: the rule that read the whole question -->

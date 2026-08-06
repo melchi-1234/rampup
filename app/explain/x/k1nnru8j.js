@@ -6,7 +6,7 @@ RU_EX.reg("k1nnru8j", {
   css: `
 svg[data-x="k1nnru8j"]{font-family:inherit}
 svg[data-x="k1nnru8j"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1nnru8j"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1nnru8j"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1nnru8j"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1nnru8j"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -43,38 +43,38 @@ svg[data-x="k1nnru8j"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <rect class="chip" x="24" y="76" width="592" height="30" rx="10"/>
     <text class="sm" x="36" y="96">PRE-FILTER: this is macro structure, not micro meaning</text>
     <line x1="60" y1="227" x2="236" y2="227" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="244" y="232" fill="var(--incorrect)">meanings in daily interaction &#8212; wrong scale</text>
+    <text class="sm" x="244" y="232" style="fill:var(--incorrect)">meanings in daily interaction &#8212; wrong scale</text>
   </g>
 
   <!-- beat 3: functionalism scores the same fact with the opposite sign -->
   <g data-from="2">
     <circle cx="200" cy="290" r="6" fill="var(--incorrect)"/>
-    <text class="sm" x="200" y="310" text-anchor="middle" fill="var(--incorrect)">functionalism</text>
+    <text class="sm" x="200" y="310" text-anchor="middle" style="fill:var(--incorrect)">functionalism</text>
     <line x1="60" y1="125" x2="236" y2="125" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="244" y="130" fill="var(--incorrect)">sorting scored as a shared gain, not a transfer</text>
+    <text class="sm" x="244" y="130" style="fill:var(--incorrect)">sorting scored as a shared gain, not a transfer</text>
   </g>
 
   <!-- beat 4: conflict theory is where the stem already sits -->
   <g data-from="3">
     <circle cx="430" cy="290" r="6" fill="var(--correct)"/>
-    <text class="sm" x="430" y="310" text-anchor="middle" fill="var(--correct)">conflict theory &#183; the stem</text>
+    <text class="sm" x="430" y="310" text-anchor="middle" style="fill:var(--correct)">conflict theory &#183; the stem</text>
     <rect x="24" y="180" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="198" text-anchor="middle" fill="var(--correct)">C</text>
-    <text class="sm" x="244" y="198" fill="var(--correct)">&#10003; institutions keep the advantaged on top</text>
+    <text class="lbl" x="39" y="198" text-anchor="middle" style="fill:var(--correct)">C</text>
+    <text class="sm" x="244" y="198" style="fill:var(--correct)">&#10003; institutions keep the advantaged on top</text>
   </g>
 
   <!-- beat 5: feminist theory is the right family, the wrong axis -->
   <g data-from="4">
     <circle cx="430" cy="290" r="12" fill="none" stroke="var(--warn)" stroke-width="2"/>
     <line x1="60" y1="159" x2="236" y2="159" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="244" y="164" fill="var(--incorrect)">conflict lens, but its axis is gender</text>
-    <text class="sm" x="320" y="330" text-anchor="middle" fill="var(--warn)">the stem names family wealth, so the axis is class</text>
+    <text class="sm" x="244" y="164" style="fill:var(--incorrect)">conflict lens, but its axis is gender</text>
+    <text class="sm" x="320" y="330" text-anchor="middle" style="fill:var(--warn)">the stem names family wealth, so the axis is class</text>
   </g>
 
   <!-- beat 6: the habit to keep -->
   <g data-from="5">
-    <text class="lbl" x="320" y="348" text-anchor="middle" fill="var(--accent)">name the axis of inequality, then name the theory</text>
+    <text class="lbl" x="320" y="348" text-anchor="middle" style="fill:var(--accent)">name the axis of inequality, then name the theory</text>
   </g>
 </svg>`,
   steps: [

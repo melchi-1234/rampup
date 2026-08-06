@@ -5,7 +5,7 @@ RU_EX.reg("k8c5g34", {
   css: `
 svg[data-x="k8c5g34"]{font-family:inherit}
 svg[data-x="k8c5g34"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k8c5g34"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k8c5g34"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k8c5g34"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k8c5g34"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -36,8 +36,8 @@ svg[data-x="k8c5g34"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <line x1="155" y1="52" x2="155" y2="150" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 3"/>
     <rect x="56"  y="78" width="38" height="24" rx="6" fill="var(--accent)" fill-opacity=".16"/>
     <rect x="218" y="78" width="38" height="24" rx="6" fill="var(--accent)" fill-opacity=".16"/>
-    <text class="lbl" x="75"  y="95" text-anchor="middle" fill="var(--accent)">CH&#8323;</text>
-    <text class="lbl" x="237" y="95" text-anchor="middle" fill="var(--accent)">CH&#8323;</text>
+    <text class="lbl" x="75"  y="95" text-anchor="middle" style="fill:var(--accent)">CH&#8323;</text>
+    <text class="lbl" x="237" y="95" text-anchor="middle" style="fill:var(--accent)">CH&#8323;</text>
     <text class="sm"  x="155" y="166" text-anchor="middle">mirror plane &#8594; 6 H in one environment</text>
   </g>
 
@@ -61,12 +61,12 @@ svg[data-x="k8c5g34"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <line x1="534" y1="150" x2="534" y2="176" stroke="var(--correct)" stroke-width="2.5"/>
     <line x1="548" y1="160" x2="548" y2="176" stroke="var(--correct)" stroke-width="2.5"/>
     <line x1="562" y1="168" x2="562" y2="176" stroke="var(--correct)" stroke-width="2.5"/>
-    <text class="sm" x="380" y="194" text-anchor="middle" fill="var(--correct)">6H doublet &#183; n = 1</text>
-    <text class="sm" x="520" y="194" text-anchor="middle" fill="var(--correct)">1H septet &#183; n = 6</text>
+    <text class="sm" x="380" y="194" text-anchor="middle" style="fill:var(--correct)">6H doublet &#183; n = 1</text>
+    <text class="sm" x="520" y="194" text-anchor="middle" style="fill:var(--correct)">1H septet &#183; n = 6</text>
     <rect x="24" y="324" width="272" height="24" rx="12" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="36"  y="341" fill="var(--correct)">D &#183; 6H doublet + 1H septet</text>
-    <text class="sm"  x="316" y="341" fill="var(--correct)">n = 1 &#8594; 2 lines &#183; n = 6 &#8594; 7 lines</text>
+    <text class="lbl" x="36"  y="341" style="fill:var(--correct)">D &#183; 6H doublet + 1H septet</text>
+    <text class="sm"  x="316" y="341" style="fill:var(--correct)">n = 1 &#8594; 2 lines &#183; n = 6 &#8594; 7 lines</text>
   </g>
 
   <!-- beat 5: where the other three come from -->
@@ -74,9 +74,9 @@ svg[data-x="k8c5g34"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <line x1="32" y1="252" x2="270" y2="252" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="32" y1="280" x2="270" y2="280" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="32" y1="308" x2="270" y2="308" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="316" y="257" fill="var(--incorrect)">a singlet needs zero neighbors</text>
-    <text class="sm" x="316" y="285" fill="var(--incorrect)">&#185;&#179;C counting &#8212; and &#185;&#179;C gives 2 here</text>
-    <text class="sm" x="316" y="313" fill="var(--incorrect)">the CH&#8323;CH&#8322;X reflex: n = 2 and 3</text>
+    <text class="sm" x="316" y="257" style="fill:var(--incorrect)">a singlet needs zero neighbors</text>
+    <text class="sm" x="316" y="285" style="fill:var(--incorrect)">&#185;&#179;C counting &#8212; and &#185;&#179;C gives 2 here</text>
+    <text class="sm" x="316" y="313" style="fill:var(--incorrect)">the CH&#8323;CH&#8322;X reflex: n = 2 and 3</text>
   </g>
 
   <!-- beat 6: the rule that survives -->

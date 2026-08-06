@@ -7,7 +7,7 @@ RU_EX.reg("kodb7b7", {
   css: `
 svg[data-x="kodb7b7"]{font-family:inherit}
 svg[data-x="kodb7b7"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kodb7b7"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kodb7b7"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kodb7b7"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kodb7b7"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -31,7 +31,7 @@ svg[data-x="kodb7b7"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <!-- beat 2: T lives inside the exponent, as 1/T -->
   <g data-from="1">
     <text class="lbl" x="24" y="60">k = A &#183; e<tspan font-size="10" dy="-5">(&#8722;Ea/RT)</tspan></text>
-    <text class="sm" x="24" y="82" fill="var(--accent)">T is inside the exponent, and it enters as one over T</text>
+    <text class="sm" x="24" y="82" style="fill:var(--accent)">T is inside the exponent, and it enters as one over T</text>
   </g>
 
   <!-- beat 3: the ratio of two k's, Ea fixed -->
@@ -42,27 +42,27 @@ svg[data-x="kodb7b7"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
 
   <!-- beat 4: the two steps move 1/T by nearly the same amount -->
   <g data-from="3">
-    <text class="sm" x="24"  y="166" fill="var(--warn)">1/300 &#8722; 1/310 = 1.075&#215;10&#8315;&#8308;</text>
-    <text class="sm" x="300" y="166" fill="var(--warn)">1/310 &#8722; 1/320 = 1.008&#215;10&#8315;&#8308;</text>
-    <text class="sm" x="24"  y="186" fill="var(--warn)">about six percent apart &#8212; near enough to repeat the factor</text>
+    <text class="sm" x="24"  y="166" style="fill:var(--warn)">1/300 &#8722; 1/310 = 1.075&#215;10&#8315;&#8308;</text>
+    <text class="sm" x="300" y="166" style="fill:var(--warn)">1/310 &#8722; 1/320 = 1.008&#215;10&#8315;&#8308;</text>
+    <text class="sm" x="24"  y="186" style="fill:var(--warn)">about six percent apart &#8212; near enough to repeat the factor</text>
   </g>
 
   <!-- beat 5: linear vs exponential, and A wins -->
   <g data-from="4">
     <line x1="64" y1="257" x2="330" y2="257" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="352" y="262" fill="var(--incorrect)">linear would give 3k&#8320;, not 3.8k&#8320;</text>
+    <text class="sm" x="352" y="262" style="fill:var(--incorrect)">linear would give 3k&#8320;, not 3.8k&#8320;</text>
     <rect x="24" y="210" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="228" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm" x="352" y="228" fill="var(--correct)">&#215;1.9 then &#215;1.9 &#8594; about 3.8k&#8320;</text>
+    <text class="lbl" x="39" y="228" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm" x="352" y="228" style="fill:var(--correct)">&#215;1.9 then &#215;1.9 &#8594; about 3.8k&#8320;</text>
   </g>
 
   <!-- beat 6: Ea is a property of the path, not of T -->
   <g data-from="5">
     <line x1="64" y1="291" x2="330" y2="291" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="64" y1="325" x2="330" y2="325" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="352" y="296" fill="var(--incorrect)">Ea is set by the reaction path</text>
-    <text class="sm" x="352" y="330" fill="var(--incorrect)">only a catalyst moves it</text>
+    <text class="sm" x="352" y="296" style="fill:var(--incorrect)">Ea is set by the reaction path</text>
+    <text class="sm" x="352" y="330" style="fill:var(--incorrect)">only a catalyst moves it</text>
   </g>
 </svg>`,
   steps: [

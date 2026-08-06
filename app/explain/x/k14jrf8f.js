@@ -46,16 +46,16 @@ svg[data-x="k14jrf8f"][data-step="6"] .zai{opacity:.3}
 
   <g class="killSn2">
     <line x1="34" y1="88" x2="146" y2="50" stroke="var(--incorrect)" stroke-width="3"/>
-    <text class="sm" x="90" y="108" text-anchor="middle" fill="var(--incorrect)">tertiary: blocked</text>
+    <text class="sm" x="90" y="108" text-anchor="middle" style="fill:var(--incorrect)">tertiary: blocked</text>
   </g>
   <g class="killIon">
     <line x1="178" y1="88" x2="290" y2="50" stroke="var(--incorrect)" stroke-width="3"/>
     <line x1="322" y1="88" x2="434" y2="50" stroke="var(--incorrect)" stroke-width="3"/>
-    <text class="sm" x="306" y="108" text-anchor="middle" fill="var(--incorrect)">strong base, high conc: no waiting for a carbocation</text>
+    <text class="sm" x="306" y="108" text-anchor="middle" style="fill:var(--incorrect)">strong base, high conc: no waiting for a carbocation</text>
   </g>
   <g class="pickE2">
     <rect x="456" y="48" width="132" height="42" rx="12" fill="none" stroke="var(--correct)" stroke-width="3"/>
-    <text class="sm" x="522" y="108" text-anchor="middle" fill="var(--correct)">concerted, one step</text>
+    <text class="sm" x="522" y="108" text-anchor="middle" style="fill:var(--correct)">concerted, one step</text>
   </g>
 
   <!-- which alkene -->
@@ -64,22 +64,22 @@ svg[data-x="k14jrf8f"][data-step="6"] .zai{opacity:.3}
     <rect class="card" x="24" y="166" width="270" height="92" rx="14"/>
     <text class="sm"  x="42" y="188">the crowded interior proton</text>
     <text class="lbl" x="42" y="214">→ more substituted</text>
-    <text class="lbl" x="42" y="238" fill="var(--muted)">Zaitsev  (the usual pick)</text>
+    <text class="lbl" x="42" y="238" style="fill:var(--muted)">Zaitsev  (the usual pick)</text>
   </g>
   <g class="bulky">
-    <text class="sm" x="616" y="152" text-anchor="end" fill="var(--warn)">but a bulky base cannot reach it</text>
+    <text class="sm" x="616" y="152" text-anchor="end" style="fill:var(--warn)">but a bulky base cannot reach it</text>
   </g>
   <g class="hof">
     <rect class="card" x="346" y="166" width="270" height="92" rx="14"
           fill="var(--correct)" fill-opacity=".16" stroke="var(--correct)"/>
     <text class="sm"  x="364" y="188">the accessible proton on the end</text>
-    <text class="lbl" x="364" y="214" fill="var(--correct)">→ less substituted</text>
-    <text class="lbl" x="364" y="238" fill="var(--correct)">Hofmann  ✓</text>
+    <text class="lbl" x="364" y="214" style="fill:var(--correct)">→ less substituted</text>
+    <text class="lbl" x="364" y="238" style="fill:var(--correct)">Hofmann  ✓</text>
   </g>
 
   <g class="fin">
     <rect x="110" y="292" width="420" height="30" rx="15" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="320" y="312" text-anchor="middle" fill="var(--accent)">bulky base is the whole signal</text>
+    <text class="lbl" x="320" y="312" text-anchor="middle" style="fill:var(--accent)">bulky base is the whole signal</text>
   </g>
 </svg>`,
   steps: [

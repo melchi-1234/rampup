@@ -5,7 +5,7 @@ RU_EX.reg("k1j3k2gy", {
   css: `
 svg[data-x="k1j3k2gy"]{font-family:inherit}
 svg[data-x="k1j3k2gy"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1j3k2gy"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1j3k2gy"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1j3k2gy"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1j3k2gy"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -41,30 +41,30 @@ svg[data-x="k1j3k2gy"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
 
   <!-- beat 2: each branch draws its own current off the same 12 V -->
   <g data-from="1">
-    <text class="sm" x="170" y="200" text-anchor="middle" fill="var(--text)">12/4 = 3 A</text>
-    <text class="sm" x="270" y="200" text-anchor="middle" fill="var(--text)">12/12 = 1 A</text>
+    <text class="sm" x="170" y="200" text-anchor="middle" style="fill:var(--text)">12/4 = 3 A</text>
+    <text class="sm" x="270" y="200" text-anchor="middle" style="fill:var(--text)">12/12 = 1 A</text>
   </g>
 
   <!-- beat 3: add the currents -->
   <g data-from="2">
     <rect x="336" y="276" width="280" height="60" rx="10" fill="var(--correct)" fill-opacity=".18"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="352" y="304" fill="var(--correct)">D &#183; 4.0 A</text>
-    <text class="sm"  x="352" y="324" fill="var(--correct)">3 A + 1 A &#8212; every branch counted</text>
+    <text class="lbl" x="352" y="304" style="fill:var(--correct)">D &#183; 4.0 A</text>
+    <text class="sm"  x="352" y="324" style="fill:var(--correct)">3 A + 1 A &#8212; every branch counted</text>
   </g>
 
   <!-- beat 4: A and C are single branches (and 3 doubles as R_eq) -->
   <g data-from="3">
     <line x1="350" y1="84" x2="420" y2="84" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="350" y1="228" x2="420" y2="228" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="352" y="108" fill="var(--incorrect)">12/12 &#8212; the 12 &#8486; branch alone</text>
-    <text class="sm" x="352" y="252" fill="var(--incorrect)">12/4 &#8212; one branch; R_eq = 3.0 &#8486; too</text>
+    <text class="sm" x="352" y="108" style="fill:var(--incorrect)">12/12 &#8212; the 12 &#8486; branch alone</text>
+    <text class="sm" x="352" y="252" style="fill:var(--incorrect)">12/4 &#8212; one branch; R_eq = 3.0 &#8486; too</text>
   </g>
 
   <!-- beat 5: B adds the resistors in series -->
   <g data-from="4">
     <line x1="350" y1="156" x2="430" y2="156" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="352" y="180" fill="var(--incorrect)">series slip: 4 + 12 = 16, 12/16</text>
+    <text class="sm" x="352" y="180" style="fill:var(--incorrect)">series slip: 4 + 12 = 16, 12/16</text>
   </g>
 
   <!-- beat 6: parallel resistance is always below the smallest branch -->

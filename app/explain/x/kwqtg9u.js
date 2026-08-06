@@ -14,7 +14,7 @@ svg[data-x="kwqtg9u"] .fade{transition:opacity .6s ease}
   <!-- what it is for -->
   <text class="sm" x="24" y="44">THE GOAL</text>
   <rect class="goal" x="24" y="56" width="240" height="56" rx="14"/>
-  <text class="lbl" x="144" y="90" text-anchor="middle" fill="var(--correct)">actually help clients</text>
+  <text class="lbl" x="144" y="90" text-anchor="middle" style="fill:var(--correct)">actually help clients</text>
 
   <text class="sm" x="24" y="152" data-from="1">THE MEANS</text>
   <rect class="box" x="24" y="164" width="240" height="56" rx="14" data-from="1"/>
@@ -32,24 +32,24 @@ svg[data-x="kwqtg9u"] .fade{transition:opacity .6s ease}
     <rect class="box" x="336" y="56" width="280" height="56" rx="14"/>
     <text class="lbl" x="476" y="90" text-anchor="middle">“was the form filled in exactly right?”</text>
   </g>
-  <text class="sm" x="336" y="136" data-from="3" fill="var(--warn)">measurable, so it is what people optimise</text>
-  <text class="sm" x="336" y="156" data-from="3" fill="var(--warn)">helping clients is not on the form</text>
+  <text class="sm" x="336" y="136" data-from="3" style="fill:var(--warn)">measurable, so it is what people optimise</text>
+  <text class="sm" x="336" y="156" data-from="3" style="fill:var(--warn)">helping clients is not on the form</text>
 
   <!-- the swap -->
   <g data-from="4">
     <rect class="swapped" x="336" y="176" width="280" height="56" rx="14"/>
-    <text class="lbl" x="476" y="200" text-anchor="middle" fill="var(--incorrect)">the paperwork IS the job now</text>
-    <text class="sm"  x="476" y="220" text-anchor="middle" fill="var(--incorrect)">the goal it served has dropped out</text>
+    <text class="lbl" x="476" y="200" text-anchor="middle" style="fill:var(--incorrect)">the paperwork IS the job now</text>
+    <text class="sm"  x="476" y="220" text-anchor="middle" style="fill:var(--incorrect)">the goal it served has dropped out</text>
   </g>
 
   <g data-from="5">
     <rect x="24" y="256" width="592" height="34" rx="17" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="320" y="279" text-anchor="middle" fill="var(--accent)">the means has replaced the end &mdash; goal displacement</text>
+    <text class="lbl" x="320" y="279" text-anchor="middle" style="fill:var(--accent)">the means has replaced the end &mdash; goal displacement</text>
   </g>
 
   <g data-from="6">
     <text class="sm" x="24" y="316">rationalization &amp; McDonaldization describe efficiency spreading through society</text>
-    <text class="sm" x="24" y="336" fill="var(--accent)">only goal displacement names this specific swap</text>
+    <text class="sm" x="24" y="336" style="fill:var(--accent)">only goal displacement names this specific swap</text>
   </g>
 </svg>`,
   steps: [

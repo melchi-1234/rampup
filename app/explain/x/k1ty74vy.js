@@ -8,7 +8,7 @@ RU_EX.reg("k1ty74vy", {
   css: `
 svg[data-x="k1ty74vy"]{font-family:inherit}
 svg[data-x="k1ty74vy"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1ty74vy"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1ty74vy"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1ty74vy"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1ty74vy"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -30,29 +30,29 @@ svg[data-x="k1ty74vy"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <!-- beat 3: the first two are a genuine enantiomer pair -->
   <g data-from="2">
     <path d="M128 118 L142 118 L142 156 L128 156" fill="none" stroke="var(--correct)" stroke-width="2"/>
-    <text class="sm" x="152" y="135" fill="var(--correct)">non-superimposable mirror images</text>
-    <text class="sm" x="152" y="153" fill="var(--correct)">a real pair &#8212; that is two compounds</text>
+    <text class="sm" x="152" y="135" style="fill:var(--correct)">non-superimposable mirror images</text>
+    <text class="sm" x="152" y="153" style="fill:var(--correct)">a real pair &#8212; that is two compounds</text>
   </g>
 
   <!-- beat 4: C3 sits between two identical arms -->
   <g data-from="3">
     <text class="sm" x="24" y="272">carbon three has CH&#8323;&#8212;CHBr&#8212; on its left and CH&#8323;&#8212;CHBr&#8212; on its right</text>
-    <text class="sm" x="24" y="292" fill="var(--accent)">the two arms are identical, so the molecule can mirror onto itself</text>
+    <text class="sm" x="24" y="292" style="fill:var(--accent)">the two arms are identical, so the molecule can mirror onto itself</text>
   </g>
 
   <!-- beat 5: the mixed pair collapses to ONE compound -->
   <g data-from="4">
     <path d="M128 194 L142 194 L142 232 L128 232" fill="none" stroke="var(--warn)" stroke-width="2"/>
-    <text class="lbl" x="152" y="207" fill="var(--warn)">these two are the SAME molecule</text>
-    <text class="sm"  x="152" y="226" fill="var(--warn)">flip it over and it lands on itself</text>
-    <text class="sm"  x="152" y="244" fill="var(--warn)">one compound, not two</text>
+    <text class="lbl" x="152" y="207" style="fill:var(--warn)">these two are the SAME molecule</text>
+    <text class="sm"  x="152" y="226" style="fill:var(--warn)">flip it over and it lands on itself</text>
+    <text class="sm"  x="152" y="244" style="fill:var(--warn)">one compound, not two</text>
   </g>
 
   <!-- beat 6: meso, and the arithmetic -->
   <g data-from="5">
     <rect x="24" y="308" width="288" height="34" rx="10" fill="var(--correct)" fill-opacity=".18"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="168" y="330" text-anchor="middle" fill="var(--correct)">4 &#8722; 1 = 3 stereoisomers</text>
+    <text class="lbl" x="168" y="330" text-anchor="middle" style="fill:var(--correct)">4 &#8722; 1 = 3 stereoisomers</text>
     <text class="sm" x="328" y="322">meso: achiral, but still a real compound</text>
     <text class="sm" x="328" y="340">2&#8319; is only ever a maximum</text>
   </g>

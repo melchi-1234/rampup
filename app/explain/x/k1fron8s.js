@@ -6,7 +6,7 @@ RU_EX.reg("k1fron8s", {
   css: `
 svg[data-x="k1fron8s"]{font-family:inherit}
 svg[data-x="k1fron8s"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1fron8s"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1fron8s"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1fron8s"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1fron8s"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -22,9 +22,9 @@ svg[data-x="k1fron8s"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <text class="lbl" x="312" y="63" text-anchor="middle">&#8594;</text>
   <rect x="328" y="40" width="120" height="34" rx="10" fill="none"
         stroke="var(--incorrect)" stroke-width="1.5"/>
-  <text class="lbl" x="388" y="62" text-anchor="middle" fill="var(--incorrect)">O&#8322;</text>
+  <text class="lbl" x="388" y="62" text-anchor="middle" style="fill:var(--incorrect)">O&#8322;</text>
   <line x1="344" y1="57" x2="432" y2="57" stroke="var(--incorrect)" stroke-width="2"/>
-  <text class="sm" x="462" y="62" fill="var(--incorrect)">no terminal acceptor</text>
+  <text class="sm" x="462" y="62" style="fill:var(--incorrect)">no terminal acceptor</text>
 
   <!-- beat 2: the backup that stalls -->
   <g data-from="1">
@@ -64,22 +64,22 @@ svg[data-x="k1fron8s"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <g data-from="3">
     <rect x="24" y="220" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="238" text-anchor="middle" fill="var(--correct)">B</text>
-    <text class="sm" x="380" y="238" fill="var(--correct)">&#10003; only glycolysis pays</text>
+    <text class="lbl" x="39" y="238" text-anchor="middle" style="fill:var(--correct)">B</text>
+    <text class="sm" x="380" y="238" style="fill:var(--correct)">&#10003; only glycolysis pays</text>
   </g>
 
   <!-- beat 5: the two that keep an oxygen-sized yield -->
   <g data-from="4">
     <line x1="60" y1="201" x2="372" y2="201" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="60" y1="297" x2="372" y2="297" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="380" y="206" fill="var(--incorrect)">the ETC is switched off</text>
-    <text class="sm" x="380" y="302" fill="var(--incorrect)">LDH takes pyruvate, not acetyl-CoA</text>
+    <text class="sm" x="380" y="206" style="fill:var(--incorrect)">the ETC is switched off</text>
+    <text class="sm" x="380" y="302" style="fill:var(--incorrect)">LDH takes pyruvate, not acetyl-CoA</text>
   </g>
 
   <!-- beat 6: nothing outruns the aerobic ceiling -->
   <g data-from="5">
     <line x1="60" y1="265" x2="372" y2="265" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="380" y="270" fill="var(--incorrect)">nothing beats the aerobic yield</text>
+    <text class="sm" x="380" y="270" style="fill:var(--incorrect)">nothing beats the aerobic yield</text>
     <rect x="24" y="318" width="592" height="30" rx="10" fill="var(--accent)" fill-opacity=".12"/>
     <text class="lbl" x="320" y="338" text-anchor="middle">the terminal acceptor sets the ATP ceiling</text>
   </g>

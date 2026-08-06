@@ -49,7 +49,7 @@ svg[data-x="kdulooi"][data-step="6"] .final{opacity:1}
 
   <!-- the first atom in each, with atomic number -->
   <g class="z">
-    <text class="sm" x="166" y="70" text-anchor="middle" fill="var(--accent)">O · 8</text>
+    <text class="sm" x="166" y="70" text-anchor="middle" style="fill:var(--accent)">O · 8</text>
     <text class="sm" x="442" y="70" text-anchor="middle">C · 6</text>
     <text class="sm" x="452" y="196" text-anchor="middle">C · 6</text>
     <text class="sm" x="175" y="196" text-anchor="middle">H · 1</text>
@@ -57,35 +57,35 @@ svg[data-x="kdulooi"][data-step="6"] .final{opacity:1}
 
   <g class="rank1">
     <circle cx="118" cy="91" r="13" fill="var(--correct)"/>
-    <text class="lbl" x="118" y="96" text-anchor="middle" fill="var(--card)">1</text>
+    <text class="lbl" x="118" y="96" text-anchor="middle" style="fill:var(--card)">1</text>
   </g>
   <g class="rank4">
     <circle cx="128" cy="165" r="13" fill="var(--incorrect)"/>
-    <text class="lbl" x="128" y="170" text-anchor="middle" fill="var(--card)">4</text>
+    <text class="lbl" x="128" y="170" text-anchor="middle" style="fill:var(--card)">4</text>
   </g>
 
   <!-- the two carbons are tied so far -->
   <rect class="tie" x="388" y="66" width="132" height="122" rx="14" fill="none"
         stroke="var(--warn)" stroke-width="2.5"/>
-  <text class="tie sm" x="454" y="60" text-anchor="middle" fill="var(--warn)">tied on the first atom</text>
+  <text class="tie sm" x="454" y="60" text-anchor="middle" style="fill:var(--warn)">tied on the first atom</text>
 
   <!-- tie-break: what each carbon holds -->
   <g class="sets">
     <rect x="60" y="232" width="240" height="66" rx="14" fill="var(--surface-2)"/>
     <text class="sm"  x="180" y="254" text-anchor="middle">the CH₂Br carbon holds</text>
-    <text class="lbl" x="180" y="280" text-anchor="middle" fill="var(--correct)">( Br 35 , H , H )</text>
+    <text class="lbl" x="180" y="280" text-anchor="middle" style="fill:var(--correct)">( Br 35 , H , H )</text>
     <rect x="336" y="232" width="240" height="66" rx="14" fill="var(--surface-2)"/>
     <text class="sm"  x="456" y="254" text-anchor="middle">the tert-butyl carbon holds</text>
     <text class="lbl" x="456" y="280" text-anchor="middle">( C 6 , C , C )</text>
   </g>
   <g class="win">
-    <text class="lbl" x="318" y="272" text-anchor="middle" fill="var(--accent)">&gt;</text>
-    <text class="sm" x="318" y="316" text-anchor="middle" fill="var(--accent)">first point of difference: 35 beats 6</text>
+    <text class="lbl" x="318" y="272" text-anchor="middle" style="fill:var(--accent)">&gt;</text>
+    <text class="sm" x="318" y="316" text-anchor="middle" style="fill:var(--accent)">first point of difference: 35 beats 6</text>
   </g>
 
   <g class="final">
     <rect x="150" y="330" width="340" height="26" rx="13" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="320" y="348" text-anchor="middle" fill="var(--accent)">OH &gt; CH₂Br &gt; tert-butyl &gt; H</text>
+    <text class="lbl" x="320" y="348" text-anchor="middle" style="fill:var(--accent)">OH &gt; CH₂Br &gt; tert-butyl &gt; H</text>
   </g>
 </svg>`,
   steps: [

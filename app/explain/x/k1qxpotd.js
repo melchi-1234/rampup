@@ -5,7 +5,7 @@ RU_EX.reg("k1qxpotd", {
 svg[data-x="k1qxpotd"]{font-family:inherit}
 svg[data-x="k1qxpotd"] .lbl{fill:var(--text);font-size:15px;font-weight:700}
 svg[data-x="k1qxpotd"] .big{fill:var(--text);font-size:19px;font-weight:800}
-svg[data-x="k1qxpotd"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1qxpotd"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1qxpotd"] .bond{stroke:var(--text);stroke-width:2.2;stroke-linecap:round}
 svg[data-x="k1qxpotd"] .peak{stroke-width:3;stroke-linecap:round;fill:none}
 
@@ -48,13 +48,13 @@ svg[data-x="k1qxpotd"][data-step="6"] .trap{opacity:1}
   <!-- the two proton environments -->
   <g class="envA">
     <circle cx="252" cy="128" r="17" fill="var(--accent)" opacity=".2"/>
-    <text class="lbl" x="252" y="134" text-anchor="middle" fill="var(--accent)">H</text>
+    <text class="lbl" x="252" y="134" text-anchor="middle" style="fill:var(--accent)">H</text>
   </g>
   <g class="envB">
     <circle cx="374" cy="128" r="17" fill="var(--correct)" opacity=".2"/>
-    <text class="lbl" x="374" y="134" text-anchor="middle" fill="var(--correct)">H</text>
+    <text class="lbl" x="374" y="134" text-anchor="middle" style="fill:var(--correct)">H</text>
     <circle cx="408" cy="128" r="17" fill="var(--correct)" opacity=".2"/>
-    <text class="lbl" x="408" y="134" text-anchor="middle" fill="var(--correct)">H</text>
+    <text class="lbl" x="408" y="134" text-anchor="middle" style="fill:var(--correct)">H</text>
   </g>
   <line class="bond" x1="252" y1="102" x2="252" y2="112"/>
   <line class="bond" x1="382" y1="102" x2="376" y2="112"/>
@@ -65,14 +65,14 @@ svg[data-x="k1qxpotd"][data-step="6"] .trap{opacity:1}
   <!-- neighbor highlights -->
   <g class="nbrA"><rect x="352" y="108" width="76" height="40" rx="12" fill="none"
       stroke="var(--correct)" stroke-width="2.5"/>
-    <text class="sm" x="391" y="102" text-anchor="middle" fill="var(--correct)">2 neighbors</text></g>
+    <text class="sm" x="391" y="102" text-anchor="middle" style="fill:var(--correct)">2 neighbors</text></g>
   <g class="nbrB"><rect x="232" y="108" width="40" height="40" rx="12" fill="none"
       stroke="var(--accent)" stroke-width="2.5"/>
-    <text class="sm" x="252" y="102" text-anchor="middle" fill="var(--accent)">1 neighbor</text></g>
+    <text class="sm" x="252" y="102" text-anchor="middle" style="fill:var(--accent)">1 neighbor</text></g>
 
   <g class="rule">
     <rect x="452" y="60" width="172" height="52" rx="14" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="538" y="82" text-anchor="middle" fill="var(--accent)">n + 1 rule</text>
+    <text class="lbl" x="538" y="82" text-anchor="middle" style="fill:var(--accent)">n + 1 rule</text>
     <text class="sm" x="538" y="101" text-anchor="middle">n = protons NEXT DOOR</text>
   </g>
 
@@ -83,7 +83,7 @@ svg[data-x="k1qxpotd"][data-step="6"] .trap{opacity:1}
     <line class="peak" stroke="var(--accent)" x1="150" y1="288" x2="150" y2="228"/>
     <line class="peak" stroke="var(--accent)" x1="194" y1="288" x2="194" y2="256"/>
     <line class="bond" x1="76" y1="288" x2="224" y2="288"/>
-    <text class="lbl" x="150" y="312" text-anchor="middle" fill="var(--accent)">triplet (1:2:1)</text>
+    <text class="lbl" x="150" y="312" text-anchor="middle" style="fill:var(--accent)">triplet (1:2:1)</text>
   </g>
   <!-- doublet -->
   <g class="doub">
@@ -91,10 +91,10 @@ svg[data-x="k1qxpotd"][data-step="6"] .trap{opacity:1}
     <line class="peak" stroke="var(--correct)" x1="394" y1="288" x2="394" y2="234"/>
     <line class="peak" stroke="var(--correct)" x1="438" y1="288" x2="438" y2="234"/>
     <line class="bond" x1="346" y1="288" x2="486" y2="288"/>
-    <text class="lbl" x="416" y="312" text-anchor="middle" fill="var(--correct)">doublet (1:1)</text>
+    <text class="lbl" x="416" y="312" text-anchor="middle" style="fill:var(--correct)">doublet (1:1)</text>
   </g>
   <g class="trap">
-    <text class="sm" x="320" y="342" text-anchor="middle" fill="var(--incorrect)">
+    <text class="sm" x="320" y="342" text-anchor="middle" style="fill:var(--incorrect)">
       trap: never count the H's on the proton's own carbon
     </text>
   </g>

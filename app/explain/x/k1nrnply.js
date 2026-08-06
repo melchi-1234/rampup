@@ -33,7 +33,7 @@ svg[data-x="k1nrnply"] .res{fill:var(--surface-2);stroke:var(--accent);stroke-wi
   <!-- the arithmetic -->
   <text class="lbl" x="382" y="70"  data-from="1">Parallel: add the RECIPROCALS</text>
   <text class="big" x="382" y="108" data-from="2">1/6 + 1/3 = 1/2</text>
-  <text class="big" x="382" y="146" data-from="3" fill="var(--accent)">R = 2 Ω</text>
+  <text class="big" x="382" y="146" data-from="3" style="fill:var(--accent)">R = 2 Ω</text>
   <text class="sm"  x="382" y="168" data-from="3">smaller than either resistor &mdash; always true in parallel</text>
 
   <text class="big" x="382" y="216" data-from="4">P = V² / R</text>
@@ -41,10 +41,10 @@ svg[data-x="k1nrnply"] .res{fill:var(--surface-2);stroke:var(--accent);stroke-wi
 
   <g data-from="6">
     <rect x="376" y="266" width="180" height="42" rx="16" fill="var(--correct)" opacity=".18"/>
-    <text class="big" x="466" y="294" text-anchor="middle" fill="var(--correct)">72 W</text>
+    <text class="big" x="466" y="294" text-anchor="middle" style="fill:var(--correct)">72 W</text>
   </g>
   <g data-from="6">
-    <text class="sm" x="24" y="330" fill="var(--incorrect)">trap: adding 6 + 3 = 9 Ω gives 16 W. Parallel resistance is always LOWER than the smallest branch.</text>
+    <text class="sm" x="24" y="330" style="fill:var(--incorrect)">trap: adding 6 + 3 = 9 Ω gives 16 W. Parallel resistance is always LOWER than the smallest branch.</text>
   </g>
 </svg>`,
   steps: [

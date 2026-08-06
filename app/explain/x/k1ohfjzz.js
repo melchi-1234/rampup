@@ -5,7 +5,7 @@ RU_EX.reg("k1ohfjzz", {
   css: `
 svg[data-x="k1ohfjzz"]{font-family:inherit}
 svg[data-x="k1ohfjzz"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1ohfjzz"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1ohfjzz"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1ohfjzz"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1ohfjzz"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -40,16 +40,16 @@ svg[data-x="k1ohfjzz"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <g data-from="1">
     <text class="sm" x="60" y="88">all four groups protonated</text>
     <rect x="60" y="100" width="174" height="28" rx="5" fill="var(--incorrect)" fill-opacity=".16"/>
-    <text class="lbl" x="147" y="120" text-anchor="middle" fill="var(--incorrect)">+2</text>
+    <text class="lbl" x="147" y="120" text-anchor="middle" style="fill:var(--incorrect)">+2</text>
   </g>
 
   <!-- beat 3: cross 3.1 then 3.9 -->
   <g data-from="2">
     <rect x="234" y="100" width="44" height="28" rx="5" fill="var(--warn)" fill-opacity=".2"/>
-    <text class="lbl" x="256" y="120" text-anchor="middle" fill="var(--warn)">+1</text>
+    <text class="lbl" x="256" y="120" text-anchor="middle" style="fill:var(--warn)">+1</text>
     <rect x="278" y="100" width="118" height="28" rx="5" fill="var(--correct)" fill-opacity=".22"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="337" y="120" text-anchor="middle" fill="var(--correct)">0</text>
+    <text class="lbl" x="337" y="120" text-anchor="middle" style="fill:var(--correct)">0</text>
   </g>
 
   <!-- beat 4: zero ends at 6.0, so average the flanking pair -->
@@ -60,13 +60,13 @@ svg[data-x="k1ohfjzz"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <text class="lbl" x="559" y="120" text-anchor="middle">&#8722;2</text>
     <path d="M278 92 L278 84 L396 84 L396 92" fill="none" stroke="var(--correct)" stroke-width="2"/>
     <line x1="337" y1="84" x2="337" y2="74" stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="337" y="66" text-anchor="middle" fill="var(--correct)">(3.9 + 6.0)/2 = 4.95</text>
+    <text class="lbl" x="337" y="66" text-anchor="middle" style="fill:var(--correct)">(3.9 + 6.0)/2 = 4.95</text>
     <line x1="337" y1="132" x2="337" y2="160" stroke="var(--correct)" stroke-width="2" stroke-dasharray="4 3"/>
-    <text class="sm" x="337" y="172" text-anchor="middle" fill="var(--correct)">pI 4.95</text>
+    <text class="sm" x="337" y="172" text-anchor="middle" style="fill:var(--correct)">pI 4.95</text>
     <rect x="24" y="262" width="76" height="26" rx="13" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="62" y="280" text-anchor="middle" fill="var(--correct)">4.95</text>
-    <text class="sm"  x="114" y="280" fill="var(--correct)">the pair flanking net charge 0</text>
+    <text class="lbl" x="62" y="280" text-anchor="middle" style="fill:var(--correct)">4.95</text>
+    <text class="sm"  x="114" y="280" style="fill:var(--correct)">the pair flanking net charge 0</text>
   </g>
 
   <!-- beat 5: each near-miss is a different pair of pKa values -->
@@ -74,9 +74,9 @@ svg[data-x="k1ohfjzz"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <line x1="30" y1="245" x2="94" y2="245" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="30" y1="305" x2="94" y2="305" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="30" y1="335" x2="94" y2="335" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="114" y="250" fill="var(--incorrect)">(3.1 + 3.9)/2 &#8212; that band is +1</text>
-    <text class="sm" x="114" y="310" fill="var(--incorrect)">(3.1 + 6.0)/2 &#8212; skips the Asp side chain</text>
-    <text class="sm" x="114" y="340" fill="var(--incorrect)">(6.0 + 8.0)/2 &#8212; flanks the &#8722;1 species</text>
+    <text class="sm" x="114" y="250" style="fill:var(--incorrect)">(3.1 + 3.9)/2 &#8212; that band is +1</text>
+    <text class="sm" x="114" y="310" style="fill:var(--incorrect)">(3.1 + 6.0)/2 &#8212; skips the Asp side chain</text>
+    <text class="sm" x="114" y="340" style="fill:var(--incorrect)">(6.0 + 8.0)/2 &#8212; flanks the &#8722;1 species</text>
   </g>
 
   <!-- beat 6: the rule -->

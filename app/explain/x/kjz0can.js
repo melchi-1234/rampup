@@ -24,23 +24,23 @@ svg[data-x="kjz0can"] .box{fill:var(--surface-2);stroke:var(--border-strong);str
   <path d="M320 152 V168" stroke="var(--muted)" stroke-width="2.5" marker-end="url(#kjzA)" data-from="3"/>
   <g data-from="3">
     <rect x="86" y="174" width="468" height="38" rx="12" fill="var(--accent)" opacity=".18"/>
-    <text class="lbl" x="320" y="198" text-anchor="middle" fill="var(--accent)">so the heroic act is a DUTY</text>
+    <text class="lbl" x="320" y="198" text-anchor="middle" style="fill:var(--accent)">so the heroic act is a DUTY</text>
   </g>
 
   <!-- the collision -->
   <g data-from="4">
     <rect x="86" y="226" width="468" height="42" rx="12" fill="var(--warn)" opacity=".2"/>
-    <text class="lbl" x="320" y="245" text-anchor="middle" fill="var(--warn)">but it was admirable BECAUSE no one could demand it</text>
+    <text class="lbl" x="320" y="245" text-anchor="middle" style="fill:var(--warn)">but it was admirable BECAUSE no one could demand it</text>
     <text class="sm"  x="320" y="262" text-anchor="middle">“had he stepped aside, we could not have reproached him”</text>
   </g>
   <g data-from="5">
-    <text class="lbl" x="320" y="292" text-anchor="middle" fill="var(--incorrect)">and duty is exactly what CAN be demanded</text>
+    <text class="lbl" x="320" y="292" text-anchor="middle" style="fill:var(--incorrect)">and duty is exactly what CAN be demanded</text>
   </g>
 
   <g data-from="6">
     <rect x="120" y="304" width="400" height="46" rx="16" fill="var(--correct)" opacity=".2"/>
-    <text class="lbl" x="320" y="326" text-anchor="middle" fill="var(--correct)">the theory erases what made the act admirable</text>
-    <text class="sm"  x="320" y="344" text-anchor="middle" fill="var(--correct)">that is the difficulty → C</text>
+    <text class="lbl" x="320" y="326" text-anchor="middle" style="fill:var(--correct)">the theory erases what made the act admirable</text>
+    <text class="sm"  x="320" y="344" text-anchor="middle" style="fill:var(--correct)">that is the difficulty → C</text>
   </g>
 </svg>`,
   steps: [

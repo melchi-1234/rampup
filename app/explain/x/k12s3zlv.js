@@ -34,17 +34,17 @@ svg[data-x="k12s3zlv"] .arr{stroke:var(--text);stroke-width:2.5;fill:none}
   <!-- clue 1: X accumulates -->
   <g data-from="2">
     <rect x="190" y="86" width="90" height="46" rx="12" fill="var(--warn)" opacity=".3"/>
-    <text class="lbl" x="235" y="70" text-anchor="middle" fill="var(--warn)">piles up</text>
+    <text class="lbl" x="235" y="70" text-anchor="middle" style="fill:var(--warn)">piles up</text>
   </g>
-  <text class="sm" x="24" y="176" data-from="3" fill="var(--warn)">something still MAKES X, so enzyme 1 is fine…</text>
-  <text class="sm" x="24" y="196" data-from="3" fill="var(--warn)">…and nothing is consuming it</text>
+  <text class="sm" x="24" y="176" data-from="3" style="fill:var(--warn)">something still MAKES X, so enzyme 1 is fine…</text>
+  <text class="sm" x="24" y="196" data-from="3" style="fill:var(--warn)">…and nothing is consuming it</text>
 
   <!-- clue 2: rescue pattern -->
   <g data-from="4">
     <text class="lbl" x="24" y="234">feeding the mutant:</text>
-    <text class="lbl" x="200" y="234" fill="var(--incorrect)">X ✗ no rescue</text>
-    <text class="lbl" x="340" y="234" fill="var(--correct)">Y ✓</text>
-    <text class="lbl" x="400" y="234" fill="var(--correct)">threonine ✓</text>
+    <text class="lbl" x="200" y="234" style="fill:var(--incorrect)">X ✗ no rescue</text>
+    <text class="lbl" x="340" y="234" style="fill:var(--correct)">Y ✓</text>
+    <text class="lbl" x="400" y="234" style="fill:var(--correct)">threonine ✓</text>
   </g>
   <text class="sm" x="24" y="258" data-from="5">X fails because the cell already HAS X and still can't use it</text>
 
@@ -52,8 +52,8 @@ svg[data-x="k12s3zlv"] .arr{stroke:var(--text);stroke-width:2.5;fill:none}
   <g data-from="6">
     <line x1="290" y1="76" x2="324" y2="142" stroke="var(--incorrect)" stroke-width="4"/>
     <rect x="140" y="284" width="360" height="48" rx="16" fill="var(--incorrect)" opacity=".16"/>
-    <text class="lbl" x="320" y="306" text-anchor="middle" fill="var(--incorrect)">the block is X → Y: enzyme 2</text>
-    <text class="sm"  x="320" y="324" text-anchor="middle" fill="var(--incorrect)">the rescue point is always just AFTER the break</text>
+    <text class="lbl" x="320" y="306" text-anchor="middle" style="fill:var(--incorrect)">the block is X → Y: enzyme 2</text>
+    <text class="sm"  x="320" y="324" text-anchor="middle" style="fill:var(--incorrect)">the rescue point is always just AFTER the break</text>
   </g>
 </svg>`,
   steps: [

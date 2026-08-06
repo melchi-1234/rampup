@@ -16,7 +16,7 @@ svg[data-x="kdajmkn"] .ax{stroke:var(--muted);stroke-width:2}
   <line x1="46" y1="66" x2="246" y2="66" stroke="var(--border-strong)" stroke-dasharray="5 4" data-from="1"/>
   <text class="sm" x="148" y="200" text-anchor="middle">external sugar</text>
   <text class="sm" x="30" y="116" text-anchor="middle" transform="rotate(-90 30 116)">uptake</text>
-  <text class="sm" x="252" y="58" data-from="1" fill="var(--accent)">it flattens: saturates</text>
+  <text class="sm" x="252" y="58" data-from="1" style="fill:var(--accent)">it flattens: saturates</text>
 
   <!-- the three clues -->
   <text class="lbl" x="24" y="232" data-from="1">1 &middot; saturates</text>
@@ -31,7 +31,7 @@ svg[data-x="kdajmkn"] .ax{stroke:var(--muted);stroke-width:2}
     <rect class="box" x="330" y="46" width="286" height="42" rx="12"/>
     <text class="lbl" x="346" y="73">simple diffusion</text>
     <line x1="338" y1="82" x2="608" y2="52" stroke="var(--incorrect)" stroke-width="3"/>
-    <text class="sm" x="608" y="80" text-anchor="end" fill="var(--incorrect)">never saturates</text>
+    <text class="sm" x="608" y="80" text-anchor="end" style="fill:var(--incorrect)">never saturates</text>
   </g>
   <g data-from="5">
     <rect class="box" x="330" y="100" width="286" height="42" rx="12"/>
@@ -40,13 +40,13 @@ svg[data-x="kdajmkn"] .ax{stroke:var(--muted);stroke-width:2}
     <rect class="box" x="330" y="154" width="286" height="42" rx="12"/>
     <text class="lbl" x="346" y="181">secondary active transport</text>
     <line x1="338" y1="190" x2="608" y2="160" stroke="var(--incorrect)" stroke-width="3"/>
-    <text class="sm" x="608" y="214" text-anchor="end" fill="var(--incorrect)">both need energy</text>
+    <text class="sm" x="608" y="214" text-anchor="end" style="fill:var(--incorrect)">both need energy</text>
   </g>
   <g data-from="6">
     <rect x="330" y="244" width="286" height="52" rx="14"
           fill="var(--correct)" fill-opacity=".18" stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="473" y="268" text-anchor="middle" fill="var(--correct)">facilitated diffusion</text>
-    <text class="sm"  x="473" y="286" text-anchor="middle" fill="var(--correct)">a carrier protein, down the gradient</text>
+    <text class="lbl" x="473" y="268" text-anchor="middle" style="fill:var(--correct)">facilitated diffusion</text>
+    <text class="sm"  x="473" y="286" text-anchor="middle" style="fill:var(--correct)">a carrier protein, down the gradient</text>
   </g>
 </svg>`,
   steps: [

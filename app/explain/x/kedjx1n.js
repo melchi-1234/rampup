@@ -6,7 +6,7 @@ RU_EX.reg("kedjx1n", {
   css: `
 svg[data-x="kedjx1n"]{font-family:inherit}
 svg[data-x="kedjx1n"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kedjx1n"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kedjx1n"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kedjx1n"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kedjx1n"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -20,17 +20,17 @@ svg[data-x="kedjx1n"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <text class="sm" x="260" y="164" text-anchor="middle">after &#8212; shrunken</text>
   <line x1="158" y1="106" x2="220" y2="106" stroke="var(--accent)" stroke-width="2.5"/>
   <polygon points="220,101 231,106 220,111" fill="var(--accent)"/>
-  <text class="sm" x="189" y="94" text-anchor="middle" fill="var(--accent)">water out</text>
+  <text class="sm" x="189" y="94" text-anchor="middle" style="fill:var(--accent)">water out</text>
 
   <!-- beat 2: water follows solute -->
   <g data-from="1">
     <rect x="24" y="186" width="592" height="30" rx="10" fill="var(--accent)" fill-opacity=".14"/>
-    <text class="lbl" x="320" y="206" text-anchor="middle" fill="var(--accent)">water moves TOWARD solute &#183; it left, so the solute is outside</text>
+    <text class="lbl" x="320" y="206" text-anchor="middle" style="fill:var(--accent)">water moves TOWARD solute &#183; it left, so the solute is outside</text>
   </g>
 
   <!-- beat 3: name it -->
   <g data-from="2">
-    <text class="lbl" x="320" y="240" text-anchor="middle" fill="var(--correct)">the solution is HYPERTONIC to the cytoplasm</text>
+    <text class="lbl" x="320" y="240" text-anchor="middle" style="fill:var(--correct)">the solution is HYPERTONIC to the cytoplasm</text>
   </g>
 
   <!-- the four options, word column then the rest of the claim -->
@@ -45,18 +45,18 @@ svg[data-x="kedjx1n"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
 
   <!-- beat 4: hypotonic would have swollen it -->
   <g data-from="3">
-    <text class="sm" x="330" y="272" fill="var(--incorrect)">water would come IN and swell the cell</text>
+    <text class="sm" x="330" y="272" style="fill:var(--incorrect)">water would come IN and swell the cell</text>
   </g>
   <!-- beat 5: isotonic moves nothing -->
   <g data-from="4">
-    <text class="sm" x="330" y="294" fill="var(--incorrect)">nothing would move on balance</text>
+    <text class="sm" x="330" y="294" style="fill:var(--incorrect)">nothing would move on balance</text>
   </g>
   <!-- beat 6: the right word attached to the wrong half -->
   <g data-from="5">
     <rect x="18" y="302" width="598" height="24" rx="8" fill="var(--correct)" fill-opacity=".18"/>
-    <text class="sm" x="330" y="316" fill="var(--correct)">both halves agree &#8212; this one</text>
+    <text class="sm" x="330" y="316" style="fill:var(--correct)">both halves agree &#8212; this one</text>
     <rect x="18" y="326" width="598" height="24" rx="8" fill="var(--incorrect)" fill-opacity=".16"/>
-    <text class="sm" x="330" y="338" fill="var(--incorrect)">right word, wrong second half &#8212; read BOTH</text>
+    <text class="sm" x="330" y="338" style="fill:var(--incorrect)">right word, wrong second half &#8212; read BOTH</text>
   </g>
 </svg>`,
   steps: [

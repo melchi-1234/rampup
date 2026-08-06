@@ -6,7 +6,7 @@ RU_EX.reg("k3llrbf", {
   css: `
 svg[data-x="k3llrbf"]{font-family:inherit}
 svg[data-x="k3llrbf"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k3llrbf"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k3llrbf"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k3llrbf"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k3llrbf"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -41,8 +41,8 @@ svg[data-x="k3llrbf"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="2">
     <rect x="396" y="80" width="220" height="46" rx="10" fill="var(--incorrect)" fill-opacity=".10"
           stroke="var(--incorrect)" stroke-width="1.5" stroke-dasharray="5 4"/>
-    <text class="tag" x="408" y="98" fill="var(--incorrect)">GIVEN AWAY</text>
-    <text class="sm" x="408" y="118" fill="var(--incorrect)">pros are better artists</text>
+    <text class="tag" x="408" y="98" style="fill:var(--incorrect)">GIVEN AWAY</text>
+    <text class="sm" x="408" y="118" style="fill:var(--incorrect)">pros are better artists</text>
   </g>
 
   <!-- beat 4: the next clause settles narrowing vs reversal -->
@@ -51,18 +51,18 @@ svg[data-x="k3llrbf"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <text class="sm" x="36" y="156">next clause: &#8220;I claim only that...&#8221; &#8594; the thesis, restated</text>
     <rect x="24" y="182" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="200" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm" x="332" y="200" fill="var(--correct)">&#10003; narrowing, not reversal</text>
+    <text class="lbl" x="39" y="200" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm" x="332" y="200" style="fill:var(--correct)">&#10003; narrowing, not reversal</text>
     <line x1="60" y1="227" x2="324" y2="227" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="332" y="232" fill="var(--incorrect)">the very next clause restates it</text>
+    <text class="sm" x="332" y="232" style="fill:var(--incorrect)">the very next clause restates it</text>
   </g>
 
   <!-- beat 5: the metaphor is not data, the concession is not defeat -->
   <g data-from="4">
     <line x1="60" y1="259" x2="324" y2="259" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="60" y1="291" x2="324" y2="291" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="332" y="264" fill="var(--incorrect)">a metaphor &#8212; no number anywhere</text>
-    <text class="sm" x="332" y="296" fill="var(--incorrect)">one concession is not surrender</text>
+    <text class="sm" x="332" y="264" style="fill:var(--incorrect)">a metaphor &#8212; no number anywhere</text>
+    <text class="sm" x="332" y="296" style="fill:var(--incorrect)">one concession is not surrender</text>
   </g>
 
   <!-- beat 6: the habit to keep -->

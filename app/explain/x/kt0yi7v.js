@@ -4,7 +4,7 @@ RU_EX.reg("kt0yi7v", {
   css: `
 svg[data-x="kt0yi7v"]{font-family:inherit}
 svg[data-x="kt0yi7v"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kt0yi7v"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kt0yi7v"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kt0yi7v"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kt0yi7v"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -19,32 +19,32 @@ svg[data-x="kt0yi7v"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <text class="sm"  x="24"  y="128">empties to (ESV)</text>
     <text class="lbl" x="230" y="128">50 mL</text>
     <text class="sm"  x="24"  y="160">stroke volume</text>
-    <text class="lbl" x="230" y="160" fill="var(--accent)">100 mL</text>
+    <text class="lbl" x="230" y="160" style="fill:var(--accent)">100 mL</text>
   </g>
   <g data-from="2">
     <text class="sm"  x="24"  y="192">ejection fraction</text>
-    <text class="lbl" x="230" y="192" fill="var(--accent)">&#8776; 67%</text>
+    <text class="lbl" x="230" y="192" style="fill:var(--accent)">&#8776; 67%</text>
     <text class="sm"  x="24"  y="212">100 / 150</text>
   </g>
   <g data-from="3">
     <text class="sm"  x="330" y="96">fills the same</text>
     <text class="lbl" x="536" y="96">150 mL</text>
     <text class="sm"  x="330" y="128">cannot empty as far</text>
-    <text class="lbl" x="536" y="128" fill="var(--warn)">75 mL</text>
+    <text class="lbl" x="536" y="128" style="fill:var(--warn)">75 mL</text>
   </g>
   <g data-from="4">
     <text class="sm"  x="330" y="160">stroke volume</text>
-    <text class="lbl" x="536" y="160" fill="var(--incorrect)">75 mL</text>
+    <text class="lbl" x="536" y="160" style="fill:var(--incorrect)">75 mL</text>
     <text class="sm"  x="330" y="180">150 &#8722; 75</text>
   </g>
   <g data-from="5">
     <text class="sm"  x="330" y="212">ejection fraction</text>
-    <text class="lbl" x="536" y="212" fill="var(--incorrect)">50%</text>
+    <text class="lbl" x="536" y="212" style="fill:var(--incorrect)">50%</text>
     <text class="sm"  x="330" y="232">75 / 150</text>
     <rect x="24" y="256" width="592" height="34" rx="10" fill="var(--correct)" fill-opacity=".18"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="320" y="278" text-anchor="middle" fill="var(--correct)">BOTH fall &#8212; filling never changed, so the fraction had to move too</text>
-    <text class="sm" x="24" y="318" fill="var(--incorrect)">the trap says the fraction holds at 67% because it "reflects only contractility"</text>
+    <text class="lbl" x="320" y="278" text-anchor="middle" style="fill:var(--correct)">BOTH fall &#8212; filling never changed, so the fraction had to move too</text>
+    <text class="sm" x="24" y="318" style="fill:var(--incorrect)">the trap says the fraction holds at 67% because it "reflects only contractility"</text>
   </g>
 </svg>`,
   steps: [

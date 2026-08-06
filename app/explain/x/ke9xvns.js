@@ -11,25 +11,25 @@ svg[data-x="ke9xvns"] .bond{stroke:var(--text);stroke-width:2.2}
 `,
   svg: `<svg viewBox="0 0 640 360" role="img" aria-label="Identifying C3H6O from IR and NMR">
   <text class="big" x="24" y="42">C₃H₆O</text>
-  <text class="lbl" x="120" y="42" data-from="0" fill="var(--accent)">→ 1 degree of unsaturation</text>
+  <text class="lbl" x="120" y="42" data-from="0" style="fill:var(--accent)">→ 1 degree of unsaturation</text>
   <text class="sm"  x="120" y="62" data-from="1">so: one ring, or one double bond. exactly one.</text>
 
   <!-- clue 1: IR carbonyl -->
   <g data-from="2">
     <rect class="box" x="24" y="82" width="286" height="56" rx="14"/>
     <text class="lbl" x="44" y="106">IR: strong band at 1715 cm⁻¹</text>
-    <text class="sm"  x="44" y="126" fill="var(--accent)">a carbonyl, C=O</text>
+    <text class="sm"  x="44" y="126" style="fill:var(--accent)">a carbonyl, C=O</text>
   </g>
-  <text class="sm" x="330" y="112" data-from="3" fill="var(--accent)">and that C=O uses up the ONE degree</text>
+  <text class="sm" x="330" y="112" data-from="3" style="fill:var(--accent)">and that C=O uses up the ONE degree</text>
   <text class="sm" x="330" y="130" data-from="3">so nothing else can be unsaturated</text>
 
   <!-- clue 2: no OH -->
   <g data-from="4">
     <rect class="box" x="24" y="150" width="286" height="56" rx="14"/>
     <text class="lbl" x="44" y="174">no band at 3200–3550</text>
-    <text class="sm"  x="44" y="194" fill="var(--incorrect)">no O–H → not an alcohol</text>
+    <text class="sm"  x="44" y="194" style="fill:var(--incorrect)">no O–H → not an alcohol</text>
     <line x1="330" y1="196" x2="470" y2="172" stroke="var(--incorrect)" stroke-width="3"/>
-    <text class="sm" x="336" y="190" fill="var(--incorrect)">allyl alcohol is out</text>
+    <text class="sm" x="336" y="190" style="fill:var(--incorrect)">allyl alcohol is out</text>
   </g>
 
   <!-- clue 3: one NMR peak -->
@@ -37,7 +37,7 @@ svg[data-x="ke9xvns"] .bond{stroke:var(--text);stroke-width:2.2}
     <rect class="box" x="24" y="218" width="286" height="56" rx="14"/>
     <text class="lbl" x="44" y="242">¹H NMR: ONE peak</text>
     <text class="sm"  x="44" y="262">integrating for all six hydrogens</text>
-    <text class="sm" x="330" y="248" fill="var(--incorrect)">propanal has 3 environments — out</text>
+    <text class="sm" x="330" y="248" style="fill:var(--incorrect)">propanal has 3 environments — out</text>
   </g>
 
   <!-- the answer -->
@@ -51,8 +51,8 @@ svg[data-x="ke9xvns"] .bond{stroke:var(--text);stroke-width:2.2}
     <text class="sm" x="516" y="65">CH₃</text>
     <text class="sm" x="466" y="84" text-anchor="middle">two identical methyls, no neighbors</text>
     <rect x="24" y="292" width="592" height="46" rx="16" fill="var(--correct)" opacity=".18"/>
-    <text class="lbl" x="320" y="314" text-anchor="middle" fill="var(--correct)">acetone</text>
-    <text class="sm"  x="320" y="332" text-anchor="middle" fill="var(--correct)">six equivalent H's with nothing adjacent to split them</text>
+    <text class="lbl" x="320" y="314" text-anchor="middle" style="fill:var(--correct)">acetone</text>
+    <text class="sm"  x="320" y="332" text-anchor="middle" style="fill:var(--correct)">six equivalent H's with nothing adjacent to split them</text>
   </g>
 </svg>`,
   steps: [

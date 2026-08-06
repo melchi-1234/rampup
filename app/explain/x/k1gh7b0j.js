@@ -28,9 +28,9 @@ svg[data-x="k1gh7b0j"] .codon2{fill:var(--incorrect);opacity:.16;stroke:var(--in
 
   <!-- one extra base goes in -->
   <g data-from="1">
-    <text class="lbl" x="24" y="136" fill="var(--incorrect)">insert a single G here &darr;</text>
+    <text class="lbl" x="24" y="136" style="fill:var(--incorrect)">insert a single G here &darr;</text>
     <circle cx="128" cy="176" r="13" fill="var(--incorrect)"/>
-    <text class="base" x="128" y="182" text-anchor="middle" fill="var(--card)">G</text>
+    <text class="base" x="128" y="182" text-anchor="middle" style="fill:var(--card)">G</text>
   </g>
 
   <text class="sm" x="24" y="216" data-from="2">every codon after it is now cut in a different place</text>
@@ -40,26 +40,26 @@ svg[data-x="k1gh7b0j"] .codon2{fill:var(--incorrect);opacity:.16;stroke:var(--in
     <rect class="codon2" x="204" y="228" width="84" height="40" rx="7"/>
     <rect class="codon2" x="294" y="228" width="84" height="40" rx="7"/>
     <text class="base" x="66"  y="255" text-anchor="middle">AUG</text>
-    <text class="base" x="156" y="255" text-anchor="middle" fill="var(--incorrect)">GCC</text>
-    <text class="base" x="246" y="255" text-anchor="middle" fill="var(--incorrect)">AGG</text>
-    <text class="base" x="336" y="255" text-anchor="middle" fill="var(--incorrect)">UAC</text>
+    <text class="base" x="156" y="255" text-anchor="middle" style="fill:var(--incorrect)">GCC</text>
+    <text class="base" x="246" y="255" text-anchor="middle" style="fill:var(--incorrect)">AGG</text>
+    <text class="base" x="336" y="255" text-anchor="middle" style="fill:var(--incorrect)">UAC</text>
   </g>
 
-  <text class="sm" x="486" y="244" data-from="3" fill="var(--incorrect)">different amino acids,</text>
-  <text class="sm" x="486" y="262" data-from="3" fill="var(--incorrect)">not just one wrong</text>
+  <text class="sm" x="486" y="244" data-from="3" style="fill:var(--incorrect)">different amino acids,</text>
+  <text class="sm" x="486" y="262" data-from="3" style="fill:var(--incorrect)">not just one wrong</text>
 
   <g data-from="4">
     <rect x="384" y="228" width="84" height="40" rx="7" fill="var(--incorrect)" opacity=".85"/>
-    <text class="base" x="426" y="255" text-anchor="middle" fill="var(--card)">UGA</text>
-    <text class="sm" x="426" y="290" text-anchor="middle" fill="var(--incorrect)">a stop, by chance</text>
+    <text class="base" x="426" y="255" text-anchor="middle" style="fill:var(--card)">UGA</text>
+    <text class="sm" x="426" y="290" text-anchor="middle" style="fill:var(--incorrect)">a stop, by chance</text>
   </g>
 
   <g data-from="5">
-    <text class="lbl" x="24" y="306" fill="var(--incorrect)">translation halts here → short, nonfunctional</text>
+    <text class="lbl" x="24" y="306" style="fill:var(--incorrect)">translation halts here → short, nonfunctional</text>
   </g>
   <g data-from="6">
     <rect x="150" y="322" width="340" height="28" rx="14" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="320" y="341" text-anchor="middle" fill="var(--accent)">a frameshift changes ALL downstream codons</text>
+    <text class="lbl" x="320" y="341" text-anchor="middle" style="fill:var(--accent)">a frameshift changes ALL downstream codons</text>
   </g>
 </svg>`,
   steps: [

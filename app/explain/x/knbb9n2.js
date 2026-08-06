@@ -5,7 +5,7 @@ RU_EX.reg("knbb9n2", {
   css: `
 svg[data-x="knbb9n2"]{font-family:inherit}
 svg[data-x="knbb9n2"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="knbb9n2"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="knbb9n2"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="knbb9n2"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="knbb9n2"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -41,35 +41,35 @@ svg[data-x="knbb9n2"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="2">
     <rect x="332" y="104" width="284" height="56" rx="10" fill="var(--correct)" fill-opacity=".16"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="tag" x="348" y="126" fill="var(--correct)">&#916;S SURROUNDING WATER</text>
-    <text class="sm"  x="348" y="148" fill="var(--correct)">+ + rigid cage &#8594; free bulk water</text>
+    <text class="tag" x="348" y="126" style="fill:var(--correct)">&#916;S SURROUNDING WATER</text>
+    <text class="sm"  x="348" y="148" style="fill:var(--correct)">+ + rigid cage &#8594; free bulk water</text>
     <text class="lbl" x="320" y="182" text-anchor="middle">&#916;S(system) &gt; 0 &#8594; &#916;G &lt; 0, spontaneous</text>
 
     <rect x="24" y="194" width="30" height="24" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39"  y="211" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm"  x="62"  y="211" fill="var(--correct)">releases the caged water</text>
-    <text class="sm"  x="350" y="211" fill="var(--correct)">solvent entropy jumps &#8594; favorable</text>
+    <text class="lbl" x="39"  y="211" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm"  x="62"  y="211" style="fill:var(--correct)">releases the caged water</text>
+    <text class="sm"  x="350" y="211" style="fill:var(--correct)">solvent entropy jumps &#8594; favorable</text>
   </g>
 
   <!-- beat 4: B invents bonds, D invents hydrogen bonds to grease -->
   <g data-from="3">
     <line x1="58" y1="236" x2="300" y2="236" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="58" y1="296" x2="300" y2="296" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="350" y="241" fill="var(--incorrect)">no C&#8211;C bond forms on folding</text>
-    <text class="sm" x="350" y="301" fill="var(--incorrect)">no H-bond donor, and buried = dry</text>
+    <text class="sm" x="350" y="241" style="fill:var(--incorrect)">no C&#8211;C bond forms on folding</text>
+    <text class="sm" x="350" y="301" style="fill:var(--incorrect)">no H-bond donor, and buried = dry</text>
   </g>
 
   <!-- beat 5: C states the second law backward -->
   <g data-from="4">
     <line x1="58" y1="266" x2="300" y2="266" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="350" y="271" fill="var(--incorrect)">the second law runs the other way</text>
+    <text class="sm" x="350" y="271" style="fill:var(--incorrect)">the second law runs the other way</text>
   </g>
 
   <!-- beat 6: the habit to keep -->
   <g data-from="5">
     <rect x="24" y="316" width="592" height="32" rx="10" fill="var(--correct)" fill-opacity=".12"/>
-    <text class="lbl" x="320" y="338" text-anchor="middle" fill="var(--correct)">Order somewhere? Ask what the solvent gained.</text>
+    <text class="lbl" x="320" y="338" text-anchor="middle" style="fill:var(--correct)">Order somewhere? Ask what the solvent gained.</text>
   </g>
 </svg>`,
   steps: [

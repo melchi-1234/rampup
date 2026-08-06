@@ -5,7 +5,7 @@ RU_EX.reg("kgcpndd", {
   css: `
 svg[data-x="kgcpndd"]{font-family:inherit}
 svg[data-x="kgcpndd"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kgcpndd"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kgcpndd"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kgcpndd"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kgcpndd"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -53,34 +53,34 @@ svg[data-x="kgcpndd"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="2">
     <rect x="24" y="124" width="592" height="32" rx="10" fill="var(--correct)" fill-opacity=".14"
           stroke="var(--correct)" stroke-width="1.5"/>
-    <text class="lbl" x="320" y="146" text-anchor="middle" fill="var(--correct)">14 &#247; 2800 = 0.005 &#8594; &#215;100 = 0.5%</text>
+    <text class="lbl" x="320" y="146" text-anchor="middle" style="fill:var(--correct)">14 &#247; 2800 = 0.005 &#8594; &#215;100 = 0.5%</text>
   </g>
 
   <!-- beat 4: read it against the threshold, which also kills B -->
   <g data-from="3">
     <rect x="24" y="160" width="286" height="42" rx="10" fill="var(--correct)" fill-opacity=".14"
           stroke="var(--correct)" stroke-width="1.5"/>
-    <text class="lbl" x="167" y="181" text-anchor="middle" fill="var(--correct)">FENa &#60; 1%</text>
-    <text class="sm"  x="167" y="197" text-anchor="middle" fill="var(--correct)">tubules reabsorbing &#183; PRERENAL</text>
+    <text class="lbl" x="167" y="181" text-anchor="middle" style="fill:var(--correct)">FENa &#60; 1%</text>
+    <text class="sm"  x="167" y="197" text-anchor="middle" style="fill:var(--correct)">tubules reabsorbing &#183; PRERENAL</text>
     <rect x="330" y="160" width="286" height="42" rx="10" fill="var(--surface-2)"/>
     <text class="lbl" x="473" y="181" text-anchor="middle">FENa &#62; 2%</text>
     <text class="sm"  x="473" y="197" text-anchor="middle">tubules leaking &#183; ATN</text>
     <rect x="24" y="208" width="30" height="24" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39"  y="225" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="lbl" x="64"  y="225" fill="var(--correct)">0.5%</text>
-    <text class="sm"  x="124" y="225" fill="var(--correct)">prerenal</text>
-    <text class="sm"  x="236" y="225" fill="var(--correct)">&#10003; clawing nearly all the Na&#8314; back</text>
+    <text class="lbl" x="39"  y="225" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="lbl" x="64"  y="225" style="fill:var(--correct)">0.5%</text>
+    <text class="sm"  x="124" y="225" style="fill:var(--correct)">prerenal</text>
+    <text class="sm"  x="236" y="225" style="fill:var(--correct)">&#10003; clawing nearly all the Na&#8314; back</text>
     <line x1="64" y1="250" x2="228" y2="250" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="236" y="255" fill="var(--incorrect)">right number, reading inverted</text>
+    <text class="sm" x="236" y="255" style="fill:var(--incorrect)">right number, reading inverted</text>
   </g>
 
   <!-- beat 5: the other two numbers, and where each comes from -->
   <g data-from="4">
     <line x1="64" y1="280" x2="228" y2="280" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="64" y1="310" x2="228" y2="310" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="236" y="285" fill="var(--incorrect)">14/140 alone &#8212; creatinine dropped</text>
-    <text class="sm" x="236" y="315" fill="var(--incorrect)">0.005 with a decimal misplaced</text>
+    <text class="sm" x="236" y="285" style="fill:var(--incorrect)">14/140 alone &#8212; creatinine dropped</text>
+    <text class="sm" x="236" y="315" style="fill:var(--incorrect)">0.005 with a decimal misplaced</text>
   </g>
 
   <!-- beat 6: the habit worth keeping -->

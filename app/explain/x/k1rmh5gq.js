@@ -34,20 +34,20 @@ svg[data-x="k1rmh5gq"][data-step="6"] #ani{transform:translate(0,0);fill:var(--w
   <text class="lbl" x="248" y="66" data-from="0">aniline: a weak BASE</text>
   <text class="sm"  x="248" y="86" data-from="0">naphthalene: neutral, nothing to react with</text>
 
-  <text class="lbl" x="248" y="122" data-from="1" fill="var(--warn)">shake with HCl — acid protonates a base</text>
+  <text class="lbl" x="248" y="122" data-from="1" style="fill:var(--warn)">shake with HCl — acid protonates a base</text>
   <text class="lbl" x="248" y="156" data-from="2">the nitrogen takes a proton</text>
-  <text class="sm"  x="248" y="176" data-from="2" fill="var(--correct)">→ anilinium⁺, now CHARGED</text>
-  <text class="lbl" x="248" y="210" data-from="3" fill="var(--correct)">charged → water-soluble → it drops into the water</text>
-  <text class="sm"  x="248" y="238" data-from="4" fill="var(--muted)">naphthalene has nothing to protonate, so it stays put &mdash; separated</text>
+  <text class="sm"  x="248" y="176" data-from="2" style="fill:var(--correct)">→ anilinium⁺, now CHARGED</text>
+  <text class="lbl" x="248" y="210" data-from="3" style="fill:var(--correct)">charged → water-soluble → it drops into the water</text>
+  <text class="sm"  x="248" y="238" data-from="4" style="fill:var(--muted)">naphthalene has nothing to protonate, so it stays put &mdash; separated</text>
 
   <g data-from="5">
     <rect x="240" y="256" width="380" height="38" rx="14" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="430" y="280" text-anchor="middle" fill="var(--accent)">to recover it, reverse the step that moved it</text>
+    <text class="lbl" x="430" y="280" text-anchor="middle" style="fill:var(--accent)">to recover it, reverse the step that moved it</text>
   </g>
   <g data-from="6">
     <rect x="240" y="302" width="380" height="46" rx="14" fill="var(--correct)" opacity=".18"/>
-    <text class="lbl" x="430" y="324" text-anchor="middle" fill="var(--correct)">add NaOH → neutral aniline again</text>
-    <text class="sm"  x="430" y="342" text-anchor="middle" fill="var(--incorrect)">more acid would only keep it stuck as the salt</text>
+    <text class="lbl" x="430" y="324" text-anchor="middle" style="fill:var(--correct)">add NaOH → neutral aniline again</text>
+    <text class="sm"  x="430" y="342" text-anchor="middle" style="fill:var(--incorrect)">more acid would only keep it stuck as the salt</text>
   </g>
 </svg>`,
   steps: [

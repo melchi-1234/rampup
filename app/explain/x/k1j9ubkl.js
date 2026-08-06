@@ -49,8 +49,8 @@ svg[data-x="k1j9ubkl"][data-step="5"] .fade,svg[data-x="k1j9ubkl"][data-step="6"
     <text class="sm" x="470" y="67">no training needed</text>
   </g>
   <g class="tagU">
-    <text class="tag" x="115" y="34" text-anchor="middle" fill="var(--correct)">UNCONDITIONED STIMULUS</text>
-    <text class="tag" x="367" y="34" text-anchor="middle" fill="var(--correct)">UNCONDITIONED RESPONSE</text>
+    <text class="tag" x="115" y="34" text-anchor="middle" style="fill:var(--correct)">UNCONDITIONED STIMULUS</text>
+    <text class="tag" x="367" y="34" text-anchor="middle" style="fill:var(--correct)">UNCONDITIONED RESPONSE</text>
   </g>
 
   <!-- row 2: tone alone, neutral -->
@@ -70,8 +70,8 @@ svg[data-x="k1j9ubkl"][data-step="5"] .fade,svg[data-x="k1j9ubkl"][data-step="6"
     <text class="lbl" x="367" y="207" text-anchor="middle">salivation</text>
   </g>
   <g class="tagC">
-    <text class="tag" x="115" y="238" text-anchor="middle" fill="var(--accent)">CONDITIONED STIMULUS</text>
-    <text class="tag" x="367" y="238" text-anchor="middle" fill="var(--accent)">CONDITIONED RESPONSE</text>
+    <text class="tag" x="115" y="238" text-anchor="middle" style="fill:var(--accent)">CONDITIONED STIMULUS</text>
+    <text class="tag" x="367" y="238" text-anchor="middle" style="fill:var(--accent)">CONDITIONED RESPONSE</text>
   </g>
 
   <!-- row 4: tone with no meat, response decays -->
@@ -85,8 +85,8 @@ svg[data-x="k1j9ubkl"][data-step="5"] .fade,svg[data-x="k1j9ubkl"][data-step="6"
 
   <g class="verdict">
     <rect x="356" y="272" width="252" height="62" rx="16" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="482" y="296" text-anchor="middle" fill="var(--accent)">meat = unconditioned stimulus</text>
-    <text class="lbl" x="482" y="318" text-anchor="middle" fill="var(--accent)">the fading = extinction</text>
+    <text class="lbl" x="482" y="296" text-anchor="middle" style="fill:var(--accent)">meat = unconditioned stimulus</text>
+    <text class="lbl" x="482" y="318" text-anchor="middle" style="fill:var(--accent)">the fading = extinction</text>
   </g>
 </svg>`,
   steps: [

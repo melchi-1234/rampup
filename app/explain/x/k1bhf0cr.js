@@ -5,7 +5,7 @@ RU_EX.reg("k1bhf0cr", {
   css: `
 svg[data-x="k1bhf0cr"]{font-family:inherit}
 svg[data-x="k1bhf0cr"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1bhf0cr"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1bhf0cr"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1bhf0cr"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1bhf0cr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -38,7 +38,7 @@ svg[data-x="k1bhf0cr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <line x1="70" y1="134" x2="270" y2="134" stroke="var(--accent)" stroke-width="2"/>
     <path d="M78 129 L70 134 L78 139" fill="none" stroke="var(--accent)" stroke-width="2"/>
     <path d="M262 129 L270 134 L262 139" fill="none" stroke="var(--accent)" stroke-width="2"/>
-    <text class="lbl" x="170" y="158" text-anchor="middle" fill="var(--accent)">|&#916;v| = 40 m/s</text>
+    <text class="lbl" x="170" y="158" text-anchor="middle" style="fill:var(--accent)">|&#916;v| = 40 m/s</text>
   </g>
 
   <!-- beat 3: mass times that span -->
@@ -51,11 +51,11 @@ svg[data-x="k1bhf0cr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <g data-from="3">
     <rect x="24" y="224" width="284" height="38" rx="10" fill="var(--correct)" fill-opacity=".14"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="166" y="248" text-anchor="middle" fill="var(--correct)">F = 6.0 / 0.010 = 600 N</text>
+    <text class="lbl" x="166" y="248" text-anchor="middle" style="fill:var(--correct)">F = 6.0 / 0.010 = 600 N</text>
     <rect x="336" y="44" width="280" height="62" rx="10" fill="var(--correct)" fill-opacity=".16"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="352" y="70" fill="var(--correct)">A &#183; 600 N</text>
-    <text class="sm"  x="352" y="92" fill="var(--correct)">&#916;p divided by the contact time</text>
+    <text class="lbl" x="352" y="70" style="fill:var(--correct)">A &#183; 600 N</text>
+    <text class="sm"  x="352" y="92" style="fill:var(--correct)">&#916;p divided by the contact time</text>
   </g>
 
   <!-- beat 5: each wrong number, beside the slip that makes it -->
@@ -63,16 +63,16 @@ svg[data-x="k1bhf0cr"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <line x1="348" y1="137" x2="448" y2="137" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="348" y1="209" x2="448" y2="209" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="348" y1="281" x2="448" y2="281" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="352" y="164" fill="var(--incorrect)">treats momentum as a scalar</text>
-    <text class="sm" x="352" y="236" fill="var(--incorrect)">used |&#916;v| = 20: 3.0 / 0.010</text>
-    <text class="sm" x="352" y="308" fill="var(--incorrect)">reports &#916;p as if it were a force</text>
+    <text class="sm" x="352" y="164" style="fill:var(--incorrect)">treats momentum as a scalar</text>
+    <text class="sm" x="352" y="236" style="fill:var(--incorrect)">used |&#916;v| = 20: 3.0 / 0.010</text>
+    <text class="sm" x="352" y="308" style="fill:var(--incorrect)">reports &#916;p as if it were a force</text>
   </g>
 
   <!-- beat 6: a rebound is twice the momentum change of stopping -->
   <g data-from="5">
     <text class="tag" x="24" y="290">STOPPING DEAD VS BOUNCING BACK</text>
     <text class="sm"  x="24" y="312">stop dead: |&#916;v| = 20 &#8594; 300 N</text>
-    <text class="sm"  x="24" y="334" fill="var(--correct)">bounce back: |&#916;v| = 40 &#8594; 600 N</text>
+    <text class="sm"  x="24" y="334" style="fill:var(--correct)">bounce back: |&#916;v| = 40 &#8594; 600 N</text>
   </g>
 </svg>`,
   steps: [

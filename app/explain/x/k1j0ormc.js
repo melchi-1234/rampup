@@ -4,7 +4,7 @@ RU_EX.reg("k1j0ormc", {
   css: `
 svg[data-x="k1j0ormc"]{font-family:inherit}
 svg[data-x="k1j0ormc"] .lbl{fill:var(--text);font-size:15px;font-weight:700}
-svg[data-x="k1j0ormc"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1j0ormc"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1j0ormc"] .body{fill:var(--accent);opacity:.85}
 svg[data-x="k1j0ormc"] .body2{fill:var(--warn);opacity:.85}
 svg[data-x="k1j0ormc"] .head{fill:var(--text);opacity:.9}
@@ -47,7 +47,7 @@ svg[data-x="k1j0ormc"][data-step="6"] .think{opacity:1}
     <rect class="body" x="55" y="189" width="34" height="46" rx="16"/>
     <text class="sm" x="72" y="252" text-anchor="middle">Sally</text>
   </g>
-  <text class="gone sm" x="72" y="140" text-anchor="middle" fill="var(--muted)">(out of the room)</text>
+  <text class="gone sm" x="72" y="140" text-anchor="middle" style="fill:var(--muted)">(out of the room)</text>
 
   <!-- Anne -->
   <g>
@@ -68,7 +68,7 @@ svg[data-x="k1j0ormc"][data-step="6"] .think{opacity:1}
   <!-- the question -->
   <g class="ask">
     <rect x="196" y="36" width="248" height="34" rx="17" fill="var(--accent)" opacity=".16"/>
-    <text class="lbl" x="320" y="59" text-anchor="middle" fill="var(--accent)">
+    <text class="lbl" x="320" y="59" text-anchor="middle" style="fill:var(--accent)">
       Where will Sally look?
     </text>
   </g>
@@ -87,18 +87,18 @@ svg[data-x="k1j0ormc"][data-step="6"] .think{opacity:1}
   <!-- the two answers -->
   <g class="young">
     <rect x="52" y="284" width="252" height="30" rx="15" fill="var(--incorrect)" opacity=".14"/>
-    <text class="sm" x="178" y="304" text-anchor="middle" fill="var(--incorrect)">
+    <text class="sm" x="178" y="304" text-anchor="middle" style="fill:var(--incorrect)">
       3-year-olds: “the box”, where it really is
     </text>
   </g>
   <g class="older">
     <rect x="330" y="284" width="258" height="30" rx="15" fill="var(--correct)" opacity=".14"/>
-    <text class="sm" x="459" y="304" text-anchor="middle" fill="var(--correct)">
+    <text class="sm" x="459" y="304" text-anchor="middle" style="fill:var(--correct)">
       5-year-olds: “the basket”, Sally's belief
     </text>
   </g>
   <g class="verdict">
-    <text class="lbl" x="320" y="342" text-anchor="middle" fill="var(--accent)">
+    <text class="lbl" x="320" y="342" text-anchor="middle" style="fill:var(--accent)">
       holding a belief that differs from reality = theory of mind
     </text>
   </g>

@@ -5,7 +5,7 @@ RU_EX.reg("kpku2c4", {
   css: `
 svg[data-x="kpku2c4"]{font-family:inherit}
 svg[data-x="kpku2c4"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kpku2c4"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kpku2c4"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kpku2c4"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kpku2c4"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -35,13 +35,13 @@ svg[data-x="kpku2c4"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="2">
     <path d="M70 84 L70 74" fill="none" stroke="var(--warn)" stroke-width="2.5"/>
     <polygon points="66,76 70,68 74,76" fill="var(--warn)"/>
-    <text class="sm" x="70" y="100" fill="var(--warn)">the question asks here</text>
+    <text class="sm" x="70" y="100" style="fill:var(--warn)">the question asks here</text>
   </g>
 
   <!-- beat 4: why the early words win -->
   <g data-from="3">
     <text class="sm" x="24" y="196">list still short &#8594; each early word gets rehearsed again and again</text>
-    <text class="sm" x="24" y="216" fill="var(--correct)">rehearsal moves them into the long-term store</text>
+    <text class="sm" x="24" y="216" style="fill:var(--correct)">rehearsal moves them into the long-term store</text>
   </g>
 
   <!-- choices: one fixed column for the letter, one for the claim -->
@@ -62,24 +62,24 @@ svg[data-x="kpku2c4"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="2">
     <line x1="366" y1="249" x2="384" y2="249" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="400" y1="249" x2="601" y2="249" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="400" y="274" fill="var(--incorrect)">that is the other end of the curve</text>
+    <text class="sm" x="400" y="274" style="fill:var(--incorrect)">that is the other end of the curve</text>
   </g>
 
   <!-- beat 4: A wins, and the voice is explaining exactly this -->
   <g data-from="3">
     <rect x="24" y="236" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="254" text-anchor="middle" fill="var(--correct)">A</text>
+    <text class="lbl" x="39" y="254" text-anchor="middle" style="fill:var(--correct)">A</text>
   </g>
 
   <!-- beats 5 and 6: kill the remaining two, one per beat -->
   <g data-from="4">
     <line x1="64" y1="283" x2="330" y2="283" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="64" y="302" fill="var(--incorrect)">interference pushes recall DOWN, never up</text>
+    <text class="sm" x="64" y="302" style="fill:var(--incorrect)">interference pushes recall DOWN, never up</text>
   </g>
   <g data-from="5">
     <line x1="64" y1="317" x2="337" y2="317" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="64" y="341" fill="var(--incorrect)">a whole-list cue lifts every word alike</text>
+    <text class="sm" x="64" y="341" style="fill:var(--incorrect)">a whole-list cue lifts every word alike</text>
   </g>
 </svg>`,
   steps: [

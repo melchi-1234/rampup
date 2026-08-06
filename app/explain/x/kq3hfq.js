@@ -5,7 +5,7 @@ RU_EX.reg("kq3hfq", {
   css: `
 svg[data-x="kq3hfq"]{font-family:inherit}
 svg[data-x="kq3hfq"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kq3hfq"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kq3hfq"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kq3hfq"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kq3hfq"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -23,14 +23,14 @@ svg[data-x="kq3hfq"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.
   <!-- beat 3: angiotensin II is the squeeze -->
   <g data-from="2">
     <rect x="24" y="88" width="272" height="52" rx="10" fill="var(--accent)" fill-opacity=".14"/>
-    <text class="lbl" x="160" y="110" text-anchor="middle" fill="var(--accent)">angiotensin II</text>
+    <text class="lbl" x="160" y="110" text-anchor="middle" style="fill:var(--accent)">angiotensin II</text>
     <text class="sm"  x="160" y="130" text-anchor="middle">potent vasoconstrictor &#8594; resistance rises</text>
   </g>
 
   <!-- beat 4: aldosterone is the refill -->
   <g data-from="3">
     <rect x="320" y="88" width="272" height="52" rx="10" fill="var(--correct)" fill-opacity=".14"/>
-    <text class="lbl" x="456" y="110" text-anchor="middle" fill="var(--correct)">aldosterone</text>
+    <text class="lbl" x="456" y="110" text-anchor="middle" style="fill:var(--correct)">aldosterone</text>
     <text class="sm"  x="456" y="130" text-anchor="middle">Na&#8314; back in the distal nephron, water follows</text>
   </g>
 
@@ -52,22 +52,22 @@ svg[data-x="kq3hfq"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.
   <g data-from="3">
     <rect x="24" y="170" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="188" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm" x="424" y="188" fill="var(--correct)">one lever each</text>
+    <text class="lbl" x="39" y="188" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm" x="424" y="188" style="fill:var(--correct)">one lever each</text>
   </g>
 
   <!-- beat 5: B and D hand the squeeze to the wrong molecule -->
   <g data-from="4">
     <line x1="64" y1="225" x2="330" y2="225" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="64" y1="309" x2="330" y2="309" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="352" y="230" fill="var(--incorrect)">aldosterone moves salt, not vessels</text>
-    <text class="sm" x="352" y="314" fill="var(--incorrect)">renin is an enzyme, not a constrictor</text>
+    <text class="sm" x="352" y="230" style="fill:var(--incorrect)">aldosterone moves salt, not vessels</text>
+    <text class="sm" x="352" y="314" style="fill:var(--incorrect)">renin is an enzyme, not a constrictor</text>
   </g>
 
   <!-- beat 6: C reaches for the hormone that does the opposite -->
   <g data-from="5">
     <line x1="64" y1="267" x2="330" y2="267" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="352" y="272" fill="var(--incorrect)">ANP LOWERS pressure &#8212; wrong direction</text>
+    <text class="sm" x="352" y="272" style="fill:var(--incorrect)">ANP LOWERS pressure &#8212; wrong direction</text>
   </g>
 </svg>`,
   steps: [

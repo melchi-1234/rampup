@@ -39,7 +39,7 @@ svg[data-x="k1j4nhti"][data-step="6"] .fin{opacity:1}
   <text class="sm"  x="40" y="118">step 2 &mdash; slow</text>
   <text class="lbl" x="40" y="140">N₂O₂ + O₂  →  2 NO₂</text>
   <rect class="slow" x="24" y="98" width="330" height="52" rx="12"/>
-  <text class="sm" x="366" y="128" fill="var(--accent)">the rate law comes from here</text>
+  <text class="sm" x="366" y="128" style="fill:var(--accent)">the rate law comes from here</text>
 
   <!-- rate law, with the intermediate flagged -->
   <g class="r1">
@@ -49,21 +49,21 @@ svg[data-x="k1j4nhti"][data-step="6"] .fin{opacity:1}
     <rect x="96" y="176" width="66" height="28" rx="8" fill="none" stroke="var(--incorrect)" stroke-width="2.5"/>
   </g>
   <g class="why">
-    <text class="sm" x="180" y="196" fill="var(--incorrect)">an intermediate &mdash; it cannot appear</text>
-    <text class="sm" x="180" y="214" fill="var(--incorrect)">in a rate law, you can't measure it</text>
+    <text class="sm" x="180" y="196" style="fill:var(--incorrect)">an intermediate &mdash; it cannot appear</text>
+    <text class="sm" x="180" y="214" style="fill:var(--incorrect)">in a rate law, you can't measure it</text>
   </g>
 
   <!-- swap it out using the fast equilibrium -->
   <g class="keq">
     <text class="lbl" x="24" y="252">K = [N₂O₂] / [NO]²</text>
-    <text class="lbl" x="250" y="252" fill="var(--accent)">so  [N₂O₂] = K [NO]²</text>
+    <text class="lbl" x="250" y="252" style="fill:var(--accent)">so  [N₂O₂] = K [NO]²</text>
   </g>
   <g class="sub">
     <text class="sm" x="24" y="284">substitute back in</text>
   </g>
   <g class="fin">
     <rect x="150" y="298" width="340" height="42" rx="16" fill="var(--correct)" opacity=".16"/>
-    <text class="big" x="320" y="326" text-anchor="middle" fill="var(--correct)">rate = k [NO]² [O₂]</text>
+    <text class="big" x="320" y="326" text-anchor="middle" style="fill:var(--correct)">rate = k [NO]² [O₂]</text>
   </g>
 </svg>`,
   steps: [

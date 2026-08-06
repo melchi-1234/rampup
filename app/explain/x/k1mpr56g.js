@@ -5,7 +5,7 @@ RU_EX.reg("k1mpr56g", {
   css: `
 svg[data-x="k1mpr56g"]{font-family:inherit}
 svg[data-x="k1mpr56g"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1mpr56g"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1mpr56g"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1mpr56g"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1mpr56g"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -16,7 +16,7 @@ svg[data-x="k1mpr56g"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <rect x="24" y="34" width="568" height="42" rx="10" fill="var(--surface-2)"/>
   <text class="sm" x="48"  y="60">pay &#8593; vs last year</text>
   <text class="sm" x="244" y="60">pay &#8593; vs the region</text>
-  <text class="sm" x="444" y="60" fill="var(--incorrect)">and still furious</text>
+  <text class="sm" x="444" y="60" style="fill:var(--incorrect)">and still furious</text>
 
   <!-- base frame: all four candidates -->
   <rect class="chip" x="24" y="166" width="30" height="26" rx="8"/>
@@ -48,30 +48,30 @@ svg[data-x="k1mpr56g"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <g data-from="2">
     <rect x="392" y="104" width="200" height="46" rx="10" fill="var(--correct)" fill-opacity=".18"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="492" y="124" text-anchor="middle" fill="var(--correct)">a REFERENCE GROUP</text>
+    <text class="lbl" x="492" y="124" text-anchor="middle" style="fill:var(--correct)">a REFERENCE GROUP</text>
     <text class="sm"  x="492" y="141" text-anchor="middle">what other people get</text>
     <rect x="24" y="280" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="298" text-anchor="middle" fill="var(--correct)">D</text>
-    <text class="sm" x="250" y="298" fill="var(--correct)">the felt gap vs the rival plant</text>
+    <text class="lbl" x="39" y="298" text-anchor="middle" style="fill:var(--correct)">D</text>
+    <text class="sm" x="250" y="298" style="fill:var(--correct)">the felt gap vs the rival plant</text>
   </g>
 
   <!-- beat 4: the threshold end is blocked by both facts -->
   <g data-from="3">
     <rect x="24" y="104" width="200" height="46" rx="10" fill="var(--incorrect)" fill-opacity=".12"
           stroke="var(--incorrect)" stroke-width="2"/>
-    <text class="lbl" x="124" y="124" text-anchor="middle" fill="var(--incorrect)">a THRESHOLD</text>
+    <text class="lbl" x="124" y="124" text-anchor="middle" style="fill:var(--incorrect)">a THRESHOLD</text>
     <text class="sm"  x="124" y="141" text-anchor="middle">an objective minimum</text>
     <line x1="64" y1="179" x2="242" y2="179" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="250" y="184" fill="var(--incorrect)">no minimum is unmet &#8212; both facts block it</text>
+    <text class="sm" x="250" y="184" style="fill:var(--incorrect)">no minimum is unmet &#8212; both facts block it</text>
   </g>
 
   <!-- beat 5: two words that describe the protest, not the grievance -->
   <g data-from="4">
     <line x1="64" y1="217" x2="242" y2="217" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="64" y1="255" x2="242" y2="255" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="250" y="222" fill="var(--incorrect)">crowd energy at the rally, not a grievance</text>
-    <text class="sm" x="250" y="260" fill="var(--incorrect)">HOW a movement organizes, not WHY</text>
+    <text class="sm" x="250" y="222" style="fill:var(--incorrect)">crowd energy at the rally, not a grievance</text>
+    <text class="sm" x="250" y="260" style="fill:var(--incorrect)">HOW a movement organizes, not WHY</text>
   </g>
 
   <!-- beat 6: match the shape of the stem -->

@@ -31,17 +31,17 @@ svg[data-x="k1iradkh"] .wire{fill:none;stroke:var(--text);stroke-width:2.5}
   <text class="sm" x="220" y="318" text-anchor="middle">same metal on both sides: silver</text>
 
   <!-- reasoning column -->
-  <text class="lbl" x="424" y="70" data-from="1" fill="var(--incorrect)">E° = exactly 0 V</text>
+  <text class="lbl" x="424" y="70" data-from="1" style="fill:var(--incorrect)">E° = exactly 0 V</text>
   <text class="sm"  x="424" y="90" data-from="1">identical electrodes can't differ</text>
-  <text class="lbl" x="424" y="126" data-from="2" fill="var(--accent)">…but the concentrations do</text>
+  <text class="lbl" x="424" y="126" data-from="2" style="fill:var(--accent)">…but the concentrations do</text>
 
   <g data-from="3">
     <text class="sm" x="424" y="164">it runs whichever way</text>
     <text class="sm" x="424" y="182">EVENS THE TWO SIDES OUT</text>
   </g>
   <g data-from="4">
-    <text class="lbl" x="424" y="216" fill="var(--correct)">so the 1.0 M side must LOSE ions</text>
-    <text class="sm"  x="424" y="234" fill="var(--correct)">Ag⁺ + e⁻ → Ag  ·  reduction there</text>
+    <text class="lbl" x="424" y="216" style="fill:var(--correct)">so the 1.0 M side must LOSE ions</text>
+    <text class="sm"  x="424" y="234" style="fill:var(--correct)">Ag⁺ + e⁻ → Ag  ·  reduction there</text>
     <rect x="42" y="150" width="140" height="120" rx="8" fill="none"
           stroke="var(--correct)" stroke-width="3"/>
   </g>
@@ -49,8 +49,8 @@ svg[data-x="k1iradkh"] .wire{fill:none;stroke:var(--text);stroke-width:2.5}
   <text class="sm" x="424" y="268" data-from="5">Q = 0.010 / 1.0  →  log Q = −2</text>
   <g data-from="6">
     <rect x="416" y="282" width="204" height="52" rx="16" fill="var(--accent)" opacity=".16"/>
-    <text class="sm"  x="518" y="302" text-anchor="middle" fill="var(--accent)">n = 1, so the full 0.0592</text>
-    <text class="big" x="518" y="324" text-anchor="middle" fill="var(--accent)">E = +0.118 V</text>
+    <text class="sm"  x="518" y="302" text-anchor="middle" style="fill:var(--accent)">n = 1, so the full 0.0592</text>
+    <text class="big" x="518" y="324" text-anchor="middle" style="fill:var(--accent)">E = +0.118 V</text>
   </g>
 </svg>`,
   steps: [

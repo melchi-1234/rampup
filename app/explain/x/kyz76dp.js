@@ -4,7 +4,7 @@ RU_EX.reg("kyz76dp", {
   css: `
 svg[data-x="kyz76dp"]{font-family:inherit}
 svg[data-x="kyz76dp"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kyz76dp"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kyz76dp"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kyz76dp"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kyz76dp"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -16,13 +16,13 @@ svg[data-x="kyz76dp"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="1">
     <line x1="180" y1="60" x2="180" y2="104" stroke="var(--warn)" stroke-width="2.5"/>
     <polygon points="175,100 180,112 185,100" fill="var(--warn)"/>
-    <text class="sm" x="192" y="86" fill="var(--warn)">gravity, mg</text>
+    <text class="sm" x="192" y="86" style="fill:var(--warn)">gravity, mg</text>
     <line x1="140" y1="60" x2="140" y2="24" stroke="var(--accent)" stroke-width="2.5"/>
     <polygon points="135,28 140,16 145,28" fill="var(--accent)"/>
-    <text class="sm" x="128" y="44" text-anchor="end" fill="var(--accent)">road pushes, N</text>
+    <text class="sm" x="128" y="44" text-anchor="end" style="fill:var(--accent)">road pushes, N</text>
   </g>
   <g data-from="2">
-    <text class="lbl" x="360" y="40" fill="var(--incorrect)">tires lift when N = 0</text>
+    <text class="lbl" x="360" y="40" style="fill:var(--incorrect)">tires lift when N = 0</text>
     <text class="sm"  x="360" y="60">the road is no longer pushing at all</text>
   </g>
   <g data-from="3">
@@ -30,15 +30,15 @@ svg[data-x="kyz76dp"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <text class="sm"  x="360" y="116">so gravity alone bends the path &#8594; g = v&#178;/r</text>
   </g>
   <g data-from="4">
-    <text class="lbl" x="360" y="152" fill="var(--accent)">v&#178; = gr = 10 &#215; 20 = 200</text>
+    <text class="lbl" x="360" y="152" style="fill:var(--accent)">v&#178; = gr = 10 &#215; 20 = 200</text>
   </g>
   <g data-from="5">
     <rect x="360" y="176" width="230" height="34" rx="10" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="475" y="198" text-anchor="middle" fill="var(--correct)">v = &#8730;200 &#8776; 14 m/s</text>
-    <text class="sm" x="360" y="238" fill="var(--incorrect)">20 m/s is just the radius written back down</text>
-    <text class="sm" x="360" y="258" fill="var(--incorrect)">10 m/s is 200 divided by 20 &#8212; you stopped early</text>
-    <text class="sm" x="360" y="278" fill="var(--incorrect)">7.1 m/s is half the answer</text>
+    <text class="lbl" x="475" y="198" text-anchor="middle" style="fill:var(--correct)">v = &#8730;200 &#8776; 14 m/s</text>
+    <text class="sm" x="360" y="238" style="fill:var(--incorrect)">20 m/s is just the radius written back down</text>
+    <text class="sm" x="360" y="258" style="fill:var(--incorrect)">10 m/s is 200 divided by 20 &#8212; you stopped early</text>
+    <text class="sm" x="360" y="278" style="fill:var(--incorrect)">7.1 m/s is half the answer</text>
   </g>
   <text class="sm" x="24" y="214">faster than this and gravity is not enough to hold it on the curve</text>
   <text class="sm" x="24" y="234">&#8212; the car leaves the road</text>

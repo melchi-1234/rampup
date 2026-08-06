@@ -5,7 +5,7 @@ RU_EX.reg("k1l2msd0", {
   css: `
 svg[data-x="k1l2msd0"]{font-family:inherit}
 svg[data-x="k1l2msd0"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1l2msd0"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1l2msd0"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1l2msd0"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1l2msd0"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -18,7 +18,7 @@ svg[data-x="k1l2msd0"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <text class="sm"  x="150" y="56">chose their own group</text>
   <line x1="142" y1="70" x2="296" y2="70" stroke="var(--border-strong)" stroke-width="2"/>
   <path d="M296 65 L306 70 L296 75 Z" fill="var(--border-strong)"/>
-  <text class="tag" x="150" y="88" fill="var(--incorrect)">NO RANDOM ASSIGNMENT</text>
+  <text class="tag" x="150" y="88" style="fill:var(--incorrect)">NO RANDOM ASSIGNMENT</text>
 
   <rect x="308" y="34" width="140" height="36" rx="10" fill="var(--surface-2)"/>
   <text class="lbl" x="378" y="57" text-anchor="middle">used the app</text>
@@ -51,7 +51,7 @@ svg[data-x="k1l2msd0"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <!-- beat 2: choosing drags everything else along -->
   <g data-from="1">
     <rect x="24" y="124" width="592" height="32" rx="10" fill="var(--warn)" fill-opacity=".14"/>
-    <text class="lbl" x="320" y="145" text-anchor="middle" fill="var(--warn)">self-selection &#8594; whatever made them choose comes too</text>
+    <text class="lbl" x="320" y="145" text-anchor="middle" style="fill:var(--warn)">self-selection &#8594; whatever made them choose comes too</text>
   </g>
 
   <!-- beat 3: name the things that ride along -->
@@ -70,25 +70,25 @@ svg[data-x="k1l2msd0"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
           stroke="var(--correct)" stroke-width="2"/>
     <rect x="24" y="204" width="28" height="24" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="1.5"/>
-    <text class="lbl" x="38" y="222" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm"  x="60" y="222" fill="var(--correct)">self-selection confounds it</text>
-    <text class="sm"  x="370" y="222" fill="var(--correct)">quasi-experimental: correlation</text>
+    <text class="lbl" x="38" y="222" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm"  x="60" y="222" style="fill:var(--correct)">self-selection confounds it</text>
+    <text class="sm"  x="370" y="222" style="fill:var(--correct)">quasi-experimental: correlation</text>
   </g>
 
   <!-- beat 5: the other three each miss -->
   <g data-from="4">
     <line x1="60" y1="249" x2="310" y2="249" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="370" y="254" fill="var(--incorrect)">needs extreme baseline scores</text>
+    <text class="sm" x="370" y="254" style="fill:var(--incorrect)">needs extreme baseline scores</text>
     <line x1="60" y1="281" x2="284" y2="281" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="370" y="286" fill="var(--incorrect)">the result was significant</text>
+    <text class="sm" x="370" y="286" style="fill:var(--incorrect)">the result was significant</text>
     <line x1="60" y1="313" x2="277" y2="313" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="370" y="318" fill="var(--incorrect)">self-report is still numeric</text>
+    <text class="sm" x="370" y="318" style="fill:var(--incorrect)">self-report is still numeric</text>
   </g>
 
   <!-- beat 6: the habit -->
   <g data-from="5">
     <rect x="142" y="40" width="160" height="56" rx="10" fill="none" stroke="var(--accent)" stroke-width="2"/>
-    <text class="lbl" x="24" y="346" fill="var(--accent)">causal claim? check how people got into their groups</text>
+    <text class="lbl" x="24" y="346" style="fill:var(--accent)">causal claim? check how people got into their groups</text>
   </g>
 </svg>`,
   steps: [

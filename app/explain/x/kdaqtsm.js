@@ -5,7 +5,7 @@ RU_EX.reg("kdaqtsm", {
   css: `
 svg[data-x="kdaqtsm"]{font-family:inherit}
 svg[data-x="kdaqtsm"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kdaqtsm"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kdaqtsm"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kdaqtsm"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kdaqtsm"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -26,10 +26,10 @@ svg[data-x="kdaqtsm"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <text class="lbl" x="39" y="143" text-anchor="middle">C</text>
   <text class="lbl" x="39" y="189" text-anchor="middle">B</text>
   <text class="lbl" x="39" y="235" text-anchor="middle">D</text>
-  <text class="sm" x="64" y="97"  fill="var(--text)">Rational choice</text>
-  <text class="sm" x="64" y="143" fill="var(--text)">Symbolic interactionism</text>
-  <text class="sm" x="64" y="189" fill="var(--text)">Conflict theory</text>
-  <text class="sm" x="64" y="235" fill="var(--text)">Structural functionalism</text>
+  <text class="sm" x="64" y="97"  style="fill:var(--text)">Rational choice</text>
+  <text class="sm" x="64" y="143" style="fill:var(--text)">Symbolic interactionism</text>
+  <text class="sm" x="64" y="189" style="fill:var(--text)">Conflict theory</text>
+  <text class="sm" x="64" y="235" style="fill:var(--text)">Structural functionalism</text>
 
   <!-- what the stem actually says -->
   <text class="tag" x="24" y="272">THE STEM SAYS</text>
@@ -45,31 +45,31 @@ svg[data-x="kdaqtsm"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <rect x="24" y="210" width="592" height="40" rx="10" fill="var(--correct)" fill-opacity=".14"/>
     <rect x="24" y="218" width="30" height="24" rx="8" fill="var(--correct)" fill-opacity=".22"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="235" text-anchor="middle" fill="var(--correct)">D</text>
-    <text class="sm" x="64" y="235" fill="var(--correct)">Structural functionalism</text>
-    <text class="sm" x="258" y="235" fill="var(--correct)">the whole system</text>
-    <text class="sm" x="430" y="235" fill="var(--correct)">cohesion is the tell</text>
+    <text class="lbl" x="39" y="235" text-anchor="middle" style="fill:var(--correct)">D</text>
+    <text class="sm" x="64" y="235" style="fill:var(--correct)">Structural functionalism</text>
+    <text class="sm" x="258" y="235" style="fill:var(--correct)">the whole system</text>
+    <text class="sm" x="430" y="235" style="fill:var(--correct)">cohesion is the tell</text>
   </g>
 
   <!-- beat 3: conflict needs an elite the stem never names -->
   <g data-from="2">
-    <text class="sm" x="258" y="189" fill="var(--text)">elites, not everyone</text>
+    <text class="sm" x="258" y="189" style="fill:var(--text)">elites, not everyone</text>
     <line x1="64" y1="184" x2="182" y2="184" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="430" y="189" fill="var(--incorrect)">no elite is named</text>
+    <text class="sm" x="430" y="189" style="fill:var(--incorrect)">no elite is named</text>
   </g>
 
   <!-- beat 4: symbolic interactionism works one interaction at a time -->
   <g data-from="3">
-    <text class="sm" x="258" y="143" fill="var(--text)">meaning between people</text>
+    <text class="sm" x="258" y="143" style="fill:var(--text)">meaning between people</text>
     <line x1="64" y1="138" x2="240" y2="138" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="430" y="143" fill="var(--incorrect)">unit here = community</text>
+    <text class="sm" x="430" y="143" style="fill:var(--incorrect)">unit here = community</text>
   </g>
 
   <!-- beat 5: rational choice needs a private ledger -->
   <g data-from="4">
-    <text class="sm" x="258" y="97" fill="var(--text)">one private ledger</text>
+    <text class="sm" x="258" y="97" style="fill:var(--text)">one private ledger</text>
     <line x1="64" y1="92" x2="182" y2="92" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="430" y="97" fill="var(--incorrect)">no private incentives</text>
+    <text class="sm" x="430" y="97" style="fill:var(--incorrect)">no private incentives</text>
   </g>
 
   <!-- beat 6: every stem phrase is a system-level function -->
@@ -80,10 +80,10 @@ svg[data-x="kdaqtsm"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
           stroke="var(--correct)" stroke-width="2"/>
     <rect x="424" y="282" width="192" height="30" rx="10" fill="var(--correct)" fill-opacity=".16"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="sm" x="120" y="301" text-anchor="middle" fill="var(--correct)">brings members together</text>
-    <text class="sm" x="320" y="301" text-anchor="middle" fill="var(--correct)">reaffirms shared values</text>
-    <text class="sm" x="520" y="301" text-anchor="middle" fill="var(--correct)">holds it all together</text>
-    <text class="sm" x="132" y="272" fill="var(--correct)">&#8594; all system-level functions</text>
+    <text class="sm" x="120" y="301" text-anchor="middle" style="fill:var(--correct)">brings members together</text>
+    <text class="sm" x="320" y="301" text-anchor="middle" style="fill:var(--correct)">reaffirms shared values</text>
+    <text class="sm" x="520" y="301" text-anchor="middle" style="fill:var(--correct)">holds it all together</text>
+    <text class="sm" x="132" y="272" style="fill:var(--correct)">&#8594; all system-level functions</text>
   </g>
 </svg>`,
   steps: [

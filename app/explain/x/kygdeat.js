@@ -20,8 +20,8 @@ svg[data-x="kygdeat"] .curve{fill:none;stroke-width:3.5;stroke-linecap:round}
   <text class="sm" x="66"  y="128" text-anchor="middle">light</text>
   <text class="sm" x="136" y="178" text-anchor="middle">dark</text>
   <text class="sm" x="101" y="40" text-anchor="middle" data-from="0" data-to="0">both alleles already present</text>
-  <text class="sm" x="101" y="40" text-anchor="middle" data-from="1" data-to="3" fill="var(--warn)">soot: light beetles stand out</text>
-  <text class="sm" x="101" y="40" text-anchor="middle" data-from="4" fill="var(--correct)">cleaned: advantage flips back</text>
+  <text class="sm" x="101" y="40" text-anchor="middle" data-from="1" data-to="3" style="fill:var(--warn)">soot: light beetles stand out</text>
+  <text class="sm" x="101" y="40" text-anchor="middle" data-from="4" style="fill:var(--correct)">cleaned: advantage flips back</text>
 
   <!-- allele frequency over time -->
   <line class="ax" x1="222" y1="270" x2="612" y2="270"/>
@@ -33,17 +33,17 @@ svg[data-x="kygdeat"] .curve{fill:none;stroke-width:3.5;stroke-linecap:round}
   <path class="curve" stroke="var(--text)" d="M222 250 Q300 236 380 120" data-from="3"/>
   <path class="curve" stroke="var(--correct)" d="M380 120 Q470 106 612 240" data-from="5"/>
   <circle cx="380" cy="120" r="6" fill="var(--warn)" data-from="5"/>
-  <text class="sm" x="380" y="106" text-anchor="middle" data-from="5" fill="var(--warn)">laws clean the air</text>
+  <text class="sm" x="380" y="106" text-anchor="middle" data-from="5" style="fill:var(--warn)">laws clean the air</text>
 
   <!-- explains the first half only; gated off before the reversal marker
        lands in the same area -->
-  <text class="lbl" x="240" y="112" data-from="2" data-to="4" fill="var(--warn)">birds eat what they can SEE</text>
+  <text class="lbl" x="240" y="112" data-from="2" data-to="4" style="fill:var(--warn)">birds eat what they can SEE</text>
   <text class="sm"  x="240" y="130" data-from="2" data-to="4">not random &mdash; that is the mechanism</text>
 
   <g data-from="6">
     <rect x="222" y="304" width="390" height="46" rx="16" fill="var(--accent)" opacity=".16"/>
-    <text class="lbl" x="417" y="324" text-anchor="middle" fill="var(--accent)">directional selection, and it reversed</text>
-    <text class="sm"  x="417" y="342" text-anchor="middle" fill="var(--accent)">drift is random · mutation doesn't arrive on demand</text>
+    <text class="lbl" x="417" y="324" text-anchor="middle" style="fill:var(--accent)">directional selection, and it reversed</text>
+    <text class="sm"  x="417" y="342" text-anchor="middle" style="fill:var(--accent)">drift is random · mutation doesn't arrive on demand</text>
   </g>
 </svg>`,
   steps: [

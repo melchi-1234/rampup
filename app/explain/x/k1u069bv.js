@@ -5,7 +5,7 @@ RU_EX.reg("k1u069bv", {
   css: `
 svg[data-x="k1u069bv"]{font-family:inherit}
 svg[data-x="k1u069bv"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k1u069bv"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k1u069bv"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k1u069bv"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k1u069bv"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -33,7 +33,7 @@ svg[data-x="k1u069bv"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
   <!-- beat 2: the load-bearing assumption -->
   <g data-from="1">
     <rect x="24" y="72" width="592" height="32" rx="10" fill="var(--accent)" fill-opacity=".14"/>
-    <text class="sm" x="38" y="92" fill="var(--accent)">ASSUMES &#183; being baffling PREDICTS being great</text>
+    <text class="sm" x="38" y="92" style="fill:var(--accent)">ASSUMES &#183; being baffling PREDICTS being great</text>
   </g>
 
   <!-- beat 3: the author attacks by counting, and half the pile is missing -->
@@ -44,18 +44,18 @@ svg[data-x="k1u069bv"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <rect x="330" y="116" width="286" height="44" rx="10" fill="var(--warn)" fill-opacity=".12"
           stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="5 4"/>
     <text class="sm" x="473" y="136" text-anchor="middle">baffling &#8594; quickly forgotten</text>
-    <text class="sm" x="473" y="153" text-anchor="middle" fill="var(--warn)">the cases nobody counts</text>
+    <text class="sm" x="473" y="153" text-anchor="middle" style="fill:var(--warn)">the cases nobody counts</text>
   </g>
 
   <!-- beat 4: supply the count, and the prediction dies -->
   <g data-from="3">
-    <text class="lbl" x="320" y="143" text-anchor="middle" fill="var(--correct)">=</text>
-    <text class="sm"  x="320" y="180" text-anchor="middle" fill="var(--correct)">equal rates &#8594; being baffling predicts nothing</text>
+    <text class="lbl" x="320" y="143" text-anchor="middle" style="fill:var(--correct)">=</text>
+    <text class="sm"  x="320" y="180" text-anchor="middle" style="fill:var(--correct)">equal rates &#8594; being baffling predicts nothing</text>
     <rect x="24" y="192" width="30" height="24" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="209" text-anchor="middle" fill="var(--correct)">A</text>
-    <text class="sm"  x="64" y="209" fill="var(--correct)">equal rates: celebrated vs forgotten</text>
-    <text class="sm"  x="356" y="209" fill="var(--correct)">&#10003; supplies the uncounted half</text>
+    <text class="lbl" x="39" y="209" text-anchor="middle" style="fill:var(--correct)">A</text>
+    <text class="sm"  x="64" y="209" style="fill:var(--correct)">equal rates: celebrated vs forgotten</text>
+    <text class="sm"  x="356" y="209" style="fill:var(--correct)">&#10003; supplies the uncounted half</text>
   </g>
 
   <!-- beat 5: three facts that never touch a rate -->
@@ -63,9 +63,9 @@ svg[data-x="k1u069bv"] .chip{fill:none;stroke:var(--border-strong);stroke-width:
     <line x1="64" y1="236" x2="348" y2="236" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="64" y1="268" x2="348" y2="268" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="64" y1="300" x2="348" y2="300" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="356" y="273" fill="var(--incorrect)">the defense&#8217;s own survivor</text>
-    <text class="sm" x="356" y="305" fill="var(--incorrect)">one case, never a rate</text>
-    <text class="sm" x="356" y="241" fill="var(--incorrect)">popularity, a different question</text>
+    <text class="sm" x="356" y="273" style="fill:var(--incorrect)">the defense&#8217;s own survivor</text>
+    <text class="sm" x="356" y="305" style="fill:var(--incorrect)">one case, never a rate</text>
+    <text class="sm" x="356" y="241" style="fill:var(--incorrect)">popularity, a different question</text>
   </g>
 
   <!-- beat 6: the habit worth keeping -->

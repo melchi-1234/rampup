@@ -36,7 +36,7 @@ svg[data-x="k1gegf8b"] .res{fill:var(--surface-2);stroke:var(--accent);stroke-wi
   <g data-from="1">
     <line x1="376" y1="120" x2="410" y2="146" stroke="var(--incorrect)" stroke-width="3"/>
     <line x1="376" y1="220" x2="410" y2="194" stroke="var(--incorrect)" stroke-width="3"/>
-    <text class="sm" x="470" y="140" fill="var(--incorrect)">no current: treat as OPEN</text>
+    <text class="sm" x="470" y="140" style="fill:var(--incorrect)">no current: treat as OPEN</text>
   </g>
 
   <!-- the arithmetic -->
@@ -46,15 +46,15 @@ svg[data-x="k1gegf8b"] .res{fill:var(--surface-2);stroke:var(--accent);stroke-wi
   <g data-from="4">
     <rect x="264" y="126" width="112" height="88" rx="10" fill="none"
           stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 4"/>
-    <text class="sm" x="482" y="240" fill="var(--accent)">the capacitor sits ACROSS the 4 Ω</text>
-    <text class="sm" x="482" y="258" fill="var(--accent)">so it reads that resistor's drop</text>
+    <text class="sm" x="482" y="240" style="fill:var(--accent)">the capacitor sits ACROSS the 4 Ω</text>
+    <text class="sm" x="482" y="258" style="fill:var(--accent)">so it reads that resistor's drop</text>
   </g>
-  <text class="big" x="482" y="288" data-from="5" fill="var(--accent)">V = 2.0 × 4.0 = 8 V</text>
-  <text class="sm"  x="482" y="308" data-from="5" fill="var(--incorrect)">not the full 12 V</text>
+  <text class="big" x="482" y="288" data-from="5" style="fill:var(--accent)">V = 2.0 × 4.0 = 8 V</text>
+  <text class="sm"  x="482" y="308" data-from="5" style="fill:var(--incorrect)">not the full 12 V</text>
 
   <g data-from="6">
     <rect x="24" y="296" width="404" height="46" rx="16" fill="var(--correct)" opacity=".18"/>
-    <text class="big" x="226" y="325" text-anchor="middle" fill="var(--correct)">U = ½CV² = 3.2 mJ</text>
+    <text class="big" x="226" y="325" text-anchor="middle" style="fill:var(--correct)">U = ½CV² = 3.2 mJ</text>
   </g>
 </svg>`,
   steps: [

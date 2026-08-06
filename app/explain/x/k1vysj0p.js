@@ -38,26 +38,26 @@ svg[data-x="k1vysj0p"][data-step="6"] .fin{opacity:1}
   <g class="c1">
     <rect class="cell" x="130" y="66" width="164" height="86" rx="14"
           fill="var(--correct)" fill-opacity=".18" stroke="var(--correct)"/>
-    <text class="lbl" x="212" y="100" text-anchor="middle" fill="var(--correct)">learned fast</text>
+    <text class="lbl" x="212" y="100" text-anchor="middle" style="fill:var(--correct)">learned fast</text>
     <text class="sm"  x="212" y="122" text-anchor="middle">one trial, hours apart</text>
     <text class="sm"  x="212" y="140" text-anchor="middle">lasts for life</text>
   </g>
   <g class="c2">
     <rect class="cell" x="130" y="182" width="164" height="86" rx="14"/>
-    <text class="lbl" x="212" y="216" text-anchor="middle" fill="var(--incorrect)">barely learned</text>
+    <text class="lbl" x="212" y="216" text-anchor="middle" style="fill:var(--incorrect)">barely learned</text>
     <text class="sm"  x="212" y="238" text-anchor="middle">same nausea,</text>
     <text class="sm"  x="212" y="256" text-anchor="middle">same timing</text>
   </g>
   <g class="c3">
     <rect class="cell" x="366" y="66" width="164" height="86" rx="14"/>
-    <text class="lbl" x="448" y="100" text-anchor="middle" fill="var(--incorrect)">fails too</text>
+    <text class="lbl" x="448" y="100" text-anchor="middle" style="fill:var(--incorrect)">fails too</text>
     <text class="sm"  x="448" y="122" text-anchor="middle">taste won't pair</text>
     <text class="sm"  x="448" y="140" text-anchor="middle">with pain</text>
   </g>
   <g class="c4">
     <rect class="cell" x="366" y="182" width="164" height="86" rx="14"
           fill="var(--correct)" fill-opacity=".18" stroke="var(--correct)"/>
-    <text class="lbl" x="448" y="216" text-anchor="middle" fill="var(--correct)">works fine</text>
+    <text class="lbl" x="448" y="216" text-anchor="middle" style="fill:var(--correct)">works fine</text>
     <text class="sm"  x="448" y="238" text-anchor="middle">external cue with</text>
     <text class="sm"  x="448" y="256" text-anchor="middle">external threat</text>
   </g>
@@ -70,7 +70,7 @@ svg[data-x="k1vysj0p"][data-step="6"] .fin{opacity:1}
   </g>
   <g class="fin">
     <rect x="170" y="326" width="300" height="28" rx="14" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="320" y="345" text-anchor="middle" fill="var(--accent)">biological preparedness</text>
+    <text class="lbl" x="320" y="345" text-anchor="middle" style="fill:var(--accent)">biological preparedness</text>
   </g>
 </svg>`,
   steps: [

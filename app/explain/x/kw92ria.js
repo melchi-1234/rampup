@@ -12,21 +12,21 @@ svg[data-x="kw92ria"] .stop{fill:var(--incorrect)}
   <!-- the message with an early stop -->
   <rect class="mrna" x="40" y="70" width="560" height="34" rx="8"/>
   <rect class="stop" x="188" y="70" width="44" height="34" rx="6"/>
-  <text class="sm" x="210" y="92" text-anchor="middle" fill="var(--card)">STOP</text>
+  <text class="sm" x="210" y="92" text-anchor="middle" style="fill:var(--card)">STOP</text>
   <text class="sm" x="40" y="60">mRNA</text>
-  <text class="sm" x="210" y="124" text-anchor="middle" fill="var(--incorrect)">premature, early in the sequence</text>
+  <text class="sm" x="210" y="124" text-anchor="middle" style="fill:var(--incorrect)">premature, early in the sequence</text>
 
   <!-- the expected outcome -->
   <g data-from="1">
     <circle cx="150" cy="87" r="18" fill="var(--warn)" opacity=".85"/>
     <text class="sm" x="150" y="150" text-anchor="middle">ribosome halts here</text>
-    <text class="sm" x="380" y="150" fill="var(--incorrect)">…and the message is destroyed by nonsense-mediated decay</text>
+    <text class="sm" x="380" y="150" style="fill:var(--incorrect)">…and the message is destroyed by nonsense-mediated decay</text>
   </g>
   <g data-from="2">
     <rect x="40" y="172" width="250" height="42" rx="14" fill="var(--incorrect)" opacity=".14"/>
-    <text class="lbl" x="165" y="198" text-anchor="middle" fill="var(--incorrect)">so expect ~0% enzyme</text>
+    <text class="lbl" x="165" y="198" text-anchor="middle" style="fill:var(--incorrect)">so expect ~0% enzyme</text>
     <rect x="330" y="172" width="270" height="42" rx="14" fill="var(--correct)" opacity=".18"/>
-    <text class="lbl" x="465" y="198" text-anchor="middle" fill="var(--correct)">but the child has about 5%</text>
+    <text class="lbl" x="465" y="198" text-anchor="middle" style="fill:var(--correct)">but the child has about 5%</text>
   </g>
 
   <!-- the resolution -->
@@ -36,14 +36,14 @@ svg[data-x="kw92ria"] .stop{fill:var(--incorrect)}
     <path d="M210 268 V292" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#kw9A)"/>
     <defs><marker id="kw9A" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
       orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker></defs>
-    <text class="sm" x="230" y="286" fill="var(--accent)">occasionally a tRNA slips in instead of the release factor</text>
+    <text class="sm" x="230" y="286" style="fill:var(--accent)">occasionally a tRNA slips in instead of the release factor</text>
   </g>
   <g data-from="5">
     <rect class="mrna" x="40" y="298" width="560" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"/>
     <circle cx="470" cy="311" r="14" fill="var(--warn)" opacity=".85"/>
-    <text class="sm" x="120" y="316" fill="var(--correct)">reads straight through &mdash; full-length protein</text>
+    <text class="sm" x="120" y="316" style="fill:var(--correct)">reads straight through &mdash; full-length protein</text>
   </g>
-  <text class="sm" x="320" y="346" text-anchor="middle" data-from="6" fill="var(--accent)">rare, so only a few percent &mdash; but a few percent is often enough to soften the disease</text>
+  <text class="sm" x="320" y="346" text-anchor="middle" data-from="6" style="fill:var(--accent)">rare, so only a few percent &mdash; but a few percent is often enough to soften the disease</text>
 </svg>`,
   steps: [
     {t: 0, cap: "A nonsense mutation = a premature STOP"},

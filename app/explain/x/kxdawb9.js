@@ -48,7 +48,7 @@ svg[data-x="kxdawb9"][data-step="5"] .o2Up,svg[data-x="kxdawb9"][data-step="6"] 
 
   <!-- electron transport complex -->
   <rect class="cx" x="70" y="106" width="46" height="58" rx="7"/>
-  <text class="sm" x="93" y="180" text-anchor="middle" fill="var(--accent)">ETC</text>
+  <text class="sm" x="93" y="180" text-anchor="middle" style="fill:var(--accent)">ETC</text>
   <g class="pump"><circle cx="93" cy="112" r="6" fill="var(--warn)"/></g>
   <g class="pump" style="animation-delay:-1s"><circle cx="93" cy="112" r="6" fill="var(--warn)"/></g>
 
@@ -56,15 +56,15 @@ svg[data-x="kxdawb9"][data-step="5"] .o2Up,svg[data-x="kxdawb9"][data-step="6"] 
   <g class="synth">
     <rect class="cx" x="250" y="106" width="46" height="58" rx="7" fill="var(--correct)"/>
     <circle cx="273" cy="176" r="15" fill="var(--correct)" opacity=".75"/>
-    <text class="sm" x="273" y="200" text-anchor="middle" fill="var(--correct)">ATP synthase</text>
+    <text class="sm" x="273" y="200" text-anchor="middle" style="fill:var(--correct)">ATP synthase</text>
   </g>
   <g class="thruSynth"><circle cx="273" cy="164" r="6" fill="var(--warn)"/></g>
 
   <!-- the uncoupler: a hole straight through -->
   <g class="unc">
     <rect x="360" y="106" width="30" height="58" rx="6" fill="var(--incorrect)" opacity=".28"/>
-    <text class="sm" x="375" y="180" text-anchor="middle" fill="var(--incorrect)">uncoupler</text>
-    <text class="sm" x="375" y="96" text-anchor="middle" fill="var(--incorrect)">a shortcut</text>
+    <text class="sm" x="375" y="180" text-anchor="middle" style="fill:var(--incorrect)">uncoupler</text>
+    <text class="sm" x="375" y="96" text-anchor="middle" style="fill:var(--incorrect)">a shortcut</text>
   </g>
   <g class="leak"><circle cx="375" cy="164" r="6" fill="var(--warn)"/></g>
 
@@ -75,14 +75,14 @@ svg[data-x="kxdawb9"][data-step="5"] .o2Up,svg[data-x="kxdawb9"][data-step="6"] 
   <rect class="bar" x="562" y="180" width="40" height="120" rx="5" fill="var(--correct)" opacity=".8"/>
   <text class="sm" x="582" y="318" text-anchor="middle">ATP</text>
   <g class="o2Up"><rect x="500" y="120" width="40" height="60" rx="5" fill="var(--accent)"/>
-    <text class="lbl" x="520" y="112" text-anchor="middle" fill="var(--accent)">&uarr;</text></g>
+    <text class="lbl" x="520" y="112" text-anchor="middle" style="fill:var(--accent)">&uarr;</text></g>
   <g class="atpDown"><rect x="562" y="180" width="40" height="96" rx="5" fill="var(--card)"/>
     <rect x="562" y="276" width="40" height="24" rx="5" fill="var(--incorrect)" opacity=".8"/>
-    <text class="lbl" x="582" y="170" text-anchor="middle" fill="var(--incorrect)">&darr;</text></g>
+    <text class="lbl" x="582" y="170" text-anchor="middle" style="fill:var(--incorrect)">&darr;</text></g>
 
   <g class="verdict">
     <rect x="20" y="222" width="404" height="30" rx="15" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="222" y="242" text-anchor="middle" fill="var(--accent)">the gradient was the brake — energy now leaves as heat</text>
+    <text class="lbl" x="222" y="242" text-anchor="middle" style="fill:var(--accent)">the gradient was the brake — energy now leaves as heat</text>
   </g>
 </svg>`,
   steps: [

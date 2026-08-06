@@ -6,7 +6,7 @@ RU_EX.reg("kimgipb", {
   css: `
 svg[data-x="kimgipb"]{font-family:inherit}
 svg[data-x="kimgipb"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kimgipb"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kimgipb"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kimgipb"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kimgipb"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -36,7 +36,7 @@ svg[data-x="kimgipb"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="1">
     <rect class="chip" x="340" y="70" width="112" height="32" rx="10"/>
     <text class="lbl" x="396" y="91" text-anchor="middle">physician</text>
-    <text class="lbl" x="474" y="92" text-anchor="middle" fill="var(--warn)">&#8596;</text>
+    <text class="lbl" x="474" y="92" text-anchor="middle" style="fill:var(--warn)">&#8596;</text>
     <rect class="chip" x="496" y="70" width="112" height="32" rx="10"/>
     <text class="lbl" x="552" y="91" text-anchor="middle">mother</text>
     <text class="sm" x="474" y="120" text-anchor="middle">two statuses, two packages of demands</text>
@@ -46,11 +46,11 @@ svg[data-x="kimgipb"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="2">
     <rect x="332" y="132" width="284" height="32" rx="10" fill="var(--correct)" fill-opacity=".18"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="474" y="153" text-anchor="middle" fill="var(--correct)">ROLE CONFLICT &#10003;</text>
+    <text class="lbl" x="474" y="153" text-anchor="middle" style="fill:var(--correct)">ROLE CONFLICT &#10003;</text>
     <rect x="24" y="276" width="30" height="26" rx="8" fill="var(--correct)" fill-opacity=".2"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="39" y="294" text-anchor="middle" fill="var(--correct)">D</text>
-    <text class="sm" x="220" y="294" fill="var(--correct)">&#10003; two statuses pulling against each other</text>
+    <text class="lbl" x="39" y="294" text-anchor="middle" style="fill:var(--correct)">D</text>
+    <text class="sm" x="220" y="294" style="fill:var(--correct)">&#10003; two statuses pulling against each other</text>
   </g>
 
   <!-- beat 4: strain is what the other column looks like -->
@@ -62,15 +62,15 @@ svg[data-x="kimgipb"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
           stroke="var(--border-strong)" stroke-width="1.5"/>
     <text class="lbl" x="166" y="153" text-anchor="middle">ROLE STRAIN</text>
     <line x1="60" y1="193" x2="212" y2="193" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="220" y="198" fill="var(--incorrect)">needs both demands inside ONE status</text>
+    <text class="sm" x="220" y="198" style="fill:var(--incorrect)">needs both demands inside ONE status</text>
   </g>
 
   <!-- beat 5: the two labels that describe something else entirely -->
   <g data-from="4">
     <line x1="60" y1="225" x2="212" y2="225" stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="60" y1="257" x2="212" y2="257" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="220" y="230" fill="var(--incorrect)">she leaves neither role behind</text>
-    <text class="sm" x="220" y="262" fill="var(--incorrect)">rank mismatch &#8212; high education, low income</text>
+    <text class="sm" x="220" y="230" style="fill:var(--incorrect)">she leaves neither role behind</text>
+    <text class="sm" x="220" y="262" style="fill:var(--incorrect)">rank mismatch &#8212; high education, low income</text>
   </g>
 
   <!-- beat 6: the rule -->

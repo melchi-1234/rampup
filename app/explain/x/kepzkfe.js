@@ -5,7 +5,7 @@ RU_EX.reg("kepzkfe", {
   css: `
 svg[data-x="kepzkfe"]{font-family:inherit}
 svg[data-x="kepzkfe"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="kepzkfe"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="kepzkfe"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="kepzkfe"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="kepzkfe"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
 `,
@@ -51,34 +51,34 @@ svg[data-x="kepzkfe"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="2">
     <line x1="308" y1="142" x2="308" y2="158" stroke="var(--warn)" stroke-width="2"/>
     <rect x="110" y="158" width="400" height="30" rx="8" fill="var(--warn)" fill-opacity=".16"/>
-    <text class="lbl" x="310" y="178" text-anchor="middle" fill="var(--warn)">buildings enter the set and never leave</text>
+    <text class="lbl" x="310" y="178" text-anchor="middle" style="fill:var(--warn)">buildings enter the set and never leave</text>
   </g>
 
   <!-- beat 4: D removes that step, so the endpoint never arrives -->
   <g data-from="3">
     <line x1="122" y1="173" x2="498" y2="173" stroke="var(--correct)" stroke-width="2"/>
     <line x1="404" y1="92" x2="404" y2="136" stroke="var(--correct)" stroke-width="3"/>
-    <text class="lbl" x="320" y="206" text-anchor="middle" fill="var(--correct)">stock stays stable &#8594; the runaway never happens</text>
+    <text class="lbl" x="320" y="206" text-anchor="middle" style="fill:var(--correct)">stock stays stable &#8594; the runaway never happens</text>
     <rect x="20" y="322" width="240" height="26" rx="8" fill="var(--correct)" fill-opacity=".16"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="37" y="340" text-anchor="middle" fill="var(--correct)">D</text>
-    <text class="sm"  x="60" y="340" fill="var(--correct)">decay matches new arrivals</text>
-    <text class="sm"  x="336" y="340" fill="var(--correct)">removes the one-way accumulation</text>
+    <text class="lbl" x="37" y="340" text-anchor="middle" style="fill:var(--correct)">D</text>
+    <text class="sm"  x="60" y="340" style="fill:var(--correct)">decay matches new arrivals</text>
+    <text class="sm"  x="336" y="340" style="fill:var(--correct)">removes the one-way accumulation</text>
   </g>
 
   <!-- beat 5: the other three miss the accumulation step -->
   <g data-from="4">
     <line x1="60" y1="257" x2="257" y2="257" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="336" y="262" fill="var(--incorrect)">reports practice, not the rule</text>
+    <text class="sm" x="336" y="262" style="fill:var(--incorrect)">reports practice, not the rule</text>
     <line x1="60" y1="283" x2="257" y2="283" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="336" y="288" fill="var(--incorrect)">hits a premise he already grants</text>
+    <text class="sm" x="336" y="288" style="fill:var(--incorrect)">hits a premise he already grants</text>
     <line x1="60" y1="309" x2="218" y2="309" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="336" y="314" fill="var(--incorrect)">the pileup survives anyway</text>
+    <text class="sm" x="336" y="314" style="fill:var(--incorrect)">the pileup survives anyway</text>
   </g>
 
   <!-- beat 6: the rule -->
   <g data-from="5">
-    <text class="lbl" x="24" y="230" fill="var(--accent)">to weaken a reductio, block its runaway endpoint</text>
+    <text class="lbl" x="24" y="230" style="fill:var(--accent)">to weaken a reductio, block its runaway endpoint</text>
   </g>
 </svg>`,
   steps: [

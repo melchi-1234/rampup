@@ -13,7 +13,7 @@ svg[data-x="k31nazy"] .box{fill:var(--surface-2);stroke:var(--border-strong);str
   <text class="sm" x="90" y="46" text-anchor="middle">folded &amp; working</text>
   <path class="chain" d="M46 130 q26 -44 52 0 q26 44 52 0 q22 -34 -6 -52"/>
   <circle cx="90" cy="150" r="26" fill="var(--correct)" opacity=".22"/>
-  <text class="sm" x="90" y="196" text-anchor="middle" fill="var(--correct)">active</text>
+  <text class="sm" x="90" y="196" text-anchor="middle" style="fill:var(--correct)">active</text>
 
   <!-- denatured -->
   <g data-from="1">
@@ -23,36 +23,36 @@ svg[data-x="k31nazy"] .box{fill:var(--surface-2);stroke:var(--border-strong);str
     <text class="sm" x="188" y="104" text-anchor="middle">urea +</text>
     <text class="sm" x="188" y="140" text-anchor="middle">reducing agent</text>
     <path class="chain" stroke="var(--muted)" d="M226 150 L266 116 L306 156 L346 120 L386 152"/>
-    <text class="sm" x="306" y="188" text-anchor="middle" fill="var(--incorrect)">unfolded, inactive</text>
+    <text class="sm" x="306" y="188" text-anchor="middle" style="fill:var(--incorrect)">unfolded, inactive</text>
   </g>
 
   <!-- what survived -->
   <g data-from="2">
     <rect class="box" x="222" y="206" width="196" height="66" rx="14"/>
-    <text class="sm"  x="320" y="228" text-anchor="middle" fill="var(--incorrect)">broken: H-bonds, disulfides</text>
-    <text class="lbl" x="320" y="252" text-anchor="middle" fill="var(--correct)">intact: the peptide bonds</text>
-    <text class="sm"  x="320" y="266" text-anchor="middle" fill="var(--correct)">the sequence survives</text>
+    <text class="sm"  x="320" y="228" text-anchor="middle" style="fill:var(--incorrect)">broken: H-bonds, disulfides</text>
+    <text class="lbl" x="320" y="252" text-anchor="middle" style="fill:var(--correct)">intact: the peptide bonds</text>
+    <text class="sm"  x="320" y="266" text-anchor="middle" style="fill:var(--correct)">the sequence survives</text>
   </g>
 
   <!-- refolded, unaided -->
   <g data-from="3">
     <path d="M406 120 H442" stroke="var(--muted)" stroke-width="2.5" marker-end="url(#k31A)"/>
     <text class="sm" x="424" y="104" text-anchor="middle">remove both</text>
-    <text class="sm" x="424" y="140" text-anchor="middle" fill="var(--warn)">add nothing</text>
+    <text class="sm" x="424" y="140" text-anchor="middle" style="fill:var(--warn)">add nothing</text>
   </g>
   <g data-from="4">
     <path class="chain" d="M470 130 q26 -44 52 0 q26 44 52 0 q22 -34 -6 -52"/>
     <circle cx="514" cy="150" r="26" fill="var(--correct)" opacity=".22"/>
-    <text class="sm" x="514" y="196" text-anchor="middle" fill="var(--correct)">active again</text>
+    <text class="sm" x="514" y="196" text-anchor="middle" style="fill:var(--correct)">active again</text>
     <text class="sm" x="514" y="46" text-anchor="middle">same shape, by itself</text>
   </g>
 
   <g data-from="5">
-    <text class="lbl" x="320" y="302" text-anchor="middle" fill="var(--warn)">no template, no machinery, nothing to copy from</text>
+    <text class="lbl" x="320" y="302" text-anchor="middle" style="fill:var(--warn)">no template, no machinery, nothing to copy from</text>
   </g>
   <g data-from="6">
     <rect x="90" y="316" width="460" height="34" rx="17" fill="var(--accent)" opacity=".16"/>
-    <text class="lbl" x="320" y="339" text-anchor="middle" fill="var(--accent)">so the sequence alone specifies the fold</text>
+    <text class="lbl" x="320" y="339" text-anchor="middle" style="fill:var(--accent)">so the sequence alone specifies the fold</text>
   </g>
 </svg>`,
   steps: [

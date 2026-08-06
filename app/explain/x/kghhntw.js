@@ -26,8 +26,8 @@ svg[data-x="kghhntw"][data-step="6"] .ub{transform:translate(-34px,26px)}
   <circle cx="70"  cy="106" r="7" fill="var(--accent)"/>
   <circle cx="250" cy="120" r="7" fill="var(--accent)"/>
   <circle cx="90"  cy="228" r="7" fill="var(--accent)"/>
-  <text class="sm" x="158" y="272" text-anchor="middle" data-from="2" fill="var(--accent)">cannot cross &mdash; all 300 counts</text>
-  <text class="lbl" x="158" y="294" text-anchor="middle" data-from="3" fill="var(--correct)">balanced → cell is fine</text>
+  <text class="sm" x="158" y="272" text-anchor="middle" data-from="2" style="fill:var(--accent)">cannot cross &mdash; all 300 counts</text>
+  <text class="lbl" x="158" y="294" text-anchor="middle" data-from="3" style="fill:var(--correct)">balanced → cell is fine</text>
 
   <!-- Solution B: urea -->
   <rect class="dish" x="354" y="56" width="256" height="196" rx="12"/>
@@ -35,12 +35,12 @@ svg[data-x="kghhntw"][data-step="6"] .ub{transform:translate(-34px,26px)}
   <circle class="cell" id="cellB" cx="482" cy="170" r="42"/>
   <circle class="u ua" cx="404" cy="112" r="7" fill="var(--warn)"/>
   <circle class="u ub" cx="566" cy="124" r="7" fill="var(--warn)"/>
-  <text class="sm" x="482" y="272" text-anchor="middle" data-from="4" fill="var(--warn)">crosses freely &mdash; equalises inside and out</text>
-  <text class="lbl" x="482" y="294" text-anchor="middle" data-from="5" fill="var(--warn)">equal both sides → counts as ZERO</text>
+  <text class="sm" x="482" y="272" text-anchor="middle" data-from="4" style="fill:var(--warn)">crosses freely &mdash; equalises inside and out</text>
+  <text class="lbl" x="482" y="294" text-anchor="middle" data-from="5" style="fill:var(--warn)">equal both sides → counts as ZERO</text>
 
   <g data-from="6">
     <circle cx="482" cy="170" r="56" fill="none" stroke="var(--incorrect)" stroke-width="4" stroke-dasharray="12 10"/>
-    <text class="lbl" x="482" y="176" text-anchor="middle" fill="var(--incorrect)">lyses</text>
+    <text class="lbl" x="482" y="176" text-anchor="middle" style="fill:var(--incorrect)">lyses</text>
   </g>
 
   <text class="sm" x="320" y="326" text-anchor="middle" data-from="1">osmolarity counts every particle &middot; tonicity counts only the ones that CANNOT cross</text>

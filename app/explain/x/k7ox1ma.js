@@ -6,7 +6,7 @@ RU_EX.reg("k7ox1ma", {
   css: `
 svg[data-x="k7ox1ma"]{font-family:inherit}
 svg[data-x="k7ox1ma"] .lbl{fill:var(--text);font-size:14px;font-weight:700}
-svg[data-x="k7ox1ma"] .sm{fill:var(--muted);font-size:12.5px;font-weight:600}
+svg[data-x="k7ox1ma"] .sm{fill:var(--text);font-size:12.5px;font-weight:700}
 svg[data-x="k7ox1ma"] .tag{fill:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em}
 svg[data-x="k7ox1ma"] .fig{fill:none;stroke:var(--text);stroke-width:1.5}
 svg[data-x="k7ox1ma"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1.5}
@@ -21,7 +21,7 @@ svg[data-x="k7ox1ma"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <line x1="24" y1="166" x2="344" y2="166" stroke="var(--border-strong)" stroke-width="2"/>
 
   <!-- ambulance + listener, drawn after the arcs land -->
-  <text class="sm" x="251" y="104" text-anchor="middle" fill="var(--accent)">34 m/s</text>
+  <text class="sm" x="251" y="104" text-anchor="middle" style="fill:var(--accent)">34 m/s</text>
   <text class="sm" x="312" y="104" text-anchor="middle">at rest</text>
 
   <text class="tag" x="356" y="32">THE FOUR CHOICES</text>
@@ -42,7 +42,7 @@ svg[data-x="k7ox1ma"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
       <circle cx="204" cy="150" r="36"  fill="none" stroke="var(--accent)" stroke-width="2"/>
     </g>
     <text class="sm" x="24"  y="192">spread out · &#955; long</text>
-    <text class="sm" x="190" y="192" fill="var(--accent)">bunched · &#955; short</text>
+    <text class="sm" x="190" y="192" style="fill:var(--accent)">bunched · &#955; short</text>
   </g>
 
   <!-- the vehicle and listener sit ON TOP of the arcs, so the newest ring
@@ -59,8 +59,8 @@ svg[data-x="k7ox1ma"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
   <g data-from="1">
     <line x1="362" y1="56"  x2="438" y2="56"  stroke="var(--incorrect)" stroke-width="1.5"/>
     <line x1="362" y1="100" x2="438" y2="100" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="456" y="61"  fill="var(--incorrect)">lower, impossible</text>
-    <text class="sm" x="456" y="105" fill="var(--incorrect)">unshifted, impossible</text>
+    <text class="sm" x="456" y="61"  style="fill:var(--incorrect)">lower, impossible</text>
+    <text class="sm" x="456" y="105" style="fill:var(--incorrect)">unshifted, impossible</text>
   </g>
 
   <!-- ========== beat 3: the formula, denominator boxed ========== -->
@@ -69,30 +69,30 @@ svg[data-x="k7ox1ma"] .chip{fill:none;stroke:var(--border-strong);stroke-width:1
     <!-- box measured with getStartPositionOfChar, not estimated: the denominator
          "(v − v&#8347;)" really runs x 84.0-130.4, where 6.5px/char predicted 105-171 -->
     <rect x="80" y="212" width="54" height="17" rx="4" fill="none" stroke="var(--accent)" stroke-width="2"/>
-    <text class="sm" x="24" y="248" fill="var(--accent)">source speed &#8594; denominator</text>
+    <text class="sm" x="24" y="248" style="fill:var(--accent)">source speed &#8594; denominator</text>
   </g>
 
   <!-- ========== beat 4: the arithmetic shortcut ========== -->
   <g data-from="3">
-    <text class="sm" x="24" y="274" fill="var(--warn)">340 &#8722; 34 = 306 = 0.9 &#215; 340</text>
+    <text class="sm" x="24" y="274" style="fill:var(--warn)">340 &#8722; 34 = 306 = 0.9 &#215; 340</text>
     <line x1="140" y1="214" x2="140" y2="226" stroke="var(--warn)" stroke-width="2"/>
   </g>
 
   <!-- ========== beat 5: the answer ========== -->
   <g data-from="4">
     <rect x="24" y="292" width="180" height="32" rx="16" fill="var(--correct)" fill-opacity=".16"/>
-    <text class="lbl" x="114" y="313" text-anchor="middle" fill="var(--correct)">680 / 0.9 &#8776; 755.6 Hz</text>
+    <text class="lbl" x="114" y="313" text-anchor="middle" style="fill:var(--correct)">680 / 0.9 &#8776; 755.6 Hz</text>
     <rect x="356" y="174" width="88" height="28" rx="14" fill="var(--correct)" fill-opacity=".18"
           stroke="var(--correct)" stroke-width="2"/>
-    <text class="lbl" x="400" y="193" text-anchor="middle" fill="var(--correct)">760 Hz</text>
-    <text class="sm"  x="456" y="193" fill="var(--correct)">755.6 rounds here</text>
+    <text class="lbl" x="400" y="193" text-anchor="middle" style="fill:var(--correct)">760 Hz</text>
+    <text class="sm"  x="456" y="193" style="fill:var(--correct)">755.6 rounds here</text>
   </g>
 
   <!-- ========== beat 6: the trap named ========== -->
   <g data-from="5">
-    <text class="sm" x="456" y="149" fill="var(--incorrect)">hertz plus m/s</text>
+    <text class="sm" x="456" y="149" style="fill:var(--incorrect)">hertz plus m/s</text>
     <rect x="356" y="228" width="120" height="28" rx="6" fill="none" stroke="var(--incorrect)" stroke-width="1.5"/>
-    <text class="sm" x="416" y="247" text-anchor="middle" fill="var(--incorrect)">710 &#8776; 680 + 34</text>
+    <text class="sm" x="416" y="247" text-anchor="middle" style="fill:var(--incorrect)">710 &#8776; 680 + 34</text>
     <path d="M356 242 L348 242 L348 144 L356 144" fill="none" stroke="var(--incorrect)"
           stroke-width="1.5" stroke-dasharray="4 3"/>
   </g>

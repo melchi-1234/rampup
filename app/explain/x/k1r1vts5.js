@@ -52,10 +52,10 @@ svg[data-x="k1r1vts5"][data-step="6"] #acidDot{transform:translate(0,86px);fill:
     <text class="lbl" x="246" y="60">Can bicarbonate take the proton?</text>
     <line x1="246" y1="82" x2="612" y2="82" stroke="var(--border-strong)" stroke-width="2"/>
     <line x1="392" y1="70" x2="392" y2="120" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 4"/>
-    <text class="sm" x="392" y="136" text-anchor="middle" fill="var(--accent)">carbonic acid</text>
-    <text class="sm" x="392" y="152" text-anchor="middle" fill="var(--accent)">pKa 6.35</text>
-    <text class="sm" x="252" y="102" fill="var(--muted)">lower pKa: yes &rarr;</text>
-    <text class="sm" x="606" y="102" text-anchor="end" fill="var(--muted)">&larr; higher: no</text>
+    <text class="sm" x="392" y="136" text-anchor="middle" style="fill:var(--accent)">carbonic acid</text>
+    <text class="sm" x="392" y="152" text-anchor="middle" style="fill:var(--accent)">pKa 6.35</text>
+    <text class="sm" x="252" y="102" style="fill:var(--muted)">lower pKa: yes &rarr;</text>
+    <text class="sm" x="606" y="102" text-anchor="end" style="fill:var(--muted)">&larr; higher: no</text>
   </g>
 
   <!-- two lines per row, both left-aligned: a right-aligned verdict on the
@@ -63,18 +63,18 @@ svg[data-x="k1r1vts5"][data-step="6"] #acidDot{transform:translate(0,86px);fill:
   <g class="acidRow">
     <circle cx="256" cy="192" r="8" fill="var(--warn)"/>
     <text class="lbl" x="274" y="197">benzoic acid &mdash; pKa 4.4</text>
-    <text class="sm"  x="274" y="216" fill="var(--correct)">below 6.35 &rarr; deprotonated &rarr; into the water</text>
+    <text class="sm"  x="274" y="216" style="fill:var(--correct)">below 6.35 &rarr; deprotonated &rarr; into the water</text>
   </g>
   <g class="pheRow">
     <circle cx="256" cy="240" r="8" fill="var(--muted)"/>
     <text class="lbl" x="274" y="245">phenol &mdash; pKa 10.2</text>
-    <text class="sm"  x="274" y="264" fill="var(--muted)">above 6.35 &rarr; untouched &rarr; stays in the ether</text>
+    <text class="sm"  x="274" y="264" style="fill:var(--muted)">above 6.35 &rarr; untouched &rarr; stays in the ether</text>
   </g>
 
   <g class="fin">
     <rect x="246" y="278" width="366" height="52" rx="16" fill="var(--accent)" opacity=".14"/>
-    <text class="lbl" x="429" y="300" text-anchor="middle" fill="var(--accent)">only the carboxylic acid moves into the water</text>
-    <text class="sm"  x="429" y="320" text-anchor="middle" fill="var(--accent)">charged things leave the ether</text>
+    <text class="lbl" x="429" y="300" text-anchor="middle" style="fill:var(--accent)">only the carboxylic acid moves into the water</text>
+    <text class="sm"  x="429" y="320" text-anchor="middle" style="fill:var(--accent)">charged things leave the ether</text>
   </g>
 </svg>`,
   steps: [
