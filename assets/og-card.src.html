@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+  /* Source for assets/og-card.png — the image every shared RampUp link renders.
+     Rendered at exactly 1200x630 with:
+       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless \
+         --screenshot=assets/og-card.png --window-size=1200,630 --default-background-color=00000000 \
+         --hide-scrollbars assets/og-card.src.html
+     Kept in the repo so the card can be re-rendered when the numbers change,
+     rather than being an undocumented binary nobody can regenerate. */
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1200px;height:630px;overflow:hidden}
+  body{
+    display:flex;align-items:center;
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:linear-gradient(135deg,#7c3aed 0%,#6d28d9 55%,#5b21b6 100%);
+    color:#fff;position:relative;
+  }
+  /* the same soft circles the site uses on its violet bands */
+  .orb{position:absolute;border-radius:50%;background:rgba(255,255,255,.08)}
+  .orb.a{width:420px;height:420px;right:-120px;top:-150px}
+  .orb.b{width:260px;height:260px;left:-90px;bottom:-110px}
+  .copy{position:relative;padding:0 0 0 76px;width:720px}
+  .eyebrow{
+    display:inline-block;font-size:21px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:#e9d5ff;margin-bottom:26px;
+  }
+  h1{font-size:70px;line-height:1.04;font-weight:800;letter-spacing:-.022em}
+  h1 .free{color:#fde68a}
+  p{margin-top:26px;font-size:29px;line-height:1.42;color:#f3e8ff;font-weight:500}
+  .foot{
+    margin-top:38px;display:flex;align-items:center;gap:14px;
+    font-size:25px;font-weight:700;color:#fff;
+  }
+  .dot{width:9px;height:9px;border-radius:50%;background:#fde68a;display:inline-block}
+  .art{position:relative;width:480px;height:630px;display:flex;align-items:center;justify-content:center}
+  .art img{width:390px;filter:drop-shadow(0 26px 46px rgba(40,10,90,.42))}
+</style></head>
+<body>
+  <div class="orb a"></div><div class="orb b"></div>
+  <div class="copy">
+    <span class="eyebrow">Free MCAT practice</span>
+    <h1><span class="free">377 free</span> questions,<br>and the hard ones<br>explain themselves.</h1>
+    <p>Miss one and you get a 40-second narrated<br>walkthrough of the reasoning.</p>
+    <div class="foot"><span class="dot"></span>rampupmcat.com</div>
+  </div>
+  <div class="art"><img src="rampy.png" alt=""></div>
+</body></html>
