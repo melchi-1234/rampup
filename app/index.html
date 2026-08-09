@@ -4151,6 +4151,33 @@ function renderSessionSummary(s, perfect){
   SFX.complete(); haptic("success");
   if (perfect || acc >= 70) setTimeout(confettiRain, 250);
   if (s.newBadges.length) setTimeout(() => SFX.badge(), 700);
+  // After the celebration lands, not on top of it.
+  setTimeout(() => maybeRequestReview(acc), s.newBadges.length ? 1600 : 1200);
+}
+
+/* ── App Store rating ask ──────────────────────────────────────────────────
+   Asked on the session summary: the user is inside the real app, has just
+   finished real work, and is looking at their own accuracy — value delivered,
+   and still ahead of any paywall. Deliberately EARLIER than a "power user
+   only" gate: a rating ask that waits for a devoted user never fires at all.
+   Still gated so it cannot nag — a couple of real sessions, a session that
+   went well (nobody rates an app five stars right after a bad score), and a
+   long cooldown. iOS additionally rate-limits the sheet to ~3 shows a year and
+   may show nothing at all, so this is fire-and-forget with no UI of our own. */
+const REVIEW_ASK_MIN_SESSIONS  = 2;
+const REVIEW_ASK_MIN_ACCURACY  = 60;
+const REVIEW_ASK_COOLDOWN_DAYS = 60;
+
+function maybeRequestReview(acc){
+  const p = nativePlugin("RampUpIAP");            // web has no rating sheet
+  if (!p || typeof p.requestReview !== "function") return;
+  if ((state.sessionsCompleted || 0) < REVIEW_ASK_MIN_SESSIONS) return;
+  if (!(acc >= REVIEW_ASK_MIN_ACCURACY)) return;
+  let last = 0;
+  try { last = Number(localStorage.getItem("rampupReviewAsk") || 0); } catch(e){}
+  if (Date.now() - last < REVIEW_ASK_COOLDOWN_DAYS * 864e5) return;
+  try { localStorage.setItem("rampupReviewAsk", String(Date.now())); } catch(e){}
+  try { p.requestReview(); } catch(e){}
 }
 
 /* ============================================================
