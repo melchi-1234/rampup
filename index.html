@@ -18,6 +18,9 @@
 <meta name="theme-color" content="#7c3aed" />
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" />
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="assets/site.css" />
 <script type="application/ld+json">
 {
@@ -41,7 +44,7 @@
 
 <nav>
   <div class="wrap nav-in">
-    <a class="logo" href="/"><span class="logo-mark">R</span> RampUp</a>
+    <a class="logo" href="/"><span class="logo-mark" data-mark="happy" data-size="38"></span> RampUp</a>
     <div class="nav-links">
       <a href="#levels">How it works</a>
       <a href="#rampy">Rampy</a>
@@ -108,19 +111,19 @@
     </div>
     <div class="grid">
       <div class="card">
-        <div class="ico" aria-hidden="true">🔭</div>
+        <div class="ico" data-icon="telescope" data-size="24"></div>
         <h3>Preview</h3>
         <p>A subject you have not taken yet. RampUp teaches the concept first and
            uses gentler questions, so it is stretch practice rather than a wall.</p>
       </div>
       <div class="card">
-        <div class="ico" aria-hidden="true">📈</div>
+        <div class="ico" data-icon="stairs" data-size="24"></div>
         <h3>Easy → Medium → Hard</h3>
         <p>Set from the coursework you have actually finished and how solid it felt.
            Each subject climbs on its own streak, not on an overall score.</p>
       </div>
       <div class="card">
-        <div class="ico" aria-hidden="true">🎯</div>
+        <div class="ico" data-icon="target" data-size="24"></div>
         <h3>MCAT</h3>
         <p>The earned ceiling: full-difficulty, passage-based reasoning. You get there
            per subject, by being right consistently, not by paying more.</p>
@@ -308,7 +311,7 @@
 <footer>
   <div class="wrap">
     <div class="foot">
-      <a class="logo" href="/"><span class="logo-mark">R</span> RampUp</a>
+      <a class="logo" href="/"><span class="logo-mark" data-mark="happy" data-size="38"></span> RampUp</a>
       <div class="foot-links">
         <a href="/start/">Start</a>
         <a href="#pricing">Pricing</a>
@@ -326,6 +329,7 @@
   </div>
 </footer>
 
+<script src="assets/brand.js"></script>
 <script src="assets/funnel.js"></script>
 <script>
   document.getElementById("yr").textContent = new Date().getFullYear();
