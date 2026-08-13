@@ -410,7 +410,26 @@
     padding:10px 20px calc(22px + env(safe-area-inset-bottom,0px)); max-height:88dvh; overflow-y:auto;
     transform:translateY(100%); transition:transform var(--dur-slow) var(--spring)}
   #sheetRoot.in .sheet{transform:translateY(0)}
-  .sheet-grip{width:38px; height:4px; border-radius:3px; background:var(--border-strong); margin:6px auto 12px}
+  .sheet-grip{width:38px; height:4px; border-radius:3px; background:var(--border-strong); margin:6px auto 12px;
+    cursor:grab; touch-action:none; position:relative}
+  .sheet-grip::before{content:""; position:absolute; inset:-14px -46px}
+  .sheet-x{position:absolute; top:10px; right:12px; width:34px; height:34px; border-radius:50%;
+    border:1px solid var(--border); background:var(--card); color:var(--muted); font-size:14px;
+    line-height:1; cursor:pointer; display:grid; place-items:center; z-index:2}
+  .sheet-x:hover{color:var(--text); border-color:var(--border-strong)}
+  .ry-ask{display:flex; gap:8px; margin-top:12px; padding-top:12px; border-top:1px solid var(--border)}
+  .ry-ask input{flex:1; min-width:0; font:inherit; font-size:16px; min-height:44px; padding:8px 14px;
+    border-radius:var(--pill); border:1px solid var(--border-strong); background:var(--card);
+    color:var(--text); outline:none}
+  .ry-ask input:focus{border-color:var(--accent)}
+  .ry-ask input::placeholder{color:var(--faint)}
+  .ry-msg{font-size:15.5px; line-height:1.6; margin:9px 0}
+  .ry-msg.user{margin-left:auto; width:fit-content; max-width:86%; background:var(--accent-soft);
+    color:var(--text); padding:8px 14px; border-radius:16px 16px 4px 16px}
+  .ry-msg.from-rampy{color:var(--text); max-width:96%; line-height:1.6}
+  .ry-msg .ry-src{display:block; margin-top:6px}
+  .ry-out{max-height:min(44dvh, 380px); overflow-y:auto; overscroll-behavior:contain;
+    scroll-behavior:smooth; padding-right:2px}
   @media (min-width:560px){ #sheetRoot{align-items:center} .sheet{border-radius:var(--r-xl); margin:0 16px} }
   @media (prefers-reduced-motion: reduce){ .sheet, .sheet-scrim{transition:none} }
 
@@ -1141,6 +1160,7 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
     <div class="sheet-scrim" id="sheetScrim"></div>
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1">
       <div class="sheet-grip" aria-hidden="true"></div>
+      <button class="sheet-x" aria-label="Close">&#10005;</button>
       <div id="sheetBody"></div>
     </div>
   </div>
@@ -4980,7 +5000,16 @@ function toast(msg){
 }
 let _sheetPrevFocus = null;
 function openSheet(html){
-  const root = $("#sheetRoot"); $("#sheetBody").innerHTML = html;
+  const root = $("#sheetRoot");
+  /* The sheet must NOT live inside #app: this function sets `inert` on #app to
+     lock the background, and inert removes the whole subtree from hit-testing.
+     A sheet nested in #app renders fine but ignores every REAL click and tap —
+     while programmatic .click() still works, which is exactly how this shipped
+     "verified". Relocate on every open; the sheet is position:fixed, so the
+     move is visually a no-op. */
+  if (root.parentElement !== document.body) document.body.appendChild(root);
+  if (_sheetCloseTimer){ clearTimeout(_sheetCloseTimer); _sheetCloseTimer = null; }
+  $("#sheetBody").innerHTML = html;
   _sheetPrevFocus = document.activeElement;
   root.hidden = false; root.setAttribute("aria-hidden","false");
   requestAnimationFrame(() => root.classList.add("in"));
@@ -4989,9 +5018,39 @@ function openSheet(html){
   // aria-hidden alone does not do.
   const app = $("#app"); if (app) app.setAttribute("inert","");
   $("#sheetScrim").onclick = closeSheet;
+  const _x = root.querySelector(".sheet-x"); if (_x) _x.onclick = closeSheet;
+  _wireGrip(root);
   document.addEventListener("keydown", _sheetEsc);
   document.addEventListener("keydown", _sheetTrap, true);
   haptic("light");
+}
+/* The grip is a real dismiss affordance, not decoration: tap it, or drag it
+   down past 70px, and the sheet closes. Wired once; handlers live on the grip
+   element itself, which survives sheetBody re-renders. */
+let _gripWired = false;
+function _wireGrip(root){
+  if (_gripWired) return; _gripWired = true;
+  const grip = root.querySelector(".sheet-grip"), sheet = root.querySelector(".sheet");
+  if (!grip || !sheet) return;
+  grip.addEventListener("click", () => closeSheet());
+  let y0 = null;
+  grip.addEventListener("pointerdown", (e) => {
+    y0 = e.clientY;
+    try { grip.setPointerCapture(e.pointerId); } catch(_){}
+    sheet.style.transition = "none";
+  });
+  grip.addEventListener("pointermove", (e) => {
+    if (y0 === null) return;
+    sheet.style.transform = "translateY(" + Math.max(0, e.clientY - y0) + "px)";
+  });
+  const _end = (e) => {
+    if (y0 === null) return;
+    const dy = Math.max(0, e.clientY - y0); y0 = null;
+    sheet.style.transition = ""; sheet.style.transform = "";
+    if (dy > 70) closeSheet();
+  };
+  grip.addEventListener("pointerup", _end);
+  grip.addEventListener("pointercancel", _end);
 }
 function _sheetEsc(e){ if (e.key === "Escape") closeSheet(); }
 
@@ -5014,6 +5073,7 @@ function _sheetTrap(e){
     e.preventDefault(); first.focus({ preventScroll:true });
   }
 }
+let _sheetCloseTimer = null;
 function closeSheet(){
   const root = $("#sheetRoot"); root.classList.remove("in");
   document.removeEventListener("keydown", _sheetEsc);
@@ -5021,7 +5081,7 @@ function closeSheet(){
   const app = $("#app"); if (app) app.removeAttribute("inert");
   const done = () => { root.hidden = true; root.setAttribute("aria-hidden","true"); $("#sheetBody").innerHTML = "";
     if (_sheetPrevFocus){ try { _sheetPrevFocus.focus({ preventScroll:true }); } catch(e){} } };
-  if (REDUCED_MOTION) done(); else setTimeout(done, 260);
+  if (REDUCED_MOTION) done(); else _sheetCloseTimer = setTimeout(done, 260);
 }
 function xpFloat(amount, el){
   if (REDUCED_MOTION) return;
@@ -6591,6 +6651,8 @@ function wireContext(ctx){
   const l = ctx.learner, i = ctx.item;
   return {
     action: ctx.action,
+    userText: ctx.userText,
+    thread: ctx.thread,
     learner: {
       tier: l.tier, preview: l.preview,
       answeredInSubject: l.answeredInSubject, accuracyInSubject: l.accuracyInSubject,
@@ -7075,6 +7137,7 @@ async function openRampy(entry, actionId){
   // wrapped chip grid before a single word of tutoring appeared, which on a
   // 375pt iPhone meant the intelligence was entirely below the fold. Rampy is
   // still here and still Rampy, just in a 30px bar instead of a hero image.
+  entry._ryThread = entry._ryThread || [];
   openSheet(`<div class="rampy-sheet">
       <div class="ry-bar">
         ${rampySvg(ls.kind === "pattern" ? "sad" : "grad")}
@@ -7084,12 +7147,75 @@ async function openRampy(entry, actionId){
       <div class="ry-out" id="ryOut" aria-live="polite"></div>
       <div class="ry-actions">${acts.map(a =>
         `<button class="ry-chip" data-ry="${a.id}">${esc(a.label)}</button>`).join("")}</div>
+      <div class="ry-ask">
+        <input id="ryInput" type="text" autocomplete="off" enterkeyhint="send" maxlength="600"
+               placeholder="Or just ask me anything about this…" aria-label="Ask Rampy a question">
+        <button class="btn primary sm" id="rySend">Ask</button>
+      </div>
     </div>`);
   track("rampy_opened", { state: ls.kind, subject: entry.q.subject, difficulty: entry.q.difficulty });
   $("#sheetBody").querySelectorAll("[data-ry]").forEach(b =>
     b.addEventListener("click", () => runRampyAction(b.dataset.ry, entry)));
+  const _send = () => {
+    const inp = $("#ryInput"), text = ((inp && inp.value) || "").trim();
+    if (!text) return;
+    inp.value = "";
+    askRampyFreeform(entry, text);
+  };
+  $("#rySend").addEventListener("click", _send);
+  $("#ryInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter"){ e.preventDefault(); _send(); }
+  });
+  renderRyThread(entry);
   if (actionId) runRampyAction(actionId, entry);
-  else $("#ryOut").innerHTML = `<div class="ry-empty">I already have this question, what you picked, and where you are in ${esc(entry.q.subject)}. Pick one:</div>`;
+  else if (!entry._ryThread.length)
+    $("#ryOut").innerHTML = `<div class="ry-empty">I already have this question, what you picked, and where you are in ${esc(entry.q.subject)}. Pick one below — or just type.</div>`;
+}
+
+/* ---- The sheet is a running conversation about THIS question. Chips and
+   typed questions append to the same thread, so a student can pull a quick
+   action and then interrogate the answer. Thread lives on the entry, so
+   reopening Rampy on the same question resumes where they left off. ---- */
+function renderRyThread(entry){
+  const out = $("#ryOut"); if (!out) return;
+  out.innerHTML = (entry._ryThread || []).map(m =>
+    m.role === "user"
+      ? `<div class="ry-msg user">${esc(m.text)}</div>`
+      : `<div class="ry-msg from-rampy">${sci(m.text).replace(/\n\n/g,"<br><br>").replace(/\n/g,"<br>")}${
+          m.src ? `<span class="ry-src">${icon("check")} From RampUp's own explanation.</span>` : ""}</div>`
+  ).join("");
+  out.scrollTop = out.scrollHeight;
+}
+function ryPush(entry, role, text, src){
+  entry._ryThread = entry._ryThread || [];
+  entry._ryThread.push({ role, text, src: !!src });
+  if (entry._ryThread.length > 24) entry._ryThread.splice(0, entry._ryThread.length - 24);
+  renderRyThread(entry);
+}
+async function askRampyFreeform(entry, text){
+  const out = $("#ryOut"); if (!out) return;
+  ryPush(entry, "user", text);
+  const ctx = rampyContext(entry, "freeform");
+  ctx.userText = text;
+  // History for the model: everything before the message just pushed, capped.
+  ctx.thread = (entry._ryThread || []).slice(-9, -1).map(m => ({ role: m.role, text: String(m.text).slice(0, 700) }));
+  track("quick_action_used", { action:"freeform", state: ctx.learner.state });
+  out.insertAdjacentHTML("beforeend", `<div class="ry-load" id="ryThink">${icon("bulb")} Rampy is thinking…</div>`);
+  out.scrollTop = out.scrollHeight;
+  const t0 = Date.now();
+  const r = await rampyGenerate(ctx);
+  const th = $("#ryThink"); if (th) th.remove();
+  if (r.ok){
+    ryPush(entry, "rampy", stripMd(r.text));
+    track("response_completed", { action:"freeform", source:"gateway", ms: Date.now() - t0 });
+  } else {
+    track("response_error", { action:"freeform", reason:r.reason, ms: Date.now() - t0 });
+    ryPush(entry, "rampy",
+        r.reason === "offline" ? "I can't reach my tutor brain right now. Check your connection and ask again."
+      : r.reason === "rate_limited" ? "You've hit the hourly tutoring limit — give it a little while and ask again."
+      : r.reason === "timeout" ? "That took too long on my end. Ask again."
+      : "Something went wrong on my end. Ask that again in a moment.");
+  }
 }
 
 async function runRampyAction(id, entry){
@@ -7122,31 +7248,33 @@ async function runRampyAction(id, entry){
     return;
   }
   if (local){
-    out.innerHTML = `<div class="ry-body">${sci(local).replace(/\n\n/g,"</div><div class='ry-body'>").replace(/\n/g,"<br>")}</div>`
-      + `<p class="ry-src">${icon("check")} From RampUp's own explanation for this question.</p>`;
+    ryPush(entry, "user", act.label);
+    ryPush(entry, "rampy", local, true);
     track("response_completed", { action:id, source:"local", ms:0 });
     return;
   }
 
-  out.innerHTML = `<div class="ry-load">${icon("bulb")} Rampy is thinking…</div>`;
+  ryPush(entry, "user", act.label);
+  out.insertAdjacentHTML("beforeend", `<div class="ry-load" id="ryThink">${icon("bulb")} Rampy is thinking…</div>`);
+  out.scrollTop = out.scrollHeight;
   const t0 = Date.now();
   const r = await rampyGenerate(ctx);
   const ms = Date.now() - t0;
+  const _th = $("#ryThink"); if (_th) _th.remove();
   if (r.ok){
-    out.innerHTML = `<div class="ry-body">${sci(stripMd(r.text)).replace(/\n\n/g,"</div><div class='ry-body'>").replace(/\n/g,"<br>")}</div>`;
+    ryPush(entry, "rampy", stripMd(r.text));
     track("response_completed", { action:id, source:"gateway", ms });
     return;
   }
   track("response_error", { action:id, reason:r.reason, ms });
   const fallback = ctx.item.breakdown || ctx.item.explanation;
-  out.innerHTML = `<div class="ry-err">${icon("alert")} ${
-      r.reason === "not_configured" ? "Rampy's tutor isn't switched on in this build yet."
+  ryPush(entry, "rampy",
+      (r.reason === "not_configured" ? "My tutor brain isn't switched on in this build yet."
     : r.reason === "timeout" ? "That took too long. Try again in a moment."
-    : r.reason === "rate_limited" ? "Rampy needs a short break. Try again in a minute."
-    : r.reason === "offline" ? "Can't reach Rampy right now. Everything below still works offline."
-    : "Rampy couldn't answer that one."}</div>`
-    + (fallback ? `<div class="ry-body">${sci(fallback)}</div>
-       <p class="ry-src">${icon("check")} RampUp's own explanation for this question.</p>` : "");
+    : r.reason === "rate_limited" ? "I need a short break — you've hit the hourly limit. Try again in a bit."
+    : r.reason === "offline" ? "I can't reach my tutor brain right now."
+    : "I couldn't answer that one.")
+    + (fallback ? "\n\nHere's RampUp's own explanation meanwhile:\n\n" + fallback : ""), !!fallback);
 }
 
 /* ============================================================
@@ -8552,6 +8680,9 @@ document.addEventListener("keydown", (e) => {
   if (state.view !== "practice") return;
   const tag = (e.target && e.target.tagName || "").toLowerCase();
   if (tag === "input" || tag === "textarea" || tag === "select") return;
+  // A sheet owns the keyboard while it is open. Without this, Escape closed
+  // the Rampy sheet AND quit the whole session in the same keypress.
+  const _sr = $("#sheetRoot"); if (_sr && !_sr.hidden) return;
   const entry = state.history[state.cursor]; if (!entry) return;
   const k = e.key;
   if (!entry.answered){
@@ -8570,6 +8701,7 @@ document.addEventListener("keydown", (e) => {
 // exam-mode keyboard
 document.addEventListener("keydown", (e) => {
   if (state.view !== "testrun" || !state.test) return;
+  const _sr2 = $("#sheetRoot"); if (_sr2 && !_sr2.hidden) return;
   const tag = (e.target && e.target.tagName || "").toLowerCase();
   if (tag === "input" || tag === "textarea" || tag === "select") return;
   const T = state.test, q = T.queue[T.idx], k = e.key;
