@@ -413,6 +413,23 @@
   /* bottom sheet (paywall, code entry) */
   #sheetRoot{position:fixed; inset:0; z-index:9500; display:flex; align-items:flex-end; justify-content:center}
   #sheetRoot:not(.in){pointer-events:none}
+  /* ---- the ambient Rampy companion ---- */
+  #rampyFab{position:fixed; right:14px; bottom:calc(74px + env(safe-area-inset-bottom, 0px)); z-index:9000;
+    width:56px; height:56px; border-radius:50%; border:1.5px solid var(--border-strong);
+    background:var(--card); box-shadow:var(--sh-2); cursor:pointer; display:grid; place-items:center;
+    padding:0; animation:fabBob 3.6s ease-in-out infinite; transition:transform .16s var(--spring)}
+  #rampyFab:hover{transform:scale(1.06)}
+  #rampyFab .rampy{width:40px; height:40px; display:block; line-height:0}
+  #rampyFab[hidden]{display:none}
+  @keyframes fabBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  body:has(#sheetRoot:not([hidden])) #rampyFab{display:none}
+  #rampyBubble{position:fixed; right:14px; bottom:calc(140px + env(safe-area-inset-bottom, 0px)); z-index:9000;
+    max-width:230px; background:var(--card); border:1.5px solid var(--border-strong); border-radius:16px 16px 4px 16px;
+    padding:11px 14px; font-size:13.5px; line-height:1.5; color:var(--text); box-shadow:var(--sh-2); cursor:pointer;
+    animation:bubbleIn .35s var(--spring) both}
+  #rampyBubble[hidden]{display:none}
+  @keyframes bubbleIn{from{opacity:0; transform:translateY(8px) scale(.94)}to{opacity:1; transform:none}}
+  @media (prefers-reduced-motion:reduce){ #rampyFab,#rampyBubble{animation:none} }
   #sheetRoot[hidden]{display:none}
   .sheet-scrim{position:absolute; inset:0; background:rgba(10,8,20,.55); backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); opacity:0; transition:opacity var(--dur) var(--ease)}
   #sheetRoot.in .sheet-scrim{opacity:1}
@@ -6670,6 +6687,8 @@ function rampyActionsFor(entry){
                    eval shows CARS answers hold up without it
      concept id / hasPassage / correct / idk — all unread by the prompt */
 function wireContext(ctx){
+  if (ctx.action === "freeform_general")
+    return { action: ctx.action, userText: ctx.userText, thread: ctx.thread, learner: ctx.learner };
   const l = ctx.learner, i = ctx.item;
   return {
     action: ctx.action,
@@ -7192,6 +7211,123 @@ async function openRampy(entry, actionId){
   if (actionId) runRampyAction(actionId, entry);
   else if (!entry._ryThread.length)
     $("#ryOut").innerHTML = `<div class="ry-empty">I already have this question, what you picked, and where you are in ${esc(entry.q.subject)}. Pick one below — or just type.</div>`;
+}
+
+/* ---- The ambient companion: Rampy floats above the nav, occasionally
+   offers a line, and opens a GENERAL chat from anywhere (freeform_general —
+   the worker needs no question context). Subscribers only; never in a test;
+   bubble at most once per app session. ---- */
+let _fabBubbleShown = false;
+function ensureRampyFab(){
+  let fab = document.getElementById("rampyFab");
+  if (!fab){
+    fab = document.createElement("button");
+    fab.id = "rampyFab"; fab.setAttribute("aria-label", "Ask Rampy");
+    fab.innerHTML = rampySvg("happy");
+    fab.addEventListener("click", () => { hideRampyBubble(); openRampyGeneral(); });
+    document.body.appendChild(fab);
+  }
+  const ok = (typeof access === "function" && access("rampy")) && !state.test
+          && ["home","practice","lessons","tests"].indexOf(state.view) !== -1;
+  fab.hidden = !ok;
+  if (ok && !_fabBubbleShown) scheduleRampyBubble();
+}
+function scheduleRampyBubble(){
+  _fabBubbleShown = true;
+  setTimeout(() => {
+    if (state.test || document.getElementById("rampyBubble")) return;
+    const fab = document.getElementById("rampyFab");
+    if (!fab || fab.hidden) return;
+    const d = daysUntilTest();
+    const pat = (typeof detectPatterns === "function" ? detectPatterns() : [])[0];
+    const line = pat && pat.headline
+        ? pat.headline + " Tap me and I'll walk you through it."
+      : state.totalAnswered === 0
+        ? "I'm Rampy — tap me any time you have a question."
+      : d !== null && d <= 30
+        ? `${d} days out. Ask me anything you're unsure about.`
+      : "Stuck on anything? Ask me — I know where you are.";
+    const b = document.createElement("div");
+    b.id = "rampyBubble"; b.setAttribute("role", "button"); b.tabIndex = 0;
+    b.textContent = line;
+    b.addEventListener("click", () => { hideRampyBubble(); openRampyGeneral(); });
+    document.body.appendChild(b);
+    setTimeout(hideRampyBubble, 9000);
+  }, 3500);
+}
+function hideRampyBubble(){ const b = document.getElementById("rampyBubble"); if (b) b.remove(); }
+
+function _generalCtx(userText){
+  // learner context only — computed truths, no question payload
+  let weakest = null, worst = 101;
+  Object.keys(state.stats || {}).forEach(sName => {
+    const st = state.stats[sName];
+    if (st && st.answered >= 8){ const a = 100 * st.correct / st.answered; if (a < worst){ worst = a; weakest = sName; } }
+  });
+  return { action: "freeform_general", userText,
+    thread: (state.ryGeneralThread || []).slice(-9, -1).map(m => ({ role: m.role, text: String(m.text).slice(0, 700) })),
+    learner: { daysToTest: daysUntilTest(), weakest, answeredTotal: state.totalAnswered || 0 } };
+}
+function openRampyGeneral(){
+  if (!(typeof access === "function" && access("rampy"))){ openPaywall(null); return; }
+  if (state.test) return;
+  state.ryGeneralThread = state.ryGeneralThread || [];
+  const holder = { _ryThread: state.ryGeneralThread };   // reuse the thread renderer
+  openSheet(`<div class="rampy-sheet">
+      <div class="ry-bar">
+        ${rampySvg("happy")}
+        <div class="ry-bt"><span id="sheetTitle">Rampy</span>
+          <span class="ry-state">Ask me anything — content, strategy, or what to do next.</span></div>
+      </div>
+      <div class="ry-out" id="ryOut" aria-live="polite"></div>
+      <div class="ry-actions">
+        <button class="ry-chip" data-rg="What should I focus on today, given where I am?">What should I do today?</button>
+        <button class="ry-chip" data-rg="Explain the topic I have been getting wrong most, from the beginning.">Teach my weak spot</button>
+      </div>
+      <div class="ry-ask">
+        <input id="ryInput" type="text" autocomplete="off" enterkeyhint="send" maxlength="600"
+               placeholder="Ask Rampy anything…" aria-label="Ask Rampy a question">
+        <button class="btn primary sm" id="rySend">Ask</button>
+      </div>
+    </div>`);
+  track("rampy_general_opened", { answered: state.totalAnswered || 0 });
+  const send = (text) => {
+    text = (text || "").trim(); if (!text) return;
+    askRampyGeneral(holder, text);
+  };
+  $("#sheetBody").querySelectorAll("[data-rg]").forEach(b =>
+    b.addEventListener("click", () => send(b.dataset.rg)));
+  $("#rySend").addEventListener("click", () => { const i = $("#ryInput"); send(i.value); i.value = ""; });
+  $("#ryInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter"){ e.preventDefault(); const i = $("#ryInput"); send(i.value); i.value = ""; }
+  });
+  renderRyThread(holder);
+  if (!state.ryGeneralThread.length)
+    $("#ryOut").innerHTML = `<div class="ry-empty">I can see your levels, your review pile, and your test date. Ask me anything, or pick one:</div>`;
+}
+async function askRampyGeneral(holder, text){
+  const out = $("#ryOut"); if (!out) return;
+  holder._ryThread = state.ryGeneralThread;
+  ryPush(holder, "user", text);
+  state.ryGeneralThread = holder._ryThread;
+  saveState();
+  out.insertAdjacentHTML("beforeend", `<div class="ry-load" id="ryThink">${icon("bulb")} Rampy is thinking…</div>`);
+  out.scrollTop = out.scrollHeight;
+  const t0 = Date.now();
+  const r = await rampyGenerate(_generalCtx(text));
+  const th = $("#ryThink"); if (th) th.remove();
+  if (r.ok){
+    ryPush(holder, "rampy", stripMd(r.text));
+    track("response_completed", { action:"freeform_general", source:"gateway", ms: Date.now() - t0 });
+  } else {
+    track("response_error", { action:"freeform_general", reason:r.reason, ms: Date.now() - t0 });
+    ryPush(holder, "rampy",
+        r.reason === "rate_limited" ? "You have hit the hourly limit — give it a little while."
+      : r.reason === "offline" ? "I cannot reach my tutor brain right now. Check your connection."
+      : "Something went wrong on my end. Ask that again in a moment.");
+  }
+  state.ryGeneralThread = holder._ryThread;
+  saveState();
 }
 
 /* ---- The sheet is a running conversation about THIS question. Chips and
@@ -8841,6 +8977,15 @@ entLoad();
 applyLaunchCopy();   // every boot path, before anything paints
 const _saved = STORAGE_OK ? loadState() : null;
 var _returningPurchase = false;
+/* The companion follows view switches: wrap switchView once so every view
+   change re-evaluates whether Rampy should float. */
+setTimeout(function(){
+  try {
+    const _sv = switchView;
+    switchView = function(){ const r = _sv.apply(this, arguments); try { ensureRampyFab(); } catch(e){} return r; };
+    ensureRampyFab();
+  } catch(e){}
+}, 0);
 try { _returningPurchase = !!new URLSearchParams(location.search).get("session_id"); } catch(e){}
 if (_returningPurchase && _saved && _saved.onboarded){
   // Coming back from Stripe: skip the "Welcome back" chooser and land straight in
