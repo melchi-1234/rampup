@@ -37,7 +37,7 @@
 
   var LINKS = {
     sub_monthly:   "https://buy.stripe.com/bJe00k0iA8M183SbfEdIA07",
-    sub_quarterly: ""    // <- paste the Stripe Payment Link
+    sub_quarterly: "https://buy.stripe.com/8x26oI8P6get83S2J8dIA08"
   };
 
   /* Monthly-equivalent price is the headline number and the real billed amount
