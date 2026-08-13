@@ -4286,6 +4286,32 @@ const StoreKitProvider = {
 };
 const isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 const purchases = DEV_PURCHASE ? StubProvider : (isNative ? StoreKitProvider : StripeProvider);
+/* The marketing funnel stores its answers under this key. Same grade strings,
+   same course names, same confidence values as this file — it is a mirror of
+   the constants here, on purpose, so a handoff is a straight copy. */
+const FUNNEL_KEY = "rampup.funnel.v1";
+function readFunnelHandoff(){
+  if (!STORAGE_OK) return null;
+  try {
+    const f = JSON.parse(localStorage.getItem(FUNNEL_KEY) || "null");
+    if (f && typeof f === "object" && f.done) return f;
+  } catch(e){}
+  return null;
+}
+function hydrateFromFunnel(f){
+  if (f.grade) state.grade = f.grade;
+  if (f.courses && typeof f.courses === "object")
+    Object.keys(f.courses).forEach(c => { if (c in state.courses) state.courses[c] = f.courses[c]; });
+  if (f.confidence && typeof f.confidence === "object")
+    state.confidence = Object.assign({}, f.confidence);
+  // A past date is not a test date — the funnel already rejects them, but never
+  // trust an inbound value.
+  if (validDateStr(f.testDate) && f.testDate >= todayStr()) state.testDate = f.testDate;
+  state.testTimeframe = f.timeframe || (state.testDate ? "exact" : "none");
+  track("funnel_handoff", { grade: f.grade, hadDate: !!state.testDate });
+  finishOnboarding(true);   // computes levels, lands in the app, saves
+}
+
 // Stripe return: verify the checkout session server-side, THEN unlock. Fail closed.
 // The ?purchased hint is ignored for granting; the grant comes only from the
 // verified server response, so hitting the URL without a real payment does nothing.
@@ -4296,7 +4322,15 @@ async function honorPurchaseReturn(){
   const cleanUrl = () => { try { history.replaceState(null, "", location.pathname + location.hash); } catch(e){} };
   if (!VERIFY_ENDPOINT){ cleanUrl(); return null; }   // verifier not configured; never unlock on the URL alone
   toast("Verifying your purchase…");
-  const r = await verifySession(sid);
+  let r = { ok:false, reason:"nosid" };
+  for (let attempt = 0; attempt < 4; attempt++){
+    r = await verifySession(sid);
+    if (r.ok) break;
+    // "unconfirmed" (payment still settling) and "network" are the retryable
+    // ones; an unknown product will never fix itself, so stop early.
+    if (r.reason === "unknown_product") break;
+    if (attempt < 3) await new Promise(res => setTimeout(res, 1200 * (attempt + 1)));
+  }
   if (r.ok){ cleanUrl(); return r.granted; }    // unlocked, so the token has done its job
   // Keep session_id for everything else. It is the ONLY thing that can redeem a
   // payment that already went through, and every other outcome is retryable: a
@@ -5633,7 +5667,7 @@ function finishOnboarding(fresh){
   saveState();
   // Reveal -> offer, with no dead screen between them: the value was just made
   // concrete, and that is the moment the offer means something.
-  if (fresh && !access("practice")) openPaywall(null);
+  if (fresh && !access("practice") && !_returningPurchase) openPaywall(null);
 }
 function enterPractice(){
   $("#welcome").hidden = true; $("#onboarding").hidden = true; $("#main").hidden = false;
@@ -8581,7 +8615,7 @@ STORAGE_OK = canStore();
 entLoad();
 applyLaunchCopy();   // every boot path, before anything paints
 const _saved = STORAGE_OK ? loadState() : null;
-let _returningPurchase = false;
+var _returningPurchase = false;
 try { _returningPurchase = !!new URLSearchParams(location.search).get("session_id"); } catch(e){}
 if (_returningPurchase && _saved && _saved.onboarded){
   // Coming back from Stripe: skip the "Welcome back" chooser and land straight in
@@ -8590,7 +8624,14 @@ if (_returningPurchase && _saved && _saved.onboarded){
   $("#welcome").hidden = true; $("#onboarding").hidden = true; $("#main").hidden = false;
   showTests();
 } else if (_saved && _saved.onboarded){ showWelcome(_saved); }
-else { $("#onboarding").hidden = false; goToStep(0); }
+else {
+  // No saved app state. If the visitor completed the web funnel, carry it over
+  // instead of asking everything again — this is the path a paying customer
+  // arrives on. Otherwise, run the app's own onboarding.
+  const _funnel = readFunnelHandoff();
+  if (_funnel){ hydrateFromFunnel(_funnel); }
+  else { $("#onboarding").hidden = false; goToStep(0); }
+}
 // Verify a Stripe return in the background; unlock only once the server confirms payment.
 honorPurchaseReturn().then(g => { if (g){ try { afterUnlock(g); } catch(e){} } });
 /* first_open fires once per install, keyed off the analytics id existing
