@@ -85,6 +85,16 @@
       --sh-accent:0 6px 18px rgba(0,0,0,.5);
   }
   *{box-sizing:border-box}
+  /* Premium entrance: list cards rise in with a light stagger whenever their
+     view is shown ([hidden] toggles display, so the animation replays on every
+     view switch). Two elements of motion max per screen; reduced-motion off. */
+  @keyframes cardIn{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+  .testcard,.sesscard,.lib-card,.plan-row{animation:cardIn .34s var(--ease) both}
+  .testcard:nth-child(2),.sesscard:nth-child(2),.lib-card:nth-child(2),.plan-row:nth-child(2){animation-delay:.05s}
+  .testcard:nth-child(3),.sesscard:nth-child(3),.lib-card:nth-child(3),.plan-row:nth-child(3){animation-delay:.1s}
+  .testcard:nth-child(4),.sesscard:nth-child(4),.lib-card:nth-child(4),.plan-row:nth-child(4){animation-delay:.15s}
+  .testcard:nth-child(5),.sesscard:nth-child(5),.lib-card:nth-child(5),.plan-row:nth-child(5){animation-delay:.2s}
+  @media (prefers-reduced-motion:reduce){ .testcard,.sesscard,.lib-card,.plan-row{animation:none} }
   [hidden]{display:none !important}
   html,body{margin:0;padding:0}
   body{
