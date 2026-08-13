@@ -16,20 +16,31 @@
       + '<path d="M42 33v10c0 5 8 8 18 8s18-3 18-8V33" fill="none" stroke="#1b1030" stroke-width="5"/>'
       + '<line x1="96" y1="24" x2="96" y2="42" stroke="#f59e0b" stroke-width="3"/>'
       + '<circle cx="96" cy="45" r="3.5" fill="#f59e0b"/>' : "";
+    // Moods, matching rampySvg() in the app.
+    var think = m === "think", celebrate = m === "celebrate";
+    var ex = think ? 3 : 0;
+    var mouth = celebrate
+      ? '<path d="M46 76 Q60 96 74 76 Z" fill="#1b1030"/><path d="M53 84 Q60 90 67 84 Z" fill="#f472b6"/>'
+      : (think ? '<circle cx="60" cy="82" r="3.5" fill="#1b1030"/>'
+               : '<path d="M50 79 Q60 88 70 79" fill="none" stroke="#1b1030" stroke-width="5" stroke-linecap="round"/>');
+    var arms = celebrate
+      ? '<ellipse cx="13" cy="38" rx="7" ry="13" transform="rotate(35 13 38)" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
+      + '<ellipse cx="107" cy="38" rx="7" ry="13" transform="rotate(-35 107 38)" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
+      : '<ellipse cx="13" cy="72" rx="6" ry="10" transform="rotate(18 13 72)" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
+      + '<ellipse cx="107" cy="72" rx="6" ry="10" transform="rotate(-18 107 72)" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>';
     return '<svg class="rampy-mark" width="' + s + '" height="' + s + '" viewBox="-6 0 132 122" '
       + 'xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'
       + '<defs><linearGradient id="' + grad + '" x1="0" y1="0" x2="1" y2="1">'
       + '<stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#6d28d9"/></linearGradient></defs>'
-      + '<ellipse cx="13" cy="72" rx="6" ry="10" transform="rotate(18 13 72)" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
-      + '<ellipse cx="107" cy="72" rx="6" ry="10" transform="rotate(-18 107 72)" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
+      + arms
       + '<path d="M60 12 C90 12 106 34 106 62 C106 92 86 110 60 110 C34 110 14 92 14 62 C14 34 30 12 60 12 Z" '
       + 'fill="url(#' + grad + ')" stroke="#472a86" stroke-width="3.5" paint-order="stroke"/>'
       + '<ellipse cx="44" cy="109" rx="9" ry="5" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
       + '<ellipse cx="76" cy="109" rx="9" ry="5" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
       + '<ellipse cx="42" cy="56" rx="12.5" ry="14" fill="#fff"/><ellipse cx="78" cy="56" rx="12.5" ry="14" fill="#fff"/>'
-      + '<circle cx="42" cy="56" r="6" fill="#1b1030"/><circle cx="78" cy="56" r="6" fill="#1b1030"/>'
-      + '<circle cx="44" cy="53" r="2.2" fill="#fff"/><circle cx="80" cy="53" r="2.2" fill="#fff"/>'
-      + '<path d="M50 79 Q60 88 70 79" fill="none" stroke="#1b1030" stroke-width="5" stroke-linecap="round"/>'
+      + '<circle cx="' + (42+ex) + '" cy="56" r="6" fill="#1b1030"/><circle cx="' + (78+ex) + '" cy="56" r="6" fill="#1b1030"/>'
+      + '<circle cx="' + (44+ex) + '" cy="53" r="2.2" fill="#fff"/><circle cx="' + (80+ex) + '" cy="53" r="2.2" fill="#fff"/>'
+      + mouth
       + '<ellipse cx="29" cy="72" rx="6.5" ry="4.5" fill="#f472b6" opacity=".5"/>'
       + '<ellipse cx="91" cy="72" rx="6.5" ry="4.5" fill="#f472b6" opacity=".5"/>'
       + cap + '</svg>';

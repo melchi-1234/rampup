@@ -100,6 +100,20 @@
 
   .planlist{margin:0; padding:0; list-style:none}
   .sep{height:1px; background:var(--line); margin:24px 0}
+
+  /* Per-step character. Acely uses a bespoke illustration on each onboarding
+     screen; Rampy already has moods in the product, so the site uses those
+     rather than stock art that belongs to nobody. */
+  .step-art{display:flex; justify-content:center; margin:0 0 18px}
+  .step-art svg{display:block}
+  @media(max-width:520px){ .step-art{margin-bottom:12px} .step-art svg{width:70px;height:70px} }
+  .arw{display:inline-block; transition:transform .18s ease}
+  .btn:hover .arw{transform:translateX(3px)}
+  .linkbtn{
+    background:none; border:0; font:inherit; font-size:13px; color:var(--muted);
+    text-decoration:underline; cursor:pointer; padding:8px; min-height:44px;
+  }
+  .linkbtn:hover{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -127,9 +141,13 @@
   var stepno = document.getElementById("stepno");
   var backBtn = document.getElementById("back");
 
-  var STEPS = ["grade", "courses", "confidence", "when", "reveal", "plan"];
-  var LABEL = { grade: "About you", courses: "Coursework", confidence: "Confidence",
+  var STEPS = ["name", "grade", "courses", "confidence", "when", "reveal", "plan"];
+  var LABEL = { name: "Hello", grade: "About you", courses: "Coursework", confidence: "Confidence",
                 when: "Test timing", reveal: "Your levels", plan: "Your plan" };
+  // One Rampy mood per step — our equivalent of a per-step illustration, and
+  // it is the character already in the product rather than stock art.
+  var MOOD = { name: "happy", grade: "happy", courses: "think", confidence: "think",
+               when: "grad", reveal: "celebrate", plan: "grad" };
 
   var esc = function (s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
@@ -139,7 +157,7 @@
 
   function current() {
     var h = (location.hash || "").replace("#", "");
-    return STEPS.indexOf(h) !== -1 ? h : "grade";
+    return STEPS.indexOf(h) !== -1 ? h : "name";
   }
   function go(step, replace) {
     if (replace) location.replace("#" + step); else location.hash = step;
@@ -164,21 +182,63 @@
 
   function chrome(step) {
     var idx = STEPS.indexOf(step);
-    var total = skipConfidence() ? 5 : 6;
+    var total = skipConfidence() ? 6 : 7;
     var shown = idx + 1;
     if (skipConfidence() && idx >= 3) shown = idx;
     bar.style.width = Math.round(shown / total * 100) + "%";
     stepno.textContent = LABEL[step] || "";
-    backBtn.style.visibility = step === "grade" ? "hidden" : "visible";
+    backBtn.style.visibility = step === "name" ? "hidden" : "visible";
   }
 
   /* ------------------------------------------------------------------ steps */
 
-  function renderGrade() {
+  function stepArt(step) {
+    return '<div class="step-art" data-mark="' + (MOOD[step] || "happy") + '" data-size="86"></div>';
+  }
+  function repaintArt() { if (window.RUBrand) {
+    view.querySelectorAll("[data-mark]").forEach(function (el) {
+      el.innerHTML = RUBrand.rampy(Number(el.dataset.size) || 36, el.dataset.mark);
+    });
+  } }
+
+  function renderName() {
     view.innerHTML =
-      '<div class="panel"><h1>Where are you right now?</h1>' +
+      '<div class="panel">' + stepArt("name") +
+      '<h1>First things first — what should we call you?</h1>' +
+      '<p class="sub">Just a first name. It stays on this device and is never sent anywhere ' +
+      '&mdash; there is no account to put it in.</p>' +
+      '<input class="dateinput" id="nameIn" type="text" autocomplete="given-name" ' +
+      'placeholder="Your first name" maxlength="40" value="' + esc(S.name) + '" />' +
+      '<p class="err" id="err"></p>' +
+      '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">' +
+      'Continue <span class="arw">&rarr;</span></button></div>' +
+      '<p class="tiny" style="text-align:center;margin:12px 0 0">' +
+      '<button class="linkbtn" id="skipName" type="button">Skip this</button></p></div>';
+    repaintArt();
+    var inp = document.getElementById("nameIn"), btn = document.getElementById("next");
+    var sync = function () { btn.disabled = !inp.value.trim(); };
+    inp.addEventListener("input", function () { S.name = inp.value; RU.save(); sync(); });
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter" && inp.value.trim()) btn.click(); });
+    sync();
+    btn.addEventListener("click", function () {
+      if (!inp.value.trim()) return;
+      S.name = inp.value.trim(); RU.save(); RU.track("ob_name", {});
+      go(nextOf("name"));
+    });
+    document.getElementById("skipName").addEventListener("click", function () {
+      S.name = ""; RU.save(); RU.track("ob_name_skipped", {}); go(nextOf("name"));
+    });
+    setTimeout(function () { try { inp.focus(); } catch (e) {} }, 90);
+  }
+
+  function renderGrade() {
+    var n = RU.firstName();
+    view.innerHTML =
+      '<div class="panel">' + stepArt("grade") +
+      '<h1>' + (n ? "Nice to meet you, " + esc(n) + ". Where are you right now?" : "Where are you right now?") + '</h1>' +
       '<p class="sub">This sets a realistic daily target. You can change it later.</p>' +
       '<div class="opts" id="opts"></div><p class="err" id="err"></p></div>';
+    repaintArt();
     var box = document.getElementById("opts");
     RU.GRADES.forEach(function (g) {
       var b = document.createElement("button");
@@ -198,7 +258,7 @@
       { key: "Bio/Biochem", label: "Biology & Biochemistry" },
       { key: "Psych/Soc", label: "Psychology & Sociology" }
     ];
-    var h = '<div class="panel"><h1>Which of these have you taken?</h1>' +
+    var h = '<div class="panel">' + stepArt("courses") + '<h1>Which of these have you taken?</h1>' +
       '<p class="sub">This is what sets your starting level in each subject. Leave anything you have not touched as “Not yet” — that subject starts in Preview and gets taught before it is tested.</p>' +
       '<div class="courses">';
     cats.forEach(function (c) {
@@ -215,8 +275,9 @@
       });
     });
     h += '</div><p class="err" id="err"></p>' +
-         '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">Continue</button></div></div>';
+         '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">Continue <span class="arw">&rarr;</span></button></div></div>';
     view.innerHTML = h;
+    repaintArt();
 
     view.querySelectorAll("[data-course]").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -234,7 +295,7 @@
 
   function renderConfidence() {
     var touched = RU.touchedSubjects();
-    var h = '<div class="panel"><h1>How solid does each one feel?</h1>' +
+    var h = '<div class="panel">' + stepArt("confidence") + '<h1>How solid does each one feel?</h1>' +
       '<p class="sub">Only for subjects you have coursework in. Be honest — this decides whether you start at Easy, Medium or Hard, and starting too high is what makes people quit.</p>' +
       '<div class="courses">';
     touched.forEach(function (name) {
@@ -246,8 +307,9 @@
       h += '</div></div>';
     });
     h += '</div><p class="err" id="err"></p>' +
-         '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">Continue</button></div></div>';
+         '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">Continue <span class="arw">&rarr;</span></button></div></div>';
     view.innerHTML = h;
+    repaintArt();
 
     view.querySelectorAll("[data-conf]").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -267,13 +329,14 @@
   }
 
   function renderWhen() {
-    var h = '<div class="panel"><h1>When is your MCAT?</h1>' +
+    var h = '<div class="panel">' + stepArt("when") + '<h1>When is your MCAT?</h1>' +
       '<p class="sub">A rough window is fine. This sets your daily target and how urgently RampUp pushes review.</p>' +
       '<div class="opts" id="opts"></div>' +
       '<div id="exact" hidden><input class="dateinput" type="date" id="dateIn" /></div>' +
       '<p class="err" id="err"></p>' +
-      '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">See my levels</button></div></div>';
+      '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">See my levels <span class="arw">&rarr;</span></button></div></div>';
     view.innerHTML = h;
+    repaintArt();
     var box = document.getElementById("opts");
     RU.WHEN_OPTIONS.forEach(function (o) {
       var b = document.createElement("button");
@@ -316,8 +379,9 @@
       { key: "CARS", label: "Critical Analysis & Reasoning" }
     ];
 
-    var h = '<div class="panel"><div class="rev-hero">' +
-      '<div class="big">Here is where you start.</div>' +
+    var nm = RU.firstName();
+    var h = '<div class="panel">' + stepArt("reveal") + '<div class="rev-hero">' +
+      '<div class="big">' + (nm ? esc(nm) + ", here is where you start." : "Here is where you start.") + '</div>' +
       '<p class="sub" style="margin-top:8px">Eight subjects, ' + distinct +
       ' different level' + (distinct === 1 ? "" : "s") + '. Nothing here is a guess — it comes from the coursework you just told us about.</p>' +
       '<div class="rev-stats">' +
@@ -356,10 +420,11 @@
            '<span class="pb-w">' + esc(b.why) + '</span></span></li>';
     });
     h += '</ul>' +
-      '<div class="actions"><button class="btn btn-primary btn-lg btn-block" id="next" type="button">Continue</button></div>' +
+      '<div class="actions"><button class="btn btn-primary btn-lg btn-block" id="next" type="button">Continue <span class="arw">&rarr;</span></button></div>' +
       '<p class="tiny" style="text-align:center;margin:12px 0 0">Your levels are saved on this device.</p>' +
       '</div>';
     view.innerHTML = h;
+    repaintArt();
     RU.track("reveal_view", { previews: previews, distinctLevels: distinct, goal: goal });
     document.getElementById("next").addEventListener("click", function () { go("plan"); });
   }
@@ -369,8 +434,9 @@
   function renderPlan() {
     var live = RUBilling.isLive();
     var goal = RU.suggestedGoal();
-    var h = '<div class="panel">' +
-      '<h1>Start your 7 days free</h1>' +
+    var nm = RU.firstName();
+    var h = '<div class="panel">' + stepArt("plan") +
+      '<h1>' + (nm ? esc(nm) + ", start your 7 days free" : "Start your 7 days free") + '</h1>' +
       '<p class="sub">Full access to everything below. Your levels and plan are already set up and waiting.</p>';
 
     h += '<div class="opts" id="plans">';
@@ -396,7 +462,7 @@
     h += '<p class="reassure">Full access on both &middot; Cancel any time &middot; No account needed</p>';
 
     if (live) {
-      h += '<div class="actions" style="margin-top:14px"><button class="btn btn-primary btn-lg btn-block" id="buy" type="button">Start my 7 days free</button></div>' +
+      h += '<div class="actions" style="margin-top:14px"><button class="btn btn-primary btn-lg btn-block" id="buy" type="button">Start my 7 days free <span class="arw">&rarr;</span></button></div>' +
         '<p class="tiny" id="renew" style="text-align:center;margin:12px 0 0"></p>';
     } else {
       /* Honest unavailable state. No fake checkout, no fake trial, and not a
@@ -415,6 +481,7 @@
       '<a href="mailto:melchiorjgg@gmail.com">Support</a></p></div>';
 
     view.innerHTML = h;
+    repaintArt();
     RU.track("paywall_view", { billingLive: live });
 
     var chosen = RUBilling.PLANS[0].key;
@@ -448,16 +515,16 @@
 
   /* ------------------------------------------------------------------ route */
 
-  var RENDER = { grade: renderGrade, courses: renderCourses, confidence: renderConfidence,
+  var RENDER = { name: renderName, grade: renderGrade, courses: renderCourses, confidence: renderConfidence,
                  when: renderWhen, reveal: renderReveal, plan: renderPlan };
 
   function route() {
     var step = current();
     // Cannot land on the reveal or paywall without having actually answered.
-    if ((step === "reveal" || step === "plan") && !S.done) { go("grade", true); step = "grade"; }
+    if ((step === "reveal" || step === "plan") && !S.done) { go("name", true); step = "name"; }
     if (step === "confidence" && skipConfidence()) { go("when", true); step = "when"; }
     chrome(step);
-    (RENDER[step] || renderGrade)();
+    (RENDER[step] || renderName)();
     window.scrollTo(0, 0);
   }
 
@@ -466,7 +533,7 @@
     if (p) location.hash = p; else history.back();
   });
   window.addEventListener("hashchange", route);
-  if (!location.hash) go(S.done ? "reveal" : "grade", true);
+  if (!location.hash) go(S.done ? "reveal" : "name", true);
   route();
 })();
 </script>

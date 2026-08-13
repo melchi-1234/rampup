@@ -52,7 +52,7 @@
   /* ---------------------------------------------------------------- state */
   var KEY = "rampup.funnel.v1";
   var blank = function () {
-    return { grade: null, courses: {}, confidence: {}, timeframe: null, testDate: null, step: 1, done: false };
+    return { name: "", grade: null, courses: {}, confidence: {}, timeframe: null, testDate: null, step: 1, done: false };
   };
   var S = blank();
 
@@ -191,6 +191,7 @@
     touchedSubjects: touchedSubjects, allSubjects: allSubjects, byName: byName,
     daysUntilTest: daysUntilTest, suggestedGoal: suggestedGoal, paceMinutes: paceMinutes,
     setTimeframe: setTimeframe, rows: rows, planPreview: planPreview,
+    firstName: function(){ return (S.name || "").trim().split(/\s+/)[0] || ""; },
     track: track, events: events
   };
 })(window);

@@ -73,7 +73,13 @@ h3{font-family:var(--font-body); font-size:18px; font-weight:700; line-height:1.
 .btn-ghost:hover{border-color:var(--lav)}
 .btn-lg{min-height:58px; font-size:17.5px; padding:16px 32px}
 .btn-block{display:flex; width:100%}
-.btn[disabled],.btn[aria-disabled="true"]{opacity:.55; cursor:not-allowed; box-shadow:none}
+/* opacity alone left the primary button looking like a paler purple button,
+   i.e. still tappable. A disabled control should read as grey and inert. */
+.btn[disabled],.btn[aria-disabled="true"]{
+  background:#e6e3ef !important; color:#8b8798 !important;
+  cursor:not-allowed; box-shadow:none !important;
+}
+.btn[disabled] .arw{opacity:.6}
 :focus-visible{outline:3px solid var(--lav); outline-offset:3px; border-radius:8px}
 
 /* ---- nav ---- */
@@ -283,3 +289,8 @@ footer{border-top:1px solid var(--line); padding:40px 0 56px; background:var(--w
   .rung:nth-child(2){padding-left:32px}
   .rung:nth-child(3){padding-left:64px}
 }
+
+/* Directional affordance on forward actions. */
+.arw{display:inline-block; transition:transform .18s ease}
+.btn:hover .arw{transform:translateX(3px)}
+@media (prefers-reduced-motion: reduce){ .btn:hover .arw{transform:none} }
