@@ -123,8 +123,11 @@
   function suggestedGoal() {
     var base = GRADE_BASE_GOAL[S.grade] || 10;
     var d = daysUntilTest();
+    /* Calibrated to verified prep norms (AAMC survey ~20h/wk x 3mo; industry
+       300-350h total): inside 4 months the daily practice target is the real
+       consensus pace; far out it is a maintenance dose, never a token one. */
     var byDate = (d === null || d < 0) ? 0
-      : d <= 30 ? 50 : d <= 60 ? 30 : d <= 120 ? 20 : d <= 240 ? 10 : 5;
+      : d <= 60 ? 50 : d <= 120 ? 30 : d <= 240 ? 20 : 10;
     var want = Math.max(base, byDate);
     return GOAL_OPTIONS.reduce(function (best, g) {
       return Math.abs(g - want) < Math.abs(best - want) ? g : best;

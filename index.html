@@ -379,5 +379,22 @@
     });
   });
 </script>
+<script>
+/* Scroll reveals — sections rise in as they enter the viewport. Pure
+   IntersectionObserver, no library, disabled for reduced-motion. */
+(function(){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var els = document.querySelectorAll("section .wrap > *");
+  els.forEach(function(el){ el.classList.add("rv"); });
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add("rv-in"); io.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+  els.forEach(function(el){ io.observe(el); });
+})();
+</script>
+<style>
+.rv{opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .55s cubic-bezier(.22,1,.36,1)}
+.rv-in{opacity:1; transform:none}
+</style>
 </body>
 </html>

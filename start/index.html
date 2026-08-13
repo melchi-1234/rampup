@@ -18,9 +18,10 @@
   body{background:var(--wash)}
   .shell{max-width:640px; margin:0 auto; padding:0 18px 96px}
   .topbar{
-    position:sticky; top:0; z-index:20; background:rgba(248,246,253,.93);
+    position:sticky; top:0; z-index:20; background:rgba(248,246,253,.96);
     backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-    padding:14px 0 12px; margin-bottom:8px;
+    margin:0 calc(50% - 50vw) 8px; padding:14px calc(50vw - 50%) 12px;
+    border-bottom:1px solid var(--line);
   }
   .topbar-in{display:flex; align-items:center; gap:14px}
   .backbtn{
@@ -106,7 +107,13 @@
      rather than stock art that belongs to nobody. */
   .step-art{display:flex; justify-content:center; margin:0 0 18px}
   .step-art svg{display:block}
-  @media(max-width:520px){ .step-art{margin-bottom:12px} .step-art svg{width:70px;height:70px} }
+  .rampy-img{width:96px; height:96px; object-fit:contain; animation:rampyFloat 3.4s ease-in-out infinite}
+  @keyframes rampyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @media(max-width:520px){ .step-art{margin-bottom:12px} .step-art svg,.rampy-img{width:74px;height:74px} }
+  /* Step entrance: each panel rises in. Cheap, premium, and honest to reduced-motion. */
+  .panel{animation:panelIn .34s cubic-bezier(.22,1,.36,1) both}
+  @keyframes panelIn{from{opacity:0; transform:translateY(14px)}to{opacity:1; transform:none}}
+  @media(prefers-reduced-motion:reduce){ .rampy-img,.panel{animation:none} }
   .arw{display:inline-block; transition:transform .18s ease}
   .btn:hover .arw{transform:translateX(3px)}
   .linkbtn{
@@ -260,7 +267,10 @@
   /* ------------------------------------------------------------------ steps */
 
   function stepArt(step) {
-    return '<div class="step-art" data-mark="' + (MOOD[step] || "happy") + '" data-size="86"></div>';
+    var mood = MOOD[step] || "happy";
+    if (mood === "sad" || mood === "sleep") mood = "think";
+    return '<div class="step-art"><img class="rampy-img" src="/assets/rampy/' + mood +
+           '.png" alt="" width="96" height="96" decoding="async" /></div>';
   }
   function repaintArt() { if (window.RUBrand) {
     view.querySelectorAll("[data-mark]").forEach(function (el) {
@@ -547,15 +557,19 @@
       var hours = Math.round(d * mins / 60);
       h += '<div class="mathbox">' +
         '<div class="mrow"><span>Days until your MCAT</span><b>' + d + '</b></div>' +
-        '<div class="mrow"><span>Your plan, per day</span><b>' + mins + ' min</b></div>' +
-        '<div class="mrow"><span>Total focused prep that buys</span><b>~' + hours + ' hours</b></div>' +
-        '<div class="mfoot">' + hours + ' hours is enough to move a score — if it starts now and runs most days. ' +
-        'The plan above is day one of exactly that.</div></div>';
+        '<div class="mrow"><span>Daily practice, to start</span><b>' + mins + ' min</b></div>' +
+        '<div class="mrow"><span>Practice hours that builds</span><b>~' + hours + '</b></div>' +
+        '<div class="mfoot">The honest number: AAMC\u2019s own survey says students average about 20 hours a week ' +
+        'for 3 months \u2014 roughly 240 hours \u2014 and most prep companies recommend 300\u2013350. ' +
+        'RampUp is the practice half of that: questions, review, and full-length sims. It ramps your daily ' +
+        'target as your test gets closer, and Lessons + Watch carry the content-review half.</div></div>';
     } else {
       h += '<div class="mathbox">' +
         '<div class="mrow"><span>Test date</span><b>not set yet</b></div>' +
-        '<div class="mrow"><span>Your plan, per day</span><b>' + mins + ' min</b></div>' +
-        '<div class="mfoot">No date means your plan paces by mastery instead of the calendar — and tightens the moment you set one.</div></div>';
+        '<div class="mrow"><span>Daily practice, to start</span><b>' + mins + ' min</b></div>' +
+        '<div class="mfoot">Full MCAT prep typically runs 240\u2013350 hours (AAMC\u2019s survey average is ' +
+        '\u224820 h/week for 3 months). With no date set, your plan paces by mastery \u2014 and tightens ' +
+        'the moment you set one.</div></div>';
     }
 
     h += '<div class="sep"></div>' +
@@ -570,12 +584,15 @@
     });
     h += '</ul>' +
       '<div class="actions"><button class="btn btn-primary btn-lg btn-block" id="next" type="button">Continue <span class="arw">&rarr;</span></button></div>' +
-      '<p class="tiny" style="text-align:center;margin:12px 0 0">Your levels are saved on this device.</p>' +
+      '<p class="tiny" style="text-align:center;margin:12px 0 0">Your levels are saved on this device. ' +
+      '<button class="linkbtn" id="redo" type="button">Redo my answers</button></p>' +
       '</div>';
     view.innerHTML = h;
     repaintArt();
     RU.track("reveal_view", { previews: previews, distinctLevels: distinct, goal: goal });
     document.getElementById("next").addEventListener("click", function () { go("commit"); });
+    var rd = document.getElementById("redo");
+    if (rd) rd.addEventListener("click", function () { RU.reset(); go("name"); route(); });
   }
 
   /* ------------------------------------------------------------- commitment
