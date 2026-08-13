@@ -114,6 +114,32 @@
     text-decoration:underline; cursor:pointer; padding:8px; min-height:44px;
   }
   .linkbtn:hover{color:var(--ink)}
+
+  /* The affirmation strip: the previous answer, converted into a plan
+     consequence. This is the investment loop — every input visibly BUILDS
+     something of theirs. */
+  .affirm{display:flex; gap:10px; align-items:flex-start; background:var(--violet-soft);
+    border:1px solid #ddd2f7; border-radius:var(--r); padding:12px 15px; margin:0 0 18px;
+    font-size:14.5px; line-height:1.55; color:#3b3357}
+  .affirm b{color:var(--violet-strong)}
+  .affirm .a-ico{flex:none; font-weight:900; color:var(--violet)}
+
+  /* Urgency block on the reveal: THEIR deadline, done as arithmetic. */
+  .mathbox{background:var(--ink); color:#f4f2fb; border-radius:var(--r-lg); padding:18px 19px; margin:20px 0 4px}
+  .mathbox .mrow{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:5px 0; font-size:15px}
+  .mathbox .mrow b{font-size:17px; white-space:nowrap}
+  .mathbox .mfoot{border-top:1px solid rgba(255,255,255,.18); margin-top:9px; padding-top:11px; font-size:14px; color:#cfc9e6; line-height:1.5}
+
+  /* Guarantee card: risk reversal at the decision point. */
+  .guarantee{border:1.6px solid var(--violet); border-radius:var(--r-lg); padding:17px 18px; margin:20px 0 0; background:#fff}
+  .guarantee .g-head{display:flex; align-items:center; gap:9px; font-weight:800; font-size:16.5px; margin-bottom:6px}
+  .guarantee .g-shield{flex:none; width:22px; height:22px; display:grid; place-items:center;
+    background:var(--violet); color:#fff; border-radius:7px; font-size:12px; font-weight:900}
+  .guarantee .g-body{font-size:14.5px; color:var(--muted); line-height:1.6}
+  .guarantee .g-body a{color:var(--violet-strong); font-weight:700}
+
+  .commit-opts .opt{min-height:62px; font-size:17px}
+  .commit-note{font-size:14px; color:var(--faint); text-align:center; margin-top:14px; line-height:1.55}
 </style>
 </head>
 <body>
@@ -141,13 +167,51 @@
   var stepno = document.getElementById("stepno");
   var backBtn = document.getElementById("back");
 
-  var STEPS = ["name", "grade", "feeling", "courses", "confidence", "when", "reveal", "plan"];
+  var STEPS = ["name", "grade", "feeling", "courses", "confidence", "when", "reveal", "commit", "plan"];
   var LABEL = { name: "Hello", grade: "About you", feeling: "Where you are", courses: "Coursework", confidence: "Confidence",
-                when: "Test timing", reveal: "Your levels", plan: "Your plan" };
+                when: "Test timing", reveal: "Your levels", commit: "One question", plan: "Your plan" };
   // One Rampy mood per step — our equivalent of a per-step illustration, and
   // it is the character already in the product rather than stock art.
   var MOOD = { name: "happy", grade: "happy", feeling: "happy", courses: "think", confidence: "think",
-               when: "grad", reveal: "celebrate", plan: "grad" };
+               when: "grad", reveal: "celebrate", commit: "think", plan: "grad" };
+
+  /* The previous answer, converted into a consequence for THEIR plan. This is
+     deliberate psychology (investment: each input visibly builds their plan),
+     built only from true inputs — their words in, plan mechanics out. */
+  function affirmFor(step) {
+    var n = RU.firstName();
+    if (step === "feeling") {
+      var g = S.grade || "";
+      if (g === "High school" || g === "College freshman" || g === "College sophomore")
+        return "<b>Early is an edge.</b> Most people cram the last 90 days. Your plan gets to teach subjects before it ever tests them.";
+      if (g === "College junior" || g === "College senior")
+        return "<b>Good timing.</b> Your coursework is mostly banked, so your plan spends its time converting knowledge into MCAT points, not re-teaching.";
+      return "<b>Noted.</b> Your daily target starts realistic for your schedule, and adapts from your first session.";
+    }
+    if (step === "courses") {
+      var f = S.feeling;
+      if (f === "behind")  return "<b>Then this next screen matters most.</b> Mark honestly what you have not taken — those subjects get taught from zero, before any question assumes them.";
+      if (f === "unsure")  return "<b>Let's find out where you stand.</b> Two screens from now you will know your real starting level in all eight subjects.";
+      if (f === "steady")  return "<b>Then let's build it exactly to your coursework.</b> Mark what you have taken and the levels set themselves.";
+      return "<b>Confident is testable.</b> Mark your coursework and RampUp will start you high — and push higher the moment you clear a tier.";
+    }
+    if (step === "confidence") {
+      var touched = RU.touchedSubjects().length, previews = 7 - touched;
+      if (previews > 0)
+        return "<b>" + touched + " subject" + (touched === 1 ? "" : "s") + " with coursework, " + previews + " starting in Preview.</b> The Preview ones get the concept lesson first — they are scheduled, not skipped.";
+      return "<b>Coursework in all seven.</b> Now the honest part: confidence decides your starting tier, and starting too high is the classic self-sabotage.";
+    }
+    if (step === "when") {
+      var t = RU.touchedSubjects().length;
+      if (t === 0) return "<b>Everything starts in Preview, and that is a real plan.</b> RampUp is built to teach before it tests. One thing left: the deadline.";
+      return "<b>Levels are set.</b> One thing left before you see them: the deadline they have to beat.";
+    }
+    return "";
+  }
+  function affirmStrip(step) {
+    var a = affirmFor(step);
+    return a ? '<div class="affirm"><span class="a-ico">&check;</span><span>' + a + '</span></div>' : "";
+  }
 
   var esc = function (s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
@@ -182,10 +246,13 @@
 
   function chrome(step) {
     var idx = STEPS.indexOf(step);
-    var total = skipConfidence() ? 7 : 8;
+    var total = skipConfidence() ? 8 : 9;
     var shown = idx + 1;
     if (skipConfidence() && idx >= 3) shown = idx;
-    bar.style.width = Math.round(shown / total * 100) + "%";
+    /* Endowed progress: the meter starts 12% full (goal-gradient — a started
+       plan is harder to abandon than an empty one) and it measures the PLAN
+       being built, not pages seen. */
+    bar.style.width = Math.round(12 + (shown - 1) / (total - 1) * 88) + "%";
     stepno.textContent = LABEL[step] || "";
     backBtn.style.visibility = step === "name" ? "hidden" : "visible";
   }
@@ -254,7 +321,7 @@
 
   function renderFeeling() {
     var n = RU.firstName();
-    view.innerHTML = '<div class="panel">' + stepArt("feeling") +
+    view.innerHTML = '<div class="panel">' + stepArt("feeling") + affirmStrip("feeling") +
       '<h1>' + (n ? "How is it going so far, " + esc(n) + "?" : "How is it going so far?") + '</h1>' +
       '<p class="sub">There is no wrong answer. It changes how we introduce your plan, ' +
       'not what is in it.</p><div class="opts" id="opts"></div>' +
@@ -280,7 +347,7 @@
       { key: "Bio/Biochem", label: "Biology & Biochemistry" },
       { key: "Psych/Soc", label: "Psychology & Sociology" }
     ];
-    var h = '<div class="panel">' + stepArt("courses") + '<h1>Which of these have you taken?</h1>' +
+    var h = '<div class="panel">' + stepArt("courses") + affirmStrip("courses") + '<h1>Which of these have you taken?</h1>' +
       '<p class="sub">This is what sets your starting level in each subject. Leave anything you have not touched as “Not yet” — that subject starts in Preview and gets taught before it is tested.</p>' +
       '<div class="courses">';
     cats.forEach(function (c) {
@@ -317,7 +384,7 @@
 
   function renderConfidence() {
     var touched = RU.touchedSubjects();
-    var h = '<div class="panel">' + stepArt("confidence") + '<h1>How solid does each one feel?</h1>' +
+    var h = '<div class="panel">' + stepArt("confidence") + affirmStrip("confidence") + '<h1>How solid does each one feel?</h1>' +
       '<p class="sub">Only for subjects you have coursework in. Be honest — this decides whether you start at Easy, Medium or Hard, and starting too high is what makes people quit.</p>' +
       '<div class="courses">';
     touched.forEach(function (name) {
@@ -351,7 +418,7 @@
   }
 
   function renderWhen() {
-    var h = '<div class="panel">' + stepArt("when") + '<h1>When is your MCAT?</h1>' +
+    var h = '<div class="panel">' + stepArt("when") + affirmStrip("when") + '<h1>When is your MCAT?</h1>' +
       '<p class="sub">A rough window is fine. This sets your daily target and how urgently RampUp pushes review.</p>' +
       '<div class="opts" id="opts"></div>' +
       '<div id="exact" hidden><input class="dateinput" type="date" id="dateIn" /></div>' +
@@ -389,8 +456,34 @@
       if (S.timeframe === "exact" && S.testDate < today) { document.getElementById("err").textContent = "That date has already passed. Pick your real test date."; return; }
       S.done = true; RU.save();
       RU.track("ob_complete", { timeframe: S.timeframe, days: RU.daysUntilTest() });
-      go(nextOf("when"));
+      renderBuilding();
     });
+  }
+
+  /* Between the last answer and the reveal: the plan is visibly assembled.
+     The pause is deliberate (labor illusion — Flo/Noom both do this): work the
+     user can see raises the value of what comes next. Every line names a real
+     computation that IS happening from their answers. */
+  function renderBuilding() {
+    var lines = [
+      "Reading your coursework&hellip;",
+      "Setting a starting level for all 8 subjects&hellip;",
+      "Pacing your plan to your test date&hellip;"
+    ];
+    view.innerHTML = '<div class="panel" style="text-align:center; padding:44px 22px">' +
+      stepArt("reveal") +
+      '<h1 style="font-size:22px">Building your plan</h1>' +
+      '<div id="bsteps" style="margin:18px auto 0; max-width:330px; text-align:left"></div></div>';
+    repaintArt();
+    var box = document.getElementById("bsteps"), i = 0;
+    function tick() {
+      if (i >= lines.length) { go("reveal"); return; }
+      box.innerHTML += '<div style="display:flex; gap:9px; align-items:baseline; padding:7px 0; font-size:15.5px; color:var(--muted)">' +
+        '<span style="color:var(--violet); font-weight:900">&check;</span><span>' + lines[i] + '</span></div>';
+      i++;
+      setTimeout(tick, 620);
+    }
+    tick();
   }
 
   /* ----------------------------------------------------------------- reveal */
@@ -446,6 +539,25 @@
         'part RampUp is actually built for. Those get the concept lesson first, and gentler questions, until the coursework catches up.</div>';
     }
 
+    /* Their own deadline, done as arithmetic. True numbers only: days they
+       gave us, the pace we just computed. Urgency that comes from the user's
+       own situation is legitimate; urgency invented by us would not be. */
+    var mins = RU.paceMinutes(goal);
+    if (d !== null && d > 0) {
+      var hours = Math.round(d * mins / 60);
+      h += '<div class="mathbox">' +
+        '<div class="mrow"><span>Days until your MCAT</span><b>' + d + '</b></div>' +
+        '<div class="mrow"><span>Your plan, per day</span><b>' + mins + ' min</b></div>' +
+        '<div class="mrow"><span>Total focused prep that buys</span><b>~' + hours + ' hours</b></div>' +
+        '<div class="mfoot">' + hours + ' hours is enough to move a score — if it starts now and runs most days. ' +
+        'The plan above is day one of exactly that.</div></div>';
+    } else {
+      h += '<div class="mathbox">' +
+        '<div class="mrow"><span>Test date</span><b>not set yet</b></div>' +
+        '<div class="mrow"><span>Your plan, per day</span><b>' + mins + ' min</b></div>' +
+        '<div class="mfoot">No date means your plan paces by mastery instead of the calendar — and tightens the moment you set one.</div></div>';
+    }
+
     h += '<div class="sep"></div>' +
       '<h1 style="font-size:21px">Your first day</h1>' +
       '<p class="sub">' + RU.paceMinutes(goal) + ' minutes, about ' + goal + ' questions. Every block says why it is there.</p>' +
@@ -463,7 +575,30 @@
     view.innerHTML = h;
     repaintArt();
     RU.track("reveal_view", { previews: previews, distinctLevels: distinct, goal: goal });
-    document.getElementById("next").addEventListener("click", function () { go("plan"); });
+    document.getElementById("next").addEventListener("click", function () { go("commit"); });
+  }
+
+  /* ------------------------------------------------------------- commitment
+     One honest micro-yes before the ask (commitment & consistency). Both
+     options move forward — the question is the mechanism, not a gate. */
+  function renderCommit() {
+    var goal = RU.suggestedGoal(), mins = RU.paceMinutes(goal), nm = RU.firstName();
+    view.innerHTML = '<div class="panel">' + stepArt("commit") +
+      '<h1>' + (nm ? esc(nm) + ", one honest question." : "One honest question.") + '</h1>' +
+      '<p class="sub">The plan you just saw needs about <b>' + mins + ' minutes a day</b>. ' +
+      'Not perfectly — streak freezes exist for the bad days — but most days. Can you give it that?</p>' +
+      '<div class="opts commit-opts">' +
+      '<button class="opt" type="button" id="cYes">Yes — ' + mins + ' minutes a day is doable<span class="tick">&check;</span></button>' +
+      '<button class="opt" type="button" id="cMost">I can manage most days<span class="tick">&check;</span></button>' +
+      '</div>' +
+      '<p class="commit-note">That is the whole ask. The plan, the pacing, the review timing — RampUp carries the rest.</p></div>';
+    repaintArt();
+    var pick = function (v) {
+      S.commit = v; RU.save(); RU.track("ob_commit", { commit: v });
+      go("plan");
+    };
+    document.getElementById("cYes").addEventListener("click", function () { pick("daily"); });
+    document.getElementById("cMost").addEventListener("click", function () { pick("most"); });
   }
 
   /* ---------------------------------------------------------------- paywall */
@@ -474,7 +609,9 @@
     var nm = RU.firstName();
     var h = '<div class="panel">' + stepArt("plan") +
       '<h1>' + (nm ? esc(nm) + ", start your 7 days free" : "Start your 7 days free") + '</h1>' +
-      '<p class="sub">Full access to everything below. Your levels and plan are already set up and waiting.</p>';
+      '<p class="sub">' + (S.commit ? 'You said you can show up. RampUp\u2019s side of the deal: ' +
+        'a plan that is already built, and a guarantee that it works.' :
+        'Full access to everything below. Your levels and plan are already set up and waiting.') + '</p>';
 
     h += '<div class="opts" id="plans">';
     var SHOWN = RUBilling.buyablePlans();
@@ -506,6 +643,14 @@
     if (S.feeling && FEEL_LINE[S.feeling]) {
       h += '<div class="notice" style="margin-top:20px;border-color:#d9d2f0;background:#faf8ff;color:#3b3357">' +
         esc(FEEL_LINE[S.feeling]) + '</div>';
+    }
+    h += '<div class="guarantee"><div class="g-head"><span class="g-shield">&check;</span> Score higher, or every dollar back</div>' +
+      '<div class="g-body">Do the work — 1,000+ questions and both full-length sims — then sit your MCAT. ' +
+      'If your score does not improve on your baseline, we refund every subscription dollar you paid. ' +
+      '<a href="/terms.html#guarantee">The exact terms</a> are five short paragraphs, not twenty pages.</div></div>';
+    if (live) {
+      h += '<p class="tiny" style="text-align:center;margin:14px 0 0">' +
+        'Day 1: everything unlocks. Day 7: first charge &mdash; cancel in one click before then and you pay nothing.</p>';
     }
     h += '<p class="reassure">Full access on both &middot; Cancel any time &middot; No account needed</p>';
 
@@ -564,12 +709,12 @@
   /* ------------------------------------------------------------------ route */
 
   var RENDER = { name: renderName, grade: renderGrade, feeling: renderFeeling, courses: renderCourses, confidence: renderConfidence,
-                 when: renderWhen, reveal: renderReveal, plan: renderPlan };
+                 when: renderWhen, reveal: renderReveal, commit: renderCommit, plan: renderPlan };
 
   function route() {
     var step = current();
     // Cannot land on the reveal or paywall without having actually answered.
-    if ((step === "reveal" || step === "plan") && !S.done) { go("name", true); step = "name"; }
+    if ((step === "reveal" || step === "commit" || step === "plan") && !S.done) { go("name", true); step = "name"; }
     if (step === "confidence" && skipConfidence()) { go("when", true); step = "when"; }
     chrome(step);
     (RENDER[step] || renderName)();

@@ -1279,6 +1279,7 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
     <div id="lessonsView" hidden></div>
 
     <div id="settingsView" hidden>
+      <div id="guarCard"></div>
       <div class="card" style="overflow:visible">
         <h2>Settings</h2>
         <div class="set-row">
@@ -7346,7 +7347,34 @@ function renderGoalSuggestion(){
     toast("Daily goal set to " + sug + " questions.");
   });
 }
+/* The Score Guarantee, made administrable: the qualifying conditions ARE the
+   study plan, so showing live progress against them both sells the guarantee
+   and drives the behaviour that makes scores move. Terms live at
+   rampupmcat.com/terms.html#guarantee; subscription users only. */
+function renderGuaranteeCard(){
+  const box = $("#guarCard"); if (!box) return;
+  if (!(typeof subActive === "function" && subActive())){ box.innerHTML = ""; return; }
+  const q = Math.min(state.totalAnswered || 0, 1000);
+  const fulls = ["fx1","fx2"].filter(id => state.examReviews && state.examReviews[id]).length;
+  const qPct = Math.round(q / 1000 * 100);
+  box.innerHTML = `<div class="card" style="border:1.6px solid var(--accent)">
+    <h2 style="display:flex;align-items:center;gap:8px">${icon("check")} Your score guarantee</h2>
+    <p style="font-size:14.5px;color:var(--muted);line-height:1.55;margin:4px 0 12px">
+      Do the work below, sit your MCAT, and if your score doesn't beat your baseline,
+      every subscription dollar comes back. <a href="https://rampupmcat.com/terms.html#guarantee"
+      target="_blank" rel="noopener" style="color:var(--accent-strong);font-weight:700">Exact terms</a>.</p>
+    <div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:13.5px;font-weight:700">
+      <span>Questions answered</span><span>${state.totalAnswered || 0} / 1,000</span></div>
+      <div style="height:8px;background:var(--surface-2);border-radius:99px;margin-top:5px;overflow:hidden">
+      <div style="height:100%;width:${qPct}%;background:var(--accent);border-radius:99px"></div></div></div>
+    <div style="margin:12px 0 2px"><div style="display:flex;justify-content:space-between;font-size:13.5px;font-weight:700">
+      <span>Full-length sims completed</span><span>${fulls} / 2</span></div>
+      <div style="height:8px;background:var(--surface-2);border-radius:99px;margin-top:5px;overflow:hidden">
+      <div style="height:100%;width:${fulls * 50}%;background:var(--accent);border-radius:99px"></div></div></div>
+  </div>`;
+}
 function renderSettings(){
+  renderGuaranteeCard();
   const t = $("#persistToggle"); t.classList.toggle("on", state.persist && STORAGE_OK); t.disabled = !STORAGE_OK;
   t.setAttribute("role", "switch"); t.setAttribute("aria-checked", String(state.persist && STORAGE_OK));
   const st = $("#soundToggle"); st.classList.toggle("on", state.sound);
