@@ -51,8 +51,13 @@
   .planopt .pl-label{font-weight:760; font-size:17px; white-space:nowrap}
   .planopt .pl-per{font-size:13.5px; color:var(--faint); font-weight:600; grid-column:1; margin-top:-2px}
   .planopt .pl-price{font-weight:840; font-size:19px; grid-column:2; grid-row:1; white-space:nowrap}
-  .planopt .pl-badge{grid-column:2; grid-row:2; justify-self:end}
-  .planopt .pl-badge .pill{font-size:10.5px; padding:4px 9px}
+  .planopt .pl-price i{font-style:normal; font-size:13.5px; font-weight:700; color:var(--muted)}
+  .planopt .pl-flag{
+    display:inline-block; font-size:11px; font-weight:820; letter-spacing:.05em;
+    text-transform:uppercase; color:#0b7a56; background:#e4f7ee;
+    padding:3px 8px; border-radius:99px; margin-left:7px; vertical-align:1px;
+  }
+  .reassure{text-align:center; font-size:14px; color:var(--muted); margin:14px 0 0}
 
   .courses{display:grid; gap:8px}
   .crow{border:1px solid var(--line); border-radius:var(--r); padding:12px 14px; background:#fff}
@@ -368,10 +373,9 @@
     RUBilling.PLANS.forEach(function (p, i) {
       var sel = i === 0;
       h += '<button class="opt planopt" type="button" data-plan="' + p.key + '" aria-pressed="' + sel + '">' +
-        '<span class="pl-label">' + esc(p.label) + '</span>' +
-        '<span class="pl-price">' + esc(p.price) + '</span>' +
-        (p.perMonth ? '<span class="pl-per">' + esc(p.perMonth) + ' a month</span>' : '') +
-        (p.best ? '<span class="pl-badge"><span class="pill p-mcat">Best value</span></span>' : '') +
+        '<span class="pl-label">' + esc(p.label) + (p.best ? ' <span class="pl-flag">' + esc(p.save) + '</span>' : '') + '</span>' +
+        '<span class="pl-price">' + esc(p.perMonthNum) + '<i>/mo</i></span>' +
+        '<span class="pl-per">' + esc(p.billed) + '</span>' +
         '</button>';
     });
     h += '</div>';
@@ -385,8 +389,10 @@
       '<li>Rampy on every question</li>' +
       '</ul>';
 
+    h += '<p class="reassure">Full access on both &middot; Cancel any time &middot; No account needed</p>';
+
     if (live) {
-      h += '<div class="actions"><button class="btn btn-primary btn-lg btn-block" id="buy" type="button">Start my 7 days free</button></div>' +
+      h += '<div class="actions" style="margin-top:14px"><button class="btn btn-primary btn-lg btn-block" id="buy" type="button">Start my 7 days free</button></div>' +
         '<p class="tiny" id="renew" style="text-align:center;margin:12px 0 0"></p>';
     } else {
       /* Honest unavailable state. No fake checkout, no fake trial, and not a

@@ -40,15 +40,23 @@
     sub_quarterly: ""    // <- paste the Stripe Payment Link
   };
 
+  /* Monthly-equivalent price is the headline number and the real billed amount
+     sits underneath, which is how every funnel that converts on a multi-month
+     plan presents it. `save` is stated in money rather than a percentage
+     because $40 a year is concrete and "17% off" is not. */
   var PLANS = [
     {
       key: "sub_quarterly", label: "3 months", price: "$49.99",
-      cadence: "every 3 months", perMonth: "$16.66", best: true,
+      perMonthNum: "$16.66", billed: "$49.99 billed every 3 months",
+      blurb: "The realistic window for building up to MCAT-level reasoning.",
+      save: "Save $40 a year", best: true,
       renewLine: "7 days free, then $49.99 every 3 months (about $16.66 a month). Renews automatically until you cancel."
     },
     {
       key: "sub_monthly", label: "Monthly", price: "$19.99",
-      cadence: "a month", perMonth: null, best: false,
+      perMonthNum: "$19.99", billed: "$19.99 billed monthly",
+      blurb: "Make the most of the study time you have left.",
+      save: null, best: false,
       renewLine: "7 days free, then $19.99 a month. Renews automatically until you cancel."
     }
   ];
