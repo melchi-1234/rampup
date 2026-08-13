@@ -141,12 +141,12 @@
   var stepno = document.getElementById("stepno");
   var backBtn = document.getElementById("back");
 
-  var STEPS = ["name", "grade", "courses", "confidence", "when", "reveal", "plan"];
-  var LABEL = { name: "Hello", grade: "About you", courses: "Coursework", confidence: "Confidence",
+  var STEPS = ["name", "grade", "feeling", "courses", "confidence", "when", "reveal", "plan"];
+  var LABEL = { name: "Hello", grade: "About you", feeling: "Where you are", courses: "Coursework", confidence: "Confidence",
                 when: "Test timing", reveal: "Your levels", plan: "Your plan" };
   // One Rampy mood per step — our equivalent of a per-step illustration, and
   // it is the character already in the product rather than stock art.
-  var MOOD = { name: "happy", grade: "happy", courses: "think", confidence: "think",
+  var MOOD = { name: "happy", grade: "happy", feeling: "happy", courses: "think", confidence: "think",
                when: "grad", reveal: "celebrate", plan: "grad" };
 
   var esc = function (s) {
@@ -182,7 +182,7 @@
 
   function chrome(step) {
     var idx = STEPS.indexOf(step);
-    var total = skipConfidence() ? 6 : 7;
+    var total = skipConfidence() ? 7 : 8;
     var shown = idx + 1;
     if (skipConfidence() && idx >= 3) shown = idx;
     bar.style.width = Math.round(shown / total * 100) + "%";
@@ -247,6 +247,28 @@
       b.innerHTML = esc(g) + '<span class="tick">✓</span>';
       b.addEventListener("click", function () {
         S.grade = g; RU.save(); RU.track("ob_grade", { grade: g }); go(nextOf("grade"));
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function renderFeeling() {
+    var n = RU.firstName();
+    view.innerHTML = '<div class="panel">' + stepArt("feeling") +
+      '<h1>' + (n ? "How is it going so far, " + esc(n) + "?" : "How is it going so far?") + '</h1>' +
+      '<p class="sub">There is no wrong answer. It changes how we introduce your plan, ' +
+      'not what is in it.</p><div class="opts" id="opts"></div>' +
+      '<p class="err" id="err"></p></div>';
+    repaintArt();
+    var box = document.getElementById("opts");
+    RU.FEELINGS.forEach(function (f) {
+      var b = document.createElement("button");
+      b.className = "opt"; b.type = "button";
+      b.setAttribute("aria-pressed", String(S.feeling === f.v));
+      b.innerHTML = esc(f.l) + '<span class="tick">&check;</span>';
+      b.addEventListener("click", function () {
+        S.feeling = f.v; RU.save(); RU.track("ob_feeling", { feeling: f.v });
+        go(nextOf("feeling"));
       });
       box.appendChild(b);
     });
@@ -403,6 +425,12 @@
       h += '</div>';
     });
 
+    if (previews && (S.feeling === "behind" || S.feeling === "unsure")) {
+      h = h.replace('<div class="catgroup">',
+        '<div class="notice" style="margin:4px 0 18px"><b>Before you scroll:</b> ' +
+        previews + ' of these are in Preview, and that is not a bad result. It is the ' +
+        'reason RampUp exists - those get taught before they get tested.</div><div class="catgroup">');
+    }
     if (previews) {
       h += '<div class="notice" style="margin-top:20px"><b>' + previews + ' subject' +
         (previews === 1 ? " is" : "s are") + ' in Preview.</b> That is not a gap to be embarrassed about — it is the ' +
@@ -459,6 +487,16 @@
       '<li>Rampy on every question</li>' +
       '</ul>';
 
+    var FEEL_LINE = {
+      behind:    "You are not behind, you are early - which is the only time this kind of ramp works.",
+      unsure:    "You know exactly where you stand now. That was the hard part.",
+      steady:    "You have the plan. This is the part where it runs every day.",
+      confident: "Good. RampUp pushes the ceiling up per subject as you clear it."
+    };
+    if (S.feeling && FEEL_LINE[S.feeling]) {
+      h += '<div class="notice" style="margin-top:20px;border-color:#d9d2f0;background:#faf8ff;color:#3b3357">' +
+        esc(FEEL_LINE[S.feeling]) + '</div>';
+    }
     h += '<p class="reassure">Full access on both &middot; Cancel any time &middot; No account needed</p>';
 
     if (live) {
@@ -515,7 +553,7 @@
 
   /* ------------------------------------------------------------------ route */
 
-  var RENDER = { name: renderName, grade: renderGrade, courses: renderCourses, confidence: renderConfidence,
+  var RENDER = { name: renderName, grade: renderGrade, feeling: renderFeeling, courses: renderCourses, confidence: renderConfidence,
                  when: renderWhen, reveal: renderReveal, plan: renderPlan };
 
   function route() {

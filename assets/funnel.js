@@ -28,6 +28,18 @@
   // CARS has no coursework, so it is never Preview and always starts at Medium.
   var CARS = { name: "CARS", category: "CARS", courses: [] };
 
+  /* Acely asks "how are you feeling about test prep right now?" before it asks
+     for an account. It does nothing for a study plan — it buys rapport, and it
+     sets up the reassurance screen that comes right before the ask. Worth
+     taking, but only because we actually USE it: it changes what the reveal
+     leads with, so a nervous learner sees the Preview explanation first rather
+     than a wall of levels. */
+  var FEELINGS = [
+    { v: "behind",     l: "Behind, honestly" },
+    { v: "unsure",     l: "Not sure where I stand" },
+    { v: "steady",     l: "Steady, just want a plan" },
+    { v: "confident",  l: "Confident" }
+  ];
   var GRADES = ["High school", "College freshman", "College sophomore", "College junior", "College senior", "Other"];
   var COURSE_STATES = [{ v: "none", l: "Not yet" }, { v: "taking", l: "Taking now" }, { v: "completed", l: "Completed" }];
   var CONF_STATES = [{ v: "started", l: "Just started" }, { v: "comfortable", l: "Comfortable" }, { v: "strong", l: "Strong" }];
@@ -52,7 +64,7 @@
   /* ---------------------------------------------------------------- state */
   var KEY = "rampup.funnel.v1";
   var blank = function () {
-    return { name: "", grade: null, courses: {}, confidence: {}, timeframe: null, testDate: null, step: 1, done: false };
+    return { name: "", grade: null, feeling: null, courses: {}, confidence: {}, timeframe: null, testDate: null, step: 1, done: false };
   };
   var S = blank();
 
@@ -184,7 +196,7 @@
   function events() { try { return JSON.parse(localStorage.getItem(EV_KEY) || "[]"); } catch (e) { return []; } }
 
   global.RU = {
-    SUBJECTS: SUBJECTS, CARS: CARS, GRADES: GRADES, COURSE_STATES: COURSE_STATES,
+    SUBJECTS: SUBJECTS, CARS: CARS, GRADES: GRADES, FEELINGS: FEELINGS, COURSE_STATES: COURSE_STATES,
     CONF_STATES: CONF_STATES, WHEN_OPTIONS: WHEN_OPTIONS, DIFF_LABEL: DIFF_LABEL,
     state: function () { return S; }, load: load, save: save, reset: reset,
     isPreview: isPreview, startingDifficulty: startingDifficulty, tierFor: tierFor,
