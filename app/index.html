@@ -3957,6 +3957,10 @@ function grantSubscription(info){
     willRenew: !!(info && info.willRenew),
     trial: !!(info && info.trial),
     state: (info && info.state) || "subscribed",
+    // Web only: the Stripe checkout session, which is the sole handle an
+    // accountless client has on its own subscription. Preserved across
+    // re-grants so a revalidation never loses the ability to revalidate again.
+    sid: (info && info.sid) || (ent.sub && ent.sub.sid) || null,
     checkedAt: Date.now()
   };
   entSave();
@@ -4315,11 +4319,78 @@ async function verifySession(sid){
     const data = await res.json().catch(() => null);
     if (data && data.ok && data.paid && data.product){
       const g = grantByProduct(data.product);
-      return g ? { ok:true, granted:g } : { ok:false, reason:"unknown_product" };
+      if (!g) return { ok:false, reason:"unknown_product" };
+      // A subscription grant guessed months*30 days from today. Stripe knows the
+      // real period end -- and during a trial that is 7 days out, not 3 months --
+      // so use it, and keep the session id so this can be re-checked.
+      if (SUB_KEYS.indexOf(g) !== -1) applyWebSubscription(g, data.subscription, sid);
+      return { ok:true, granted:g };
     }
     return { ok:false, reason:"unconfirmed" };
   } catch(e){ return { ok:false, reason:"network" }; }
 }
+/* Write a web subscription from Stripe's own view of it. */
+function applyWebSubscription(key, sub, sid){
+  const now = Date.now();
+  const info = { key, productId: PRODUCTS[key], sid: sid || (ent.sub && ent.sub.sid) || null };
+  if (sub && sub.currentPeriodEnd){
+    info.expires   = sub.currentPeriodEnd * 1000;
+    info.willRenew = !sub.cancelAtPeriodEnd;
+    info.trial     = !!sub.trialing;
+    info.state     = sub.status === "past_due" ? "billing_retry" : "subscribed";
+  } else {
+    // Verifier gave us no subscription object (an older deploy, or a one-off).
+    // Fall back to the previous behaviour rather than refusing access to
+    // someone who has demonstrably paid.
+    const p = planByKey(key);
+    info.expires   = now + (p ? p.months : 1) * 30 * DAY_MS;
+    info.willRenew = false;
+    info.trial     = false;
+  }
+  grantSubscription(info);
+}
+
+/* Re-check a WEB subscription against Stripe.
+
+   The web app has no accounts, so a checkout session is the only handle it has
+   on its own subscription -- and a session is a historical fact that stays
+   "paid" forever. Without this, someone who started a trial and cancelled on day
+   three kept the full month they never paid for, because nothing on the device
+   could ever learn about the cancellation.
+
+   Fails OPEN on purpose. A network error, a worker outage or an unparseable
+   body must never revoke: the existing expiry plus OFFLINE_GRACE_DAYS already
+   handles "cannot reach the store", and revoking a paying customer because
+   their wifi dropped is far worse than a few days of unpaid access. Only an
+   affirmative "this subscription is not active" revokes. */
+const WEB_RECHECK_MS = 6 * 60 * 60 * 1000;    // at most 4 checks a day
+async function revalidateWebSub(){
+  if (isNative) return;                        // iOS re-checks through StoreKit
+  const sub = ent.sub;
+  if (!sub || !sub.sid || !VERIFY_ENDPOINT) return;
+  if (sub.revalidatedAt && Date.now() - sub.revalidatedAt < WEB_RECHECK_MS) return;
+  let data = null;
+  try {
+    const res = await fetch(VERIFY_ENDPOINT + "?session_id=" + encodeURIComponent(sub.sid),
+                            { cache:"no-store" });
+    data = await res.json().catch(() => null);
+  } catch(e){ return; }                        // unreachable -> keep what we have
+  if (!data || !data.ok) return;               // unparseable -> keep what we have
+  const had = subActive();
+  if (data.subscription){
+    if (data.subscription.active){
+      applyWebSubscription(sub.key || "sub_monthly", data.subscription, sub.sid);
+    } else {
+      // Stripe affirmatively says this is over. This is the whole point.
+      track("web_sub_revoked", { status: data.subscription.status });
+      clearSubscription();
+    }
+    if (ent.sub) ent.sub.revalidatedAt = Date.now();
+    entSave();
+    if (had !== subActive()) refreshAfterEntitlement();
+  }
+}
+
 /* Take a whole Stripe receipt or return URL, not just a bare id. Asking someone
    to find the id inside a URL is how a recovery path goes unused. */
 function sessionIdFrom(text){
@@ -8531,6 +8602,16 @@ try {
     track("first_open", { build: APP_BUILD, native: isNative });
   }
 } catch(e){}
+
+/* Web: re-check the Stripe subscription. The mirror of syncNativeEntitlements()
+   below — same two triggers, same fail-open rule — for the surface that has no
+   StoreKit to ask. Throttled inside revalidateWebSub() to 4 checks a day. */
+if (!isNative){
+  revalidateWebSub();
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") revalidateWebSub();
+  });
+}
 
 // iOS: silently restore any App Store purchases this account already owns.
 if (isNative){
