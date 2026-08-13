@@ -5276,6 +5276,7 @@ function renderHome(){
         </div>
       </div>
     </div>
+    ${rampyIntroHtml()}
     ${renderPlanHtml()}
     <div class="pathwrap" id="pathView">${renderPathHtml(due)}</div>
     <button class="testcard" id="homeTests" style="margin:14px 0 4px">
@@ -5310,6 +5311,7 @@ function renderHome(){
   wrap.querySelectorAll(".sesscard").forEach(b => b.addEventListener("click", () => startSession(b.dataset.kind)));
   bindPathNodes(wrap);
   bindPlan(wrap);
+  bindRampyIntro(wrap);
   const ht = $("#homeTests"); if (ht) ht.addEventListener("click", () => { SFX.tick(); showTests(); });
   const hl = $("#homeLessons"); if (hl) hl.addEventListener("click", () => { SFX.tick(); showLessons(); });
   const hw = $("#homeWatch"); if (hw) hw.addEventListener("click", () => { SFX.tick(); showLessons("watch"); });
@@ -7007,6 +7009,39 @@ function bindCoachCard(){
     }
     const c = $("#summaryView .coach"); if (c) c.remove();
   };
+}
+
+/* First-run discovery. A new subscriber unlocks Rampy but, with no answered
+   history, would never SEE it: the coach card needs a pattern and the review
+   row needs a reviewed question. So a brand-new payer lands on Home and finds
+   the flagship feature invisible ("where's Rampy AI?"). This card names Rampy
+   once, then routes into real practice where Rampy actually shows up — still
+   not "a floating button that opens an empty box", just a signpost to the door.
+   It retires itself the moment there is a real pattern to coach, or once used. */
+function rampyIntroHtml(){
+  if (!access("rampy")) return "";            // only subscribers have Rampy at all
+  if (state.rampyIntroDone) return "";        // one-time
+  if (detectPatterns()[0]) return "";         // a real pattern exists -> the coach card leads instead
+  track("rampy_intro_shown", {});
+  return `<div class="coach rampy-intro">
+      <div class="co-top">${rampySvg("happy")}<div>
+        <div class="co-head">Meet Rampy, your AI tutor</div>
+        <div class="co-detail">Do a little practice and I'll find the pattern in what trips you up, then walk you through it in plain English — right in your review, exactly when it matters. No empty chat box to babysit.</div></div></div>
+      <div class="co-acts">
+        <button class="btn primary sm" id="rampyIntroGo">Start a warm-up ${icon("arrowRight")}</button>
+        <button class="linkbtn" id="rampyIntroSkip">Got it</button>
+      </div>
+    </div>`;
+}
+function bindRampyIntro(wrap){
+  const go = (wrap || document).querySelector("#rampyIntroGo");
+  const skip = (wrap || document).querySelector("#rampyIntroSkip");
+  const done = () => { state.rampyIntroDone = true; saveState(); };
+  if (go) go.addEventListener("click", () => { track("rampy_intro_go", {}); done(); startSession("mixed"); });
+  if (skip) skip.addEventListener("click", () => {
+    track("rampy_intro_skip", {}); done();
+    const c = (wrap || document).querySelector(".rampy-intro"); if (c) c.remove();
+  });
 }
 
 /* The entry point. It appears on the reveal, already knowing what happened —
