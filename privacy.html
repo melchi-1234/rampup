@@ -4,38 +4,125 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>RampUp — Privacy Policy</title>
-<style>
-  body{max-width:680px;margin:0 auto;padding:40px 20px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;color:#182034}
-  h1{font-size:26px;letter-spacing:-.02em} h2{font-size:18px;margin-top:28px} a{color:#7c3aed}
-  .muted{color:#6b7280;font-size:14px}
-</style>
+<meta name="description" content="What RampUp collects, what leaves your device, and what does not. No accounts, no tracking, no ads." />
+<link rel="canonical" href="https://rampupmcat.com/privacy.html" />
+<meta name="theme-color" content="#7c3aed" />
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32" />
+<link rel="stylesheet" href="/assets/site.css" />
 </head>
 <body>
-  <h1>RampUp — Privacy Policy</h1>
-  <p class="muted">Last updated: August 4, 2026</p>
+<nav><div class="wrap nav-in">
+  <a class="logo" href="/"><span class="logo-mark">R</span> RampUp</a>
+  <div class="nav-links"><a href="/terms.html">Terms</a><a href="/">Home</a></div>
+</div></nav>
 
-  <p><strong>Short version: no account, no tracking, no ads. Your practice data stays on your device.</strong></p>
+<div class="doc">
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated: 13 August 2026</p>
+
+  <p><strong>Short version: no account, no tracking, no ads. Your progress stays on
+  your device. The one thing that uses the internet is Rampy, the in-app tutor, and
+  only when you tap it.</strong></p>
 
   <h2>What we collect</h2>
-  <p>Nothing. RampUp does not collect, transmit, sell, or share any personal information. There is no account, no sign-up, and no login.</p>
+  <p>No personal information, ever. There is no account, no sign-up and no login. We
+  do not sell or share anything, and there are no advertising or analytics SDKs in
+  RampUp.</p>
+  <p>We never receive your name, email address, phone number, location, contacts, or
+  advertising identifier, because RampUp never asks for them and never reads them.</p>
 
-  <h2>Data stored on your device</h2>
-  <p>If you turn on "Remember my progress" in Settings, RampUp saves your practice statistics, streak, daily goal, review pile, and bookmarks locally on your device (in the app's local storage). This information stays on your device, is never sent anywhere, and is used only to show you your own progress. You can erase it at any time from the app's Settings ("Reset everything").</p>
+  <h2>What stays on your device</h2>
+  <p>Everything except the Rampy requests described below. Specifically: all practice
+  questions, all exam questions, every concept lesson and every narrated explanation
+  are stored in the app itself. Your answers, progress, streak, daily goal, review
+  schedule, bookmarks, exam scores, your starting levels and your daily plan are kept
+  in local storage on the device you are using, are never transmitted, and are erased
+  if you clear your browser data, delete the app, or use “Reset everything” in
+  Settings.</p>
+  <p>The same is true of the onboarding on this website. Your coursework answers and
+  the levels calculated from them are stored in your browser and are not sent anywhere.</p>
 
-  <h2>Network &amp; third parties</h2>
-  <p>RampUp includes no analytics, advertising, or third-party trackers of any kind. All practice, scoring, and explanations run on your device, with no network connection needed.</p>
-  <p>Purchases are the one exception, and only if you buy something. On the web, after you pay, RampUp sends the checkout ID that Stripe put in your return link to our verification endpoint, purely to confirm the payment and unlock what you bought. That request carries no personal information and none of your practice data. On iPhone and iPad, purchases are handled by Apple's App Store and RampUp itself makes no network request at all.</p>
-  <p>As with any website, our web host records ordinary server logs (such as IP address and page requested) when a page loads. We use these only as aggregate traffic counts. They are not linked to your practice data, which never leaves your device.</p>
+  <h2>Rampy, and the one time RampUp uses the internet</h2>
+  <p>Rampy is the tutor built into RampUp. Most of what it does happens entirely on
+  your device with no network connection at all — explaining why an answer is right,
+  why the one you picked is wrong, and finding another question on the same concept.
+  Those never leave your device.</p>
+  <p>Some of what Rampy can do needs a language model, which cannot run on your
+  device. If, and only if, you tap one of those options, RampUp sends a single request
+  to our server, which passes it to Anthropic's API and returns the answer. Nothing is
+  sent unless you tap.</p>
+  <p><strong>What that request contains:</strong> the practice question you are looking
+  at, its answer choices, which one you picked, the correct answer, and RampUp's own
+  written explanation and per-choice notes — so the tutor answers from our material
+  rather than improvising. It also includes the subject, the difficulty level you are
+  working at, how many questions you have answered in that subject and what percentage
+  you got right, and how many days until your test, so the answer can be pitched at the
+  right level.</p>
+  <p><strong>What that request deliberately does not contain:</strong> your name or any
+  way to identify you, because we do not have one. Which courses you told us you have
+  taken. And <em>reading passages are never sent at all</em> — CARS passages and science
+  passages stay on your device.</p>
+  <p><strong>The one identifier:</strong> a random string generated on your device the
+  first time you open RampUp, sent with these requests so we can stop any single device
+  from running up an unreasonable number of them. It is not linked to you, it is not
+  linked to anything else, and it cannot be traced back to a person. Erasing the app
+  erases it.</p>
+  <p><strong>What our server records:</strong> that a request happened — the random
+  string, which kind of request it was, how long it took and how large it was.
+  <strong>Not the question, and not the answer Rampy gave.</strong> Rampy conversations
+  are not stored anywhere, including on your device; the answer disappears when you
+  close it.</p>
+
+  <h2>Payments</h2>
+  <p>We never see or store your card details.</p>
+  <p><strong>On iPhone and iPad</strong>, purchases and subscriptions are handled by
+  Apple. RampUp asks Apple what you are entitled to; that check carries no personal
+  information and none of your practice data. We do not receive your name, email or
+  Apple Account from Apple.</p>
+  <p><strong>On the web</strong>, payment is handled by Stripe, who collect the details
+  needed to take payment and are the controller of that information under their own
+  privacy policy. After you pay, RampUp sends only the checkout session ID from your
+  return link to our verification endpoint, which asks Stripe whether that session was
+  actually paid. We store nothing from that exchange except the unlock, on your device.</p>
+
+  <h2>Third parties in the path</h2>
+  <ul>
+    <li><strong>Cloudflare</strong> runs our two small server functions and, like any
+    host, sees the request including the originating IP address.</li>
+    <li><strong>Anthropic</strong> receives the Rampy prompt and returns the answer.</li>
+    <li><strong>Stripe</strong> processes web payments.</li>
+    <li><strong>GitHub Pages</strong> serves this website and, like any web host,
+    records ordinary server logs. We use those only as aggregate traffic counts and
+    they are not linked to anything you do in the app.</li>
+  </ul>
+  <p>We do not sell personal information, and we do not share it for advertising or
+  cross-context behavioural advertising. There is nothing to sell — we do not hold it.</p>
 
   <h2>Children</h2>
-  <p>RampUp does not collect any data from anyone, including children.</p>
+  <p>RampUp does not collect personal information from anyone, including children. It
+  is study material for a graduate-school admissions test and is not directed at
+  children.</p>
+
+  <h2>Your choices</h2>
+  <p>Because we hold no personal information about you, there is nothing for us to
+  export or delete on request. You control your own data directly: “Reset everything”
+  in Settings erases your progress, and clearing your browser data or deleting the app
+  removes it entirely. If you want a copy of what is stored, it is all in your device's
+  local storage.</p>
 
   <h2>Changes</h2>
-  <p>If this policy ever changes, the updated version will be posted at this URL with a new "last updated" date.</p>
+  <p>If this policy changes, the updated version is posted at this URL with a new
+  “last updated” date.</p>
 
   <h2>Contact</h2>
-  <p>Questions? Email <a href="mailto:melchiorjgg@gmail.com">melchiorjgg@gmail.com</a>.</p>
+  <p><a href="mailto:melchiorjgg@gmail.com">melchiorjgg@gmail.com</a></p>
+</div>
 
-  <p class="muted">RampUp is an independent study aid and is not affiliated with or endorsed by the Association of American Medical Colleges (AAMC).</p>
+<footer><div class="wrap">
+  <div class="foot">
+    <a class="logo" href="/"><span class="logo-mark">R</span> RampUp</a>
+    <div class="foot-links"><a href="/">Home</a><a href="/terms.html">Terms</a><a href="/privacy.html">Privacy</a></div>
+  </div>
+</div></footer>
 </body>
 </html>

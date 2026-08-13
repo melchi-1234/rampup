@@ -2,432 +2,320 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RampUp — MCAT prep that plays like a game</title>
-<meta name="description" content="RampUp is MCAT prep that plays like a game: 377 free questions across all four sections, and when you miss a hard one you get a 40-second narrated walkthrough of the reasoning. No account, runs in your browser." />
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-<meta property="og:title" content="RampUp — MCAT prep that plays like a game" />
-<meta property="og:description" content="377 free questions, and the hard ones come with a 40-second narrated walkthrough of the reasoning. No account, free in your browser." />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>RampUp — MCAT prep that starts where you are</title>
+<meta name="description" content="Every subject starts at its own level, from Preview to MCAT. Concept lessons before anything you haven't been taught, a daily plan built from what you got wrong, spaced review, and timed full-lengths. 7 days free, then $19.99 a month." />
+<link rel="canonical" href="https://rampupmcat.com/" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://rampupmcat.com/" />
-<meta property="og:site_name" content="RampUp" />
+<meta property="og:title" content="RampUp — MCAT prep that starts where you are" />
+<meta property="og:description" content="Every subject starts at its own level, from Preview to MCAT. Biochem can start at Preview while Psych is already at MCAT level. 7 days free." />
 <meta property="og:image" content="https://rampupmcat.com/assets/og-card.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="RampUp — MCAT prep that plays like a game" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="RampUp — MCAT prep that plays like a game" />
-<meta name="twitter:description" content="377 free questions, and the hard ones come with a 40-second narrated walkthrough of the reasoning. No account, free in your browser." />
+<meta name="twitter:title" content="RampUp — MCAT prep that starts where you are" />
+<meta name="twitter:description" content="Every subject starts at its own level, from Preview to MCAT. 7 days free, then $19.99 a month." />
 <meta name="twitter:image" content="https://rampupmcat.com/assets/og-card.png" />
-<style>
-  :root{
-    --violet:#7c3aed; --violet-strong:#6d28d9; --violet-soft:#f1ebff; --lav:#a78bfa;
-    --ink:#181231; --muted:#6b6683; --faint:#9a95ad; --line:#eae6f4;
-    --bg:#ffffff; --wash:#f7f5fc; --amber:#f59e0b; --teal:#0d9488; --pink:#db2777; --orange:#ea580c;
-    --r:16px; --r-lg:22px; --r-xl:30px; --sh:0 4px 18px rgba(88,50,160,.10); --sh-lg:0 18px 50px rgba(88,50,160,.18);
-    --spring:cubic-bezier(.34,1.56,.64,1);
+<meta name="theme-color" content="#7c3aed" />
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<link rel="stylesheet" href="assets/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "RampUp",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web, iOS",
+  "description": "MCAT preparation that sets a separate starting level for every subject, teaches concepts before testing them, and builds a daily plan from what you got wrong.",
+  "url": "https://rampupmcat.com/",
+  "offers": {
+    "@type": "Offer",
+    "price": "19.99",
+    "priceCurrency": "USD",
+    "description": "Monthly subscription with a 7-day free trial. $49.99 every 3 months also available."
   }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.6;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
-  a{color:inherit;text-decoration:none}
-  h1,h2,h3{letter-spacing:-.025em;line-height:1.1;margin:0}
-  .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
-  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:16px;border-radius:999px;
-    padding:14px 26px;border:none;cursor:pointer;transition:transform .18s var(--spring),box-shadow .18s ease;font-family:inherit}
-  .btn svg{width:19px;height:19px}
-  .btn.primary{background:linear-gradient(135deg,var(--lav),var(--violet-strong));color:#fff;box-shadow:0 8px 22px rgba(124,58,237,.35)}
-  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(124,58,237,.42)}
-  .btn.ghost{background:#fff;color:var(--violet);border:1.5px solid var(--line)}
-  .btn.ghost:hover{transform:translateY(-2px);border-color:var(--lav)}
-  .btn.lg{font-size:17px;padding:16px 30px}
-  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:13px;letter-spacing:.04em;
-    text-transform:uppercase;color:var(--violet);background:var(--violet-soft);padding:7px 14px;border-radius:999px}
-
-  /* nav */
-  nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(160%) blur(14px);-webkit-backdrop-filter:saturate(160%) blur(14px);
-    background:rgba(255,255,255,.8);border-bottom:1px solid var(--line)}
-  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px}
-  .brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--lav),var(--violet-strong));
-    display:grid;place-items:center;box-shadow:0 4px 12px rgba(124,58,237,.3)}
-  .brand .logo svg{width:20px;height:20px;color:#fff}
-  .navlinks{display:flex;align-items:center;gap:26px}
-  .navlinks a.txt{font-weight:700;font-size:15px;color:var(--muted)}
-  .navlinks a.txt:hover{color:var(--ink)}
-  @media(max-width:720px){ .navlinks a.txt{display:none} }
-
-  /* hero */
-  .hero{position:relative;padding:70px 0 40px;overflow:hidden}
-  .hero::before{content:"";position:absolute;inset:0;z-index:-1;
-    background:
-      radial-gradient(60% 50% at 78% 0%, #efe7ff 0%, transparent 60%),
-      radial-gradient(50% 45% at 10% 15%, #fdeecf 0%, transparent 55%),
-      radial-gradient(60% 60% at 50% 120%, #e9f7f4 0%, transparent 60%)}
-  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
-  .hero h1{font-size:clamp(38px,5.4vw,60px);font-weight:900}
-  .hero h1 .grad{background:linear-gradient(120deg,var(--violet),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .hero .sub{font-size:clamp(17px,2.2vw,21px);color:var(--muted);margin:20px 0 28px;max-width:33ch}
-  .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-  .cta-note{font-size:13.5px;color:var(--faint);margin-top:16px;display:flex;align-items:center;gap:7px}
-  .cta-note svg{width:16px;height:16px;color:var(--teal)}
-  @media(max-width:860px){
-    .hero .wrap{grid-template-columns:1fr;text-align:center}
-    .hero .sub{margin-left:auto;margin-right:auto}
-    .cta-row{justify-content:center}
-    .cta-note{justify-content:center}
-  }
-
-  /* hero visual: phone + floaties */
-  .stage{position:relative;display:flex;justify-content:center;align-items:flex-end;min-height:520px}
-  .phone{position:relative;width:288px;border-radius:44px;background:#141018;padding:11px;
-    box-shadow:var(--sh-lg),0 0 0 2px rgba(0,0,0,.04);z-index:2}
-  .phone::before{content:"";position:absolute;top:20px;left:50%;transform:translateX(-50%);width:96px;height:26px;background:#141018;border-radius:0 0 16px 16px;z-index:3}
-  .phone img{width:100%;display:block;border-radius:33px}
-  .rampy-hero{position:absolute;left:1%;bottom:-3%;width:132px;z-index:1;filter:drop-shadow(0 16px 26px rgba(124,58,237,.32));animation:bob 3.4s ease-in-out infinite}
-  @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}
-  .floaty{position:absolute;z-index:5;background:#fff;border:1px solid var(--line);border-radius:16px;padding:11px 15px;
-    box-shadow:var(--sh);font-weight:800;font-size:15px;display:flex;align-items:center;gap:9px;animation:float 4s ease-in-out infinite}
-  .floaty .ico{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;color:#fff}
-  .floaty.xp{top:8%;right:-2%} .floaty.xp .ico{background:linear-gradient(135deg,#fbbf24,var(--amber))}
-  .floaty.streak{top:44%;right:-6%;animation-delay:1.2s} .floaty.streak .ico{background:linear-gradient(135deg,#fb7185,#f43f5e)}
-  .floaty.combo{bottom:27%;left:-3%;animation-delay:.6s} .floaty.combo .ico{background:linear-gradient(135deg,#a78bfa,var(--violet-strong))}
-  .floaty svg{width:19px;height:19px}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-  @media(max-width:860px){ .stage{margin-top:26px} .rampy-hero{width:130px;left:2%} }
-  @media(max-width:420px){ .phone{width:250px} .floaty{font-size:13px;padding:9px 12px} .floaty .ico{width:28px;height:28px} }
-
-  /* trust strip */
-  .trust{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--wash)}
-  .trust .wrap{display:flex;flex-wrap:wrap;justify-content:space-around;gap:18px;padding:26px 22px}
-  .trust .stat{text-align:center;min-width:120px}
-  .trust .n{font-size:30px;font-weight:900;letter-spacing:-.03em;background:linear-gradient(120deg,var(--violet),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .trust .l{font-size:13px;color:var(--muted);font-weight:700;margin-top:2px}
-
-  /* sections */
-  section.blk{padding:84px 0}
-  .head{text-align:center;max-width:640px;margin:0 auto 48px}
-  .head h2{font-size:clamp(28px,4vw,42px);font-weight:900;margin:16px 0 12px}
-  .head p{font-size:18px;color:var(--muted);margin:0}
-
-  /* features bento */
-  .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-  .card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;box-shadow:var(--sh);
-    transition:transform .2s var(--spring),box-shadow .2s ease}
-  .card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
-  .card .ic{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;color:#fff;margin-bottom:16px}
-  .card .ic svg{width:26px;height:26px}
-  .card h3{font-size:19px;font-weight:850;margin-bottom:7px}
-  .card p{margin:0;color:var(--muted);font-size:15px}
-  .card.wide{grid-column:span 2}
-  .i-violet{background:linear-gradient(135deg,#8b5cf6,var(--violet-strong))}
-  .i-amber{background:linear-gradient(135deg,#fbbf24,var(--amber))}
-  .i-teal{background:linear-gradient(135deg,#2dd4bf,var(--teal))}
-  .i-pink{background:linear-gradient(135deg,#f472b6,var(--pink))}
-  .i-orange{background:linear-gradient(135deg,#fb923c,var(--orange))}
-  .i-ink{background:linear-gradient(135deg,#4b5563,#1f2937)}
-  @media(max-width:860px){ .bento{grid-template-columns:1fr 1fr} .card.wide{grid-column:span 2} }
-  @media(max-width:560px){ .bento{grid-template-columns:1fr} .card.wide{grid-column:span 1} }
-
-  /* positioning split */
-  .split{background:var(--wash);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-  .split .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;padding:84px 22px}
-  .split h2{font-size:clamp(26px,3.6vw,38px);font-weight:900;margin-bottom:16px}
-  .split p{color:var(--muted);font-size:17px;margin:0 0 14px}
-  .checks{list-style:none;padding:0;margin:22px 0 0}
-  .checks li{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;font-weight:600}
-  .checks .ck{flex:0 0 auto;width:26px;height:26px;border-radius:9px;background:var(--violet-soft);color:var(--violet);display:grid;place-items:center}
-  .checks .ck svg{width:16px;height:16px}
-  .split .art{display:flex;justify-content:center}
-  .split .phone{width:250px}
-  @media(max-width:860px){ .split .wrap{grid-template-columns:1fr;gap:34px} .split .art{order:-1} }
-
-  /* showcase */
-  .shots{display:flex;gap:20px;justify-content:safe center;overflow-x:auto;padding:8px 22px 22px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
-  .shots::-webkit-scrollbar{height:8px} .shots::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
-  .shot{flex:0 0 auto;scroll-snap-align:center;text-align:center}
-  .shot .phone{width:230px}
-  .shot .cap{font-weight:800;font-size:14.5px;margin-top:14px;color:var(--ink)}
-  .shot .cap span{display:block;font-weight:600;color:var(--muted);font-size:13px}
-
-  /* CTA band */
-  .band{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--violet),var(--violet-strong));color:#fff;border-radius:var(--r-xl);
-    padding:60px 30px;text-align:center;margin:0 auto;max-width:1076px}
-  .band::after{content:"";position:absolute;right:-60px;top:-60px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.08)}
-  .band::before{content:"";position:absolute;left:-40px;bottom:-80px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.07)}
-  .band h2{font-size:clamp(28px,4vw,42px);font-weight:900;position:relative}
-  .band p{font-size:18px;opacity:.92;margin:14px auto 26px;max-width:44ch;position:relative}
-  .band .btn.primary{background:#fff;color:var(--violet-strong);box-shadow:0 10px 30px rgba(0,0,0,.2);position:relative}
-  .band .btn.primary:hover{transform:translateY(-2px)}
-
-  /* footer */
-  footer{padding:52px 0 40px;color:var(--muted);font-size:14px}
-  footer .wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:30px;align-items:start}
-  footer .brand{color:var(--ink);margin-bottom:12px}
-  footer .disc{max-width:52ch;line-height:1.6}
-  footer .flinks{display:flex;flex-direction:column;gap:10px}
-  footer .flinks a{font-weight:700;color:var(--muted)} footer .flinks a:hover{color:var(--violet)}
-  footer .copy{margin-top:26px;border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:var(--faint)}
-  @media(max-width:640px){ footer .wrap{grid-template-columns:1fr} }
-
-  /* reveal */
-  .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s var(--spring)}
-  .rv.in{opacity:1;transform:none}
-  @media(prefers-reduced-motion:reduce){
-    *{animation:none!important}
-    html{scroll-behavior:auto}
-    .rv{opacity:1;transform:none;transition:none}
-  }
-</style>
+}
+</script>
 </head>
 <body>
 
 <nav>
-  <div class="wrap">
-    <a class="brand" href="#top">
-      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
-      RampUp
-    </a>
-    <div class="navlinks">
-      <a class="txt" href="#features">Features</a>
-      <a class="txt" href="#how">Why RampUp</a>
-      <a class="btn primary" href="app/" style="padding:11px 20px;font-size:15px">Play free</a>
+  <div class="wrap nav-in">
+    <a class="logo" href="/"><span class="logo-mark">R</span> RampUp</a>
+    <div class="nav-links">
+      <a href="#levels">How it works</a>
+      <a href="#rampy">Rampy</a>
+      <a href="#pricing">Pricing</a>
+      <a class="btn btn-primary nav-cta" href="/start/" data-cta="nav">Start free trial</a>
     </div>
   </div>
 </nav>
 
-<header class="hero" id="top">
-  <div class="wrap">
+<header class="hero">
+  <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow">🧬 Built for future doctors, years early</span>
-      <h1>MCAT prep that <span class="grad">plays like a game</span></h1>
-      <p class="sub">Climb a learning path, keep your streak alive, and level up with Rampy. Real practice across all four sections, disguised as the app you actually want to open.</p>
+      <span class="eyebrow">MCAT preparation</span>
+      <h1>MCAT prep that starts where you are.</h1>
+      <p class="lede">
+        You haven't taken every prerequisite yet, and prep that assumes you have
+        is why most of it feels useless in year two. RampUp sets a
+        <strong>separate starting level for each of the eight subjects</strong> and
+        moves each one on its own as you get stronger.
+      </p>
       <div class="cta-row">
-        <a class="btn primary lg" href="app/">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          Play free in your browser
-        </a>
-        <a class="btn ghost lg" href="#features">See how it works</a>
+        <a class="btn btn-primary btn-lg" href="/start/" data-cta="hero">Start my 7-day free trial</a>
+        <a class="btn btn-ghost btn-lg" href="#levels">See how it works</a>
       </div>
-      <div class="cta-note">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        No account, no download, no cost. Works offline once it loads.
-      </div>
+      <p class="cta-note">Takes about two minutes. No account, no card to see your levels.</p>
     </div>
-    <div class="stage">
-      <div class="phone"><img src="assets/2-path.jpg" alt="RampUp learning path with Rampy the mascot" /></div>
-      <img class="rampy-hero" src="assets/rampy.png" alt="Rampy, the RampUp mascot" />
-      <div class="floaty xp"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12z"/></svg></span>+120 XP</div>
-      <div class="floaty streak"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 3 4 4.5 4 8a4 4 0 0 1-1.2 2.9c.4-1.4-.3-2.6-1.3-3.4.2 1.7-.8 2.7-1.9 3.4-1 .7-2.1 1.6-2.1 3.1a3.5 3.5 0 0 0 7 .2c0-3-2-4-1.8-6.6C15 14 16.5 15.4 16.5 18A6.5 6.5 0 1 1 6 13c0-4 4-4.5 6-11z"/></svg></span>7 day streak</div>
-      <div class="floaty combo"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12z"/></svg></span>Combo x5</div>
+
+    <div class="levelcard" aria-label="Example of per-subject starting levels">
+      <h3>A real student's starting levels</h3>
+      <p class="lc-sub">Two years of coursework done, MCAT about a year out.</p>
+      <div class="lvl-row"><span class="lvl-name">Biochemistry</span><span class="pill p-preview">Preview</span><span class="lvl-bar"><i style="width:12%"></i></span></div>
+      <div class="lvl-row"><span class="lvl-name">Organic Chemistry</span><span class="pill p-easy">Easy</span><span class="lvl-bar"><i style="width:30%"></i></span></div>
+      <div class="lvl-row"><span class="lvl-name">Physics</span><span class="pill p-medium">Medium</span><span class="lvl-bar"><i style="width:52%"></i></span></div>
+      <div class="lvl-row"><span class="lvl-name">General Chemistry</span><span class="pill p-hard">Hard</span><span class="lvl-bar"><i style="width:75%"></i></span></div>
+      <div class="lvl-row"><span class="lvl-name">Psychology</span><span class="pill p-mcat">MCAT</span><span class="lvl-bar"><i style="width:100%"></i></span></div>
+      <p class="tiny" style="margin:14px 0 0">
+        One student, five different levels, all at the same time. That is the point.
+      </p>
     </div>
   </div>
 </header>
 
-<div class="trust">
+<section class="wash">
   <div class="wrap">
-    <div class="stat"><div class="n">377</div><div class="l">practice questions</div></div>
-    <div class="stat"><div class="n">4</div><div class="l">MCAT sections</div></div>
-    <div class="stat"><div class="n">16</div><div class="l">achievements</div></div>
-    <div class="stat"><div class="n">$0</div><div class="l">forever free</div></div>
-    <div class="stat"><div class="n">0</div><div class="l">accounts needed</div></div>
-  </div>
-</div>
-
-<section class="blk" id="features">
-  <div class="wrap">
-    <div class="head rv">
-      <span class="eyebrow">The loop</span>
-      <h2>Studying that hooks like your favorite app</h2>
-      <p>Every piece of the game loop is here, wrapped around real MCAT content that actually teaches.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">553</div><div class="l">practice questions,<br>204 at MCAT level</div></div>
+      <div class="stat"><div class="n">129</div><div class="l">narrated walkthroughs</div></div>
+      <div class="stat"><div class="n">7</div><div class="l">timed exams, including<br>two full 230-question sittings</div></div>
+      <div class="stat"><div class="n">5</div><div class="l">levels per subject,<br>Preview to MCAT</div></div>
     </div>
-    <div class="bento">
-      <div class="card wide rv">
-        <div class="ic i-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg></div>
-        <h3>Climb the learning path</h3>
-        <p>Your home is a path that winds through every MCAT section. Clear a node's bite-sized session to unlock the next, ace it for gold, and watch your progress build like levels in a game.</p>
+  </div>
+</section>
+
+<section id="levels">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:42px">
+      <span class="eyebrow">The core idea</span>
+      <h2>Every subject gets its own level</h2>
+      <p class="lede">
+        Most prep gives you one difficulty setting for everything. That is wrong for
+        anyone mid-degree: you might be a year past Psychology and not have opened
+        a biochem textbook.
+      </p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="ico" aria-hidden="true">🔭</div>
+        <h3>Preview</h3>
+        <p>A subject you have not taken yet. RampUp teaches the concept first and
+           uses gentler questions, so it is stretch practice rather than a wall.</p>
       </div>
-      <div class="card rv">
-        <div class="ic i-amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12z"/></svg></div>
-        <h3>XP, levels &amp; combos</h3>
-        <p>Earn XP for every correct answer, chain combos for bonus points, and climb from Pre-Pre-Med to Future Doctor.</p>
+      <div class="card">
+        <div class="ico" aria-hidden="true">📈</div>
+        <h3>Easy → Medium → Hard</h3>
+        <p>Set from the coursework you have actually finished and how solid it felt.
+           Each subject climbs on its own streak, not on an overall score.</p>
       </div>
-      <div class="card rv">
-        <div class="ic i-orange"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 3 4 4.5 4 8a4 4 0 0 1-1.2 2.9c.4-1.4-.3-2.6-1.3-3.4.2 1.7-.8 2.7-1.9 3.4-1 .7-2.1 1.6-2.1 3.1a3.5 3.5 0 0 0 7 .2c0-3-2-4-1.8-6.6C15 14 16.5 15.4 16.5 18A6.5 6.5 0 1 1 6 13c0-4 4-4.5 6-11z"/></svg></div>
-        <h3>Streaks with freezes</h3>
-        <p>Build a daily habit. Miss a day and a streak freeze saves you, so one busy afternoon never erases your momentum.</p>
-      </div>
-      <div class="card rv">
-        <div class="ic i-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></div>
-        <h3>Spaced repetition</h3>
-        <p>Miss a question and it comes back right before you would forget it, so the things you get wrong become the things you remember.</p>
-      </div>
-      <div class="card rv">
-        <div class="ic i-pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.5 14a5 5 0 1 0-7 0c.7.6 1 1.2 1 2h5c0-.8.3-1.4 1-2z"/></svg></div>
-        <h3>Explain from scratch</h3>
-        <p>Stuck with no idea where to start? Tap once for a plain-language breakdown that builds the concept up from zero.</p>
-      </div>
-      <div class="card wide rv">
-        <div class="ic i-ink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-        <h3>Private by design</h3>
-        <p>No account, no sign-up, no tracking. Everything you do stays on your device, and once the page loads it keeps working with no connection at all. It is your study buddy, not a data funnel.</p>
+      <div class="card">
+        <div class="ico" aria-hidden="true">🎯</div>
+        <h3>MCAT</h3>
+        <p>The earned ceiling: full-difficulty, passage-based reasoning. You get there
+           per subject, by being right consistently, not by paying more.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="split" id="how">
+<section class="wash">
   <div class="wrap">
-    <div>
-      <span class="eyebrow">Why RampUp</span>
-      <h2>Made for students who are ahead of the curve</h2>
-      <p>Most MCAT prep throws full-difficulty passages at you before you have had the coursework. RampUp meets you where you are, then grows as your classes do.</p>
-      <ul class="checks">
-        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Adaptive difficulty rises when you are on a roll and eases back when you are not.</span></li>
-        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Preview mode lets you peek into subjects you have not taken yet, starting gently.</span></li>
-        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Original questions across Chem/Phys, Bio/Biochem, Psych/Soc, and CARS.</span></li>
-        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>A dashboard that shows your accuracy by section as you go.</span></li>
+    <div class="center" style="margin-bottom:40px">
+      <span class="eyebrow">What a day looks like</span>
+      <h2>A plan built from what you actually got wrong</h2>
+      <p class="lede">Four rules decide your day, in this order. You can see why each block is there.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div><h3>Clear what is due for review</h3>
+        <p>Questions you missed come back on the day you are most likely to be
+           forgetting them. Postponing review is the most expensive habit in
+           spaced repetition, so it goes first.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div><h3>Work on a pattern RampUp has spotted</h3>
+        <p>Not a vague nudge — a measured one. "You've missed acid–base 4 of the 9
+           times it came up this week," or "you're at 78% on standalone Physics
+           questions and 41% once there's a passage."</p></div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div><h3>Learn something new to you</h3>
+        <p>For a Preview subject, the concept lesson comes before the first
+           question — you are never tested on material RampUp knows you have not
+           been taught.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <div><h3>Sit a timed exam when it is time</h3>
+        <p>Seven of them: two full-length 230-question simulations across four
+           timed sections, two half-lengths, and three short timed sets.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rampy">
+  <div class="wrap narrow center">
+    <span class="eyebrow">The proof it is working</span>
+    <h2>Rampy explains the question you just missed</h2>
+    <p class="lede" style="margin-bottom:26px">
+      Rampy is a coach that sits inside the question, not a chatbot bolted on the side.
+      When you get something wrong it already has the question, the answer you chose,
+      the correct answer, and RampUp's own written explanation — so you never have to
+      re-type or re-explain anything.
+    </p>
+    <div class="grid" style="text-align:left">
+      <div class="card">
+        <h3>Why was mine wrong?</h3>
+        <p>It answers about the specific choice you picked and the misconception it
+           points to, not the question in general.</p>
+      </div>
+      <div class="card">
+        <h3>Content, or reasoning?</h3>
+        <p>It can tell you whether you missed the concept or misread the passage —
+           different problems with different fixes.</p>
+      </div>
+      <div class="card">
+        <h3>Another on the same idea</h3>
+        <p>It finds a real, verified question from the bank on the same concept
+           rather than inventing one.</p>
+      </div>
+    </div>
+    <p class="small" style="margin-top:22px; max-width:640px; margin-left:auto; margin-right:auto">
+      Rampy answers from RampUp's own explanations rather than improvising. That
+      constraint is deliberate — it is why its answers agree with the material you
+      are being graded against.
+    </p>
+  </div>
+</section>
+
+<section class="wash" id="pricing">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:34px">
+      <span class="eyebrow">Pricing</span>
+      <h2>One subscription. Everything included.</h2>
+      <p class="lede">No tiers, no separate exam purchases, nothing held back for an upgrade.</p>
+    </div>
+
+    <div class="price-card">
+      <div class="price-tag">$19.99<span> / month</span></div>
+      <p class="price-alt">or $49.99 every 3 months — about $16.66 a month</p>
+      <a class="btn btn-primary btn-lg btn-block" href="/start/" data-cta="pricing">Start my 7-day free trial</a>
+      <p class="tiny" style="margin:12px 0 0">7 days free, then billed until you cancel. Cancel any time.</p>
+      <ul class="incl">
+        <li>All 553 practice questions, 204 of them at MCAT level</li>
+        <li>Per-subject levels from Preview to MCAT, moving independently</li>
+        <li>Concept lessons across 12 courses, before you are tested</li>
+        <li>129 narrated walkthroughs of the questions people miss most</li>
+        <li>7 timed exams, including two full 230-question sittings</li>
+        <li>Spaced review and a daily plan built from your own misses</li>
+        <li>Rampy on every question</li>
       </ul>
     </div>
-    <div class="art">
-      <div class="phone"><img src="assets/3-question.jpg" alt="An MCAT-level RampUp practice question on peptide ionization state" /></div>
-    </div>
   </div>
 </section>
 
-<section class="blk">
-  <div class="wrap">
-    <div class="head rv">
-      <span class="eyebrow">A look inside</span>
-      <h2>Small sessions, big payoff</h2>
-      <p>Ten questions at a time, a satisfying finish, and Rampy cheering you on.</p>
-    </div>
-  </div>
-  <div class="shots">
-    <div class="shot rv"><div class="phone"><img src="assets/1-onboarding.jpg" alt="Onboarding: what year are you in" /></div><div class="cap">Meets you where you are<span>Tuned to your coursework</span></div></div>
-    <div class="shot rv"><div class="phone"><img src="assets/2-path.jpg" alt="The learning path" /></div><div class="cap">Climb the path<span>Unlock nodes, earn gold</span></div></div>
-    <div class="shot rv"><div class="phone"><img src="assets/3-question.jpg" alt="An MCAT-level RampUp practice question" /></div><div class="cap">Learn every miss<span>Explain-from-scratch on tap</span></div></div>
-    <div class="shot rv"><div class="phone"><img src="assets/4-summary.jpg" alt="Session celebration screen" /></div><div class="cap">Celebrate the win<span>XP, accuracy, best combo</span></div></div>
-    <div class="shot rv"><div class="phone"><img src="assets/5-awards.jpg" alt="Achievements shelf" /></div><div class="cap">Collect achievements<span>16 badges to chase</span></div></div>
+<section>
+  <div class="wrap faq">
+    <h2 class="center" style="margin-bottom:26px">Questions</h2>
+
+    <details>
+      <summary>Can I see my starting levels before paying?</summary>
+      <div class="body"><p>Yes. The onboarding is free and needs no account and no card.
+      You answer a few questions about your coursework and see a real level for every
+      subject plus your first day's plan. The subscription is what unlocks the practice
+      itself.</p></div>
+    </details>
+
+    <details>
+      <summary>Is this a replacement for AAMC official material?</summary>
+      <div class="body"><p>No, and you should sit the official practice too. RampUp is
+      original material written to match MCAT structure and level, aimed at the stretch
+      before and between official full-lengths. We are not affiliated with the AAMC.</p></div>
+    </details>
+
+    <details>
+      <summary>Will RampUp predict my score?</summary>
+      <div class="body"><p>Only from a timed full-length or half-length sitting, and it is
+      clearly labelled as an unofficial estimate. We deliberately do not project a score
+      from everyday practice: the difficulty adapts to you, so that number would mostly
+      measure the adapting, not your ability.</p></div>
+    </details>
+
+    <details>
+      <summary>What happens to my progress if I cancel?</summary>
+      <div class="body"><p>Your progress is stored on your own device, so it stays there.
+      Access to the questions, exams and Rampy ends when the subscription does.</p></div>
+    </details>
+
+    <details>
+      <summary>Do I need an account?</summary>
+      <div class="body"><p>No. There is no sign-up and no login. Your progress lives in
+      your browser or on your phone, which is also why it does not follow you between
+      devices automatically.</p></div>
+    </details>
+
+    <details>
+      <summary>I bought exams from RampUp before. What happens to them?</summary>
+      <div class="body"><p>You keep them, permanently. Anything bought under the old
+      one-time pricing stays unlocked and is not affected by the subscription.</p></div>
+    </details>
   </div>
 </section>
 
-<style>
-  #pro .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
-  #pro .tier-card{background:var(--bg);border:1.5px solid var(--line);border-radius:var(--r-lg);padding:26px;box-shadow:var(--sh)}
-  #pro .tier-name{font-weight:800;font-size:13.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--violet)}
-  #pro .tier-price{font-size:34px;font-weight:900;margin:8px 0 2px}
-  #pro .tier-price span{font-size:15px;font-weight:700;color:var(--faint)}
-  #pro .tier-sub{color:var(--muted);font-weight:700;font-size:14px;margin-bottom:14px}
-  #pro .tier-list{list-style:none;padding:0;margin:0;display:grid;gap:9px}
-  #pro .tier-list li{position:relative;padding-left:24px;font-size:15px;color:var(--ink)}
-  #pro .tier-list li::before{content:"\2713";position:absolute;left:0;top:0;color:var(--teal);font-weight:900}
-  #pro .pro-band{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:20px;
-    background:linear-gradient(135deg,var(--lav),var(--violet-strong));color:#fff;border-radius:var(--r-xl);padding:28px 32px;box-shadow:var(--sh-lg)}
-  #pro .pro-band h3{font-size:23px;margin:7px 0 5px}
-  #pro .pro-band p{margin:0;color:rgba(255,255,255,.92);font-size:15px;max-width:52ch}
-  #pro .pro-tag{display:inline-block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;background:rgba(255,255,255,.22);padding:4px 11px;border-radius:999px}
-  #pro .pro-price{text-align:right;white-space:nowrap}
-  #pro .pro-price .amt{display:block;font-size:40px;font-weight:900;line-height:1}
-  #pro .pro-price .once{font-size:14px;color:rgba(255,255,255,.88);font-weight:700}
-  #pro .pro-foot{text-align:center;color:var(--faint);font-size:13px;margin-top:16px;line-height:1.6;max-width:60ch;margin-left:auto;margin-right:auto}
-  @media(max-width:820px){ #pro .tiers{grid-template-columns:1fr} #pro .pro-band{flex-direction:column;text-align:center} #pro .pro-price{text-align:center} }
-</style>
-<section class="blk" id="pro">
-  <div class="wrap">
-    <div class="head rv">
-      <span class="eyebrow">Go deeper</span>
-      <h2>Top-tier prep, a fraction of the price</h2>
-      <p>The free app already has 377 questions, 121 narrated walkthroughs, and everything you need to build the habit. When you want the real thing, RampUp Pro adds full-length, exam-quality simulations with a projected score, for a fraction of what the big prep companies charge for a single test. No subscriptions, ever, just a one-time unlock.</p>
-    </div>
-    <div class="tiers rv">
-      <div class="tier-card">
-        <div class="tier-name">Short Exams</div>
-        <div class="tier-price">$4.99 <span>bundle</span></div>
-        <div class="tier-sub">All 3 short exams</div>
-        <ul class="tier-list">
-          <li>Quick mixed-section sittings</li>
-          <li>Brand-new held-out questions</li>
-          <li>Projected score after each</li>
-        </ul>
-      </div>
-      <div class="tier-card">
-        <div class="tier-name">Half-Length</div>
-        <div class="tier-price">$3.99 <span>each</span></div>
-        <div class="tier-sub">2 available</div>
-        <ul class="tier-list">
-          <li>4 timed sections, about 4 hours</li>
-          <li>Real exam pacing</li>
-          <li>Per-section projected scores</li>
-        </ul>
-      </div>
-      <div class="tier-card">
-        <div class="tier-name">Full-Length</div>
-        <div class="tier-price">$7.99 <span>each</span></div>
-        <div class="tier-sub">2 available</div>
-        <ul class="tier-list">
-          <li>230 questions, 4 sections</li>
-          <li>About 7.5 hours, like the real MCAT</li>
-          <li>Full readiness breakdown</li>
-        </ul>
-      </div>
-    </div>
-    <div class="pro-band rv">
-      <div>
-        <span class="pro-tag">Best value</span>
-        <h3>RampUp Pro, everything for one price</h3>
-        <p>All 3 short, 2 half-length, and 2 full-length exams, every future exam, plus the readiness dashboard.</p>
-      </div>
-      <div class="pro-price"><span class="amt">$19.99</span><span class="once">one-time, no subscription</span></div>
-    </div>
-    <div class="rv" style="text-align:center;margin-top:26px">
-      <a class="btn primary lg" href="app/">Open RampUp and unlock an exam</a>
-      <p style="margin-top:12px;font-size:15px;color:var(--muted)">Exams unlock inside the app, and the 377 free questions never ask for a card.</p>
-    </div>
-    <p class="pro-foot">Buying every exam separately is about $29, so Pro is the deal. Projected scores are unofficial estimates and RampUp is not affiliated with the AAMC.</p>
-  </div>
-</section>
-
-<section class="blk" style="padding-top:20px">
-  <div class="wrap">
-    <div class="band rv">
-      <h2>Start your first climb</h2>
-      <p>Open RampUp right now, answer your first ten questions, and see how good a study streak can feel.</p>
-      <a class="btn primary lg" href="app/">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        Play free in your browser
-      </a>
-    </div>
+<section class="wash">
+  <div class="wrap narrow center">
+    <h2>See where you'd actually start</h2>
+    <p class="lede" style="margin-bottom:24px">Two minutes, no account, no card.</p>
+    <a class="btn btn-primary btn-lg" href="/start/" data-cta="footer">Start my 7-day free trial</a>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <div>
-      <div class="brand"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span> RampUp</div>
-      <p class="disc">RampUp is an independent study aid. It is not affiliated with, endorsed by, or sponsored by the Association of American Medical Colleges (AAMC), which administers the MCAT exam. "MCAT" is used only to describe the exam this app helps you prepare for.</p>
+    <div class="foot">
+      <a class="logo" href="/"><span class="logo-mark">R</span> RampUp</a>
+      <div class="foot-links">
+        <a href="/start/">Start</a>
+        <a href="#pricing">Pricing</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="mailto:melchiorjgg@gmail.com">Support</a>
+      </div>
     </div>
-    <div class="flinks">
-      <a href="app/">Play the app</a>
-      <a href="#features">Features</a>
-      <a href="#pro">Pro exams</a>
-      <a href="privacy.html">Privacy</a>
-    </div>
+    <p class="legal">
+      RampUp is independent study material and is not affiliated with, endorsed by, or
+      sponsored by the Association of American Medical Colleges. MCAT® is a registered
+      trademark of the AAMC. Subscriptions renew automatically until cancelled.
+      © <span id="yr">2026</span> RampUp.
+    </p>
   </div>
-  <div class="wrap"><div class="copy">© 2026 Melchior Goldfarb. Made with care for people who study early.</div></div>
 </footer>
 
+<script src="assets/funnel.js"></script>
 <script>
-  (function(){
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var io = new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
-    }, { threshold:.14 });
-    document.querySelectorAll(".rv").forEach(function(el){ io.observe(el); });
-  })();
+  document.getElementById("yr").textContent = new Date().getFullYear();
+  RU.load();
+  RU.track("landing_view", { path: location.pathname });
+  document.querySelectorAll("[data-cta]").forEach(function (a) {
+    a.addEventListener("click", function () {
+      RU.track("cta_click", { where: a.dataset.cta });
+    });
+  });
 </script>
 </body>
 </html>
