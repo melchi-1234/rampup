@@ -36,7 +36,7 @@
   "use strict";
 
   var LINKS = {
-    sub_monthly:   "",   // <- paste the Stripe Payment Link
+    sub_monthly:   "https://buy.stripe.com/bJe00k0iA8M183SbfEdIA07",
     sub_quarterly: ""    // <- paste the Stripe Payment Link
   };
 
@@ -65,6 +65,14 @@
 
   function linkFor(key) { return (LINKS[key] || "").trim(); }
   function isLive() { return PLANS.some(function (p) { return linkFor(p.key); }); }
+  /* Only plans that can actually be bought. Without this, a half-configured
+     state shows a plan whose button cannot complete -- and the default selected
+     plan is the quarterly one, so that is exactly the button most people would
+     press first. */
+  function buyablePlans() {
+    var live = PLANS.filter(function (p) { return linkFor(p.key); });
+    return live.length ? live : PLANS;
+  }
   function planByKey(k) { return PLANS.filter(function (p) { return p.key === k; })[0] || null; }
 
   /* Returns false when there is nothing to send them to. The caller must render
@@ -78,7 +86,7 @@
   }
 
   global.RUBilling = {
-    PLANS: PLANS, TRIAL_DAYS: TRIAL_DAYS,
+    PLANS: PLANS, TRIAL_DAYS: TRIAL_DAYS, buyablePlans: buyablePlans,
     isLive: isLive, linkFor: linkFor, planByKey: planByKey, startCheckout: startCheckout
   };
 })(window);

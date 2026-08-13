@@ -468,7 +468,8 @@
       '<p class="sub">Full access to everything below. Your levels and plan are already set up and waiting.</p>';
 
     h += '<div class="opts" id="plans">';
-    RUBilling.PLANS.forEach(function (p, i) {
+    var SHOWN = RUBilling.buyablePlans();
+    SHOWN.forEach(function (p, i) {
       var sel = i === 0;
       h += '<button class="opt planopt" type="button" data-plan="' + p.key + '" aria-pressed="' + sel + '">' +
         '<span class="pl-label">' + esc(p.label) + (p.best ? ' <span class="pl-flag">' + esc(p.save) + '</span>' : '') + '</span>' +
@@ -522,7 +523,7 @@
     repaintArt();
     RU.track("paywall_view", { billingLive: live });
 
-    var chosen = RUBilling.PLANS[0].key;
+    var chosen = SHOWN[0].key;
     function paint() {
       view.querySelectorAll("[data-plan]").forEach(function (b) {
         b.setAttribute("aria-pressed", String(b.dataset.plan === chosen));
