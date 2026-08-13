@@ -2,7 +2,13 @@
    One file so the homepage, onboarding, terms and privacy cannot drift apart. */
 :root{
   --violet:#7c3aed; --violet-strong:#6d28d9; --violet-soft:#f2ecff; --lav:#a78bfa;
-  --ink:#181231; --muted:#5f5a76; --faint:#7a7590;
+  --ink:#181231; --muted:#5f5a76;
+  /* --faint measured 2026-08-13: #7a7590 was 4.40:1 on white and 4.10:1 on the
+     wash background, failing WCAG AA (4.5) for the real text that uses it —
+     .tiny, .cta-note, .lc-sub, .catname, the reveal stat labels. #71707b is
+     4.55 on wash / 4.88 on white, and deliberately stays LIGHTER than --muted
+     (6.10 on wash) so the three-tier type hierarchy survives the fix. */
+  --faint:#71707b;
   --line:#e9e5f4; --bg:#ffffff; --wash:#f8f6fd;
   --amber:#f59e0b; --teal:#0d9488; --pink:#db2777; --orange:#ea580c; --ok:#0d9f6e;
   --r:14px; --r-lg:20px; --r-xl:26px;
