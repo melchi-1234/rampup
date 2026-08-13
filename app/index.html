@@ -351,7 +351,7 @@
   .storage-status{display:flex; gap:7px; align-items:center; font-size:13px; color:var(--muted); margin-top:5px}
   .storage-status .btn.link{background:none; border:none; padding:0; font:inherit; font-size:13px; font-weight:800; color:var(--accent); cursor:pointer; text-decoration:underline; min-height:0}
   .datepick{display:inline-flex; gap:8px; align-items:center; flex-wrap:wrap}
-  .datepick input[type=date], .datepick input[type=time]{font:inherit; font-size:14px; font-weight:650; color:var(--text); background:var(--card);
+  .datepick input[type=date], .datepick input[type=time]{font:inherit; font-size:16px; font-weight:650; color:var(--text); background:var(--card);
     border:1.5px solid var(--border); border-radius:var(--r-sm); padding:9px 11px; min-height:44px; cursor:pointer}
   .datepick input[type=date]:focus-visible, .datepick input[type=time]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .datepick input:disabled{opacity:.5; cursor:not-allowed}
@@ -402,16 +402,18 @@
 
   /* bottom sheet (paywall, code entry) */
   #sheetRoot{position:fixed; inset:0; z-index:9500; display:flex; align-items:flex-end; justify-content:center}
+  #sheetRoot:not(.in){pointer-events:none}
   #sheetRoot[hidden]{display:none}
   .sheet-scrim{position:absolute; inset:0; background:rgba(10,8,20,.55); backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); opacity:0; transition:opacity var(--dur) var(--ease)}
   #sheetRoot.in .sheet-scrim{opacity:1}
-  .sheet{position:relative; width:100%; max-width:520px; background:var(--card); border:1px solid var(--border);
+  .sheet{overscroll-behavior:contain; position:relative; width:100%; max-width:520px; background:var(--card); border:1px solid var(--border);
     border-radius:var(--r-xl) var(--r-xl) 0 0; box-shadow:0 -12px 40px rgba(0,0,0,.28);
     padding:10px 20px calc(22px + env(safe-area-inset-bottom,0px)); max-height:88dvh; overflow-y:auto;
     transform:translateY(100%); transition:transform var(--dur-slow) var(--spring)}
   #sheetRoot.in .sheet{transform:translateY(0)}
   .sheet-grip{width:38px; height:4px; border-radius:3px; background:var(--border-strong); margin:6px auto 12px;
     cursor:grab; touch-action:none; position:relative}
+  .pdfbtn.exrev{right:92px}
   .sheet-grip::before{content:""; position:absolute; inset:-14px -46px}
   .sheet-x{position:absolute; top:10px; right:12px; width:34px; height:34px; border-radius:50%;
     border:1px solid var(--border); background:var(--card); color:var(--muted); font-size:14px;
@@ -520,7 +522,7 @@
   .ry-lead{display:flex; align-items:center; gap:10px; font-size:14.5px; line-height:1.45; color:var(--text)}
   .ry-lead .rampy{width:34px; height:34px; flex:0 0 auto}
   .ry-chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:11px}
-  .ry-chip{font:inherit; font-weight:700; font-size:13.5px; cursor:pointer; min-height:38px;
+  .ry-chip{font:inherit; font-weight:700; font-size:13.5px; cursor:pointer; min-height:44px;
     padding:8px 13px; border-radius:var(--pill); color:var(--accent);
     background:var(--card); border:1.5px solid color-mix(in srgb,var(--accent) 34%,transparent)}
   .ry-chip.on{background:var(--accent); color:#fff; border-color:var(--accent)}
@@ -992,7 +994,7 @@
   .node:focus-visible .disc{outline:3px solid var(--accent); outline-offset:3px}
 
   /* toast + wrong-answer shake */
-  .toast{position:fixed; bottom:96px; left:50%; transform:translateX(-50%); z-index:9600; max-width:88vw;
+  .toast{pointer-events:none; position:fixed; bottom:96px; left:50%; transform:translateX(-50%); z-index:9600; max-width:88vw;
     background:var(--text); color:var(--bg); padding:11px 20px; border-radius:var(--pill); font-weight:750; font-size:14px;
     box-shadow:var(--sh-3); animation:toastIn .3s var(--spring); text-align:center}
   .toast.out{opacity:0; transition:opacity .35s ease}
@@ -5017,6 +5019,7 @@ function openSheet(html){
   // inert removes the background from BOTH the tab order and the a11y tree, which
   // aria-hidden alone does not do.
   const app = $("#app"); if (app) app.setAttribute("inert","");
+  document.body.style.overflow = "hidden";   // the page must not scroll behind a sheet
   $("#sheetScrim").onclick = closeSheet;
   const _x = root.querySelector(".sheet-x"); if (_x) _x.onclick = closeSheet;
   _wireGrip(root);
@@ -5076,10 +5079,13 @@ function _sheetTrap(e){
 let _sheetCloseTimer = null;
 function closeSheet(){
   const root = $("#sheetRoot"); root.classList.remove("in");
+  document.body.style.overflow = "";
   document.removeEventListener("keydown", _sheetEsc);
   document.removeEventListener("keydown", _sheetTrap, true);
   const app = $("#app"); if (app) app.removeAttribute("inert");
-  const done = () => { root.hidden = true; root.setAttribute("aria-hidden","true"); $("#sheetBody").innerHTML = "";
+  const done = () => {
+    if (root.classList.contains("in")) return;   // re-opened during the fade — leave it alone
+    root.hidden = true; root.setAttribute("aria-hidden","true"); $("#sheetBody").innerHTML = "";
     if (_sheetPrevFocus){ try { _sheetPrevFocus.focus({ preventScroll:true }); } catch(e){} } };
   if (REDUCED_MOTION) done(); else _sheetCloseTimer = setTimeout(done, 260);
 }
@@ -8297,7 +8303,7 @@ function renderTestHub(){
           <span class="tmeta">${meta}</span></span>
         <span class="go">${icon("arrowRight")}</span></button>
         <button class="pdfbtn" data-pdf="${t.id}" aria-label="Download printable PDF">${icon("download")} PDF</button>${
-          state.examReviews[t.id] ? `<button class="pdfbtn" data-exreview="${t.id}" aria-label="Review your answers">${icon("check")} Review</button>` : ""}</div>`
+          state.examReviews[t.id] ? `<button class="pdfbtn exrev" data-exreview="${t.id}" aria-label="Review your answers">${icon("check")} Review</button>` : ""}</div>`
         : `<button class="testcard prem lockedpro" data-prem="${t.id}">
         <span class="ti">${icon("lock")}</span>
         <span class="tbody"><span class="tt">${esc(t.title)} <span class="protag">PRO</span></span>
@@ -8683,6 +8689,9 @@ document.addEventListener("keydown", (e) => {
   // A sheet owns the keyboard while it is open. Without this, Escape closed
   // the Rampy sheet AND quit the whole session in the same keypress.
   const _sr = $("#sheetRoot"); if (_sr && !_sr.hidden) return;
+  // Concept-teach cards render no question: shortcuts would score the hidden
+  // one underneath and then crash on the missing DOM.
+  if (state.cardFlow) return;
   const entry = state.history[state.cursor]; if (!entry) return;
   const k = e.key;
   if (!entry.answered){
@@ -8691,6 +8700,14 @@ document.addEventListener("keydown", (e) => {
     else if (k.length === 1){ const up = k.toUpperCase(); if (up >= "A" && up <= "D") idx = "ABCD".indexOf(up); }
     if (idx >= 0 && idx < entry.q.choices.length){ e.preventDefault(); choose(idx); return; }
     if (k === "i" || k === "I"){ e.preventDefault(); idkAnswer(); return; }
+  }
+  if (k === "Enter"){
+    // Enter belongs to whatever control has focus (Back, star, a Rampy chip) —
+    // hijacking it here made Enter-on-Back advance FORWARD. Only treat Enter as
+    // "next" when nothing (or the next button itself) is focused.
+    const ae = document.activeElement;
+    if (ae && ae !== document.body && ae.id !== "nextQ"
+        && (ae.tagName === "BUTTON" || ae.tagName === "A" || ae.tagName === "SUMMARY")) return;
   }
   if (k === "Enter" || k === "ArrowRight"){ const nb = $("#questionCard #nextQ"); if (nb && !nb.disabled){ e.preventDefault(); serveNext(); } return; }
   if (k === "ArrowLeft"){ e.preventDefault(); goBack(); return; }
@@ -8702,6 +8719,10 @@ document.addEventListener("keydown", (e) => {
 document.addEventListener("keydown", (e) => {
   if (state.view !== "testrun" || !state.test) return;
   const _sr2 = $("#sheetRoot"); if (_sr2 && !_sr2.hidden) return;
+  // Between sections only the intro screen is up: number keys were silently
+  // answering the LOCKED previous section, and Enter started sections with no
+  // timer. The intro's own button handles its keys.
+  if ($("#sectBegin")) return;
   const tag = (e.target && e.target.tagName || "").toLowerCase();
   if (tag === "input" || tag === "textarea" || tag === "select") return;
   const T = state.test, q = T.queue[T.idx], k = e.key;
@@ -8709,6 +8730,13 @@ document.addEventListener("keydown", (e) => {
   if (k >= "1" && k <= "4") idx = +k - 1;
   else if (k.length === 1){ const up = k.toUpperCase(); if (up >= "A" && up <= "D") idx = "ABCD".indexOf(up); }
   if (idx >= 0 && idx < q.choices.length){ e.preventDefault(); selectTestChoice(idx); return; }
+  if (k === "Enter"){
+    // Same rule as practice: a focused choice takes Enter (recording the answer
+    // via its own click), instead of advancing past it unanswered.
+    const ae = document.activeElement;
+    if (ae && ae !== document.body && ae.id !== "testNext"
+        && (ae.tagName === "BUTTON" || ae.tagName === "A" || ae.tagName === "SUMMARY")) return;
+  }
   if (k === "Enter" || k === "ArrowRight"){ e.preventDefault(); T.idx === T.queue.length-1 ? confirmFinishTest() : testGo(1); return; }
   if (k === "ArrowLeft"){ e.preventDefault(); testGo(-1); return; }
   if (k === "f" || k === "F"){ e.preventDefault(); toggleTestFlag(); return; }
