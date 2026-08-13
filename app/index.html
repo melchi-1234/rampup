@@ -4119,7 +4119,7 @@ const STRIPE_LINKS = {
 // Cloudflare Worker that verifies a Stripe checkout session before unlocking.
 // Empty => web checkout stays "coming soon" (never take money we cannot verify).
 const VERIFY_ENDPOINT = "https://still-fire-9735.melchiorjgg.workers.dev/";
-const SUPPORT_EMAIL = "melchiorjgg@gmail.com";
+const SUPPORT_EMAIL = "rampupmcat@gmail.com";
 const StripeProvider = {
   id:"stripe",
   async getProducts(){ return Object.keys(PRICE).map(k => ({ id:k, price:PRICE[k] })); },
