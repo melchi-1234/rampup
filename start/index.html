@@ -139,6 +139,10 @@
     background:url(/assets/rampy/celebrate-sprite.png) 0 0/400% 100% no-repeat;
     animation:rampyPlay 1.1s steps(4) infinite;
   }
+  .rampy-sprite-think{
+    background-image:url(/assets/rampy/think-sprite.png);
+    animation-duration:2.2s;   /* thinking is calmer than celebrating */
+  }
   @keyframes rampyPlay{to{background-position:-384px 0}}
   @media(max-width:520px){ .step-art{margin-bottom:12px} .step-art svg,.rampy-img{width:74px;height:74px} }
   /* Step entrance: each panel rises in. Cheap, premium, and honest to reduced-motion. */
@@ -326,6 +330,8 @@
     if (mood === "sad" || mood === "sleep") mood = "think";
     if (mood === "celebrate")
       return '<div class="step-art"><div class="rampy-sprite" role="img" aria-label=""></div></div>';
+    if (mood === "think")
+      return '<div class="step-art"><div class="rampy-sprite rampy-sprite-think" role="img" aria-label=""></div></div>';
     return '<div class="step-art"><img class="rampy-img" src="/assets/rampy/' + mood +
            '.png" alt="" width="96" height="96" decoding="async" /></div>';
   }
