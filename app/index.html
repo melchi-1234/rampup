@@ -458,6 +458,12 @@
     color:var(--text); padding:8px 14px; border-radius:16px 16px 4px 16px}
   .ry-msg.from-rampy{color:var(--text); max-width:96%; line-height:1.6}
   .ry-msg .ry-src{display:block; margin-top:6px}
+  .ry-save{display:inline-flex; align-items:center; gap:5px; margin-top:8px; font:inherit; font-size:12.5px;
+    font-weight:750; color:var(--muted); background:var(--surface); border:1px solid var(--border-strong);
+    border-radius:var(--pill); padding:7px 12px; min-height:34px; cursor:pointer}
+  .ry-save:hover{color:var(--accent); border-color:var(--accent)}
+  .ry-save svg{width:13px; height:13px}
+  .ry-save[disabled]{opacity:.55; cursor:default}
   .ry-out{max-height:min(44dvh, 380px); overflow-y:auto; overscroll-behavior:contain;
     scroll-behavior:smooth; padding-right:2px}
   @media (min-width:560px){ #sheetRoot{align-items:center} .sheet{border-radius:var(--r-xl); margin:0 16px} }
@@ -3665,6 +3671,7 @@ function serialize(){
     mode:state.mode, focus:[...state.focus], persist:state.persist,
     xp:state.xp, level:state.level, achievements:state.achievements, streakFreezes:state.streakFreezes,
     sound:state.sound, sessionsCompleted:state.sessionsCompleted, bestCombo:state.bestCombo,
+    ryGeneralThread:state.ryGeneralThread, rampyNotes:state.rampyNotes, rampyIntroDone:state.rampyIntroDone, onboardXp:state.onboardXp,
     celebratedStreak:state.celebratedStreak, previewAnswered:state.previewAnswered,
     reviewCleared:state.reviewCleared, perfectSessions:state.perfectSessions, path:state.path,
     testScores:state.testScores, testsCompleted:state.testsCompleted, conceptsSeen:state.conceptsSeen,
@@ -4490,6 +4497,9 @@ function rehydrate(s){
   state.focus = new Set(s.focus && s.focus.length ? s.focus : ["Chem/Phys","Bio/Biochem","Psych/Soc","CARS"]);
   state.persist = s.persist !== false;
   state.xp = s.xp || 0; state.level = levelForXp(state.xp).level;
+  state.ryGeneralThread = Array.isArray(s.ryGeneralThread) ? s.ryGeneralThread.slice(-24) : [];
+  state.rampyNotes = Array.isArray(s.rampyNotes) ? s.rampyNotes.slice(-100) : [];
+  state.rampyIntroDone = !!s.rampyIntroDone; state.onboardXp = !!s.onboardXp;
   state.achievements = Array.isArray(s.achievements) ? s.achievements : [];
   state.streakFreezes = (typeof s.streakFreezes === "number") ? s.streakFreezes : 2;
   state.sound = s.sound !== false;
@@ -7283,6 +7293,7 @@ function openRampyGeneral(){
       <div class="ry-actions">
         <button class="ry-chip" data-rg="What should I focus on today, given where I am?">What should I do today?</button>
         <button class="ry-chip" data-rg="Explain the topic I have been getting wrong most, from the beginning.">Teach my weak spot</button>
+        <button class="ry-chip" id="ryNotes">My notes</button>
       </div>
       <div class="ry-ask">
         <input id="ryInput" type="text" autocomplete="off" enterkeyhint="send" maxlength="600"
@@ -7297,6 +7308,17 @@ function openRampyGeneral(){
   };
   $("#sheetBody").querySelectorAll("[data-rg]").forEach(b =>
     b.addEventListener("click", () => send(b.dataset.rg)));
+  const nb = $("#ryNotes");
+  if (nb) nb.addEventListener("click", () => {
+    const notes = state.rampyNotes || [];
+    const out = $("#ryOut"); if (!out) return;
+    out.innerHTML = notes.length
+      ? notes.slice().reverse().map(n =>
+          `<div class="ry-msg from-rampy">${sci(n.text).replace(/\n\n/g,"<br><br>").replace(/\n/g,"<br>")}
+           <span class="ry-src">${icon("bookmark")} Saved ${new Date(n.ts).toLocaleDateString()}</span></div>`).join("")
+      : `<div class="ry-empty">Nothing saved yet. Tap "Save" under any of my answers and it lands here.</div>`;
+    out.scrollTop = 0;
+  });
   $("#rySend").addEventListener("click", () => { const i = $("#ryInput"); send(i.value); i.value = ""; });
   $("#ryInput").addEventListener("keydown", (e) => {
     if (e.key === "Enter"){ e.preventDefault(); const i = $("#ryInput"); send(i.value); i.value = ""; }
@@ -7336,12 +7358,32 @@ async function askRampyGeneral(holder, text){
    reopening Rampy on the same question resumes where they left off. ---- */
 function renderRyThread(entry){
   const out = $("#ryOut"); if (!out) return;
-  out.innerHTML = (entry._ryThread || []).map(m =>
+  out.innerHTML = (entry._ryThread || []).map((m, i) =>
     m.role === "user"
       ? `<div class="ry-msg user">${esc(m.text)}</div>`
       : `<div class="ry-msg from-rampy">${sci(m.text).replace(/\n\n/g,"<br><br>").replace(/\n/g,"<br>")}${
-          m.src ? `<span class="ry-src">${icon("check")} From RampUp's own explanation.</span>` : ""}</div>`
+          m.src ? `<span class="ry-src">${icon("check")} From RampUp's own explanation.</span>` : ""}
+          <button class="ry-save" data-ri="${i}" aria-label="Save this answer to your notes">${icon("bookmark")} Save</button></div>`
   ).join("");
+  // Chat residue (the feature students love in UAsk/Blue): one tap keeps the
+  // answer. Delegated once per container; survives innerHTML re-renders.
+  if (!out._saveWired){
+    out._saveWired = true;
+    out.addEventListener("click", (e) => {
+      const b = e.target.closest && e.target.closest(".ry-save");
+      if (!b) return;
+      const th = out._threadRef || [];
+      const m = th[Number(b.dataset.ri)];
+      if (!m) return;
+      state.rampyNotes = state.rampyNotes || [];
+      state.rampyNotes.push({ text: String(m.text).slice(0, 1200), ts: Date.now() });
+      if (state.rampyNotes.length > 100) state.rampyNotes.splice(0, state.rampyNotes.length - 100);
+      saveState();
+      b.textContent = "Saved"; b.disabled = true;
+      toast("Saved to your Rampy notes.");
+    });
+  }
+  out._threadRef = entry._ryThread || [];
   out.scrollTop = out.scrollHeight;
 }
 function ryPush(entry, role, text, src){
