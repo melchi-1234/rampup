@@ -1,18 +1,18 @@
 /* RampUp — shared design system for the marketing site and the funnel.
    One file so the homepage, onboarding, terms and privacy cannot drift apart. */
 :root{
-  --violet:#7c3aed; --violet-strong:#6d28d9; --violet-soft:#f2ecff; --lav:#a78bfa;
-  --ink:#181231; --muted:#5f5a76;
+  --violet:#6d3fa0; --violet-strong:#5a2f86; --violet-soft:#f5eef9; --lav:#b48fc9;
+  --ink:#201631; --muted:#6b5f78;
   /* --faint measured 2026-08-13: #7a7590 was 4.40:1 on white and 4.10:1 on the
      wash background, failing WCAG AA (4.5) for the real text that uses it —
      .tiny, .cta-note, .lc-sub, .catname, the reveal stat labels. #71707b is
      4.55 on wash / 4.88 on white, and deliberately stays LIGHTER than --muted
      (6.10 on wash) so the three-tier type hierarchy survives the fix. */
-  --faint:#71707b;
-  --line:#e9e5f4; --bg:#ffffff; --wash:#f8f6fd;
+  --faint:#776a83;   /* 5.03:1 white / 4.70:1 wash — re-verified for the plum palette */
+  --line:#ece3f2; --bg:#ffffff; --wash:#faf6fb;
   --amber:#f59e0b; --teal:#0d9488; --pink:#db2777; --orange:#ea580c; --ok:#0d9f6e;
   --r:14px; --r-lg:20px; --r-xl:26px;
-  --shadow:0 1px 2px rgba(24,18,49,.05), 0 8px 28px rgba(24,18,49,.07);
+  --shadow:0 1px 2px rgba(32,22,49,.06), 0 8px 28px rgba(32,22,49,.08);
   --maxw:1080px;
   --ease-standard:cubic-bezier(.2,.8,.2,1); --dur-fast:200ms; --dur-panel:350ms;
   --font-display:"Crimson Pro",ui-serif,Georgia,"Times New Roman",serif;
