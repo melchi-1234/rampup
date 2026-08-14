@@ -213,7 +213,7 @@
     }
     if (step === "feeling") {
       if (S.targetSet)
-        return "<b>A " + (S.target === null ? "510" : S.target) + " plan.</b> Every daily session from here is paced against that number.";
+        return "<b>A " + (S.target === null ? "511" : S.target) + " plan.</b> Every daily session from here is paced against that number.";
       var d = RU.daysUntilTest();
       if (d !== null && d > 0)
         return "<b>" + d + " days out.</b> " + (d >= 150
@@ -488,9 +488,9 @@
     });
   }
 
-  /* Target score: the number the whole plan (and the 510 Guarantee) points at.
+  /* Target score: the number the whole plan points at (the guarantee itself is a flat 511 in the Terms).
      Chips auto-advance like grade; "Not sure yet" stores null and the plan
-     defaults to 510. Deliberately no guarantee fine print here — that lives in
+     defaults to 511. Deliberately no guarantee fine print here — that lives in
      the FAQ and Terms. */
   var TARGETS = [
     { v: 500, l: "500+ — get me over the bar" },
@@ -503,7 +503,7 @@
     var n = RU.firstName();
     view.innerHTML = '<div class="panel">' + stepArt("target") + affirmStrip("target") +
       '<h1>' + (n ? "What score are you aiming for, " + esc(n) + "?" : "What score are you aiming for?") + '</h1>' +
-      '<p class="sub">Your plan paces toward this number &mdash; and it is the score the guarantee holds us to.</p>' +
+      '<p class="sub">Your plan paces toward this number. You can change it later.</p>' +
       '<div class="opts" id="opts"></div><p class="err" id="err"></p></div>';
     repaintArt();
     var box = document.getElementById("opts");

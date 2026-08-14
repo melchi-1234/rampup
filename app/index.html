@@ -8468,13 +8468,13 @@ function renderGuaranteeCard(){
   const q = Math.min(state.totalAnswered || 0, 1000);
   const fulls = ["fx1","fx2"].filter(id => state.examReviews && state.examReviews[id]).length;
   const qPct = Math.round(q / 1000 * 100);
-  const tgt = (typeof state.targetScore === "number") ? Math.min(state.targetScore, 510) : 510;
   box.innerHTML = `<div class="card" style="border:1.6px solid var(--accent)">
     <span class="g-eyebrow">RISK-FREE</span>
-    <h2 style="display:flex;align-items:center;gap:8px">${icon("check")} Your ${tgt} guarantee</h2>
+    <h2 style="display:flex;align-items:center;gap:8px">${icon("check")} The 511+ Guarantee</h2>
     <p style="font-size:14.5px;color:var(--muted);line-height:1.55;margin:4px 0 12px">
-      Do the work below, sit your MCAT, and if your score comes in under your
-      ${tgt} target, every subscription dollar comes back. <a href="https://rampupmcat.com/terms.html#guarantee"
+      Score a 511 or above, or your money back. Do the work below, sit your MCAT,
+      and if your official score comes in under 511, every subscription dollar
+      comes back. <a href="https://rampupmcat.com/terms.html#guarantee"
       target="_blank" rel="noopener" style="color:var(--accent-strong);font-weight:700">Exact terms</a>.</p>
     <div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:13.5px;font-weight:700">
       <span>Questions answered</span><span>${state.totalAnswered || 0} / 1,000</span></div>
