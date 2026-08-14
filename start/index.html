@@ -578,7 +578,9 @@
       return '<div class="sampleq"><div class="sq-eyebrow">Try one &mdash; a real ' + esc(pick.tier) +
         ' ' + esc(pick.subject) + ' question, the first your plan would serve</div>' +
         '<div class="sq-stem">' + esc(pick.question) + '</div>' + ch +
-        '<div class="sq-expl" id="sqExpl" hidden></div></div>';
+        '<div class="sq-expl" id="sqExpl" hidden></div></div>' +
+        '<div class="sampleq" style="margin-top:12px"><div class="sq-eyebrow">Hear one &mdash; a narrated walkthrough, unedited, one of 132 in the app</div>' +
+        '<audio controls preload="none" style="width:100%" src="/assets/walkthrough-sample.m4a"></audio></div>';
     })();
 
     /* Their own deadline, done as arithmetic. True numbers only: days they
