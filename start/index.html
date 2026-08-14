@@ -147,6 +147,14 @@
   .guarantee .g-body a{color:var(--violet-strong); font-weight:700}
 
   .commit-opts .opt{min-height:62px; font-size:17px}
+  .sampleq{border:1.6px solid var(--line); border-radius:var(--r-lg); padding:17px 18px; margin:20px 0 0; background:#fff}
+  .sampleq .sq-eyebrow{font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--violet-strong); margin-bottom:8px}
+  .sampleq .sq-stem{font-weight:700; font-size:15.5px; line-height:1.55; margin-bottom:12px}
+  .sampleq .sq-choice{display:block; width:100%; text-align:left; font:inherit; font-size:14.5px; line-height:1.5;
+    border:1.4px solid var(--line); background:#fff; border-radius:12px; padding:11px 14px; margin-bottom:8px; cursor:pointer; min-height:44px}
+  .sampleq .sq-choice.right{border-color:#0d9f6e; background:#e9f8f1}
+  .sampleq .sq-choice.wrongpick{border-color:#c0322c; background:#fdf0ef}
+  .sampleq .sq-expl{font-size:14px; color:var(--muted); line-height:1.6; margin-top:10px; border-top:1px solid var(--line); padding-top:12px}
   .commit-note{font-size:14px; color:var(--faint); text-align:center; margin-top:14px; line-height:1.55}
 </style>
 </head>
@@ -163,6 +171,12 @@
   <main id="view" aria-live="polite"></main>
 </div>
 
+<script>
+(function(){ try {
+  fetch("/assets/reveal-samples.json").then(function(r){ return r.json(); })
+    .then(function(j){ window.RU_SAMPLES = j; }).catch(function(){});
+} catch(e){} })();
+</script>
 <script src="/assets/brand.js"></script>
 <script src="/assets/funnel.js"></script>
 <script src="/assets/billing.js"></script>
@@ -543,6 +557,30 @@
         'part RampUp is actually built for. Those get the concept lesson first, and gentler questions, until the coursework catches up.</div>';
     }
 
+    /* One REAL question at their computed tier in a subject they completed:
+       the reveal stops describing the product and briefly IS the product
+       (plan 2.1). True data only; a miss is framed as the mechanism working. */
+    h += (function () {
+      var pick = null;
+      for (var ri = 0; ri < rows.length; ri++) {
+        var r0 = rows[ri];
+        var subj = RU.byName(r0.name);
+        var completed = subj && subj.courses.some(function (c) { return S.courses[c] === "completed"; });
+        if (!completed || r0.preview) continue;
+        var k = r0.name + "|" + r0.tier;
+        if (window.RU_SAMPLES && window.RU_SAMPLES[k]) { pick = window.RU_SAMPLES[k]; break; }
+      }
+      if (!pick) return "";
+      window._sq = pick;
+      var ch = pick.choices.map(function (c, i) {
+        return '<button type="button" class="sq-choice" data-sq="' + i + '">' + esc(c) + '</button>';
+      }).join("");
+      return '<div class="sampleq"><div class="sq-eyebrow">Try one &mdash; a real ' + esc(pick.tier) +
+        ' ' + esc(pick.subject) + ' question, the first your plan would serve</div>' +
+        '<div class="sq-stem">' + esc(pick.question) + '</div>' + ch +
+        '<div class="sq-expl" id="sqExpl" hidden></div></div>';
+    })();
+
     /* Their own deadline, done as arithmetic. True numbers only: days they
        gave us, the pace we just computed. Urgency that comes from the user's
        own situation is legitimate; urgency invented by us would not be. */
@@ -602,6 +640,24 @@
     document.getElementById("next").addEventListener("click", function () { go("commit"); });
     var rd = document.getElementById("redo");
     if (rd) rd.addEventListener("click", function () { RU.reset(); go("name"); route(); });
+    view.querySelectorAll(".sq-choice").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var q = window._sq; if (!q) return;
+        var i = Number(b.dataset.sq), ok = i === q.answer;
+        view.querySelectorAll(".sq-choice").forEach(function (x, xi) {
+          x.disabled = true;
+          if (xi === q.answer) x.classList.add("right");
+          else if (xi === i) x.classList.add("wrongpick");
+        });
+        var ex = document.getElementById("sqExpl");
+        ex.hidden = false;
+        ex.innerHTML = (ok
+          ? "<b>Right.</b> "
+          : "<b>Not this time &mdash; and that is exactly the kind of miss the review scheduler is built around.</b> ") +
+          esc(q.explanation);
+        RU.track("reveal_sample_answered", { subject: q.subject, tier: q.tier, correct: ok });
+      });
+    });
   }
 
   /* ------------------------------------------------------------- commitment

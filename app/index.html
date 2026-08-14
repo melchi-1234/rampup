@@ -7087,7 +7087,7 @@ function applyReveal(entry){
   if (s && s.done >= s.len){ const nb = card.querySelector("#nextQ"); if (nb) nb.innerHTML = `See results ${icon("trophy")}`; }
   const rev = card.querySelector(".reveal"); rev.hidden = false;
   rev.innerHTML = `
-    <div class="verdict ${verdict.cls}">${icon(verdict.ic)} ${verdict.txt}</div>
+    <div class="verdict ${verdict.cls}" role="status" aria-live="polite">${icon(verdict.ic)} ${verdict.txt}</div>
     ${RU_EX.block(q.key)}${breakdownHtml}
     <p class="exp">${sci(q.explanation)}</p>
     <ul class="notes">${q.choices.map((c, i) => { const cls = i === q.answer ? "right" : (i === chosen && !correct ? "chosen-wrong" : ""); return `<li class="${cls}"><span class="nb">${LETTERS[i]}</span><span>${sci(q.notes[i] || "")}</span></li>`; }).join("")}</ul>
