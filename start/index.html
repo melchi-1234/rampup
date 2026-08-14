@@ -18,9 +18,11 @@
   body{background:var(--wash)}
   .shell{max-width:640px; margin:0 auto; padding:0 18px 96px}
   .topbar{
-    position:sticky; top:0; z-index:20; background:rgba(248,246,253,.96);
-    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-    margin:0 calc(50% - 50vw) 8px; padding:14px calc(50vw - 50%) 12px;
+    /* Opaque, not translucent-plus-blur — no glassmorphism. The hairline below
+       is the edge. 24px bottom margin so the 26px-radius panel is not jammed
+       against the rule. */
+    position:sticky; top:0; z-index:20; background:var(--wash);
+    margin:0 calc(50% - 50vw) 24px; padding:14px calc(50vw - 50%) 12px;
     border-bottom:1px solid var(--line);
   }
   .topbar-in{display:flex; align-items:center; gap:14px}
@@ -31,14 +33,13 @@
   .backbtn:hover{color:var(--ink)}
   .prog{flex:1; height:7px; background:var(--line); border-radius:99px; overflow:hidden}
   .prog i{
-    display:block; width:0; height:100%; background:linear-gradient(90deg,var(--lav),var(--violet));
+    display:block; width:0; height:100%; background:var(--violet);
     transition:width .55s cubic-bezier(.22,1,.36,1); position:relative; overflow:hidden; transform-origin:left center;
   }
-  .prog i::after{
-    content:""; position:absolute; inset:0;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
-    transform:translateX(-100%); animation:progShine 2.2s ease-in-out infinite;
-  }
+  /* No gradient fill, and no perpetual shine sweep — a permanently animating
+     bar was the loudest thing in an otherwise silent layout. The width
+     transition and progPulse stay: those are real state changes. */
+  .prog i::after{ content:none }
   @keyframes progShine{0%{transform:translateX(-100%)}55%,100%{transform:translateX(100%)}}
   @keyframes progPulse{0%{transform:scaleY(1)}35%{transform:scaleY(1.7)}100%{transform:scaleY(1)}}
   .prog.pulse i{animation:progPulse .45s cubic-bezier(.34,1.56,.64,1)}
@@ -57,7 +58,9 @@
   .opt{
     display:flex; align-items:center; gap:12px; width:100%; text-align:left;
     border:1.6px solid var(--line); background:#fff; border-radius:var(--r);
-    padding:15px 17px; font:inherit; font-size:16.5px; font-weight:640; cursor:pointer;
+    /* without an explicit colour a <button> falls back to UA `buttontext`,
+       i.e. pure black — the only pure black on the site. */
+    padding:15px 17px; font:inherit; color:var(--ink); font-size:16.5px; font-weight:640; cursor:pointer;
     min-height:56px; transition:border-color .14s, background .14s;
   }
   .opt:hover{border-color:var(--lav)}
@@ -77,6 +80,8 @@
   .planopt{display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center; padding:15px 17px}
   .planopt .pl-label{font-weight:760; font-size:17px; white-space:nowrap}
   .planopt .pl-per{font-size:13.5px; color:var(--faint); font-weight:600; grid-column:1; margin-top:-2px}
+  /* --faint on violet-soft measures 4.43:1 — under AA. --muted is 5.29:1. */
+  .opt[aria-pressed="true"] .pl-per{color:var(--muted)}
   .planopt .pl-price{font-weight:840; font-size:19px; grid-column:2; grid-row:1; white-space:nowrap}
   .planopt .pl-price i{font-style:normal; font-size:13.5px; font-weight:700; color:var(--muted)}
   .planopt .pl-flag{
@@ -172,7 +177,7 @@
   /* Us-vs-them comparison on the paywall: borders and spacing only, one
      white surface, same quiet register as the rest of the funnel. */
   .cmp{width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0;
-    margin:20px 0 0; background:#fff; border:1px solid var(--line); border-radius:var(--r-lg)}
+    margin:24px 0 4px; background:#fff; border:1px solid var(--line); border-radius:var(--r-lg)}
   .cmp caption{caption-side:top; text-align:left; font-weight:800; font-size:16.5px;
     color:var(--ink); padding:0 0 10px}
   .cmp th{font-size:12.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
@@ -189,8 +194,10 @@
   .cmp .c-them .c-ic{color:#a49bb0}
   @media(max-width:640px){
     .cmp caption{font-size:15px}
-    .cmp th{font-size:10.5px; padding:10px 10px 8px}
-    .cmp td{font-size:12.5px; line-height:1.45; padding:9px 10px}
+    /* 10.5/12.5px was the smallest type on the site and 3px under the checklist
+       directly above it — the density flipped mid-card. */
+    .cmp th{font-size:11.5px; padding:12px 12px 9px}
+    .cmp td{font-size:13.5px; line-height:1.5; padding:11px 12px}
     .cmp .c-cell{gap:7px}
     .cmp .c-ic{margin-top:2px; width:12px; height:12px}
   }
@@ -845,7 +852,7 @@
     h += '</div>';
 
     h += '<ul class="incl" style="margin-top:20px">' +
-      '<li>1,273 practice questions, 328 at MCAT level</li>' +
+      '<li>1,333 practice questions, 343 at MCAT level</li>' +
       '<li>Your ' + esc(String(goal)) + '-question daily plan, rebuilt every day</li>' +
       '<li>Concept lessons before anything new to you</li>' +
       '<li>132 narrated walkthroughs</li>' +
@@ -866,7 +873,7 @@
       ["Score 511+ or every dollar back", "A guarantee tied to a specific 511+ number is rare at any price"],
       ["Starting level set per subject, from your own answers", "One syllabus, one pace for every student"],
       ["Daily plan rebuilt each day from what you missed", "A schedule fixed at enrollment"],
-      ["1,273 questions, every answer choice explained", "Per-choice explanations are not a given"],
+      ["1,333 questions, every answer choice explained", "Per-choice explanations are not a given"],
       ["Rampy on every question, the moment you are stuck", "Help runs on the course\u2019s timetable"],
       ["Cancel any time, in one click", "Refund windows vary by provider"]
     ];

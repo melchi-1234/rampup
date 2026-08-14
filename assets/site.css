@@ -63,11 +63,11 @@ h3{font-family:var(--font-display); font-size:19px; font-weight:700; line-height
 }
 .btn:hover{text-decoration:none}
 .btn:active{transform:translateY(1px)}
-/* The glow shadow over the nav's backdrop-filter made the button read as a
-   washed-out purple blob with barely-legible text. Solid fill, explicit colour,
-   and the glow reserved for buttons that are NOT sitting on a blurred surface. */
+/* Solid fill, explicit colour, no halo. A violet bloom on a white page is the
+   single most SaaS-looking thing available and it was sitting on the primary
+   CTA — glow shadows are out entirely (owner call 2026-08-14). */
 .btn-primary{background:var(--violet); color:#fff}
-.hero .btn-primary,.price-cta .btn-primary{box-shadow:0 6px 20px rgba(124,58,237,.26)}
+.hero .btn-primary,.price-cta .btn-primary{box-shadow:none}
 .nav-cta{background:transparent !important; color:var(--ink) !important; border:1.6px solid var(--ink) !important; box-shadow:none !important}
 /* The old hover painted violet-strong behind ink-coloured text — 1.6:1, an
    unreadable state on the site's most-clicked control. Ink fill + white text
@@ -89,8 +89,10 @@ h3{font-family:var(--font-display); font-size:19px; font-weight:700; line-height
 
 /* ---- nav ---- */
 nav{
-  position:sticky; top:0; z-index:50; background:rgba(255,255,255,.86);
-  backdrop-filter:saturate(170%) blur(14px); -webkit-backdrop-filter:saturate(170%) blur(14px);
+  /* Opaque, not translucent-plus-blur: glassmorphism is out, and the
+     saturate() was also pushing the colour of whatever scrolled under it. The
+     hairline below is what keeps the edge legible. */
+  position:sticky; top:0; z-index:50; background:var(--bg);
   border-bottom:1px solid var(--line);
 }
 .nav-in{display:flex; align-items:center; gap:22px; height:64px}
@@ -121,9 +123,11 @@ section{padding:72px 0}
    vertical tint plus a hairline rule reads as considered instead. */
 .hero::before{
   content:""; position:absolute; inset:0; z-index:-1;
-  /* One quiet vertical tint. No mesh, no blobs — gradients read as AI slop
-     (owner call 2026-08-14) and the serif type IS the identity. */
-  background:linear-gradient(180deg,#faf7ff 0%,#ffffff 68%);
+  /* No mesh, no blobs, and no tint either — gradients read as AI slop
+     (owner call 2026-08-14) and the serif type IS the identity. The hero sits
+     on the same single white surface as every other section; the hairline
+     border-bottom below is the only separator. */
+  background:var(--bg);
 }
 
 .hero{border-bottom:1px solid var(--line)}
@@ -202,7 +206,7 @@ section{padding:72px 0}
   position:relative; background:#fff; border:2px solid var(--line); border-radius:var(--r-xl);
   padding:26px 24px 24px; text-align:left; transition:border-color .16s, box-shadow .16s;
 }
-.plan.best{border-color:var(--violet); box-shadow:0 14px 44px rgba(124,58,237,.15)}
+.plan.best{border-color:var(--violet); box-shadow:none}
 .plan-flag{
   position:absolute; top:-13px; left:24px; font-size:11.5px; font-weight:840;
   letter-spacing:.07em; text-transform:uppercase; color:#fff; background:var(--violet);
@@ -313,7 +317,7 @@ footer{border-top:1px solid var(--line); padding:40px 0 56px; background:var(--b
 .btn{transition:transform .16s cubic-bezier(.2,0,0,1), box-shadow .22s ease, background .18s ease, border-color .18s ease}
 .btn:hover{transform:translateY(-2px)}
 .btn:active{transform:translateY(0)}
-.hero .btn-primary:hover,.price-cta .btn-primary:hover{box-shadow:0 12px 30px rgba(124,58,237,.34)}
+.hero .btn-primary:hover,.price-cta .btn-primary:hover{box-shadow:none}
 .plan{transition:border-color .16s, box-shadow .16s, transform .18s cubic-bezier(.2,0,0,1)}
 .plan:hover{transform:translateY(-3px); box-shadow:0 14px 30px rgba(24,18,49,.12)}
 
@@ -346,6 +350,9 @@ footer{border-top:1px solid var(--line); padding:40px 0 56px; background:var(--b
 .home .hero{border-bottom:0}
 .home .sec-head{max-width:660px; margin:0 0 var(--s-7)}
 .home .sec-head.center{margin-left:auto; margin-right:auto; text-align:center}
+/* #app is the one section whose only child IS the sec-head, so its 48px bottom
+   margin has nothing to separate — it just sagged the section. */
+.home #app .sec-head{margin-bottom:0}
 .home .sec-head h2{margin-bottom:var(--s-4)}
 .home .sec-head .lede{max-width:56ch}
 .home .sec-head.center .lede{margin-left:auto; margin-right:auto; max-width:60ch}
@@ -482,17 +489,24 @@ footer{border-top:1px solid var(--line); padding:40px 0 56px; background:var(--b
   border-width:1px; border-color:var(--line); border-radius:var(--r-lg);
   padding:clamp(24px,2.6vw,30px); display:flex; flex-direction:column;
 }
-.home .plan.best{border-width:1.6px; border-color:var(--violet); box-shadow:0 20px 48px -26px rgba(124,58,237,.55)}
+/* The 1.6px violet border and the flag badge are the separation. No violet
+   bloom — glow shadows are out (owner call 2026-08-14). */
+.home .plan.best{border-width:1.6px; border-color:var(--violet); box-shadow:none}
 .home .plan:hover{transform:none; box-shadow:none}
-.home .plan.best:hover{box-shadow:0 20px 48px -26px rgba(124,58,237,.55)}
+.home .plan.best:hover{box-shadow:none}
 /* The two plan cards are links into the funnel (preselecting their plan). Same
    card look; the affordance is the cursor, a border darken, and the plan-go
    line that was always the missing "so click me" cue. */
-.home a.plan{color:inherit; text-decoration:none; cursor:pointer; display:block}
+.home a.plan{color:inherit; text-decoration:none; cursor:pointer; display:flex}
 .home a.plan:hover{border-color:var(--ink)}
 .home a.plan.best:hover{border-color:var(--violet)}
 .home a.plan:focus-visible{outline:2px solid var(--violet); outline-offset:3px}
-.home .plan-go{display:inline-flex; align-items:center; gap:6px; margin-top:14px;
+/* margin-top:auto pins the cue to the card floor so both cards' cues sit on one
+   line, and the rule under it is what actually says "link" — without it the
+   only underlined text in the row was the minor footnote. */
+.home .plan-go{display:inline-flex; align-items:center; gap:6px;
+  margin-top:auto; padding-top:14px; align-self:flex-start;
+  border-bottom:1.5px solid currentColor; padding-bottom:2px;
   font-size:13.5px; font-weight:720; color:var(--violet)}
 .home a.plan:hover .plan-go .arw{transform:translateX(3px)}
 .home .plan-go .arw{transition:transform .16s}
