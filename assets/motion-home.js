@@ -75,47 +75,24 @@
   var rungs = gsap.utils.toArray("#levels .rung");
   if (!rungs.length) return;
 
-  var mm = gsap.matchMedia();
-  mm.add(
-    {
-      desktop: "(min-width: 900px) and (prefers-reduced-motion: no-preference)",
-      mobileOrReduced: "(max-width: 899.98px), (prefers-reduced-motion: reduce)"
-    },
-    function (ctx) {
-      if (ctx.conditions.desktop) {
-        var rungBars = rungs.map(function (r) { return r.querySelector(".rung-bar i"); });
-        gsap.set(rungBars, { scaleX: 0, transformOrigin: "left center" });
-        gsap.set(rungs, { autoAlpha: 0.38 });
-
-        var tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: "#levels .ladder",
-            start: "top 70%",
-            end: "+=900",
-            scrub: 0.6,
-            pin: true,
-            anticipatePin: 1,
-            pinSpacing: true
-          }
-        });
-        rungs.forEach(function (rung, i) {
-          tl.to(rung, { autoAlpha: 1, duration: 0.4 }, i)
-            .to(rung.querySelector(".rung-bar i"), { scaleX: 1, duration: 0.5, ease: "power2.out" }, i + 0.1)
-            .to(rungs.filter(function (r) { return r !== rung; }), { autoAlpha: 0.38, duration: 0.3 }, i + 0.35);
-        });
-        tl.to(rungs[rungs.length - 1], { autoAlpha: 1, duration: 0.3 });
-
-        return function () { tl.kill(); };
+  /* No pin. The pinned version manufactured ~900px of blank scroll runway that
+     read as a broken empty page (owner screenshot, 2026-08-14). Each rung now
+     simply reveals as it enters, bars filling in place — motion that never
+     costs the reader scroll distance. */
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  rungs.forEach(function (rung) {
+    var bar = rung.querySelector(".rung-bar i");
+    if (bar) gsap.set(bar, { scaleX: 0, transformOrigin: "left center" });
+    ScrollTrigger.create({
+      trigger: rung,
+      start: "top 88%",
+      once: true,
+      onEnter: function () {
+        gsap.from(rung, { autoAlpha: 0, y: 22, duration: 0.55, ease: "power2.out" });
+        if (bar) gsap.to(bar, { scaleX: 1, duration: 0.7, delay: 0.25, ease: "power2.out" });
       }
-
-      rungs.forEach(function (rung) {
-        gsap.from(rung, {
-          autoAlpha: 0, y: 22, duration: 0.55, ease: "power2.out",
-          scrollTrigger: { trigger: rung, start: "top 88%", once: true }
-        });
-      });
-    }
-  );
+    });
+  });
 })();
 
 /* SCENE 4 — Stat count-ups. Duration scales with magnitude so "5" doesn't

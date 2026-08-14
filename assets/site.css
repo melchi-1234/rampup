@@ -118,21 +118,11 @@ section{padding:72px 0}
    vertical tint plus a hairline rule reads as considered instead. */
 .hero::before{
   content:""; position:absolute; inset:0; z-index:-1;
-  /* Melchior's ambient mesh (ChatGPT-generated, 36KB jpg) under a white fade
-     so hero text keeps its contrast; the plain gradient is the no-image
-     fallback baked into the same declaration order. */
-  background:linear-gradient(180deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,.92) 78%,#ffffff 100%),
-             url(/assets/hero-ambient.jpg) center/cover no-repeat,
-             linear-gradient(180deg,#faf7ff 0%,#ffffff 68%);
+  /* One quiet vertical tint. No mesh, no blobs — gradients read as AI slop
+     (owner call 2026-08-14) and the serif type IS the identity. */
+  background:linear-gradient(180deg,#faf7ff 0%,#ffffff 68%);
 }
-/* Site-wide film grain (Melchior's texture): fixed, tiled, non-interactive,
-   faint enough to read as paper rather than noise. */
-body::after{
-  content:""; position:fixed; inset:0; z-index:9999; pointer-events:none;
-  background:url(/assets/grain.png) repeat; background-size:256px 256px;
-  opacity:.035; mix-blend-mode:multiply;
-}
-@media print{ body::after{display:none} }
+
 .hero{border-bottom:1px solid var(--line)}
 .hero-grid{display:grid; grid-template-columns:1.08fr .92fr; gap:48px; align-items:center}
 @media(max-width:900px){ .hero-grid{grid-template-columns:1fr; gap:36px} }
