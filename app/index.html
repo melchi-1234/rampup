@@ -407,6 +407,16 @@
     border:1.5px solid var(--border); border-radius:var(--r-sm); padding:9px 11px; min-height:44px; cursor:pointer}
   .datepick input[type=date]:focus-visible, .datepick input[type=time]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .datepick input:disabled{opacity:.5; cursor:not-allowed}
+  /* Sync card. Same shell as .datepick so the row matches every other Settings
+     control; the type selectors above are date/time-only, so the text and email
+     fields need their own line. 16px is deliberate — anything smaller makes iOS
+     Safari zoom the whole page on focus. */
+  .syncbox{display:flex; flex-direction:column; gap:8px; align-items:flex-end}
+  .datepick input[type=email], .datepick input[type=text]{font:inherit; font-size:16px; font-weight:600;
+    color:var(--text); background:var(--card); border:1.5px solid var(--border); border-radius:var(--r-sm);
+    padding:9px 11px; min-height:44px; width:190px; max-width:52vw}
+  .datepick input[type=email]::placeholder, .datepick input[type=text]::placeholder{color:var(--faint); font-weight:500}
+  .datepick input[type=email]:focus-visible, .datepick input[type=text]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   /* The picker glyph is UA-drawn and stays black, so it vanishes on the dark card. */
   :root[data-theme="dark"] .datepick input[type=date],
   :root[data-theme="dark"] .datepick input[type=time]{color-scheme:dark}
@@ -1543,6 +1553,29 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
           <div class="lbl"><b>Remember my progress</b><span class="d">Save your stats, streak, review pile, and bookmarks on this device only — your progress never leaves your browser. (Questions you ask Rampy are answered by our server; see Privacy.)</span>
             <span class="storage-status" id="storageStatus"></span></div>
           <button class="toggle" id="persistToggle" aria-label="Toggle saving"></button>
+        </div>
+        <!-- Sync across devices. Ships HIDDEN and stays hidden unless SYNC_CONFIG
+             in logic.js has been filled in; renderSyncCard() owns that decision.
+             Sits directly under "Remember my progress" because it reads as the
+             natural upgrade of it. -->
+        <div class="set-row" id="syncRow" hidden>
+          <div class="lbl"><b>Sync across devices</b><span class="d">Sign in with your email and your streak, review pile, and bookmarks follow you between your phone and the website. Signing out never deletes anything on this device.</span>
+            <span class="storage-status" id="syncStatus" aria-live="polite"></span></div>
+          <div class="syncbox">
+            <div class="datepick" id="syncStepEmail">
+              <input type="email" id="syncEmail" placeholder="you@email.com" aria-label="Email address"
+                     autocomplete="email" inputmode="email" spellcheck="false" autocapitalize="off">
+              <button class="btn ghost sm" id="syncSendBtn" type="button">Send code</button>
+            </div>
+            <div class="datepick" id="syncStepCode" hidden>
+              <input type="text" id="syncCode" placeholder="6-digit code" aria-label="Six-digit code from your email"
+                     autocomplete="one-time-code" inputmode="numeric" maxlength="6" pattern="[0-9]*">
+              <button class="btn sm" id="syncVerifyBtn" type="button">Verify</button>
+            </div>
+            <div class="datepick" id="syncStepIn" hidden>
+              <button class="btn ghost sm" id="syncOutBtn" type="button">Sign out</button>
+            </div>
+          </div>
         </div>
         <div class="set-row">
           <div class="lbl"><b>Sound effects</b><span class="d">Little dings and fanfares for answers, streaks, and level-ups.</span></div>
@@ -3098,6 +3131,32 @@ const EXTRA_QUESTIONS = [
   {"category": "Chem/Phys", "subject": "General Chemistry", "course": "General Chemistry II", "difficulty": "mcat", "passage": "", "question": "During intense exercise, when oxygen delivery cannot keep pace with ATP demand, muscle cells regenerate NAD+ through lactate fermentation: pyruvate + NADH + H+ -> lactate + NAD+. Which species is reduced in this reaction?", "choices": ["NADH", "Hydrogen ion (H+)", "Pyruvate", "Lactate"], "answer": 2, "explanation": "Lactate fermentation exists specifically to regenerate NAD+ so glycolysis can continue when oxidative phosphorylation is oxygen-limited. In this reaction, NADH is oxidized back to NAD+, donating its electrons to pyruvate, which is reduced to lactate. Tracking electron flow this way, rather than just noting which molecules change, is what identifies which reactant is reduced.", "notes": ["Incorrect: NADH is the species that loses electrons in this reaction, converting to NAD+, which means NADH is oxidized, not reduced.", "Incorrect: the hydrogen ion is consumed as part of the hydride transfer but does not itself gain electrons in a way that defines it as the species being reduced; it is incorporated into the product without undergoing an independent redox change.", "Correct: pyruvate accepts electrons (as part of a hydride from NADH) and is converted into lactate, so pyruvate is the species that is reduced in this reaction.", "Incorrect: lactate is the reduced product that already resulted from the reaction, not the reactant species undergoing reduction; the question asks which starting species is reduced, which is pyruvate."], "confidence": "high"},
   {"category": "Chem/Phys", "subject": "General Chemistry", "course": "General Chemistry II", "difficulty": "mcat", "passage": "", "question": "A block of solid CO2 (dry ice) is left on a lab bench at 1 atm and room temperature. Rather than melting into a puddle, it visibly shrinks as it converts directly into gas. The phase diagram of CO2 shows a triple point at 5.11 atm and -56.6 degrees C. Based on this phase diagram, why does dry ice sublime rather than melt under these conditions?", "choices": ["CO2's critical point lies below room temperature, so the solid phase cannot exist at all under normal indoor conditions", "At 1 atm, the melting point of CO2 rises above room temperature, so the solid remains too cold to melt", "Solid CO2 is thermodynamically stable as a liquid at 1 atm, but the solid-to-liquid conversion is kinetically too slow to observe", "At 1 atm, which is below CO2's triple-point pressure of 5.11 atm, no liquid phase can exist at any temperature, so warming the solid carries it straight into the gas phase"], "answer": 3, "explanation": "On a pressure-temperature phase diagram, the triple point marks the lowest pressure at which all three phases (solid, liquid, gas) can coexist. For CO2, that pressure is 5.11 atm, well above normal atmospheric pressure of 1 atm. Because the liquid region of the phase diagram only exists above the triple-point pressure, tracing a horizontal line at 1 atm across the diagram never enters the liquid region: it crosses directly from the solid region into the gas region. This is why warming dry ice at atmospheric pressure causes it to sublime instead of melt.", "notes": ["Incorrect: CO2 does have a critical point (about 31 degrees C, 72.8 atm) above which liquid and gas become indistinguishable, but that is irrelevant to why the solid sublimes at 1 atm, and it does not mean the solid phase 'cannot exist' at room temperature.", "Incorrect: this describes the melting point rising with decreasing pressure and staying above room temperature, but the actual reason liquid CO2 cannot form at 1 atm is that the pressure itself is below the triple-point pressure, not that the melting temperature has shifted out of reach.", "Incorrect: sublimation of dry ice at 1 atm is a genuine thermodynamic phenomenon dictated by the phase diagram, not a kinetically slow liquid-to-solid equilibrium; there is no metastable liquid state being bypassed.", "Correct: on the CO2 phase diagram, the liquid region only exists at pressures at or above the triple-point pressure of 5.11 atm; since atmospheric pressure (1 atm) is below this value, a horizontal line at 1 atm never crosses the liquid region, so heating the solid at 1 atm takes it directly from the solid-gas boundary into the gas phase."], "confidence": "high"},
   {"category": "Chem/Phys", "subject": "General Chemistry", "course": "General Chemistry II", "difficulty": "mcat", "passage": "", "question": "In a supervised chemistry demonstration, small coin-sized pieces of lithium, sodium, and potassium are each dropped into separate dishes of water. Lithium fizzes gently, sodium reacts vigorously enough to melt into a sizzling ball, and potassium ignites almost immediately. Which best explains why potassium reacts with water far more vigorously than lithium, despite both being Group 1 metals?", "choices": ["Potassium has a higher electronegativity than lithium, which lets it pull electrons from water more strongly", "Potassium's larger atomic radius and greater electron shielding lower its ionization energy, so its valence electron is lost more readily in the reaction with water", "Potassium has a smaller atomic radius than lithium, allowing closer contact with water molecules", "Potassium has a higher nuclear charge than lithium, which more strongly attracts electrons from water molecules"], "answer": 1, "explanation": "Alkali metal reactivity with water increases going down Group 1 because each successive element has its valence electron farther from the nucleus and more shielded by inner electron shells, lowering the energy needed to remove that electron (ionization energy). Since the reaction 2 M + 2 H2O -> 2 MOH + H2 depends on the metal readily losing its valence electron to be oxidized, a lower ionization energy translates directly into a faster, more exothermic, more vigorous reaction, which is exactly the trend observed from lithium to sodium to potassium.", "notes": ["Incorrect: electronegativity decreases going down a group, so potassium is actually less electronegative than lithium, the opposite of what this choice claims.", "Correct: moving down Group 1, atomic radius increases and inner electron shells shield the outer electron from the nucleus more effectively, lowering ionization energy; potassium's single valence electron is therefore easier to remove, making its oxidation by water more favorable and the reaction more vigorous.", "Incorrect: atomic radius increases going down a group, so potassium is larger than lithium, not smaller.", "Incorrect: while nuclear charge does increase down the group, increased shielding from additional filled inner shells more than offsets it for the valence electron, and a metal's reactivity with water depends on how easily it loses its own electron, not on attracting electrons from water molecules."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "medium", "passage": "", "question": "A flavor chemist is converting acetophenone (C6H5-CO-CH3) into an ester precursor using meta-chloroperoxybenzoic acid (mCPBA) in dichloromethane, a Baeyer-Villiger oxidation. Migratory aptitude in the rearrangement step favors the group that better stabilizes developing positive charge as it migrates from carbon to the electrophilic oxygen. What is the major organic product?", "choices": ["Phenyl acetate", "Methyl benzoate", "Benzoic acid and methanol", "2-Phenyloxirane"], "answer": 0, "explanation": "The Baeyer-Villiger oxidation inserts an oxygen atom between a ketone's carbonyl carbon and one of its attached groups, converting the ketone into an ester. Migratory aptitude follows the order roughly tertiary alkyl > secondary alkyl > aryl > primary alkyl > methyl, so between the phenyl and methyl groups on acetophenone, phenyl migrates preferentially, placing the new oxygen between the carbonyl carbon and the ring. The product is phenyl acetate.", "notes": ["Correct: mCPBA forms a Criegee intermediate, and migratory aptitude favors the aryl (phenyl) group over methyl because it better stabilizes developing positive charge during migration, so oxygen inserts between the carbonyl carbon and the phenyl ring, giving phenyl acetate (CH3-CO-O-C6H5).", "Methyl benzoate would require the methyl group to migrate instead of phenyl, but aryl groups have higher migratory aptitude than methyl in the Baeyer-Villiger rearrangement, so this insertion pattern is disfavored.", "Benzoic acid and methanol would result from hydrolysis of the newly formed ester, but mCPBA in dichloromethane does not hydrolyze the product in situ; that would require a separate aqueous acid or base workup step.", "2-Phenyloxirane would form from epoxidation of a carbon-carbon double bond by mCPBA, but acetophenone's carbonyl is not an alkene, so no epoxide forms; peracids react with ketones by oxygen insertion (Baeyer-Villiger), not epoxidation."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "medium", "passage": "", "question": "A synthetic chemist needs to install an unbranched three-carbon chain onto benzene to make 1-propylbenzene, but knows that direct Friedel-Crafts alkylation with 1-chloropropane and AlCl3 is unreliable for this target. Which sequence installs the chain without carbocation rearrangement?", "choices": ["Treat benzene with 1-chloropropane and AlCl3 directly", "Treat benzene with propanoyl chloride and AlCl3, then reduce the ketone with LiAlH4", "Treat benzene with propanoyl chloride and AlCl3 (Friedel-Crafts acylation), then reduce the resulting ketone with Zn(Hg)/HCl (Clemmensen reduction)", "Treat benzene with 1-chloropropane and AlCl3 at low temperature to suppress rearrangement"], "answer": 2, "explanation": "Friedel-Crafts alkylation with a primary alkyl halide generates a carbocation-like electrophile that readily rearranges to a more stable cation, so 1-chloropropane/AlCl3 gives isopropylbenzene instead of propylbenzene. Friedel-Crafts acylation avoids this because the acylium ion is resonance-stabilized and does not rearrange; acylating benzene with propanoyl chloride gives 1-phenyl-1-propanone, and Clemmensen (or Wolff-Kishner) reduction then removes the carbonyl oxygen entirely, delivering unrearranged 1-propylbenzene.", "notes": ["Wrong: direct alkylation with 1-chloropropane/AlCl3 generates a primary carbocation-like electrophile that undergoes a hydride shift to the more stable secondary cation, so the major product is isopropylbenzene (cumene), not propylbenzene.", "Wrong: LiAlH4 reduces the aryl ketone only to a secondary benzylic alcohol (1-phenylpropan-1-ol); it does not remove the oxygen entirely, so this sequence stops short of the fully deoxygenated propylbenzene target.", "Correct: Friedel-Crafts acylation with propanoyl chloride/AlCl3 forms an acylium ion that resists rearrangement because it is stabilized by the adjacent oxygen, giving 1-phenyl-1-propanone; Clemmensen reduction (Zn(Hg)/HCl) then fully deoxygenates the carbonyl to a CH2, yielding unrearranged 1-propylbenzene.", "Wrong: lowering the temperature does not prevent the hydride shift in Friedel-Crafts alkylation; the rearrangement is a fast, low-barrier step tied to the intrinsic instability of the primary cation itself, not a side reaction that cooling suppresses."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "medium", "passage": "", "question": "A medicinal chemist wants to convert cyclohexanone directly into N-methylcyclohexanamine (a secondary amine) in a single flask, without isolating an unstable intermediate. Treating cyclohexanone with methylamine and sodium cyanoborohydride (NaBH3CN) in slightly acidic methanol accomplishes this by which mechanism?", "choices": ["Direct SN2 displacement of the ketone oxygen by methylamine", "Condensation of methylamine with the ketone to form an iminium ion, which NaBH3CN then selectively reduces", "NaBH3CN first reduces the ketone to cyclohexanol, which then undergoes SN1 substitution with methylamine", "Methylamine acts as a base to enolize the ketone, and NaBH3CN reduces the resulting enol"], "answer": 1, "explanation": "Reductive amination proceeds through condensation of the amine with the ketone to form an iminium ion (a protonated imine), then selective reduction of that iminium by NaBH3CN, which is mild enough to leave any unreacted ketone untouched at the mildly acidic pH used. This one-pot sequence converts cyclohexanone and methylamine directly into N-methylcyclohexanamine.", "notes": ["Wrong: carbonyl carbons undergo nucleophilic addition, not SN2 substitution at the oxygen itself; ketone oxygens are not leaving groups displaced by a backside attack.", "Correct: methylamine condenses with the ketone (addition followed by loss of water) to form a protonated iminium ion, and NaBH3CN, a mild hydride source selective for iminium/imine carbons over free ketones at mildly acidic pH, reduces that C=N+ to deliver the secondary amine.", "Wrong: NaBH3CN is chosen precisely because it is too mild to reduce free ketones efficiently at the pH used; even if the ketone were reduced first, the resulting cyclohexanol is a poor electrophile and does not undergo SN1 substitution with an amine nucleophile under these conditions.", "Wrong: methylamine is a nucleophile that adds to the electrophilic carbonyl carbon, not a base that deprotonates the alpha carbon; enol formation is not part of the reductive amination pathway."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "medium", "passage": "", "question": "A physical organic chemist studies epoxide ring-opening regiochemistry by hydrolyzing 2,2-dimethyloxirane in dilute aqueous H2SO4 using isotopically labeled water (H2-18-O). The mechanism proceeds through a transition state with significant carbocation character at the more substituted carbon. Where does the 18-O label end up in the diol product?", "choices": ["On the more substituted (gem-dimethyl) carbon, because the protonated epoxide is attacked by water preferentially at that carbon", "On the less substituted (terminal CH2) carbon, because water always attacks the less hindered carbon regardless of mechanism", "Distributed equally between both carbons because the epoxide oxygen scrambles statistically before ring-opening", "Nowhere; the label is lost and the original epoxide oxygen is retained unchanged in the product"], "answer": 0, "explanation": "Under acidic conditions, epoxide protonation gives the ring oxygen a good leaving-group character, and the transition state develops significant positive charge on the more substituted carbon (here, the gem-dimethyl carbon), which better stabilizes that charge. The nucleophile, labeled water, therefore attacks preferentially at that more substituted carbon, placing the 18-O label there while the original ring oxygen stays on the less substituted carbon.", "notes": ["Correct: acid-catalyzed epoxide opening protonates the ring oxygen, giving the C-O bond to the more substituted carbon partial carbocation character; the labeled water nucleophile attacks that more substituted carbon preferentially, so the label ends up there while the original epoxide oxygen remains, unlabeled, on the less substituted carbon.", "Wrong: that rule (nucleophile attacks the less hindered carbon) applies to base-catalyzed epoxide opening, where the nucleophile performs a clean SN2-like backside attack on the less hindered carbon; under acidic conditions the regiochemistry reverses toward the more substituted carbon.", "Wrong: the reaction proceeds through a single, regioselective transition state favoring attack at the more substituted carbon; the two epoxide carbons are not equivalent, and there is no scrambling step that would statistically randomize where the incoming water attacks.", "Wrong: ring-opening breaks one C-O bond and forms a new C-O bond to the incoming water nucleophile, so the labeled oxygen is incorporated into the product rather than lost; both the original epoxide oxygen and the new labeled oxygen end up as the two hydroxyls of the diol."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "medium", "passage": "", "question": "A quality-control chemist analyzes a sample of a chiral drug whose pure (R)-enantiomer has a specific rotation [alpha]D of +40 degrees. A 1.0 g/mL solution of the sample is placed in a 1 dm polarimeter tube and shows an observed rotation of +20 degrees. What is the enantiomeric excess (% ee) of this sample?", "choices": ["100% ee", "75% ee", "25% ee", "50% ee"], "answer": 3, "explanation": "First compute the sample's specific rotation using [alpha] = observed rotation / (concentration x path length) = 20 / (1.0 x 1) = 20 degrees. Then compare it to the pure enantiomer's specific rotation of 40 degrees: % ee = (20/40) x 100 = 50%.", "notes": ["Wrong: 100% ee would require the sample's calculated specific rotation to equal the pure enantiomer's value of +40 degrees; this sample's specific rotation ([alpha] = observed rotation / (concentration x path length) = 20/(1.0 x 1) = 20 degrees) is only half that, so the sample is not enantiopure.", "Wrong: 75% corresponds to the fraction of the major enantiomer present in the mixture (a 75:25 ratio), which follows from a 50% ee, not to the % ee value itself; % ee and % major enantiomer are related but numerically distinct quantities.", "Wrong: 25% results from mistakenly halving the correct ratio a second time (dividing 20/40 to get 50%, then dividing by 2 again), rather than stopping at the single division that gives the % ee.", "Correct: specific rotation of the sample = observed rotation / (concentration x path length) = 20 degrees / (1.0 g/mL x 1 dm) = 20 degrees. % ee = (sample specific rotation / pure enantiomer specific rotation) x 100 = (20/40) x 100 = 50% ee."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "medium", "passage": "", "question": "A synthesis chemist wants to add an ethyl group specifically to the beta-carbon of cyclohex-2-en-1-one, leaving the ketone carbonyl intact for a later step. Which organometallic reagent reliably delivers this conjugate (1,4) addition outcome rather than attacking the carbonyl carbon directly?", "choices": ["Lithium diethylcuprate, (CH3CH2)2CuLi (a Gilman reagent)", "Ethylmagnesium bromide, CH3CH2MgBr", "Ethyllithium, CH3CH2Li", "Sodium borohydride, NaBH4, followed by ethyl iodide"], "answer": 0, "explanation": "Alpha,beta-unsaturated ketones can react with nucleophiles at either the carbonyl carbon (1,2-addition) or the beta-carbon (1,4-conjugate addition). Hard nucleophiles like Grignard and organolithium reagents favor 1,2-addition to the carbonyl. Gilman reagents (lithium dialkylcuprates), being softer and more polarizable, favor 1,4-addition, delivering the alkyl group to the beta-carbon and leaving the ketone intact after tautomerization/workup.", "notes": ["Correct: Gilman reagents (lithium dialkylcuprates) are soft, polarizable nucleophiles that preferentially add in a 1,4 (conjugate) fashion to alpha,beta-unsaturated ketones, delivering the alkyl group to the beta-carbon and regenerating the ketone after workup, exactly the selectivity needed here.", "Wrong: Grignard reagents are hard, strongly basic nucleophiles that predominantly attack the more electrophilic carbonyl carbon directly (1,2-addition), converting the ketone into a tertiary allylic alcohol rather than adding at the beta-carbon.", "Wrong: like Grignard reagents, organolithiums are highly reactive, hard nucleophiles that favor direct 1,2-addition to the carbonyl carbon over conjugate addition, so ethyllithium would not selectively functionalize the beta-carbon.", "Wrong: NaBH4 reduces the ketone's carbonyl (or, under some conditions, performs 1,4-reduction of the enone) rather than forming a new carbon-carbon bond, and it does not react with ethyl iodide to transfer an ethyl group to the ring; this sequence does not accomplish conjugate alkylation at all."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "medium", "passage": "", "question": "A chemist needs to convert butanamide (CH3CH2CH2CONH2) into a primary amine containing one fewer carbon than the starting amide, without ever isolating a nitrile or directly reducing the carbonyl. Treating butanamide with Br2 and excess NaOH accomplishes this via which named rearrangement, and what is the product?", "choices": ["Curtius rearrangement, giving propan-1-amine", "Hofmann rearrangement, giving propan-1-amine", "Hofmann rearrangement, giving butan-1-amine", "Beckmann rearrangement, giving N-propylacetamide"], "answer": 1, "explanation": "The Hofmann rearrangement converts a primary amide to a primary amine with loss of one carbon (as CO2), using Br2 and excess NaOH: bromination of the amide nitrogen, base-induced migration of the alkyl group to nitrogen as bromide departs, formation of an isocyanate, and hydrolysis/decarboxylation to the amine. Butanamide's propyl group migrates, giving propan-1-amine.", "notes": ["Wrong: the Curtius rearrangement starts from an acyl azide (typically formed from an acyl chloride and sodium azide), not from a primary amide treated with Br2/NaOH; bromine and hydroxide acting on a primary amide specifically defines the Hofmann rearrangement.", "Correct: Br2/NaOH first brominate the amide nitrogen, then base-promoted rearrangement migrates the alkyl group from carbon to nitrogen as bromide leaves, forming an isocyanate that hydrolyzes and loses CO2, giving an amine with one fewer carbon than the starting amide; butanamide (four carbons including the carbonyl) thus yields propan-1-amine (three carbons).", "Wrong: retaining all four carbons as butan-1-amine ignores the defining feature of the Hofmann rearrangement, that the carbonyl carbon is expelled as CO2 during isocyanate hydrolysis, so the product amine always has one carbon fewer than the starting amide.", "Wrong: the Beckmann rearrangement converts an oxime (not a primary amide) into an amide under acidic conditions; it is not triggered by Br2/NaOH acting on an amide, and it does not produce a primary amine as the product."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "medium", "passage": "", "question": "An unknown aliphatic ketone with molecular formula C5H10O gives an EI mass spectrum with a molecular ion at m/z 86 and a base peak at m/z 43, consistent with alpha-cleavage that expels a propyl radical and leaves the acylium ion CH3-C-triple bond-O+. Which compound best fits this fragmentation pattern?", "choices": ["3-Pentanone (diethyl ketone)", "Pentanal", "2-Pentanone", "2,2-Dimethylpropanal (pivaldehyde)"], "answer": 2, "explanation": "Ketones fragment in EI-MS predominantly by alpha-cleavage, breaking a C-C bond adjacent to the carbonyl to expel the larger alkyl group as a radical and leave a resonance-stabilized acylium cation. For 2-pentanone (CH3-CO-CH2CH2CH3), cleavage on the propyl side expels a propyl radical (43 mass units) and leaves CH3-C-triple bond-O+ at m/z 43, matching the described base peak; the symmetric 3-pentanone would instead lose an ethyl radical and show its base peak near m/z 57.", "notes": ["Wrong: 3-pentanone is symmetric around the carbonyl, so alpha-cleavage on either side expels an ethyl radical (mass 29), giving a base peak near m/z 57 (CH3CH2-C-triple bond-O+), not m/z 43.", "Wrong: pentanal is an aldehyde, not a ketone, which already conflicts with the stated identity of the unknown; aldehydes typically fragment by losing a hydrogen atom (M-1) or undergo McLafferty rearrangement rather than cleanly losing a propyl radical to give an m/z 43 acylium base peak.", "Correct: 2-pentanone, CH3-CO-CH2CH2CH3, undergoes alpha-cleavage on the propyl side, expelling a propyl radical (C3H7 dot, mass 43) and leaving the resonance-stabilized acetyl cation CH3-C-triple bond-O+ at m/z 43 as the dominant, stable fragment, matching the described base peak.", "Wrong: 2,2-dimethylpropanal is an aldehyde whose only alpha-cleavage pathway expels a tert-butyl radical (mass 57), leaving the formyl cation H-C-triple bond-O+ at m/z 29, not an m/z 43 fragment, so it does not match the described spectrum."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "hard", "passage": "", "question": "A lab technician stirs 2,2-dimethyloxirane (the epoxide derived from isobutylene) in excess methanol containing a catalytic amount of concentrated H2SO4. Under these acid-catalyzed epoxide-opening conditions, what is the major product?", "choices": ["2-methoxy-2-methylpropan-1-ol", "1-methoxy-2-methylpropan-2-ol", "2-methylpropane-1,2-diol", "No reaction occurs; the sterically hindered epoxide carbon resists nucleophilic attack under these conditions"], "answer": 0, "explanation": "Acid-catalyzed epoxide opening proceeds through a protonated epoxide in which the C-O bond to the more substituted carbon has more carbocation character; the nucleophile (here, methanol, present in large excess as solvent) therefore attacks that more substituted carbon, while the oxygen retains its proton on the less hindered carbon after workup. For 2,2-dimethyloxirane this places the new OCH3 group on the quaternary-adjacent carbon and leaves a primary CH2OH, giving 2-methoxy-2-methylpropan-1-ol.", "notes": ["Correct: Under acid catalysis the epoxide oxygen is first protonated, and positive charge builds up preferentially on the more substituted carbon (bearing two methyl groups), so methanol attacks that carbon while the ring oxygen becomes the primary alcohol, giving 2-methoxy-2-methylpropan-1-ol.", "1-methoxy-2-methylpropan-2-ol places the methoxy group on the less hindered CH2 carbon and the OH on the more substituted carbon; that regiochemistry is what SN2-like attack under basic/nucleophilic conditions would give, not what happens when the mechanism runs through a protonated, carbocation-like intermediate.", "2-methylpropane-1,2-diol would require water, not methanol, to be the attacking nucleophile; under these anhydrous methanol/H2SO4(cat.) conditions methanol vastly outnumbers any adventitious water and is the nucleophile that reacts.", "Epoxides are strained three-membered rings that react readily with nucleophiles even at hindered carbons once acid-activated; claiming no reaction ignores that acid catalysis specifically accelerates opening at the more substituted (more hindered) carbon rather than blocking it."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "hard", "passage": "", "question": "A biochemistry student compares four carbonyl compounds for their relative rates of hydrolysis in aqueous buffer at pH 7.4, 37 degrees C: acetamide (CH3CONH2), ethyl acetate (CH3CO2CH2CH3), acetic anhydride ((CH3CO)2O), and acetyl chloride (CH3COCl). Ranking these four compounds from LEAST reactive to MOST reactive toward hydrolysis, which order is correct?", "choices": ["acetyl chloride < acetic anhydride < ethyl acetate < acetamide", "acetamide < ethyl acetate < acetic anhydride < acetyl chloride", "ethyl acetate < acetamide < acetic anhydride < acetyl chloride", "acetamide < acetic anhydride < ethyl acetate < acetyl chloride"], "answer": 1, "explanation": "The rate of nucleophilic acyl substitution (here, hydrolysis) among carboxylic acid derivatives is governed primarily by leaving-group ability: the weaker the base the leaving group is, the better it leaves and the faster the substitution. Chloride ion is the weakest base and best leaving group of the four (fastest, acetyl chloride), followed by a resonance-stabilized carboxylate (acetic anhydride), then a simple alkoxide (ethyl acetate), with amide nitrogen the strongest base and worst leaving group, making acetamide the slowest to hydrolyze.", "notes": ["Placing acetyl chloride as least reactive and acetamide as most reactive inverts the true order; acid chlorides have the best leaving group (Cl-) of the four and react fastest with water, while amides have the worst leaving group (essentially an amide anion) and react slowest.", "Correct: reactivity toward nucleophilic acyl substitution tracks leaving-group ability (amide nitrogen worst, then ester alkoxide, then anhydride carboxylate, then chloride best), so acetamide reacts slowest, ethyl acetate next, acetic anhydride faster still, and acetyl chloride fastest.", "This ordering swaps the ester and amide, placing ethyl acetate below acetamide; amide nitrogen is a far poorer leaving group than an alkoxide, so the amide, not the ester, must be the slowest of the two.", "This ordering swaps the ester and the anhydride, placing acetic anhydride below ethyl acetate; a resonance-stabilized carboxylate leaving group (from the anhydride) is a substantially better leaving group than a simple alkoxide (from the ester), so the anhydride must react faster than the ester, not slower."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "hard", "passage": "", "question": "A biochemistry student dissolves purified beta-D-glucopyranose in water and monitors its optical rotation over several hours; the rotation drifts from its initial value to a stable equilibrium value as the closed pyranose ring opens to the open-chain aldehyde form and recloses (mutarotation). Which carbon is the stereocenter responsible for this phenomenon, and how is it generated?", "choices": ["C4, the carbon bearing the ring oxygen's other alkyl substituent, generated via keto-enol tautomerization", "C6, the terminal primary alcohol carbon, generated via an oxidation/reduction equilibrium", "C1, the carbonyl carbon of the open-chain aldehyde, generated via reversible intramolecular hemiacetal formation", "C2, the carbon alpha to the carbonyl, generated via reversible enolization"], "answer": 2, "explanation": "Mutarotation arises because the cyclic hemiacetal at C1 (the anomeric carbon) is in equilibrium with the open-chain aldehyde. When the ring opens, C1 becomes a planar, achiral carbonyl carbon; when the C5-OH re-attacks to reclose the ring, it can add to either face of the carbonyl, regenerating either the alpha or beta anomer. Because alpha- and beta-D-glucopyranose have different specific rotations, the observed rotation of a solution starting as pure one anomer drifts toward the weighted average rotation of the equilibrium mixture.", "notes": ["C4 is a pre-existing stereocenter present in both the open-chain and cyclic forms of glucose; it is not created or destroyed during ring-opening and ring-closing, and glucose does not undergo the keto-enol tautomerization described here since C1 is an aldehyde, not an alpha-carbonyl system relevant to this equilibrium.", "C6 is the terminal CH2OH of glucose and is never a stereocenter, since it bears two hydrogens; mutarotation does not involve any oxidation or reduction of C6.", "Correct: C1 is the aldehyde carbon in the open-chain form; when the C5 hydroxyl attacks it intramolecularly to reclose the ring, C1 becomes a new stereocenter (the anomeric carbon), and because the ring can reopen and recyclize with either face attacked, an equilibrium mixture of alpha and beta anomers forms, producing the drift in optical rotation.", "C2 already bears a fixed configuration in glucose and is not undergoing reversible enolization under the mild aqueous conditions described; mutarotation specifically reflects ring-opening and reclosing at C1, not enolization at C2."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "hard", "passage": "", "question": "A chemist treats ethyl benzoate (C6H5-CO2CH2CH3) with 2.2 equivalents of phenylmagnesium bromide in dry ether, then quenches the reaction with dilute aqueous acid. What is the major organic product isolated after workup?", "choices": ["benzophenone, (C6H5)2C=O", "triphenylmethanol, (C6H5)3COH", "benzyl alcohol, C6H5CH2OH", "1-phenylethanol, C6H5CH(OH)CH3"], "answer": 1, "explanation": "Esters react with Grignard reagents in two additions when the Grignard is used in excess: the first equivalent converts the ester to a ketone in situ (displacing the alkoxy leaving group), and because that ketone is more reactive than the starting ester, a second equivalent of Grignard adds immediately, before the ketone can be isolated. Acidic aqueous workup then protonates the resulting magnesium alkoxide to give a tertiary alcohol bearing three phenyl groups, triphenylmethanol.", "notes": ["Benzophenone would be the product only if the reaction stopped after a single addition of Grignard reagent and the tetrahedral alkoxide intermediate somehow avoided collapsing to expel ethoxide; with excess PhMgBr present, the ketone that forms in situ is itself attacked by a second equivalent before workup, so benzophenone is not the isolated product.", "Correct: an ester reacts with a Grignard reagent in two sequential additions when excess Grignard is used. The first equivalent of PhMgBr displaces ethoxide to generate benzophenone in situ, and because a ketone is more electrophilic and Grignard reagent remains in excess, a second equivalent of PhMgBr immediately adds to that ketone; acidic workup then delivers the tertiary alcohol triphenylmethanol.", "Benzyl alcohol would result from reduction of a benzaldehyde-type carbon, not from Grignard addition to an ester; Grignard reagents do not deliver hydride, and this product does not match the phenyl-for-ethoxide substitution pattern of the actual mechanism.", "1-Phenylethanol would arise from a methyl Grignard adding once to a benzaldehyde-derived carbonyl; phenylmagnesium bromide reacting with an ester does not produce this connectivity."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "hard", "passage": "", "question": "A synthetic chemist wants to prepare propylbenzene (C6H5-CH2CH2CH3) starting from benzene. Direct Friedel-Crafts alkylation with 1-chloropropane and AlCl3 is unreliable here because the initially formed primary propyl cation partially rearranges via a hydride shift to the more stable secondary cation, giving significant isopropylbenzene as a byproduct. Which two-step route reliably installs the unrearranged, straight-chain propyl group?", "choices": ["Friedel-Crafts alkylation with 2-chloropropane and AlCl3, requiring no further step", "Friedel-Crafts alkylation with 1-chloropropane and AlCl3 at 0 degrees C to kinetically suppress rearrangement", "Friedel-Crafts acylation with propanoyl chloride and AlCl3 to give propiophenone, followed by Clemmensen reduction with Zn(Hg)/HCl", "Friedel-Crafts acylation with propanoyl chloride and AlCl3 to give propiophenone, followed by NaBH4 reduction to the secondary benzylic alcohol"], "answer": 2, "explanation": "Because acylium ions (formed in Friedel-Crafts acylation) are stabilized by resonance and do not rearrange, using propanoyl chloride/AlCl3 installs an unrearranged three-carbon acyl group on the ring, giving propiophenone. A subsequent Clemmensen reduction (Zn(Hg), HCl) then removes the carbonyl oxygen entirely, converting the ketone to a CH2 and yielding straight-chain propylbenzene without ever generating a rearrangement-prone alkyl carbocation.", "notes": ["Friedel-Crafts alkylation with 2-chloropropane installs an isopropyl group directly (via a secondary carbocation), giving isopropylbenzene, not the straight-chain propylbenzene target; this route does not solve the stated problem at all.", "Lowering the temperature does not prevent a primary carbocation from rearranging to a more stable secondary carbocation; carbocation rearrangements are typically fast, low-barrier hydride or alkyl shifts, so this strategy does not reliably suppress the rearrangement that causes the isopropylbenzene byproduct.", "Correct: Friedel-Crafts acylation with propanoyl chloride and AlCl3 proceeds through a resonance-stabilized acylium ion that does not rearrange, giving propiophenone (C6H5-CO-CH2CH3) cleanly; Clemmensen reduction (Zn(Hg)/HCl) then fully reduces the ketone carbonyl to a CH2 group, delivering unrearranged propylbenzene.", "NaBH4 only reduces the ketone of propiophenone to a secondary benzylic alcohol (1-phenylpropan-1-ol), not all the way to the hydrocarbon; reaching propylbenzene requires a full carbonyl-to-methylene reduction such as Clemmensen or Wolff-Kishner, which NaBH4 cannot perform."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "hard", "passage": "", "question": "In a medicinal chemistry lab, cyclohexanone is combined with methylamine (CH3NH2) and a trace of acid in methanol, allowing an intermediate to form; that intermediate is then treated with sodium cyanoborohydride (NaBH3CN) buffered near pH 7. What is the major final product of this reaction sequence?", "choices": ["cyclohexanol, from direct reduction of the starting ketone", "the cyclic imine (Schiff base) intermediate, isolated without further reduction", "N,N-dimethylcyclohexanamine, a tertiary amine", "N-methylcyclohexanamine, a secondary amine"], "answer": 3, "explanation": "This is a classic reductive amination: a primary amine (methylamine) condenses with a ketone (cyclohexanone) to form an imine, and NaBH3CN, a mild hydride source that is far more selective for C=N over C=O at near-neutral pH, reduces that imine to the corresponding secondary amine without over-reducing or attacking any unreacted ketone. The final isolated product is the secondary amine N-methylcyclohexanamine.", "notes": ["Cyclohexanol would result from direct hydride reduction of the ketone carbonyl itself, for example by NaBH4 in the absence of an amine; methylamine is present specifically to first condense with the carbonyl, so nitrogen ends up in the final product rather than a simple oxygen-to-hydroxyl reduction.", "The cyclic imine (Schiff base, N-methylcyclohexanimine) is only the reactive intermediate formed before NaBH3CN is added; it is a C=N-containing species that is selectively and rapidly reduced by NaBH3CN under the mildly acidic/neutral conditions described, so it is not the isolated final product of this full reaction sequence.", "N,N-dimethylcyclohexanamine would require two separate methyl groups to be installed on the nitrogen, but only one equivalent of methylamine is used and no second alkylating or reductive-amination step is described, so a tertiary amine with two N-methyl groups cannot form here.", "Correct: methylamine first condenses with the ketone to form an imine (Schiff base) intermediate, which sodium cyanoborohydride then selectively reduces at the C=N bond under the mildly acidic buffered conditions, delivering the secondary amine N-methylcyclohexanamine as the final product."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Organic Chemistry", "course": "Organic Chemistry", "difficulty": "hard", "passage": "", "question": "2-Bromobutane (CH3-CHBr-CH2-CH3) is examined by 1H NMR. Focusing specifically on the two hydrogens attached to C3 (the CH2 carbon adjacent to the C2 stereocenter), which statement correctly describes their relationship and expected NMR behavior?", "choices": ["The two CH2 protons are diastereotopic; they can show distinct chemical shifts and exhibit mutual geminal coupling in the 1H NMR spectrum", "The two CH2 protons are homotopic and must appear as a single, unsplit signal", "The two CH2 protons are enantiotopic and are chemically equivalent in any NMR experiment, achiral or chiral", "The two CH2 protons are constitutionally different atoms and therefore cannot couple to each other"], "answer": 0, "explanation": "A pair of hydrogens on the same carbon is diastereotopic whenever there is a stereocenter elsewhere in the molecule, because mentally substituting a test group for each of the two hydrogens in turn generates two diastereomers, not enantiomers or identical structures. In 2-bromobutane, C2 is a stereocenter, so the two C3 hydrogens are diastereotopic: they can have different chemical shifts and, being on the same carbon, show a geminal coupling to each other in addition to coupling to neighboring protons.", "notes": ["Correct: because C2 is a stereocenter, replacing each of the two C3 hydrogens individually (in a thought experiment) produces diastereomers of each other, meaning the two hydrogens are diastereotopic; they are chemically non-equivalent and can in principle show distinct chemical shifts while also coupling to each other through a geminal (2-bond) J coupling.", "Calling the two CH2 protons homotopic and predicting a single unsplit signal ignores both the adjacent stereocenter, which makes the two hydrogens chemically distinguishable, and the presence of neighboring CH and CH3 protons, which would produce splitting even if the two CH2 hydrogens were equivalent to each other.", "Enantiotopic protons only arise when replacing each one creates enantiomers, which requires there be no other stereocenter anywhere in the molecule; because C2 is already a stereocenter, replacing either C3 hydrogen instead creates diastereomers (differing in relative configuration), so enantiotopic is the wrong classification here.", "Diastereotopic protons are chemically non-equivalent but remain constitutionally identical, since both are C3 hydrogens on the same carbon; being on the same carbon, they are precisely the type of proton pair expected to show mutual 2-bond (geminal) coupling, not an inability to couple."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Physics", "course": "Physics", "difficulty": "mcat", "passage": "", "question": "A fiber-optic endoscope carries light through a saline-filled channel (n = 1.33) that strikes the boundary with the surrounding tissue (n = 1.40) at an angle of incidence of 30° from the normal. Using Snell's law, what is the angle of refraction into the tissue?", "choices": ["28°", "32°", "30°", "72°"], "answer": 0, "explanation": "Snell's law governs refraction at the saline-tissue boundary; light bending toward the normal on entering a higher-index medium gives an angle smaller than 30°.", "notes": ["Correct: Using Snell's law n1 sin θ1 = n2 sin θ2, sin θ2 = (1.33/1.40)(sin 30°) = (0.950)(0.500) = 0.475, so θ2 = sin⁻¹(0.475) ≈ 28°.", "This value comes from inverting the index ratio (using n2/n1 instead of n1/n2): sin θ2 = (1.40/1.33)(0.500) = 0.526, giving θ2 ≈ 32°.", "This value assumes the ray does not bend at all, ignoring the change in refractive index between the saline and the tissue.", "This value comes from mistakenly treating the situation as total internal reflection and computing a critical angle, θc = sin⁻¹(n1/n2) = sin⁻¹(0.95) ≈ 72°, which does not apply here since light is passing from a lower- to a higher-index medium."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Physics", "course": "Physics", "difficulty": "mcat", "passage": "", "question": "A vascular ultrasound probe emits a 5.0 MHz signal directly along the axis of blood flow (θ = 0°) into a vessel where blood moves at 0.50 m/s. Taking the speed of sound in tissue as 1540 m/s, what is the magnitude of the Doppler frequency shift detected by the probe?", "choices": ["1.6 kHz", "3.2 kHz", "6.5 kHz", "0.32 kHz"], "answer": 1, "explanation": "Doppler ultrasound reflects off moving blood twice (out and back), producing a shift with a factor of 2 not present in the single-reflection Doppler formula.", "notes": ["This value comes from omitting the factor of 2 in the Doppler shift formula: Δf = f0v/c = (5.0×10^6)(0.5)/1540 ≈ 1.6 kHz.", "Correct: The Doppler shift formula for reflected ultrasound is Δf = 2f0v cos θ/c. With θ = 0°, Δf = 2(5.0×10^6)(0.5)/1540 ≈ 3.2 kHz.", "This value comes from doubling the correct formula a second time (using a factor of 4 instead of 2): Δf = 4f0v/c ≈ 6.5 kHz.", "This value comes from a decimal error in the speed of sound, using c = 15,400 m/s instead of 1540 m/s, understating the shift by a factor of 10."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Physics", "course": "Physics", "difficulty": "mcat", "passage": "", "question": "Blood of density 1060 kg/m^3 flows steadily through an artery of cross-sectional area A1 at 0.40 m/s. The artery narrows to a stenosis with half the original cross-sectional area. Using Bernoulli's equation, what is the pressure drop between the wide and narrow sections?", "choices": ["509 Pa", "212 Pa", "254 Pa", "85 Pa"], "answer": 2, "explanation": "Continuity requires the velocity to double where the cross-sectional area is halved, and Bernoulli's equation converts that velocity increase into a pressure drop.", "notes": ["This value comes from omitting the factor of 1/2 in Bernoulli's equation: ΔP = ρ(v2²−v1²) = (1060)(0.48) ≈ 509 Pa.", "This value comes from using the linear velocity difference instead of the difference of squares: ΔP = (1/2)ρ(v2−v1) = (1/2)(1060)(0.4) ≈ 212 Pa.", "Correct: By continuity, v2 = 2v1 = 0.80 m/s since A2 = A1/2. Bernoulli's equation gives ΔP = (1/2)ρ(v2²−v1²) = (1/2)(1060)(0.64−0.16) = (1/2)(1060)(0.48) ≈ 254 Pa.", "This value comes from misapplying continuity as v2 = v1√(A1/A2) instead of v2 = v1(A1/A2), understating v2 and thus the pressure drop."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Physics", "course": "Physics", "difficulty": "mcat", "passage": "", "question": "A patient monitor circuit connects a 12 V battery to a 10 Ω resistor in series with two 20 Ω resistors that are wired in parallel with each other. What is the total current drawn from the battery?", "choices": ["1.2 A", "0.24 A", "2.4 A", "0.6 A"], "answer": 3, "explanation": "Combine the parallel pair first using the reciprocal rule, then add the series resistor before applying Ohm's law to the total resistance.", "notes": ["This value comes from ignoring the series resistor and computing current through only the parallel section: I = 12/10 = 1.2 A.", "This value comes from treating the two parallel resistors as if they add directly like a series combination (20+20 = 40 Ω) instead of combining reciprocals, giving a total of 50 Ω and I = 12/50 = 0.24 A.", "This value comes from incorrectly combining all three resistors in parallel instead of keeping the 10 Ω resistor in series: 1/R = 1/10+1/20+1/20 = 1/5 Ω, giving I = 12/5 = 2.4 A.", "Correct: The two 20 Ω resistors in parallel combine to 10 Ω, which is in series with the 10 Ω resistor for a total of 20 Ω. I = V/R = 12/20 = 0.6 A."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Physics", "course": "Physics", "difficulty": "mcat", "passage": "", "question": "In a physical therapy exercise, a solid cylindrical wheel is released from rest and rolls without slipping down a ramp of height 1.2 m (g = 10 m/s^2). What is its speed at the bottom of the ramp?", "choices": ["4.0 m/s", "4.9 m/s", "3.5 m/s", "3.1 m/s"], "answer": 0, "explanation": "Rolling without slipping requires accounting for both translational and rotational kinetic energy, using the solid cylinder's moment of inertia I = (1/2)MR².", "notes": ["Correct: For a solid cylinder rolling without slipping, energy conservation gives Mgh = (3/4)Mv², so v² = 4gh/3 = 4(10)(1.2)/3 = 16, and v = 4.0 m/s.", "This value comes from ignoring rotational kinetic energy entirely and treating the cylinder as a frictionless sliding block: v = √(2gh) = √24 ≈ 4.9 m/s.", "This value comes from using the moment of inertia of a hollow cylinder (I = MR²) instead of a solid one, giving v² = gh = 12 and v ≈ 3.5 m/s.", "This value comes from dropping the factor of 1/2 on the translational kinetic energy term, giving Mgh = Mv² + (1/4)Mv², so v² = 4gh/5 = 9.6 and v ≈ 3.1 m/s."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Physics", "course": "Physics", "difficulty": "mcat", "passage": "", "question": "A patient is injected with 80 mCi of technetium-99m (half-life 6 hours) for a diagnostic bone scan. If imaging is delayed and performed 18 hours after injection, what activity remains?", "choices": ["20 mCi", "10 mCi", "40 mCi", "5 mCi"], "answer": 1, "explanation": "Radioactive decay follows an exponential halving pattern; the number of half-lives elapsed must be counted correctly before applying the (1/2)^n factor.", "notes": ["This value comes from miscounting the elapsed time as 2 half-lives instead of 3, dividing 80 mCi by 4.", "Correct: 18 hours corresponds to 18/6 = 3 half-lives, so the activity is 80 mCi × (1/2)^3 = 80/8 = 10 mCi.", "This value comes from treating 18 hours as only 1 half-life, dividing 80 mCi by 2.", "This value comes from miscounting the elapsed time as 4 half-lives instead of 3, dividing 80 mCi by 16."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Physics", "course": "Physics", "difficulty": "mcat", "passage": "", "question": "During an MRI scan, a gradient coil loop of 200 turns and cross-sectional area 0.050 m^2 experiences a magnetic field that switches from 1.5 T to 1.0 T in 0.020 s. What is the magnitude of the EMF induced in the coil during this switch?", "choices": ["1.25 V", "750 V", "250 V", "25 V"], "answer": 2, "explanation": "Faraday's law relates induced EMF to the number of turns and the rate of change of magnetic flux, which depends on the change in field strength, not its absolute value.", "notes": ["This value comes from forgetting to multiply by the number of turns N: EMF = AΔB/Δt = (0.05)(0.5)/0.02 = 1.25 V.", "This value comes from using the initial field strength (1.5 T) instead of the change in field (ΔB = 0.5 T): EMF = N·A·(1.5)/0.02 = 750 V.", "Correct: EMF = N(ΔΦ/Δt) = N·A·ΔB/Δt = (200)(0.05)(0.5)/0.02 = (200)(0.025)/0.02 = 250 V.", "This value comes from a tenfold decimal error in the time interval, using Δt = 0.2 s instead of 0.02 s: EMF = (200)(0.025)/0.2 = 25 V."], "confidence": "high"},
+  {"category": "Chem/Phys", "subject": "Physics", "course": "Physics", "difficulty": "mcat", "passage": "", "question": "A nurse accidentally knocks a vial off a countertop 1.25 m above the floor. At the moment it leaves the counter, the vial has a horizontal velocity of 2.0 m/s and no vertical velocity (g = 10 m/s^2). How far from the base of the counter does the vial land?", "choices": ["0.5 m", "2.0 m", "2.2 m", "1.0 m"], "answer": 3, "explanation": "In projectile motion, vertical and horizontal motion are independent; the fall time depends only on height and gravity, then multiplies the constant horizontal velocity to give range.", "notes": ["This value comes from omitting the square root when solving for fall time, using t = 2h/g = 0.25 s directly instead of t = √(2h/g): range = (2)(0.25) = 0.5 m.", "This value comes from doubling the correctly computed range of 1.0 m through an arithmetic slip.", "This value comes from incorrectly folding the horizontal velocity into the fall-time calculation, t = √(2h/v) = √1.25 ≈ 1.12 s, giving range = (2)(1.12) ≈ 2.2 m.", "Correct: Fall time is independent of horizontal motion: t = √(2h/g) = √(2(1.25)/10) = √0.25 = 0.5 s. Horizontal range = v·t = (2.0)(0.5) = 1.0 m."], "confidence": "high"},
+  {"category": "Bio/Biochem", "subject": "Biochemistry", "course": "Biochemistry", "difficulty": "medium", "passage": "", "question": "A researcher studies an enzyme in vitro and adds a fixed concentration of an inhibitor that binds only to the enzyme-substrate complex, not to the free enzyme. Lineweaver-Burk plots at increasing substrate concentration show that the inhibitor lowers both the apparent Vmax and the apparent Km by the same factor, so the ratio Vmax/Km stays constant. Which type of enzyme inhibition does this data describe?", "choices": ["Uncompetitive inhibition", "Competitive inhibition", "Noncompetitive inhibition", "Allosteric activation"], "answer": 0, "explanation": "Uncompetitive inhibitors bind only the enzyme-substrate (ES) complex, not free enzyme, trapping ES and blocking product release. Because binding ES pulls the equilibrium toward forming more ES, both the apparent Vmax and apparent Km drop by the same factor, leaving Vmax/Km unchanged. This distinguishes it from competitive inhibition (Km rises, Vmax unchanged) and noncompetitive inhibition (Vmax falls, Km unchanged), and rules out allosteric activation, which would improve rather than worsen catalytic efficiency.", "notes": ["Correct: uncompetitive inhibitors bind only the ES complex, trapping it and preventing product release; this lowers both Vmax and Km proportionally because pulling ES out of equilibrium also pulls more free enzyme into forming ES, leaving Vmax/Km unchanged.", "Competitive inhibition raises the apparent Km while leaving Vmax unchanged, since the inhibitor competes with substrate for the free active site and can be outcompeted by excess substrate.", "Noncompetitive inhibition lowers Vmax while leaving Km unchanged, because the inhibitor binds an allosteric site on both free enzyme and ES complex equally, reducing catalytic turnover without affecting substrate affinity.", "Allosteric activation would increase catalytic efficiency and raise Vmax and/or lower Km toward faster turnover, the opposite of the drop in both parameters described here."], "confidence": "high"},
+  {"category": "Bio/Biochem", "subject": "Biochemistry", "course": "Biochemistry", "difficulty": "medium", "passage": "", "question": "A biochemist purifies an enzyme extract by loading it onto a column packed with porous beads and eluting with buffer. Larger proteins emerge from the column first because they are excluded from the internal pores of the beads and travel only through the space between beads, while smaller proteins enter the pores, take a longer path, and elute later. Which chromatographic technique is being described?", "choices": ["Size-exclusion (gel filtration) chromatography", "Ion-exchange chromatography", "Affinity chromatography", "Thin-layer chromatography"], "answer": 0, "explanation": "Size-exclusion (gel filtration) chromatography uses porous beads that exclude large proteins, which flow around the beads and elute first, while smaller proteins enter the pores, take a longer path, and elute later. This inverse size-to-elution-time relationship is the defining feature of the technique described. It differs from ion-exchange chromatography (separates by charge), affinity chromatography (separates by a specific binding interaction), and thin-layer chromatography (separates on a flat plate, not a packed column).", "notes": ["Correct: size-exclusion (gel filtration) chromatography separates molecules by size using porous beads; large molecules are excluded from the pores and elute early, while small molecules enter the pores, travel a longer effective path, and elute later.", "Ion-exchange chromatography separates molecules based on net charge interacting with a charged resin, not on physical exclusion from pores based on size.", "Affinity chromatography separates molecules based on a specific binding interaction (such as antibody-antigen or enzyme-substrate analog) with a ligand attached to the column matrix, not on size-based pore exclusion.", "Thin-layer chromatography separates compounds on a flat stationary-phase plate based on differential migration with a mobile solvent, not by passing through a packed column of porous beads."], "confidence": "high"},
+  {"category": "Bio/Biochem", "subject": "Biochemistry", "course": "Biochemistry", "difficulty": "medium", "passage": "", "question": "Red blood cells lack mitochondria and rely on the pentose phosphate pathway to protect themselves from oxidative damage. The oxidative branch of this pathway converts glucose-6-phosphate to ribulose-5-phosphate while reducing a specific coenzyme, which is then used by glutathione reductase to keep glutathione in its reduced, antioxidant-active form. Which coenzyme does the oxidative branch of the pentose phosphate pathway generate for this purpose?", "choices": ["NADPH", "NADH", "FADH2", "ATP"], "answer": 0, "explanation": "The oxidative branch of the pentose phosphate pathway uses glucose-6-phosphate dehydrogenase and 6-phosphogluconate dehydrogenase to reduce NADP+ to NADPH while converting glucose-6-phosphate to ribulose-5-phosphate. Glutathione reductase then uses this NADPH to keep glutathione reduced, allowing it to neutralize reactive oxygen species. Since mitochondria-free red blood cells have no other major source of reducing power, this pathway (rather than NADH from glycolysis/citric acid cycle, FADH2 from beta-oxidation, or ATP) is their key antioxidant defense.", "notes": ["Correct: the oxidative branch of the pentose phosphate pathway (via glucose-6-phosphate dehydrogenase and 6-phosphogluconate dehydrogenase) reduces NADP+ to NADPH, which glutathione reductase then uses to regenerate reduced glutathione and neutralize reactive oxygen species.", "NADH is generated by glycolysis and the citric acid cycle for use in oxidative phosphorylation, not by the pentose phosphate pathway's oxidative branch, which specifically produces the phosphorylated form, NADPH.", "FADH2 is generated in the citric acid cycle (succinate dehydrogenase step) and in fatty acid beta-oxidation for delivery to the electron transport chain, not by the pentose phosphate pathway.", "ATP is not a direct product of the pentose phosphate pathway's oxidative branch; the pathway's purpose here is generating reducing power (NADPH) and pentose sugars, not substrate-level phosphorylation."], "confidence": "high"},
 /* EXTRA_END */
 ];
 
@@ -4362,6 +4421,32 @@ const BREAKDOWNS = {
   "During intense exercise, when oxygen delivery cannot keep pace with ATP demand, muscle cells regenerate NAD+ through lactate fermentation: pyruvate + NADH + H+ -> lactate + NAD+. Which species is reduced in this reaction?": "A species is reduced when it gains electrons, which often shows up as gaining hydrogen atoms or losing oxygen atoms in organic and biochemical contexts. In pyruvate-to-lactate conversion, pyruvate's carbonyl carbon gains a hydrogen (delivered via hydride transfer from NADH) and becomes a hydroxyl-bearing carbon in lactate, which is the hallmark of reduction. The reaction is only balanced because NADH simultaneously loses that hydride and becomes NAD+, so the same reaction contains one species being reduced (pyruvate) and another being oxidized (NADH) at the same time. A useful check is to compare each reactant to its corresponding product and ask whether it gained or lost electron density; the reactant whose product has more C-H bonds and fewer C=O bonds has been reduced.",
   "A block of solid CO2 (dry ice) is left on a lab bench at 1 atm and room temperature. Rather than melting into a puddle, it visibly shrinks as it converts directly into gas. The phase diagram of CO2 shows a triple point at 5.11 atm and -56.6 degrees C. Based on this phase diagram, why does dry ice sublime rather than melt under these conditions?": "A phase diagram plots pressure against temperature and divides the plane into solid, liquid, and gas regions, separated by boundary curves representing equilibrium between two phases. The triple point is the single pressure-temperature combination where all three boundary curves meet and all three phases coexist. Its pressure value is significant because it sets a floor: at any pressure below the triple-point pressure, the liquid region does not exist at all, no matter what temperature is chosen. For water, the triple point is just below 1 atm, which is why ice melts into liquid water at atmospheric pressure. For CO2, the triple point sits at 5.11 atm, above atmospheric pressure, so liquid CO2 simply is not accessible at 1 atm; increasing temperature at that pressure moves the system straight along the solid-gas sublimation curve into the gas phase. Producing liquid CO2 requires raising the pressure to at least 5.11 atm.",
   "In a supervised chemistry demonstration, small coin-sized pieces of lithium, sodium, and potassium are each dropped into separate dishes of water. Lithium fizzes gently, sodium reacts vigorously enough to melt into a sizzling ball, and potassium ignites almost immediately. Which best explains why potassium reacts with water far more vigorously than lithium, despite both being Group 1 metals?": "Several periodic trends move together down a group, and correctly reasoning about reactivity requires picking the one that is causally relevant. Atomic radius increases down a group because each row adds a new electron shell farther from the nucleus. Ionization energy decreases down a group because the added shielding from filled inner shells outweighs the increased nuclear charge, so the outermost electron is held less tightly even though the nucleus has more protons. Electronegativity also decreases down a group, following the same shielding logic, since a larger, more shielded atom attracts shared or external electrons less strongly. For alkali metal reactivity with water, the metal is the electron donor (it gets oxidized), so what matters is how easily it releases its own valence electron, which is governed by ionization energy, not by how strongly it might attract electrons from elsewhere. This is why the metal with the lowest ionization energy in the group reacts the most vigorously.",
+  "A flavor chemist is converting acetophenone (C6H5-CO-CH3) into an ester precursor using meta-chloroperoxybenzoic acid (mCPBA) in dichloromethane, a Baeyer-Villiger oxidation. Migratory aptitude in the rearrangement step favors the group that better stabilizes developing positive charge as it migrates from carbon to the electrophilic oxygen. What is the major organic product?": "Peracids like mCPBA are electrophilic oxygen sources that react differently depending on what functional group they meet. Against a carbon-carbon double bond, mCPBA delivers an oxygen atom across the pi bond to form an epoxide. Against a ketone, mCPBA instead adds to the carbonyl carbon to form a tetrahedral peroxide intermediate called the Criegee intermediate; one of the two groups attached to that carbon then migrates to the adjacent oxygen while the O-O bond breaks and a carboxylate leaves, converting the ketone C=O into an ester C(=O)-O-R. Which group migrates is governed by migratory aptitude: groups that stabilize positive charge better move preferentially, roughly in the order tertiary alkyl > secondary alkyl > aryl > primary alkyl > methyl (hydrogen also migrates readily, converting aldehydes to esters/formates). For a methyl aryl ketone like acetophenone, the aryl ring outranks methyl, so the oxygen ends up between the carbonyl carbon and the ring, giving an aryl ester (phenyl acetate) rather than an alkyl benzoate. Recognizing Baeyer-Villiger problems means first identifying that the substrate is a ketone (not an alkene) reacting with a peracid, then applying the migratory aptitude order to predict which group ends up bonded to the new ester oxygen.",
+  "A synthetic chemist needs to install an unbranched three-carbon chain onto benzene to make 1-propylbenzene, but knows that direct Friedel-Crafts alkylation with 1-chloropropane and AlCl3 is unreliable for this target. Which sequence installs the chain without carbocation rearrangement?": "Installing an unbranched alkyl chain longer than two carbons onto an aromatic ring by direct Friedel-Crafts alkylation is unreliable whenever the alkylating agent would generate a primary or secondary carbocation, because that cation can rearrange (via hydride or alkyl shifts) to a more stable cation before it ever reacts with the ring, scrambling the product's connectivity. The standard workaround is acylation-then-reduction: Friedel-Crafts acylation uses an acyl chloride (or anhydride) with AlCl3 to generate an acylium ion, R-C≡O+, which is already resonance-stabilized by the adjacent oxygen and has no driving force to rearrange. This acylium reacts with the ring to install a ketone with the desired unbranched carbon skeleton intact. A subsequent full deoxygenation, either Clemmensen reduction (Zn(Hg), HCl, acidic conditions) or Wolff-Kishner reduction (NH2NH2, KOH, basic conditions), then converts the ketone's C=O all the way down to a CH2, leaving the original unbranched alkyl chain attached to the ring. Partial reductions like LiAlH4 or NaBH4 only get you to the alcohol stage and are not sufficient substitutes.",
+  "A medicinal chemist wants to convert cyclohexanone directly into N-methylcyclohexanamine (a secondary amine) in a single flask, without isolating an unstable intermediate. Treating cyclohexanone with methylamine and sodium cyanoborohydride (NaBH3CN) in slightly acidic methanol accomplishes this by which mechanism?": "Reductive amination is the standard two-step-in-one-pot method for converting a ketone or aldehyde plus a primary or secondary amine into a new C-N bond without isolating the reactive imine/iminium intermediate. Step one is condensation: the amine's nitrogen lone pair attacks the carbonyl carbon, water is lost, and (for a primary amine reacting with a ketone) a positively charged iminium ion forms, in equilibrium with a small amount of neutral imine. Step two is reduction: a hydride source adds to the iminium carbon, converting C=N+ into C-N with a new C-H bond, giving the amine product. The reagent choice matters here: NaBH3CN (or the related NaBH(OAc)3) is selected over NaBH4 specifically because, at the mildly acidic pH typically used (around pH 6-7), it reduces the protonated iminium much faster than it reduces the starting ketone, so the reaction proceeds cleanly to the amine without prematurely reducing unreacted starting material to an unwanted alcohol byproduct.",
+  "A physical organic chemist studies epoxide ring-opening regiochemistry by hydrolyzing 2,2-dimethyloxirane in dilute aqueous H2SO4 using isotopically labeled water (H2-18-O). The mechanism proceeds through a transition state with significant carbocation character at the more substituted carbon. Where does the 18-O label end up in the diol product?": "Epoxide ring-opening regiochemistry flips depending on whether the reaction is run under basic or acidic conditions, and isotope-labeling experiments are the classic way this is demonstrated. Under basic or neutral conditions, an unprotonated epoxide is opened by a strong nucleophile in a concerted, SN2-like backside attack; because steric hindrance dominates, the nucleophile attacks the less substituted, less hindered carbon. Under acidic conditions, the epoxide oxygen is first protonated, which weakens both C-O bonds and lets the transition state develop partial positive charge; the more substituted carbon (with more alkyl groups to hyperconjugate and stabilize that charge) develops more cationic character, so the incoming nucleophile, even a weak one like water, attacks there instead. Because both mechanisms ultimately give the same constitutional diol from a substrate like 2,2-dimethyloxirane, isotopic labeling of the water is what makes the regiochemistry visible experimentally: tracking which carbon ends up bonded to the labeled oxygen reveals which carbon the nucleophile actually attacked, confirming the acid-catalyzed mechanism's shift toward the more substituted carbon.",
+  "A quality-control chemist analyzes a sample of a chiral drug whose pure (R)-enantiomer has a specific rotation [alpha]D of +40 degrees. A 1.0 g/mL solution of the sample is placed in a 1 dm polarimeter tube and shows an observed rotation of +20 degrees. What is the enantiomeric excess (% ee) of this sample?": "Optical rotation measurements let chemists quantify how enantiomerically pure a sample is. The specific rotation of a sample is calculated from the raw polarimeter reading using [alpha] = observed rotation / (concentration in g/mL x path length in dm); this normalizes the measurement so it can be compared directly to a reference value regardless of how concentrated the solution was or how long the sample tube was. Every pure enantiomer has its own characteristic specific rotation (a physical constant, analogous to melting point), and a racemic mixture (50:50 of both enantiomers) rotates light by exactly zero because the two enantiomers' rotations cancel. A sample that is not perfectly racemic but also not perfectly pure gives an observed rotation somewhere between zero and the pure enantiomer's value, and the ratio of the sample's specific rotation to the pure enantiomer's specific rotation, expressed as a percentage, is defined as the enantiomeric excess (% ee): the percentage by which the major enantiomer exceeds the minor one. It is worth keeping % ee conceptually separate from the actual enantiomer ratio; a 50% ee sample is not '50% one enantiomer', it corresponds to a 75:25 ratio of major to minor enantiomer, since ee measures the excess above the racemic 50:50 baseline, not the raw population fraction.",
+  "A synthesis chemist wants to add an ethyl group specifically to the beta-carbon of cyclohex-2-en-1-one, leaving the ketone carbonyl intact for a later step. Which organometallic reagent reliably delivers this conjugate (1,4) addition outcome rather than attacking the carbonyl carbon directly?": "Conjugated enones (alpha,beta-unsaturated ketones) present two distinct electrophilic sites: the carbonyl carbon itself, and the beta-carbon, which is electrophilic by extended conjugation through the pi system. Which site a nucleophile attacks depends on the nucleophile's character, a distinction chemists describe using hard-soft acid-base reasoning. Hard, small, highly reactive carbanion nucleophiles such as Grignard reagents (RMgX) and organolithiums (RLi) react fastest with the most electrophilic, localized site, the carbonyl carbon, giving 1,2-addition and, after protonation, an allylic alcohol. Soft, larger, more polarizable nucleophiles, most notably lithium dialkylcuprates (Gilman reagents, R2CuLi, formed by combining two equivalents of RLi with a copper(I) salt), instead react preferentially at the softer, more diffuse beta-carbon, giving 1,4-conjugate addition. After aqueous workup, the initially formed enolate tautomerizes back to the ketone, so the net transformation installs a new alkyl group at the beta-carbon while regenerating the original carbonyl, exactly the selectivity a synthesis chemist needs when the ketone must survive for a later step.",
+  "A chemist needs to convert butanamide (CH3CH2CH2CONH2) into a primary amine containing one fewer carbon than the starting amide, without ever isolating a nitrile or directly reducing the carbonyl. Treating butanamide with Br2 and excess NaOH accomplishes this via which named rearrangement, and what is the product?": "The Hofmann rearrangement is one of several named reactions that shorten a carbon chain by exactly one carbon while converting a nitrogen-containing functional group into a primary amine, and it is worth distinguishing from the similarly named Curtius and Beckmann rearrangements because all three involve a nitrogen migrating group but start from different substrates. The Hofmann rearrangement specifically begins with a primary amide (R-CO-NH2) treated with bromine and excess hydroxide: bromine first brominates the amide's N-H, then base deprotonates the remaining N-H, and as the resulting nitrogen anion pushes out bromide, the R group migrates directly from the carbonyl carbon to the nitrogen in a concerted step, producing an isocyanate (R-N=C=O). Under the aqueous basic conditions, that isocyanate is rapidly hydrolyzed to a carbamic acid, which spontaneously loses CO2 (decarboxylates) to reveal the free primary amine R-NH2. Because the original carbonyl carbon leaves as CO2, the product amine always has exactly one fewer carbon than the starting amide. The Curtius rearrangement reaches the same type of isocyanate intermediate but starts from an acyl azide instead of a brominated amide, and the Beckmann rearrangement converts an entirely different substrate, an oxime, into an amide (not an amine) under acidic conditions.",
+  "An unknown aliphatic ketone with molecular formula C5H10O gives an EI mass spectrum with a molecular ion at m/z 86 and a base peak at m/z 43, consistent with alpha-cleavage that expels a propyl radical and leaves the acylium ion CH3-C-triple bond-O+. Which compound best fits this fragmentation pattern?": "Electron-impact mass spectrometry ionizes a molecule and then fragments the resulting radical cation along its weakest bonds, and for carbonyl compounds the dominant fragmentation pathway is alpha-cleavage: breaking one of the two C-C bonds directly attached to the carbonyl carbon. This is favorable because it generates an acylium ion, R-C-triple bond-O+, whose positive charge is delocalized onto the oxygen through resonance, making it unusually stable compared to a generic carbocation. For an unsymmetrical ketone, there are two possible alpha-cleavage pathways (one on each side of the carbonyl), and the one that expels the larger, more stable alkyl radical, and/or forms the more stable acylium, tends to dominate and produce the base peak (the most intense peak in the spectrum). Reading a fragmentation pattern therefore means working backward: subtracting the base-peak mass from the molecular ion mass tells you the mass of the radical that was lost, and matching that lost-radical mass to a plausible alkyl group pins down which side of the carbonyl fragmented. Symmetric ketones like 3-pentanone give only one possible alpha-cleavage product, so their base peak mass directly reveals the size of each identical alkyl group, while aldehydes behave differently because one side of their carbonyl is only a hydrogen, making other pathways like McLafferty rearrangement or simple hydrogen loss more prominent than a classic alpha-cleavage acylium fragment.",
+  "A lab technician stirs 2,2-dimethyloxirane (the epoxide derived from isobutylene) in excess methanol containing a catalytic amount of concentrated H2SO4. Under these acid-catalyzed epoxide-opening conditions, what is the major product?": "Epoxide ring-opening regiochemistry flips depending on the mechanism. Under basic or strongly nucleophilic conditions (no acid catalyst), the reaction is a clean SN2: the nucleophile attacks the less hindered carbon because steric access controls the rate, and the ring oxygen ends up on the more substituted carbon. Under acidic conditions, the epoxide oxygen is protonated first, which weakens both C-O bonds and lets positive charge develop on whichever carbon can better stabilize it (more substituted means more stable partial cation). The incoming nucleophile then attacks that more substituted carbon, even though it is more hindered, because electronics now outweigh sterics. This acid-vs-base regiochemical switch is one of the most commonly tested epoxide concepts on the MCAT, and the fastest way to solve it is to identify which carbon can best support positive charge and ask whether the conditions are acidic or basic.",
+  "A biochemistry student compares four carbonyl compounds for their relative rates of hydrolysis in aqueous buffer at pH 7.4, 37 degrees C: acetamide (CH3CONH2), ethyl acetate (CH3CO2CH2CH3), acetic anhydride ((CH3CO)2O), and acetyl chloride (CH3COCl). Ranking these four compounds from LEAST reactive to MOST reactive toward hydrolysis, which order is correct?": "Carboxylic acid derivatives all share the same general R-C(=O)-LG framework, and their relative reactivity toward nucleophiles is set almost entirely by how good LG is as a leaving group, which in turn tracks how stable (weak-base) the departing anion is. The standard reactivity order, from most to least reactive, is acid halide > anhydride > ester (roughly tied with acid) > amide, because Cl- is the most stable/weakest-base leaving group and amide nitrogen is the least stable/strongest-base leaving group among these. This same order also predicts which derivatives can be converted into which others (a more reactive derivative can be converted to a less reactive one, but not efficiently the reverse) and is one of the most frequently tested functional-group reactivity scales on the MCAT.",
+  "A biochemistry student dissolves purified beta-D-glucopyranose in water and monitors its optical rotation over several hours; the rotation drifts from its initial value to a stable equilibrium value as the closed pyranose ring opens to the open-chain aldehyde form and recloses (mutarotation). Which carbon is the stereocenter responsible for this phenomenon, and how is it generated?": "A hemiacetal carbon formed by intramolecular addition of a hydroxyl group to a carbonyl is called the anomeric carbon, and in cyclic sugars it is a new stereocenter that did not exist in that same sense in the open-chain form (the open-chain carbonyl carbon is sp2 and achiral). Because the ring-closing step is reversible, a sugar dissolved in water constantly interconverts between its open-chain aldehyde and both possible ring-closed configurations at that one carbon (alpha and beta anomers), reaching an equilibrium ratio characteristic of that sugar. This reversible interconversion, observable as a time-dependent change in optical rotation, is called mutarotation, and recognizing that it is centered specifically on the anomeric carbon (the former carbonyl carbon) is the key to both mechanism and rotation questions about sugars on the MCAT.",
+  "A chemist treats ethyl benzoate (C6H5-CO2CH2CH3) with 2.2 equivalents of phenylmagnesium bromide in dry ether, then quenches the reaction with dilute aqueous acid. What is the major organic product isolated after workup?": "Grignard reagents adding to esters is a classic two-step, one-pot transformation: the ester carbonyl is attacked once to kick out the alkoxide leaving group and form a ketone, but that ketone cannot be isolated when excess Grignard is present because it reacts immediately with a second equivalent of the same nucleophile. The net result, after aqueous acidic workup, is always a tertiary alcohol with two identical R groups (from the Grignard reagent) attached to the carbon that was originally the ester carbonyl carbon, plus the group that was attached to that carbonyl carbon in the ester. Recognizing that esters need 2 equivalents of Grignard (versus 1 for aldehydes and ketones, which give secondary and tertiary alcohols directly) is essential for predicting Grignard synthesis products correctly on the MCAT.",
+  "A synthetic chemist wants to prepare propylbenzene (C6H5-CH2CH2CH3) starting from benzene. Direct Friedel-Crafts alkylation with 1-chloropropane and AlCl3 is unreliable here because the initially formed primary propyl cation partially rearranges via a hydride shift to the more stable secondary cation, giving significant isopropylbenzene as a byproduct. Which two-step route reliably installs the unrearranged, straight-chain propyl group?": "Whenever a target requires attaching an unbranched alkyl chain of three or more carbons to an aromatic ring, direct Friedel-Crafts alkylation is unreliable because the alkyl halide's carbocation (or the alkylation intermediate that resembles one) can rearrange to a more stable, more substituted cation before it reacts with the ring, scrambling the product. The standard workaround is to use Friedel-Crafts acylation instead: acylium ions are resonance-stabilized cations that do not rearrange, so the acyl group installs cleanly at the position and with the connectivity intended. Once the ketone is on the ring, its carbonyl can be fully removed by Clemmensen reduction (Zn(Hg)/HCl, acidic conditions) or Wolff-Kishner reduction (NH2NH2/KOH, basic conditions) to reveal the straight, unrearranged alkyl chain. This acylation-then-reduction strategy for installing unbranched alkyl groups on arenes is a high-yield synthesis pattern on the MCAT.",
+  "In a medicinal chemistry lab, cyclohexanone is combined with methylamine (CH3NH2) and a trace of acid in methanol, allowing an intermediate to form; that intermediate is then treated with sodium cyanoborohydride (NaBH3CN) buffered near pH 7. What is the major final product of this reaction sequence?": "Reductive amination is a two-step, often one-pot sequence for converting a ketone or aldehyde plus an amine into a new amine with one more alkyl or aryl substituent on nitrogen than the starting amine had. Step one is condensation: the amine's nitrogen attacks the carbonyl carbon, water is lost, and an imine (from a primary amine) or iminium ion (from a secondary amine) intermediate forms. Step two is reduction: a hydride source delivers H- to the electrophilic imine carbon, converting C=N to C-N and generating the new amine. Sodium cyanoborohydride is the reagent of choice for this second step specifically because, at mildly acidic to neutral pH, it reduces the protonated iminium/imine much faster than it reduces the starting carbonyl, giving clean, selective conversion even when unreacted ketone is still present in solution.",
+  "2-Bromobutane (CH3-CHBr-CH2-CH3) is examined by 1H NMR. Focusing specifically on the two hydrogens attached to C3 (the CH2 carbon adjacent to the C2 stereocenter), which statement correctly describes their relationship and expected NMR behavior?": "Classifying a pair of hydrogens on the same carbon starts with a mental substitution test: replace one hydrogen with a test group and note the resulting stereochemistry, then do the same for the other hydrogen and compare the two results. If the two outcomes are identical molecules, the hydrogens are homotopic (chemically equivalent, one NMR signal). If the two outcomes are enantiomers of each other, the hydrogens are enantiotopic (equivalent in an achiral environment, like standard NMR, but distinguishable in a chiral environment). If the two outcomes are diastereomers of each other, the hydrogens are diastereotopic (chemically non-equivalent even in an ordinary achiral NMR experiment); this happens whenever there is already another stereocenter in the molecule. Diastereotopic CH2 protons frequently appear as two separate multiplets that couple to each other (geminal coupling) in addition to coupling with neighboring protons, which is a common source of unexpectedly complex splitting patterns near a stereocenter on real MCAT NMR passages.",
+  "A fiber-optic endoscope carries light through a saline-filled channel (n = 1.33) that strikes the boundary with the surrounding tissue (n = 1.40) at an angle of incidence of 30° from the normal. Using Snell's law, what is the angle of refraction into the tissue?": "Snell's law states n1 sin θ1 = n2 sin θ2, where θ1 and θ2 are measured from the normal to the interface. Here light travels from saline (n1 = 1.33) into tissue (n2 = 1.40), a lower-to-higher-index transition, so the ray bends toward the normal and θ2 < θ1. Solve for sin θ2 = (n1/n2) sin θ1 = (1.33/1.40)(0.500) = 0.475, then take the inverse sine to get θ2 ≈ 28°. Total internal reflection is not relevant here because it only occurs going from a higher- to a lower-index medium.",
+  "A vascular ultrasound probe emits a 5.0 MHz signal directly along the axis of blood flow (θ = 0°) into a vessel where blood moves at 0.50 m/s. Taking the speed of sound in tissue as 1540 m/s, what is the magnitude of the Doppler frequency shift detected by the probe?": "In Doppler ultrasound, sound reflects off moving red blood cells, so the wave is Doppler-shifted twice: once as the moving cells receive it, and again as they re-emit it back toward the stationary probe. This gives Δf = 2f0v cos θ/c, where f0 is the emitted frequency, v is the blood velocity, θ is the angle between the sound beam and flow direction, and c is the speed of sound in tissue. With the beam aligned to flow (θ = 0°, cos θ = 1), plug in values: Δf = 2(5.0×10^6 Hz)(0.50 m/s)/(1540 m/s) = (5.0×10^6)/1540 ≈ 3246 Hz, or about 3.2 kHz.",
+  "Blood of density 1060 kg/m^3 flows steadily through an artery of cross-sectional area A1 at 0.40 m/s. The artery narrows to a stenosis with half the original cross-sectional area. Using Bernoulli's equation, what is the pressure drop between the wide and narrow sections?": "For incompressible, steady flow, the continuity equation A1v1 = A2v2 means velocity increases as cross-sectional area decreases. Halving the area doubles the velocity: v2 = v1(A1/A2) = (0.40)(2) = 0.80 m/s. Bernoulli's equation for horizontal flow (no height change) is P1 + (1/2)ρv1² = P2 + (1/2)ρv2², so ΔP = P1 − P2 = (1/2)ρ(v2² − v1²). Plugging in: (1/2)(1060)(0.80² − 0.40²) = (1/2)(1060)(0.64 − 0.16) = (1/2)(1060)(0.48) ≈ 254 Pa.",
+  "A patient monitor circuit connects a 12 V battery to a 10 Ω resistor in series with two 20 Ω resistors that are wired in parallel with each other. What is the total current drawn from the battery?": "For resistors in parallel, 1/R_parallel = 1/R2 + 1/R3 = 1/20 + 1/20 = 1/10, so R_parallel = 10 Ω. This combination is in series with the 10 Ω resistor, so the total resistance is R_total = 10 + 10 = 20 Ω. Ohm's law then gives the current drawn from the battery: I = V/R_total = 12 V/20 Ω = 0.6 A.",
+  "In a physical therapy exercise, a solid cylindrical wheel is released from rest and rolls without slipping down a ramp of height 1.2 m (g = 10 m/s^2). What is its speed at the bottom of the ramp?": "For an object rolling without slipping, gravitational potential energy converts into both translational and rotational kinetic energy: Mgh = (1/2)Mv² + (1/2)Iω². For a solid cylinder, I = (1/2)MR², and rolling without slipping means ω = v/R. Substituting: Mgh = (1/2)Mv² + (1/2)(1/2 MR²)(v/R)² = (1/2)Mv² + (1/4)Mv² = (3/4)Mv². Solving for v: v² = 4gh/3 = 4(10)(1.2)/3 = 16, so v = 4.0 m/s. This is slower than a frictionless slide because some energy goes into spinning the wheel rather than moving it forward.",
+  "A patient is injected with 80 mCi of technetium-99m (half-life 6 hours) for a diagnostic bone scan. If imaging is delayed and performed 18 hours after injection, what activity remains?": "Radioactive activity decays exponentially, losing half its value with each half-life: A = A0(1/2)^n, where n is the number of half-lives elapsed. Here n = (elapsed time)/(half-life) = 18 hours/6 hours = 3. So A = 80 mCi × (1/2)^3 = 80 mCi × (1/8) = 10 mCi. Tracking each half-life step confirms this: 80 → 40 (6 h) → 20 (12 h) → 10 (18 h).",
+  "During an MRI scan, a gradient coil loop of 200 turns and cross-sectional area 0.050 m^2 experiences a magnetic field that switches from 1.5 T to 1.0 T in 0.020 s. What is the magnitude of the EMF induced in the coil during this switch?": "Faraday's law of induction states EMF = N(ΔΦ/Δt), where N is the number of turns and ΔΦ is the change in magnetic flux through one loop, ΔΦ = A·ΔB. First find the change in field: ΔB = 1.5 T − 1.0 T = 0.5 T. Then ΔΦ = (0.050 m^2)(0.5 T) = 0.025 Wb. Finally, EMF = N(ΔΦ/Δt) = (200)(0.025 Wb)/(0.020 s) = 250 V.",
+  "A nurse accidentally knocks a vial off a countertop 1.25 m above the floor. At the moment it leaves the counter, the vial has a horizontal velocity of 2.0 m/s and no vertical velocity (g = 10 m/s^2). How far from the base of the counter does the vial land?": "Projectile motion separates into independent vertical and horizontal components. Vertically, the vial falls from rest under gravity, so h = (1/2)gt² gives t = √(2h/g) = √(2(1.25 m)/(10 m/s²)) = √0.25 = 0.5 s. Horizontally, there is no acceleration, so the vial travels at its constant initial speed for that same time: range = v·t = (2.0 m/s)(0.5 s) = 1.0 m.",
+  "A researcher studies an enzyme in vitro and adds a fixed concentration of an inhibitor that binds only to the enzyme-substrate complex, not to the free enzyme. Lineweaver-Burk plots at increasing substrate concentration show that the inhibitor lowers both the apparent Vmax and the apparent Km by the same factor, so the ratio Vmax/Km stays constant. Which type of enzyme inhibition does this data describe?": "Enzyme inhibitors are classified by which enzyme species they bind and how that changes the kinetic constants on a Lineweaver-Burk plot. Competitive inhibitors bind only free enzyme at the active site, so more substrate can outcompete them: Vmax is unchanged but apparent Km rises. Noncompetitive inhibitors bind an allosteric site on both free enzyme and the ES complex with equal affinity, so they reduce Vmax but leave Km untouched. Uncompetitive inhibitors bind only the ES complex, which shifts the equilibrium to draw more enzyme into that complex; this simultaneously lowers both Vmax and Km by the same factor, keeping the ratio Vmax/Km constant. Recognizing which parameter(s) change, and by how much relative to each other, is how MCAT kinetics questions identify inhibitor type from graphical or numerical data rather than a memorized definition.",
+  "A biochemist purifies an enzyme extract by loading it onto a column packed with porous beads and eluting with buffer. Larger proteins emerge from the column first because they are excluded from the internal pores of the beads and travel only through the space between beads, while smaller proteins enter the pores, take a longer path, and elute later. Which chromatographic technique is being described?": "Chromatography techniques separate biomolecules by exploiting different physical or chemical properties. Size-exclusion (gel filtration) chromatography uses beads containing pores of a defined size range: molecules too large to enter the pores flow around the beads and exit the column quickly, while smaller molecules diffuse into and out of the pores repeatedly, slowing their progress and making them elute later. This is the opposite ordering from what intuition might suggest, so questions often test whether the size-elution relationship is understood correctly. Other common protein-purification methods separate by different properties: ion-exchange chromatography uses charge, affinity chromatography uses a specific molecular binding partner, and SDS-PAGE (a related but distinct technique) also separates by size but via gel electrophoresis rather than column chromatography.",
+  "Red blood cells lack mitochondria and rely on the pentose phosphate pathway to protect themselves from oxidative damage. The oxidative branch of this pathway converts glucose-6-phosphate to ribulose-5-phosphate while reducing a specific coenzyme, which is then used by glutathione reductase to keep glutathione in its reduced, antioxidant-active form. Which coenzyme does the oxidative branch of the pentose phosphate pathway generate for this purpose?": "The pentose phosphate pathway (PPP) branches off from glucose-6-phosphate and runs parallel to glycolysis, serving two main purposes: generating ribose-5-phosphate for nucleotide synthesis, and generating NADPH for reductive biosynthesis and antioxidant defense. In its oxidative branch, glucose-6-phosphate dehydrogenase and then 6-phosphogluconate dehydrogenase each reduce NADP+ to NADPH while releasing CO2. Because red blood cells have no mitochondria and no other efficient way to make significant reducing power, the PPP is their primary source of NADPH, which glutathione reductase uses to keep glutathione reduced and able to detoxify peroxides. This is precisely why a defect in G6PD (the pathway's first enzyme) leaves red blood cells unable to withstand oxidative stress. Distinguishing NADPH's specific antioxidant/biosynthetic role from NADH and FADH2's roles feeding the electron transport chain is a key conceptual distinction tested here.",
   "A 6 Ω resistor and a 3 Ω resistor are connected in parallel. What is the equivalent resistance of the combination?": "Resistors combine differently depending on their wiring. In SERIES (end to end, one path), resistances simply add: R_eq = R_1 + R_2. In PARALLEL (both ends connected together, multiple paths), the RECIPROCALS add: 1/R_eq = 1/R_1 + 1/R_2. The classic trap is doing the parallel sum but forgetting the final step: you compute 1/R_eq, then must flip it to get R_eq itself. A powerful sanity check: parallel resistance is ALWAYS less than the smallest resistor in the group, because each added branch opens another route for current, lowering total opposition. So a 6 Ω and 3 Ω in parallel must give something under 3 Ω. 2 Ω fits, while 9 Ω or 4.5 Ω immediately signal a series or averaging mistake. For the special case of exactly two parallel resistors, a handy shortcut is R_eq = (R_1·R_2)/(R_1 + R_2) = (6·3)/(6+3) = 18/9 = 2 Ω.",
   "A 1.0 L buffer contains 0.20 mol acetic acid (pKa = 4.74) and 0.20 mol sodium acetate, giving an initial pH of 4.74. A student then adds 0.050 mol of gaseous HCl, which dissolves and reacts completely with no change in volume. What is the pH after the addition?": "A buffer is a reservoir of a weak acid and its conjugate base sitting side by side, and its job is to soak up added acid or base with only a small pH change. The tool for the calculation is the Henderson-Hasselbalch equation, pH = pKa + log([base]/[acid]). The first move is always the stoichiometry, not the log. Strong acid added to a buffer is fully consumed by the base half of the buffer: H+ plus acetate makes acetic acid. So you subtract the added moles from the base and add the same amount to the acid; think of it as one bucket pouring into the other. Starting from 0.20 and 0.20, adding 0.050 mol H+ leaves 0.15 mol base and 0.25 mol acid. A useful shortcut: when both species are in the same solution volume, you can plug moles straight into the ratio because the identical volume cancels top and bottom. Now the log term: log(0.15/0.25) = log(0.60), and since 0.60 is less than 1 the log is negative, about -0.22, so the pH falls below the pKa. That direction is a built-in sanity check, since adding acid must always push pH down. The final pH is 4.74 - 0.22 = 4.52. The dramatic contrast is with the unbuffered case: 0.050 mol of HCl in plain water would give pH 1.30, so the buffer absorbed nearly all of the acid's punch.",
   "By how much does the pressure in the wide section exceed the pressure in the narrow section?": "Two conservation laws chain together here. First, continuity (conservation of mass for an incompressible fluid): A1 v1 = A2 v2. The critical subtlety is that cross-sectional area of a pipe is A = pi (d/2)^2, so it scales with the SQUARE of the diameter. Halving the diameter quarters the area, which quadruples the speed. Compute the ratio once: (d1/d2)^2 = (4/2)^2 = 4, so v2 = 4 x 2.0 = 8.0 m/s. Second, Bernoulli's equation (energy conservation per unit volume along a streamline): P + (1/2) rho v^2 + rho g h = constant. Because the pipe is horizontal, the height terms are equal and cancel, leaving P1 + (1/2) rho v1^2 = P2 + (1/2) rho v2^2. Rearrange to isolate the pressure difference: P1 - P2 = (1/2) rho (v2^2 - v1^2). Plug in: (1/2)(1000)(64 - 4) = 30000 Pa. Two guardrails: (1) keep the factor of 1/2 on every kinetic term, and (2) remember Bernoulli's counterintuitive result that the FASTER, narrower section has the LOWER pressure, so the wide section's pressure is higher by 30 kPa.",
@@ -5264,6 +5349,7 @@ const state = {
   testDate:null,          // optional "YYYY-MM-DD"; drives the countdown + goal suggestion
   targetScore:null,       // the 510 Guarantee target (472-528), from funnel or Settings
   readinessRead:null,     // cached { text, day } from the gateway's readiness action
+  srsDone:[],             // keys graduated OUT of the review pile (positive record for sync merges)
   testTimeframe:null,     // "exact"|"3mo"|"6mo"|"later"|"none" - what the learner ACTUALLY said,
                           // kept alongside testDate so a rough window is never redisplayed as a
                           // hard date the learner never gave us
@@ -5318,10 +5404,16 @@ function serialize(){
     examReviews:state.examReviews,
     fcSrs:state.fcSrs, fcStats:state.fcStats,
     testDate:state.testDate, testTimeframe:state.testTimeframe, remind:state.remind, targetScore:state.targetScore,
-    readinessRead:state.readinessRead,
+    readinessRead:state.readinessRead, srsDone:state.srsDone,
     missLog:state.missLog, seenLog:state.seenLog, coachDismissed:state.coachDismissed };
 }
-function saveState(){ if (!state.persist || !STORAGE_OK) return; try { localStorage.setItem(LS_KEY, JSON.stringify(serialize())); } catch(e){} }
+function saveState(){
+  if (!state.persist || !STORAGE_OK) return;
+  try { localStorage.setItem(LS_KEY, JSON.stringify(serialize())); } catch(e){}
+  // The device is written first and always; the upload is debounced behind it
+  // and is a no-op in a build with no sync project configured.
+  try { syncSchedule(); } catch(e){}
+}
 function loadState(){
   try {
     const raw = localStorage.getItem(LS_KEY);
@@ -5343,6 +5435,598 @@ function loadState(){
   } catch(e){ return null; }
 }
 function clearSaved(){ try { localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_KEY_V1); } catch(e){} }
+
+/* ============================================================
+   ACCOUNT SYNC — cross-device progress.  Spec: docs/ACCOUNTS-SYNC-PLAN.md
+
+   DORMANT BY DEFAULT. While SYNC_CONFIG.url is "" this entire block is inert:
+   syncEnabled() is false, so the Settings card stays `hidden`, no listener is
+   registered, no timer is ever armed, and not one fetch is made. Filling in the
+   two values below is the whole switch — nothing else changes.
+
+   Three rules, from §3 of the plan:
+     1. The device is always right about itself. Every write still lands in
+        localStorage first; the server is a backup that catches up. Nothing in
+        the study loop waits on the network, and every failure here is silent
+        and retried on the next trigger.
+     2. We never subtract. Additive things (questions seen, review pile,
+        bookmarks, XP, badges) are unioned or maxed, never replaced. Entitlements
+        are grant-only in BOTH directions — a merge may never revoke a purchase.
+     3. Settings are last-write-wins, decided by which side is the newer writer,
+        never by a device clock (see mergeBlobs' `localNewer`).
+
+   No SDK: @supabase/supabase-js is ~120 KB and would have to be vendored into a
+   build that is already 8.6 MB. Everything here is plain fetch() against
+   documented REST endpoints. The one cost is hand-rolled token refresh.
+   ============================================================ */
+const SYNC_CONFIG = { url: "", anonKey: "" };   // <- the owner's project URL + anon key switch this on
+
+const SYNC_SESSION_KEY = "rampup_sync_session";   // access/refresh token + who we are
+const SYNC_META_KEY    = "rampup_sync_meta";      // lastSeenServerAt, lastSyncedAt, this device's id
+const SYNC_PREV_KEY    = LS_KEY + "_prevsync";    // one-undo copy of the save, written before any merge lands
+const SYNC_ENVELOPE_V  = 3;
+const SYNC_DEBOUNCE_MS = 30000;
+const SYNC_DEVICE_CAP  = 5;
+
+/* Entitlements do NOT live in the progress blob — they are a separate
+   localStorage key (ENT_KEY) precisely so a progress reset never wipes
+   purchases, and serialize() deliberately omits them. So the envelope carries
+   two things and keeps them apart on the way back down. */
+function syncEnabled(){ return !!(SYNC_CONFIG.url && SYNC_CONFIG.anonKey) && STORAGE_OK; }
+
+/* ---- tiny defensive readers. A blob off the network is untrusted input. ---- */
+function _syncObj(v){ return (v && typeof v === "object" && !Array.isArray(v)) ? v : {}; }
+function _syncArr(v){ return Array.isArray(v) ? v : []; }
+function _syncNum(v){ return (typeof v === "number" && isFinite(v)) ? v : 0; }
+function _syncUnion(a, b){
+  const seen = new Set(), out = [];
+  _syncArr(a).concat(_syncArr(b)).forEach(x => { const k = typeof x === "string" ? x : JSON.stringify(x);
+    if (!seen.has(k)){ seen.add(k); out.push(x); } });
+  return out;
+}
+/* Union two key->object maps. Keys in both are resolved by fn; keys in one are
+   kept as-is, which is what makes the merge additive by default. */
+function _syncMergeMaps(a, b, fn){
+  a = _syncObj(a); b = _syncObj(b);
+  const out = {};
+  Object.keys(a).forEach(k => { out[k] = a[k]; });
+  Object.keys(b).forEach(k => {
+    if (!(k in out)){ out[k] = b[k]; return; }
+    out[k] = fn(_syncObj(out[k]), _syncObj(b[k]));
+  });
+  return out;
+}
+function _syncMergeLog(a, b, cap){
+  const seen = new Set(), out = [];
+  _syncArr(a).concat(_syncArr(b)).forEach(e => {
+    if (!e || typeof e !== "object") return;
+    const k = JSON.stringify(e);
+    if (seen.has(k)) return;                       // the same attempt pushed by both devices is one attempt
+    seen.add(k); out.push(e);
+  });
+  out.sort((x, y) => _syncNum(x.t) - _syncNum(y.t));
+  return out.slice(-(cap || MISSLOG_CAP));
+}
+
+/* Which columns of the save get which rule (§3's table). */
+const SYNC_SET_FIELDS = ["bookmarks","servedKeys","achievements","focus","srsDone"];
+const SYNC_COUNTER_FIELDS = ["totalAnswered","totalCorrect","idkCount","xp","level","sessionsCompleted",
+  "bestCombo","reviewCleared","perfectSessions","testsCompleted","previewAnswered","celebratedStreak",
+  "streakFreezes"];
+/* Per-subject maps: union the keys, take the newer writer's value on a clash.
+   NOT max — a difficulty tier is a live adaptive position, not an achievement. */
+const SYNC_LWW_MAPS = ["difficulty","preview","courses","confidence","conceptsSeen"];
+
+/* ---- session + device bookkeeping ---- */
+function syncSession(){
+  try {
+    const r = localStorage.getItem(SYNC_SESSION_KEY); if (!r) return null;
+    const s = JSON.parse(r);
+    return (s && s.access_token && s.refresh_token) ? s : null;
+  } catch(e){ return null; }
+}
+function syncSetSession(raw){
+  try {
+    const prev = syncSession() || {};
+    const s = {
+      access_token: raw.access_token,
+      refresh_token: raw.refresh_token,
+      // Supabase returns expires_in (seconds from now) and usually expires_at (unix seconds).
+      expires_at: raw.expires_at ? raw.expires_at * 1000 : Date.now() + (_syncNum(raw.expires_in) || 3600) * 1000,
+      user_id: (raw.user && raw.user.id) || prev.user_id || null,
+      email:   (raw.user && raw.user.email) || prev.email || null
+    };
+    if (!s.access_token || !s.refresh_token || !s.user_id) return null;
+    localStorage.setItem(SYNC_SESSION_KEY, JSON.stringify(s));
+    return s;
+  } catch(e){ return null; }
+}
+function syncSignedIn(){ return syncEnabled() && !!syncSession(); }
+/* Sign out stops syncing and NOTHING else. Local progress is deliberately left
+   alone — wiping the device on sign-out is how people lose a streak and never
+   come back. */
+function syncSignOut(){
+  try { localStorage.removeItem(SYNC_SESSION_KEY); localStorage.removeItem(SYNC_META_KEY); } catch(e){}
+}
+function syncMeta(){ try { return _syncObj(JSON.parse(localStorage.getItem(SYNC_META_KEY) || "{}")); } catch(e){ return {}; } }
+function syncSetMeta(patch){
+  try { const m = Object.assign(syncMeta(), patch); localStorage.setItem(SYNC_META_KEY, JSON.stringify(m)); return m; }
+  catch(e){ return {}; }
+}
+function syncDeviceId(){
+  const m = syncMeta(); if (typeof m.device === "string" && m.device) return m.device;
+  const d = Math.random().toString(36).slice(2, 8);
+  syncSetMeta({ device: d });
+  return d;
+}
+/* Last N distinct device ids that have written this row — the data behind §4's
+   once-a-month abuse query. Not enforcement, just visibility. */
+function syncDevices(prev){
+  const me = syncDeviceId();
+  const out = _syncArr(prev).filter(x => typeof x === "string" && x !== me);
+  out.push(me);
+  return out.slice(-SYNC_DEVICE_CAP);
+}
+
+/* ---- auth: plain REST against GoTrue. Code entry, not magic-link redirect:
+   a link tapped in Mail opens Safari, not the Capacitor app, and making it jump
+   into the app needs Universal Links (an Apple entitlement + a re-provisioned
+   build). One email carries both; the app reads the 6 digits. ---- */
+function syncHeaders(token){
+  const h = { "apikey": SYNC_CONFIG.anonKey, "Content-Type": "application/json" };
+  if (token) h["Authorization"] = "Bearer " + token;
+  return h;
+}
+async function syncApiError(res){
+  let msg = "";
+  try { const j = await res.json(); msg = j.msg || j.message || j.error_description || j.error || ""; } catch(e){}
+  if (res.status === 429) return "Too many attempts. Try again in a few minutes.";
+  return msg || ("Something went wrong (" + res.status + ").");
+}
+async function authSend(email){
+  if (!syncEnabled()) throw new Error("Sync is not set up in this build.");
+  const res = await fetch(SYNC_CONFIG.url + "/auth/v1/otp", {
+    method: "POST", headers: syncHeaders(),
+    body: JSON.stringify({ email: email, create_user: true })
+  });
+  if (!res.ok) throw new Error(await syncApiError(res));
+  return true;
+}
+async function authVerify(email, code){
+  if (!syncEnabled()) throw new Error("Sync is not set up in this build.");
+  const res = await fetch(SYNC_CONFIG.url + "/auth/v1/verify", {
+    method: "POST", headers: syncHeaders(),
+    body: JSON.stringify({ email: email, token: String(code).trim(), type: "email" })
+  });
+  if (!res.ok) throw new Error(await syncApiError(res));
+  const s = syncSetSession(await res.json());
+  if (!s) throw new Error("Could not save the sign-in on this device.");
+  return s;
+}
+/* The access token lives an hour. A 400/401 means the refresh token itself is
+   dead (revoked, or rotated past us) and the only honest answer is "signed
+   out". Anything else — offline, 5xx — leaves the session alone to retry. */
+async function authRefresh(){
+  const s = syncSession(); if (!s) return null;
+  try {
+    const res = await fetch(SYNC_CONFIG.url + "/auth/v1/token?grant_type=refresh_token", {
+      method: "POST", headers: syncHeaders(),
+      body: JSON.stringify({ refresh_token: s.refresh_token })
+    });
+    if (res.status === 400 || res.status === 401){ syncSignOut(); syncRepaint(); return null; }
+    if (!res.ok) return null;
+    return syncSetSession(await res.json());
+  } catch(e){ return null; }
+}
+async function syncToken(){
+  const s = syncSession(); if (!s) return null;
+  if (s.expires_at && s.expires_at - Date.now() > 60000) return s.access_token;
+  const r = await authRefresh();
+  return r ? r.access_token : null;
+}
+
+/* ---- the row. RLS means "my row" is the only row this token can see, so no
+   filter is needed and none is trusted. `ok:false` is "we could not ask" and
+   `row:null` is "asked, there is no row yet" — conflating the two would make a
+   first-ever sign-in look like a network failure and never seed the row. ---- */
+async function syncGet(select){
+  try {
+    const t = await syncToken(); if (!t) return { ok:false, row:null };
+    const res = await fetch(SYNC_CONFIG.url + "/rest/v1/progress?select=" + select + "&limit=1",
+      { headers: syncHeaders(t) });
+    if (!res.ok) return { ok:false, row:null };
+    const rows = await res.json();
+    return { ok:true, row: (Array.isArray(rows) && rows.length) ? rows[0] : null };
+  } catch(e){ return { ok:false, row:null }; }
+}
+async function syncPushRow(envelope){
+  try {
+    const t = await syncToken(); if (!t) return null;
+    const s = syncSession(); if (!s || !s.user_id) return null;
+    const res = await fetch(SYNC_CONFIG.url + "/rest/v1/progress", {
+      method: "POST",
+      headers: Object.assign(syncHeaders(t), { "Prefer": "resolution=merge-duplicates,return=representation" }),
+      body: JSON.stringify([{ user_id: s.user_id, blob: envelope }])
+    });
+    if (!res.ok) return null;
+    const rows = await res.json();
+    return (Array.isArray(rows) && rows.length) ? rows[0] : null;
+  } catch(e){ return null; }
+}
+
+/* ---- the envelope ---- */
+function entSnapshot(){
+  return { v:2, pro: !!ent.pro, exams: [...ent.exams], sub: ent.sub || null, transition: ent.transition || null };
+}
+function syncEnvelope(){
+  return { v: SYNC_ENVELOPE_V, progress: serialize(), ent: entSnapshot(),
+           device: syncDeviceId(), devices: syncDevices(syncMeta().devices), savedAt: Date.now() };
+}
+function syncStamp(env, prevDevices){
+  env.v = SYNC_ENVELOPE_V;
+  env.device = syncDeviceId();
+  env.devices = syncDevices(env.devices && env.devices.length ? env.devices : prevDevices);
+  env.savedAt = Date.now();       // device clock, advisory only. Never used to pick a winner.
+  return env;
+}
+
+/* ---- entitlements: grant-only, in both directions ----
+   Verification does not move: Stripe is still checked server-side by the
+   Worker, StoreKit is still authoritative on iOS. Sync is not a way to buy
+   anything and is not a source of truth about whether you paid — it only ever
+   carries a grant sideways, so a web Stripe subscriber opening the iOS app
+   isn't wiped by a StoreKit check that correctly says "Apple has no record". */
+function _syncSubRank(s){
+  if (!s || typeof s !== "object") return -1;
+  return (s.expires == null) ? Infinity : _syncNum(s.expires);   // no expiry known = store said active
+}
+function mergeEnt(a, b){
+  a = _syncObj(a); b = _syncObj(b);
+  const ra = _syncSubRank(a.sub), rb = _syncSubRank(b.sub);
+  const tA = _syncObj(a.transition), tB = _syncObj(b.transition);
+  return {
+    v: 2,
+    pro: !!a.pro || !!b.pro,
+    exams: _syncUnion(a.exams, b.exams),
+    sub: (ra < 0 && rb < 0) ? null : (rb > ra ? b.sub : a.sub),
+    transition: (!a.transition && !b.transition) ? null
+              : (_syncNum(tB.endsAt) > _syncNum(tA.endsAt) ? b.transition : a.transition)
+  };
+}
+/* Apply a merged `ent` to the live entitlement layer. Only ever adds. There is
+   no branch in here that can set a flag to false, clear a subscription, or
+   shrink the exam set. */
+function entApplySynced(e){
+  e = _syncObj(e);
+  let changed = false;
+  if (e.pro && !ent.pro){ ent.pro = true; changed = true; }
+  _syncArr(e.exams).forEach(id => { if (typeof id === "string" && !ent.exams.has(id)){ ent.exams.add(id); changed = true; } });
+  if (e.sub && _syncSubRank(e.sub) > _syncSubRank(ent.sub)){ ent.sub = e.sub; changed = true; }
+  if (e.transition && _syncNum(e.transition.endsAt) > _syncNum(_syncObj(ent.transition).endsAt)){
+    ent.transition = e.transition; changed = true;
+  }
+  if (changed){ try { entSave(); } catch(err){} }
+  return changed;
+}
+
+/* ============================================================
+   mergeBlobs(local, remote, localNewer) -> merged envelope
+
+   `local` and `remote` are envelopes ({progress, ent, ...}). `localNewer` says
+   which side is the more recent WRITER, and it decides the last-write-wins
+   group only. It is a boolean the callers know from their own bookkeeping —
+   never a comparison of device clocks, because a phone set to the wrong year
+   would otherwise win every conflict forever.
+
+   Pure: reads nothing, writes nothing, touches no globals. That is deliberate
+   so the conflict cases in §3 can be constructed and asserted directly.
+   ============================================================ */
+function mergeBlobs(local, remote, localNewer){
+  const L = _syncObj(local), R = _syncObj(remote);
+  const lp = _syncObj(L.progress), rp = _syncObj(R.progress);
+  const entOut = mergeEnt(L.ent, R.ent);
+  const devices = _syncUnion(L.devices, R.devices).filter(x => typeof x === "string").slice(-SYNC_DEVICE_CAP);
+
+  // Case 5 — the guard rail. A server row claiming zero answers on top of a
+  // local save that has some is treated as damaged, not as truth: keep local
+  // whole and let the next push repair the row. This is the only way this
+  // design could ever destroy someone's work, and it is one `if`. Entitlements
+  // still merge, because grants are never the dangerous direction.
+  if (_syncNum(rp.totalAnswered) === 0 && _syncNum(lp.totalAnswered) > 0){
+    return { v: SYNC_ENVELOPE_V, progress: lp, ent: entOut, devices: devices,
+             savedAt: _syncNum(L.savedAt), guarded: true };
+  }
+
+  const N = localNewer ? lp : rp, O = localNewer ? rp : lp;   // newer / older writer
+
+  // Start from last-write-wins across the whole shape (§3 rule 3), then put the
+  // additive rules back on top. Keys explicitly set to undefined are skipped so
+  // an absent field on the newer side cannot erase a present one on the older.
+  const out = {};
+  [O, N].forEach(src => Object.keys(src).forEach(k => { if (src[k] !== undefined) out[k] = src[k]; }));
+  out.v = 2;
+  out.onboarded = !!(lp.onboarded || rp.onboarded);
+
+  SYNC_SET_FIELDS.forEach(k => { out[k] = _syncUnion(lp[k], rp[k]); });
+  SYNC_COUNTER_FIELDS.forEach(k => {
+    if (lp[k] === undefined && rp[k] === undefined) return;
+    out[k] = Math.max(_syncNum(lp[k]), _syncNum(rp[k]));
+  });
+  SYNC_LWW_MAPS.forEach(k => { out[k] = Object.assign({}, _syncObj(O[k]), _syncObj(N[k])); });
+
+  out.stats = _syncMergeMaps(lp.stats, rp.stats, (a, b) => ({
+    answered: Math.max(_syncNum(a.answered), _syncNum(b.answered)),
+    correct:  Math.max(_syncNum(a.correct),  _syncNum(b.correct)),
+    cRun:     Math.max(_syncNum(a.cRun),     _syncNum(b.cRun)),
+    wRun:     Math.max(_syncNum(a.wRun),     _syncNum(b.wRun))
+  }));
+
+  // Review pile: box only goes up on a correct answer, so a higher box is
+  // strictly more work done. Ties fall to the later due date.
+  out.srs = _syncMergeMaps(lp.srs, rp.srs, (a, b) => {
+    if (_syncNum(a.box) !== _syncNum(b.box)) return _syncNum(a.box) > _syncNum(b.box) ? a : b;
+    return _syncNum(a.due) >= _syncNum(b.due) ? a : b;
+  });
+  out.fcSrs = _syncMergeMaps(lp.fcSrs, rp.fcSrs, (a, b) => {
+    if (_syncNum(a.step) !== _syncNum(b.step)) return _syncNum(a.step) > _syncNum(b.step) ? a : b;
+    return _syncNum(a.due) >= _syncNum(b.due) ? a : b;
+  });
+  // Graduation is represented by ABSENCE from srs, and absence is exactly what a
+  // union cannot tell from "the other device never saw this". srsDone is the
+  // positive record that fixes it: anything graduated anywhere stays graduated.
+  { const done = new Set(_syncArr(out.srsDone));
+    Object.keys(out.srs).forEach(k => { if (done.has(k)) delete out.srs[k]; }); }
+
+  { const a = _syncObj(lp.fcStats), b = _syncObj(rp.fcStats);
+    out.fcStats = { reviewed: Math.max(_syncNum(a.reviewed), _syncNum(b.reviewed)),
+                    again:    Math.max(_syncNum(a.again),    _syncNum(b.again)),
+                    sessions: Math.max(_syncNum(a.sessions), _syncNum(b.sessions)) }; }
+
+  out.missLog = _syncMergeLog(lp.missLog, rp.missLog);
+  out.seenLog = _syncMergeLog(lp.seenLog, rp.seenLog, SEENLOG_CAP);
+
+  // An exam is a single sitting. Blending two of them is meaningless, so the
+  // later attempt is kept whole.
+  out.examReviews = _syncMergeMaps(lp.examReviews, rp.examReviews,
+    (a, b) => _syncNum(a.at) >= _syncNum(b.at) ? a : b);
+  out.testScores = _syncMergeMaps(lp.testScores, rp.testScores, (a, b) => {
+    const later = String(a.lastDate || "") >= String(b.lastDate || "") ? a : b;
+    return Object.assign({}, later, {
+      best:     Math.max(_syncNum(a.best),     _syncNum(b.best)),
+      attempts: Math.max(_syncNum(a.attempts), _syncNum(b.attempts))
+    });
+  });
+  out.path = _syncMergeMaps(lp.path, rp.path, (a, b) => ({
+    done: Math.max(_syncNum(a.done), _syncNum(b.done)),
+    gold: _syncMergeMaps(a.gold, b.gold, (x, y) => x || y)
+  }));
+  // Dismissals are plain timestamps, so the later dismissal wins: a finding the
+  // learner waved away on either device stays away for its full 14 days.
+  { const a = _syncObj(lp.coachDismissed), b = _syncObj(rp.coachDismissed), cd = {};
+    Object.keys(a).concat(Object.keys(b)).forEach(k => { cd[k] = Math.max(_syncNum(a[k]), _syncNum(b[k])); });
+    out.coachDismissed = cd; }
+
+  // Streak: keep the record with the later lastDay, but never let a second
+  // device halve today's count or knock the streak back. todayCount is only
+  // maxed when both records are talking about the SAME day — otherwise
+  // yesterday's 30 would be read as today's.
+  { const ld = _syncObj(lp.day), rd = _syncObj(rp.day);
+    const sameDay = !!ld.lastDay && ld.lastDay === rd.lastDay;
+    const later = String(ld.lastDay || "") >= String(rd.lastDay || "") ? ld : rd;
+    out.day = Object.assign({ lastDay:null, streak:0, todayCount:0, goal:10 }, later, {
+      streak: Math.max(_syncNum(ld.streak), _syncNum(rd.streak)),
+      todayCount: sameDay ? Math.max(_syncNum(ld.todayCount), _syncNum(rd.todayCount))
+                          : _syncNum(later.todayCount),
+      goal: _syncNum(_syncObj(N.day).goal) || _syncNum(later.goal) || 10
+    }); }
+
+  return { v: SYNC_ENVELOPE_V, progress: out, ent: entOut, devices: devices, savedAt: Date.now() };
+}
+
+/* ============================================================
+   Orchestration: when we talk to the server (§3's table)
+   ============================================================ */
+let _syncTimer = null, _syncDirty = false, _syncPulling = false, _syncPushing = false,
+    _syncApplying = false, _syncPullWanted = false;
+
+function syncReady(){ return syncEnabled() && syncSignedIn(); }
+/* Applying a pull means rehydrate(), which is safe on the dashboard and unsafe
+   mid-question. Rather than yank state out from under a live session we defer,
+   and the next saveState() (or tab focus) re-runs the pull from scratch — a
+   fresh merge, never a stale one replayed later. */
+function syncCanApply(){
+  try {
+    if (state.session || state.test || state.editing) return false;
+    const m = document.getElementById("main");
+    return !!m && !m.hidden;
+  } catch(e){ return false; }
+}
+function syncRepaint(){ try { if (state.view === "settings") renderSyncCard(); } catch(e){} }
+function syncRepaintAll(){
+  try { updateTopbar(); } catch(e){}
+  try { updateFootNote(); } catch(e){}
+  try { refreshAfterEntitlement(); } catch(e){}   // repaints tests / dashboard / settings / lessons
+  try { if (state.view === "home") renderHome(); } catch(e){}
+  syncRepaint();
+}
+/* One copy of the previous local save is kept before any merge is applied, so
+   there is always exactly one undo if a merge ever goes wrong. */
+function syncApplyEnvelope(env){
+  const p = _syncObj(_syncObj(env).progress);
+  entApplySynced(_syncObj(env).ent);
+  if (!p.onboarded && !_syncNum(p.totalAnswered)) return false;
+  try { const cur = localStorage.getItem(LS_KEY); if (cur) localStorage.setItem(SYNC_PREV_KEY, cur); } catch(e){}
+  try { rehydrate(p); } catch(e){ return false; }
+  try { saveState(); } catch(e){}
+  syncRepaintAll();
+  return true;
+}
+
+/* saveState() fires on every answer. Start a 30-second timer and reset it on
+   each new change, so a 40-question session is one upload, not forty. */
+function syncSchedule(){
+  if (!syncReady() || _syncApplying) return;
+  _syncDirty = true;
+  if (_syncPullWanted && syncCanApply()) syncPullNow();
+  if (_syncTimer) clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(() => { _syncTimer = null; syncPushNow(); }, SYNC_DEBOUNCE_MS);
+}
+/* Tab hidden / app backgrounded: push now, flushing the pending timer. This is
+   what saves the "answered 20 on the bus, locked the phone" case. */
+function syncFlush(){
+  if (!syncReady()) return;
+  if (_syncTimer){ clearTimeout(_syncTimer); _syncTimer = null; }
+  if (_syncDirty) syncPushNow();
+}
+
+async function syncPullNow(){
+  if (!syncReady() || _syncPulling) return false;
+  if (!syncCanApply()){ _syncPullWanted = true; return false; }
+  _syncPulling = true;
+  try {
+    const got = await syncGet("blob,updated_at");
+    if (!got.ok) return false;                       // offline / paused project: silent, retried later
+    _syncPullWanted = false;
+    if (!got.row){ await syncPushNow(); return true; }   // first sign-in ever: seed the row as-is
+    const remote = _syncObj(got.row.blob);
+    const merged = mergeBlobs(syncEnvelope(), remote, _syncDirty);
+    syncSetMeta({ lastSeenServerAt: got.row.updated_at, lastSyncedAt: Date.now(), devices: merged.devices });
+    _syncApplying = true;
+    try { syncApplyEnvelope(merged); } finally { _syncApplying = false; }
+    // Only push back when the merge actually changed the server's view — this is
+    // what stops two devices ping-ponging a row neither of them altered.
+    const differs = JSON.stringify(merged.progress) !== JSON.stringify(_syncObj(remote.progress))
+                 || JSON.stringify(merged.ent)      !== JSON.stringify(_syncObj(remote.ent));
+    if (differs){ _syncDirty = true; await syncPushNow(); }
+    else { _syncDirty = false; syncRepaint(); }
+    return true;
+  } catch(e){ return false; }
+  finally { _syncPulling = false; }
+}
+
+async function syncPushNow(){
+  if (!syncReady() || _syncPushing) return false;
+  _syncPushing = true;
+  try {
+    const head = await syncGet("updated_at");
+    if (!head.ok) return false;                      // keep the dirty flag, retry on the next trigger
+    let env = syncEnvelope();
+    // Clock-independent conflict check: if the row's server updated_at is what
+    // we last saw, nobody else wrote and this is a straight overwrite (95% of
+    // pushes). If it moved, another device wrote — pull it and merge first.
+    if (head.row && head.row.updated_at !== syncMeta().lastSeenServerAt){
+      const got = await syncGet("blob,updated_at");
+      if (!got.ok) return false;
+      const remote = _syncObj(got.row && got.row.blob);
+      env = mergeBlobs(env, remote, true);           // we are the newer writer, by definition
+      if (syncCanApply()){
+        _syncApplying = true;
+        try { syncApplyEnvelope(env); } finally { _syncApplying = false; }
+      }
+    }
+    const row = await syncPushRow(syncStamp(env));
+    if (!row) return false;
+    syncSetMeta({ lastSeenServerAt: row.updated_at, lastSyncedAt: Date.now(), devices: env.devices });
+    _syncDirty = false;
+    syncRepaint();
+    return true;
+  } catch(e){ return false; }
+  finally { _syncPushing = false; }
+}
+
+/* ============================================================
+   Settings card. Every element it touches lives inside #syncRow, which ships
+   `hidden` and is only ever unhidden by syncEnabled().
+   ============================================================ */
+let _syncUi = { step:"email", email:"", msg:"", busy:false };
+
+function syncLastLine(){
+  const t = _syncNum(syncMeta().lastSyncedAt);
+  if (!t) return "Not synced yet.";
+  const mins = Math.floor((Date.now() - t) / 60000);
+  if (mins < 1) return "Last synced just now.";
+  if (mins < 60) return "Last synced " + mins + (mins === 1 ? " minute ago." : " minutes ago.");
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return "Last synced " + hrs + (hrs === 1 ? " hour ago." : " hours ago.");
+  const days = Math.floor(hrs / 24);
+  return "Last synced " + days + (days === 1 ? " day ago." : " days ago.");
+}
+function renderSyncCard(){
+  const row = document.getElementById("syncRow"); if (!row) return;
+  if (!syncEnabled()){ row.hidden = true; return; }     // dormant build: the card does not exist to the user
+  row.hidden = false;
+  const s = syncSession(), signedIn = !!s;
+  const stepEmail = document.getElementById("syncStepEmail");
+  const stepCode  = document.getElementById("syncStepCode");
+  const stepIn    = document.getElementById("syncStepIn");
+  if (stepEmail) stepEmail.hidden = signedIn;
+  if (stepCode)  stepCode.hidden  = signedIn || _syncUi.step !== "code";
+  if (stepIn)    stepIn.hidden    = !signedIn;
+  const em = document.getElementById("syncEmail");
+  if (em && !signedIn && document.activeElement !== em) em.value = _syncUi.email || "";
+  const send = document.getElementById("syncSendBtn"), ver = document.getElementById("syncVerifyBtn"),
+        out  = document.getElementById("syncOutBtn");
+  if (send){ send.disabled = _syncUi.busy; send.textContent = _syncUi.step === "code" ? "Resend code" : "Send code"; }
+  if (ver)  ver.disabled  = _syncUi.busy;
+  if (out)  out.disabled  = _syncUi.busy;
+  const st = document.getElementById("syncStatus");
+  if (st){
+    if (_syncUi.msg) st.innerHTML = _syncUi.msg;
+    else if (signedIn) st.innerHTML = `${icon("check")} <span>Syncing as ${esc(s.email || "your account")}. ${esc(syncLastLine())}</span>`;
+    else st.innerHTML = `<span>Not signed in — progress stays on this device.</span>`;
+  }
+}
+async function syncSendCode(){
+  const el = document.getElementById("syncEmail"); if (!el || _syncUi.busy) return;
+  const email = String(el.value || "").trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+    _syncUi.msg = "<span>Enter a valid email address.</span>"; renderSyncCard(); el.focus(); return;
+  }
+  _syncUi.email = email; _syncUi.busy = true; _syncUi.msg = "<span>Sending…</span>"; renderSyncCard();
+  try {
+    await authSend(email);
+    _syncUi.step = "code";
+    _syncUi.msg = "<span>Check your email for a 6-digit code, then enter it below.</span>";
+  } catch(e){ _syncUi.msg = "<span>" + esc((e && e.message) || "Could not send the code.") + "</span>"; }
+  _syncUi.busy = false; renderSyncCard();
+  const c = document.getElementById("syncCode");
+  if (c && _syncUi.step === "code") c.focus();
+}
+async function syncVerifyCode(){
+  const el = document.getElementById("syncCode"); if (!el || _syncUi.busy) return;
+  const code = String(el.value || "").replace(/\D/g, "");
+  if (code.length !== 6){
+    _syncUi.msg = "<span>Enter the 6-digit code from the email.</span>"; renderSyncCard(); el.focus(); return;
+  }
+  _syncUi.busy = true; _syncUi.msg = "<span>Signing in…</span>"; renderSyncCard();
+  try {
+    await authVerify(_syncUi.email, code);
+    _syncUi.step = "email"; _syncUi.msg = ""; el.value = "";
+    _syncUi.busy = false; renderSyncCard();
+    await syncPullNow();                  // sign-in = pull, merge, push the merged result back
+  } catch(e){
+    _syncUi.msg = "<span>" + esc((e && e.message) || "That code did not work.") + "</span>";
+  }
+  _syncUi.busy = false; renderSyncCard();
+}
+function syncSignOutClick(){
+  syncSignOut();
+  if (_syncTimer){ clearTimeout(_syncTimer); _syncTimer = null; }
+  _syncDirty = false; _syncPullWanted = false;
+  _syncUi = { step:"email", email:"", busy:false,
+              msg:"<span>Signed out. Your progress is still here on this device.</span>" };
+  renderSyncCard();
+}
+/* Registered once at boot, and only in a build that has a project to talk to. */
+function syncInit(){
+  if (!syncEnabled()) return;
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") syncFlush(); else syncPullNow();
+  });
+  // iOS Safari does not reliably fire visibilitychange on app suspend.
+  window.addEventListener("pagehide", () => { syncFlush(); });
+  syncPullNow();
+}
 
 /* ============================================================
    Analytics — local-first, and it transmits NOTHING until an endpoint exists.
@@ -6129,12 +6813,13 @@ function rehydrate(s){
   state.testDate = validDateStr(s.testDate) ? s.testDate : null;
   state.targetScore = (typeof s.targetScore === "number" && s.targetScore >= 472 && s.targetScore <= 528) ? s.targetScore : null;
   state.readinessRead = (s.readinessRead && typeof s.readinessRead.text === "string") ? s.readinessRead : null;
+  state.srsDone = Array.isArray(s.srsDone) ? s.srsDone.filter(k => typeof k === "string").slice(0, 5000) : [];
   // Saves written before the test-date step existed have no timeframe. Infer
   // one from whatever date they DO have so a returning user is never sent back
   // through onboarding to answer a question they effectively already answered.
   state.testTimeframe = s.testTimeframe || (state.testDate ? "exact" : (s.onboarded ? "none" : null));
   state.missLog = Array.isArray(s.missLog) ? s.missLog.slice(-MISSLOG_CAP) : [];
-  state.seenLog = Array.isArray(s.seenLog) ? s.seenLog.slice(-MISSLOG_CAP) : [];
+  state.seenLog = Array.isArray(s.seenLog) ? s.seenLog.slice(-SEENLOG_CAP) : [];
   state.coachDismissed = (s.coachDismissed && typeof s.coachDismissed === "object") ? s.coachDismissed : {};
   state.remind = Object.assign({ on:false, time:"19:00" }, s.remind || {});
   if (!/^\d{2}:\d{2}$/.test(state.remind.time)) state.remind.time = "19:00";
@@ -8084,7 +8769,10 @@ function recordAnswer(q, correct, idk, entry){
     const e = state.srs[q.key];
     if (e && e.due <= Date.now()){
       const nb = e.box + 1;
-      if (nb >= SRS_GRADUATE) delete state.srs[q.key];
+      if (nb >= SRS_GRADUATE){ delete state.srs[q.key];
+        // Graduation must be a positive fact, not an absence: a sync merge
+        // cannot distinguish "deleted because done" from "never seen".
+        if (state.srsDone.indexOf(q.key) === -1) state.srsDone.push(q.key); }
       else state.srs[q.key] = { box:nb, due:Date.now() + SRS_INTERVALS[nb] };
     }
   } else {
@@ -8231,6 +8919,7 @@ const RAMPY_TIMEOUT_MS = 20000;
 /* Recent misses, so Rampy can tell a first encounter from a pattern. Capped,
    and it stores a concept/subject key and a timestamp — never question text. */
 const MISSLOG_CAP = 150;
+const SEENLOG_CAP = 1500;   // seenLog also feeds the 15-week heatmap; 150 was ~3 days
 function logMiss(q){
   const cf = conceptForQ(q);
   state.missLog.push({ c: cf ? cf.concept.id : ("subj:" + q.subject), s: q.subject,
@@ -8248,7 +8937,7 @@ function logAttempt(q, ok){
   const cf = conceptForQ(q);
   state.seenLog.push({ c: cf ? cf.concept.id : ("subj:" + q.subject), s: q.subject,
                        d: q.difficulty, p: !!q.passage, ok: ok ? 1 : 0, t: Date.now() });
-  if (state.seenLog.length > MISSLOG_CAP) state.seenLog.splice(0, state.seenLog.length - MISSLOG_CAP);
+  if (state.seenLog.length > SEENLOG_CAP) state.seenLog.splice(0, state.seenLog.length - SEENLOG_CAP);
 }
 /* How many times this concept came up at all in the window, and how many times
    in this subject. Returns 0 when there is no attempt history, which is the
@@ -9518,6 +10207,7 @@ function renderSettings(){
   t.setAttribute("role", "switch"); t.setAttribute("aria-checked", String(state.persist && STORAGE_OK));
   const st = $("#soundToggle"); st.classList.toggle("on", state.sound);
   st.setAttribute("role", "switch"); st.setAttribute("aria-checked", String(state.sound));
+  renderSyncCard();   // paints nothing and stays hidden while SYNC_CONFIG.url is ""
   $("#storageStatus").innerHTML = !STORAGE_OK ? `${icon("alert")} <span>This browser blocks saving (private mode, or opening the file directly), so progress can't persist.</span>`
     : state.persist ? `${icon("check")} <span>Saving is on.</span>` : `<span>Saving is off.</span>`;
   renderTestDate();
@@ -9553,7 +10243,13 @@ function togglePersist(){
 }
 function editCourses(){ state.editing = true; $("#main").hidden = true; $("#settingsView").hidden = true; $("#onboarding").hidden = false; goToStep(1); }
 function resetAll(){
-  if (!confirm("Erase all saved progress and start over?")) return;
+  // Reset is local. It does not touch the synced copy and it does not sign you
+  // out — those are separate, deliberate acts, and saying so here is the only
+  // thing standing between "start over" and "wipe my account".
+  const q = syncSignedIn()
+    ? "Erase saved progress on this device and start over?\n\nYou stay signed in, and the copy synced to your account is not deleted — it will come back on the next sync. Sign out first if you want this device to stop syncing."
+    : "Erase all saved progress and start over?";
+  if (!confirm(q)) return;
   clearSaved();
   try { location.reload(); } catch(e){ location.href = location.href; }
 }
@@ -11093,7 +11789,11 @@ function switchView(view, renderFn, elId){
   /* Cross-dissolve with a settle (design system §4.1): tabs are peers, so no
      lateral slide. Native View Transitions where present; a cut otherwise. */
   if (!REDUCED_MOTION && document.startViewTransition && !state.test){
-    try { document.startViewTransition(apply); return; } catch(e){}
+    try {
+      const vt = document.startViewTransition(apply);
+      if (vt && vt.finished && vt.finished.catch) vt.finished.catch(() => {});
+      return;
+    } catch(e){}
   }
   apply();
 }
@@ -11132,6 +11832,15 @@ $("#remindTime").addEventListener("change", e => {
   renderSettings(); saveState(); rescheduleReminders();
 });
 $("#resetBtn").addEventListener("click", resetAll);
+/* Sync card. Every one of these ids lives inside #syncRow, which is `hidden` in
+   the markup and only unhidden by renderSyncCard() when SYNC_CONFIG is filled
+   in — so in a dormant build these listeners are attached to controls no user
+   can ever reach, and nothing they call does anything. */
+{ const b = $("#syncSendBtn");   if (b) b.addEventListener("click", syncSendCode); }
+{ const b = $("#syncVerifyBtn"); if (b) b.addEventListener("click", syncVerifyCode); }
+{ const b = $("#syncOutBtn");    if (b) b.addEventListener("click", syncSignOutClick); }
+{ const e = $("#syncEmail");     if (e) e.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); syncSendCode(); } }); }
+{ const c = $("#syncCode");      if (c) c.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); syncVerifyCode(); } }); }
 
 /* ============================================================
    Keyboard shortcuts (practice view)
@@ -11288,6 +11997,11 @@ else {
   if (_funnel){ hydrateFromFunnel(_funnel); }
   else { $("#onboarding").hidden = false; goToStep(0); }
 }
+/* Account sync. Boots AFTER the rehydrate paths above, so the first pull merges
+   into a state that already exists rather than racing it. Inert — no listener,
+   no timer, no request — while SYNC_CONFIG.url is "". */
+try { syncInit(); } catch(e){}
+
 // Verify a Stripe return in the background; unlock only once the server confirms payment.
 honorPurchaseReturn().then(g => { if (g){ try { afterUnlock(g); } catch(e){} } });
 /* first_open fires once per install, keyed off the analytics id existing

@@ -169,6 +169,32 @@
   .guarantee .g-body{font-size:14.5px; color:var(--muted); line-height:1.6}
   .guarantee .g-body a{color:var(--violet-strong); font-weight:700}
 
+  /* Us-vs-them comparison on the paywall: borders and spacing only, one
+     white surface, same quiet register as the rest of the funnel. */
+  .cmp{width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0;
+    margin:20px 0 0; background:#fff; border:1px solid var(--line); border-radius:var(--r-lg)}
+  .cmp caption{caption-side:top; text-align:left; font-weight:800; font-size:16.5px;
+    color:var(--ink); padding:0 0 10px}
+  .cmp th{font-size:12.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
+    text-align:left; padding:12px 14px 10px}
+  .cmp th.c-us{color:var(--violet-strong)}
+  .cmp th.c-them{color:var(--muted)}
+  .cmp td{vertical-align:top; font-size:14.5px; line-height:1.5; padding:11px 14px;
+    border-top:1px solid var(--line)}
+  .cmp .c-us{border-right:1px solid var(--line)}
+  .cmp .c-them{color:var(--muted)}
+  .cmp .c-cell{display:flex; gap:9px; align-items:flex-start}
+  .cmp .c-ic{flex:none; margin-top:3px}
+  .cmp .c-us .c-ic{color:var(--violet)}
+  .cmp .c-them .c-ic{color:#a49bb0}
+  @media(max-width:640px){
+    .cmp caption{font-size:15px}
+    .cmp th{font-size:10.5px; padding:10px 10px 8px}
+    .cmp td{font-size:12.5px; line-height:1.45; padding:9px 10px}
+    .cmp .c-cell{gap:7px}
+    .cmp .c-ic{margin-top:2px; width:12px; height:12px}
+  }
+
   .commit-opts .opt{min-height:62px; font-size:17px}
   .sampleq{border:1.6px solid var(--line); border-radius:var(--r-lg); padding:17px 18px; margin:20px 0 0; background:#fff}
   .sampleq .sq-eyebrow{font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--violet-strong); margin-bottom:8px}
@@ -210,6 +236,14 @@
   "use strict";
   var S = RU.load();
   var view = document.getElementById("view");
+  /* Homepage plan cards land here with ?plan=. Remember the pick so the paywall
+     (8 steps later) preselects it. Whitelisted against real plan keys. */
+  try {
+    var planQ = new URLSearchParams(location.search).get("plan");
+    if (planQ && RUBilling.PLANS.some(function (p) { return p.key === planQ; })) {
+      S.planPref = planQ; RU.save(); RU.track("plan_pref_landed", { plan: planQ });
+    }
+  } catch (e) {}
   var bar = document.getElementById("bar");
   var stepno = document.getElementById("stepno");
   var backBtn = document.getElementById("back");
@@ -811,13 +845,38 @@
     h += '</div>';
 
     h += '<ul class="incl" style="margin-top:20px">' +
-      '<li>1,247 practice questions, 312 at MCAT level</li>' +
+      '<li>1,248 practice questions, 320 at MCAT level</li>' +
       '<li>Your ' + esc(String(goal)) + '-question daily plan, rebuilt every day</li>' +
       '<li>Concept lessons before anything new to you</li>' +
       '<li>132 narrated walkthroughs</li>' +
       '<li>7 timed exams in a real-test-style interface, two of them full 230-question sittings</li>' +
       '<li>Rampy on every question</li>' +
       '</ul>';
+
+    /* Us vs them: every RampUp cell is true of the product today; the
+       typical-prep column stays generic — no named competitors, no invented
+       stats, and the guarantee row stays honest (some big courses do carry
+       higher-score guarantees, so the claim is about the specific 511+ number). */
+    var IC_YES = '<svg class="c-ic" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" focusable="false">' +
+      '<path d="M3 8.5l3.2 3.2L13 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var IC_NO = '<svg class="c-ic" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" focusable="false">' +
+      '<path d="M3.5 8h9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+    var CMP_ROWS = [
+      ["$19.99 a month, first 7 days free", "Courses run $200&ndash;$3,000"],
+      ["Score 511+ or every dollar back", "A guarantee tied to a specific 511+ number is rare at any price"],
+      ["Starting level set per subject, from your own answers", "One syllabus, one pace for every student"],
+      ["Daily plan rebuilt each day from what you missed", "A schedule fixed at enrollment"],
+      ["1,248 questions, every answer choice explained", "Per-choice explanations are not a given"],
+      ["Rampy on every question, the moment you are stuck", "Help runs on the course\u2019s timetable"],
+      ["Cancel any time, in one click", "Refund windows vary by provider"]
+    ];
+    h += '<table class="cmp"><caption>How this compares</caption>' +
+      '<thead><tr><th scope="col" class="c-us">RampUp</th><th scope="col" class="c-them">Typical prep</th></tr></thead><tbody>';
+    CMP_ROWS.forEach(function (r) {
+      h += '<tr><td class="c-us"><span class="c-cell">' + IC_YES + '<span>' + r[0] + '</span></span></td>' +
+        '<td class="c-them"><span class="c-cell">' + IC_NO + '<span>' + r[1] + '</span></span></td></tr>';
+    });
+    h += '</tbody></table>';
 
     var FEEL_LINE = {
       behind:    "You are not behind, you are early - which is the only time this kind of ramp works.",
@@ -859,6 +918,7 @@
     RU.track("paywall_view", { billingLive: live });
 
     var chosen = SHOWN[0].key;
+    if (S.planPref && SHOWN.some(function (p) { return p.key === S.planPref; })) chosen = S.planPref;
     function paint() {
       view.querySelectorAll("[data-plan]").forEach(function (b) {
         b.setAttribute("aria-pressed", String(b.dataset.plan === chosen));

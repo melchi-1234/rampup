@@ -485,6 +485,17 @@ footer{border-top:1px solid var(--line); padding:40px 0 56px; background:var(--b
 .home .plan.best{border-width:1.6px; border-color:var(--violet); box-shadow:0 20px 48px -26px rgba(124,58,237,.55)}
 .home .plan:hover{transform:none; box-shadow:none}
 .home .plan.best:hover{box-shadow:0 20px 48px -26px rgba(124,58,237,.55)}
+/* The two plan cards are links into the funnel (preselecting their plan). Same
+   card look; the affordance is the cursor, a border darken, and the plan-go
+   line that was always the missing "so click me" cue. */
+.home a.plan{color:inherit; text-decoration:none; cursor:pointer; display:block}
+.home a.plan:hover{border-color:var(--ink)}
+.home a.plan.best:hover{border-color:var(--violet)}
+.home a.plan:focus-visible{outline:2px solid var(--violet); outline-offset:3px}
+.home .plan-go{display:inline-flex; align-items:center; gap:6px; margin-top:14px;
+  font-size:13.5px; font-weight:720; color:var(--violet)}
+.home a.plan:hover .plan-go .arw{transform:translateX(3px)}
+.home .plan-go .arw{transition:transform .16s}
 .home .plan-flag{top:-12px; left:clamp(20px,2.4vw,26px); font-size:10.5px; letter-spacing:.09em; padding:6px 12px}
 .home .plan-name{font-family:var(--font-display); font-size:20px; font-weight:600; letter-spacing:-.012em; margin-bottom:var(--s-2)}
 .home .plan-blurb{font-size:14px; margin:0 0 var(--s-5); min-height:40px; padding-bottom:var(--s-5); border-bottom:var(--hair)}
