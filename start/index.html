@@ -239,9 +239,12 @@
       return "<b>Coursework in all seven.</b> Now the honest part: confidence decides your starting tier, and starting too high is the classic self-sabotage.";
     }
     if (step === "when") {
-      var t = RU.touchedSubjects().length;
-      if (t === 0) return "<b>Everything starts in Preview, and that is a real plan.</b> RampUp is built to teach before it tests. One thing left: the deadline.";
-      return "<b>Levels are set.</b> One thing left before you see them: the deadline they have to beat.";
+      // Courses haven't been asked yet at this step — only name and grade are
+      // known, so the affirm may only use those (never assert unknown levels).
+      var gw = S.grade || "";
+      if (gw === "High school" || gw === "College freshman" || gw === "College sophomore")
+        return "<b>Early is an edge.</b> The sooner your date, the more of your plan gets spent teaching before it ever tests you.";
+      return "<b>One more thing before your levels.</b> Your test date sets how hard the plan pushes review.";
     }
     return "";
   }
@@ -614,6 +617,18 @@
         var k = r0.name + "|" + r0.tier;
         if (window.RU_SAMPLES && window.RU_SAMPLES[k]) { pick = window.RU_SAMPLES[k]; break; }
       }
+      if (!pick) {
+        // No Completed subject (freshmen, all-"taking" answers): fall back to
+        // ANY tier we have a sample for, easiest first, so the reveal always
+        // demonstrates instead of only describing (conversion team 2026-08-14).
+        var tiers = ["easy", "medium", "hard", "mcat"];
+        outer:
+        for (var ti = 0; ti < tiers.length && !pick; ti++)
+          for (var rj = 0; rj < rows.length; rj++) {
+            var k2 = rows[rj].name + "|" + tiers[ti];
+            if (window.RU_SAMPLES && window.RU_SAMPLES[k2]) { pick = window.RU_SAMPLES[k2]; break outer; }
+          }
+      }
       if (!pick) return "";
       window._sq = pick;
       var ch = pick.choices.map(function (c, i) {
@@ -663,14 +678,13 @@
            '<span class="pb-w">' + esc(b.why) + '</span></span></li>';
     });
     h += '</ul>';
-    /* Risk reversal belongs BEFORE the price (plan §2.3-2.5): the guarantee,
-       the person behind it, and the baseline line that defuses the one sharp
-       objection a careful buyer will raise. All already true; just surfaced. */
-    h += '<div class="guarantee"><div class="g-head"><span class="g-shield">&check;</span> Score higher, or every dollar back</div>' +
+    /* Risk reversal belongs BEFORE the price (plan §2.3-2.5). The copy here
+       MUST match terms.html §5 word-for-word in mechanism — a skeptic clicks
+       "the exact terms" and any mismatch reads as bait-and-switch. */
+    h += '<div class="guarantee"><div class="g-head"><span class="g-shield">&check;</span> Score 511+, or every dollar back</div>' +
       '<div class="g-body">Do the work &mdash; 1,000+ questions and both full-length sims &mdash; then sit your MCAT. ' +
-      'If your score does not improve on your baseline, every subscription dollar comes back. ' +
-      'If you already have an official MCAT or AAMC full-length score from the last six months, <b>that</b> is your baseline &mdash; ' +
-      'not a practice test we score. We would rather you hold us to the harder number. ' +
+      'If your official score comes in below 511, every subscription dollar comes back. ' +
+      'A 511 or higher is outside the guarantee &mdash; at that point it did its job. ' +
       '<a href="/terms.html#guarantee">The exact terms</a>.</div>' +
       '<div class="g-body" style="margin-top:8px">RampUp is built by one person, and the refund address is a real inbox a human reads: rampupmcat@gmail.com.</div></div>';
     h += '<div class="actions" style="margin-top:18px"><button class="btn btn-primary btn-lg btn-block" id="next" type="button">Continue <span class="arw">&rarr;</span></button></div>' +
@@ -741,7 +755,14 @@
         'a plan that is already built, and a guarantee that it works.' :
         'Full access to everything below. Your levels and plan are already set up and waiting.') + '</p>';
 
-    h += '<div class="opts" id="plans">';
+    /* Risk reversal BEFORE the price: the guarantee defuses sticker-shock only
+       if it is read before the number (conversion team, 2026-08-14). */
+    h += '<div class="guarantee"><div class="g-head"><span class="g-shield">&check;</span> Score 511+, or every dollar back</div>' +
+      '<div class="g-body">Do the work — 1,000+ questions and both full-length sims — then sit your MCAT. ' +
+      'If your official score comes in below 511, we refund every subscription dollar you paid. ' +
+      '<a href="/terms.html#guarantee">The exact terms</a> are five short paragraphs, not twenty pages.</div></div>';
+
+    h += '<div class="opts" id="plans" style="margin-top:18px">';
     var SHOWN = RUBilling.buyablePlans();
     SHOWN.forEach(function (p, i) {
       var sel = i === 0;
@@ -757,7 +778,7 @@
       '<li>964 practice questions, 240 at MCAT level</li>' +
       '<li>Your ' + esc(String(goal)) + '-question daily plan, rebuilt every day</li>' +
       '<li>Concept lessons before anything new to you</li>' +
-      '<li>129 narrated walkthroughs</li>' +
+      '<li>132 narrated walkthroughs</li>' +
       '<li>7 timed exams in a real-test-style interface, two of them full 230-question sittings</li>' +
       '<li>Rampy on every question</li>' +
       '</ul>';
@@ -772,10 +793,6 @@
       h += '<div class="notice" style="margin-top:20px;border-color:#d9d2f0;background:#faf8ff;color:#3b3357">' +
         esc(FEEL_LINE[S.feeling]) + '</div>';
     }
-    h += '<div class="guarantee"><div class="g-head"><span class="g-shield">&check;</span> Score higher, or every dollar back</div>' +
-      '<div class="g-body">Do the work — 1,000+ questions and both full-length sims — then sit your MCAT. ' +
-      'If your score does not improve on your baseline, we refund every subscription dollar you paid. ' +
-      '<a href="/terms.html#guarantee">The exact terms</a> are five short paragraphs, not twenty pages.</div></div>';
     if (live) {
       h += '<p class="tiny" style="text-align:center;margin:14px 0 0">' +
         'Day 1: everything unlocks. Day 7: first charge &mdash; cancel in one click before then and you pay nothing.</p>';
