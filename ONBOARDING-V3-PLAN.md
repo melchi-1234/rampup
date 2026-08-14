@@ -1,3 +1,5 @@
+Melchi — written to `/Users/melchiorgoldfarb/rampup-web/ONBOARDING-V3-PLAN.md`; full document follows.
+
 # RampUp Onboarding V3 — Conversion Plan
 
 **Scope:** `/start/` funnel (`start/index.html`, `assets/funnel.js`, `assets/billing.js`), from first paint to `checkout_started`.

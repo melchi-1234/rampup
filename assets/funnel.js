@@ -188,10 +188,30 @@
      what the app does and exactly what the privacy page says. When a real
      endpoint exists, set it here and the buffer flushes — no other change. */
   var EV_KEY = "rampup.funnel.events.v1", EV_CAP = 300, ENDPOINT = "";
+  /* v2 envelope: sid is a weekly-rotating random id (never a person — matches
+     privacy.html), seq orders events without trusting clocks, st/dt place the
+     event on a step. The exact record written here is the exact record a
+     future first-party collector would ingest — no reshaping later. */
+  var SID_KEY = "rampup.funnel.sid.v1";
+  function sid() {
+    try {
+      var rec = JSON.parse(localStorage.getItem(SID_KEY) || "null");
+      if (!rec || Date.now() - rec.t > 7 * 864e5) {
+        rec = { id: Math.random().toString(36).slice(2, 10), t: Date.now() };
+        localStorage.setItem(SID_KEY, JSON.stringify(rec));
+      }
+      return rec.id;
+    } catch (e) { return "mem"; }
+  }
+  var _seq = 0, _stepName = "", _stepAt = Date.now();
+  function stepMark(name) { _stepName = name; _stepAt = Date.now(); }
   function track(name, props) {
     try {
+      props = props || {};
+      if ("name" in props) delete props.name;      // PII guard: never the user's name
       var buf = JSON.parse(localStorage.getItem(EV_KEY) || "[]");
-      buf.push({ n: name, p: props || {}, t: Date.now() });
+      buf.push({ v: 2, n: name, p: props, t: Date.now(), sid: sid(), seq: ++_seq,
+                 st: _stepName, dt: Date.now() - _stepAt });
       if (buf.length > EV_CAP) buf.splice(0, buf.length - EV_CAP);
       localStorage.setItem(EV_KEY, JSON.stringify(buf));
     } catch (e) {}
@@ -207,6 +227,6 @@
     daysUntilTest: daysUntilTest, suggestedGoal: suggestedGoal, paceMinutes: paceMinutes,
     setTimeframe: setTimeframe, rows: rows, planPreview: planPreview,
     firstName: function(){ return (S.name || "").trim().split(/\s+/)[0] || ""; },
-    track: track, events: events
+    track: track, events: events, stepMark: stepMark
   };
 })(window);

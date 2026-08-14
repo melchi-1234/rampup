@@ -175,13 +175,13 @@
   var stepno = document.getElementById("stepno");
   var backBtn = document.getElementById("back");
 
-  var STEPS = ["name", "grade", "feeling", "courses", "confidence", "when", "reveal", "commit", "plan"];
-  var LABEL = { name: "Hello", grade: "About you", feeling: "Where you are", courses: "Coursework", confidence: "Confidence",
-                when: "Test timing", reveal: "Your levels", commit: "One question", plan: "Your plan" };
+  var STEPS = ["name", "grade", "when", "feeling", "courses", "reveal", "commit", "plan"];
+  var LABEL = { name: "Hello", grade: "About you", when: "Test timing", feeling: "Where you are",
+                courses: "Coursework", reveal: "Your levels", commit: "One question", plan: "Your plan" };
   // One Rampy mood per step — our equivalent of a per-step illustration, and
   // it is the character already in the product rather than stock art.
-  var MOOD = { name: "happy", grade: "happy", feeling: "happy", courses: "think", confidence: "think",
-               when: "grad", reveal: "celebrate", commit: "think", plan: "grad" };
+  var MOOD = { name: "happy", grade: "happy", when: "grad", feeling: "happy",
+               courses: "think", reveal: "celebrate", commit: "think", plan: "grad" };
 
   /* The previous answer, converted into a consequence for THEIR plan. This is
      deliberate psychology (investment: each input visibly builds their plan),
@@ -189,11 +189,15 @@
   function affirmFor(step) {
     var n = RU.firstName();
     if (step === "feeling") {
+      var d = RU.daysUntilTest();
+      if (d !== null && d > 0)
+        return "<b>" + d + " days out.</b> " + (d >= 150
+          ? "That is real runway - your plan gets to teach subjects before it ever tests them."
+          : d >= 90 ? "Enough runway for a full ramp, if it starts now."
+          : "A focused window. Your plan will spend it converting knowledge into points, not re-teaching.");
       var g = S.grade || "";
       if (g === "High school" || g === "College freshman" || g === "College sophomore")
         return "<b>Early is an edge.</b> Most people cram the last 90 days. Your plan gets to teach subjects before it ever tests them.";
-      if (g === "College junior" || g === "College senior")
-        return "<b>Good timing.</b> Your coursework is mostly banked, so your plan spends its time converting knowledge into MCAT points, not re-teaching.";
       return "<b>Noted.</b> Your daily target starts realistic for your schedule, and adapts from your first session.";
     }
     if (step === "courses") {
@@ -235,34 +239,20 @@
     if (replace) location.replace("#" + step); else location.hash = step;
   }
 
-  /* Confidence is skipped entirely when no coursework was marked — asking how
-     confident someone is in a subject they have never taken is noise. */
-  function skipConfidence() { return RU.touchedSubjects().length === 0; }
+  function nextOf(step) { return STEPS[STEPS.indexOf(step) + 1]; }
+  function prevOf(step) { return STEPS[STEPS.indexOf(step) - 1]; }
 
-  function nextOf(step) {
-    var i = STEPS.indexOf(step);
-    var n = STEPS[i + 1];
-    if (n === "confidence" && skipConfidence()) n = "when";
-    return n;
-  }
-  function prevOf(step) {
-    var i = STEPS.indexOf(step);
-    var p = STEPS[i - 1];
-    if (p === "confidence" && skipConfidence()) p = "courses";
-    return p;
-  }
-
+  var _seenSteps = {};
   function chrome(step) {
     var idx = STEPS.indexOf(step);
-    var total = skipConfidence() ? 8 : 9;
-    var shown = idx + 1;
-    if (skipConfidence() && idx >= 3) shown = idx;
-    /* Endowed progress: the meter starts 12% full (goal-gradient — a started
-       plan is harder to abandon than an empty one) and it measures the PLAN
-       being built, not pages seen. */
-    bar.style.width = Math.round(12 + (shown - 1) / (total - 1) * 88) + "%";
+    /* Endowed progress: the meter starts 12% full (goal-gradient) and measures
+       the PLAN being built, not pages seen. */
+    bar.style.width = Math.round(12 + idx / (STEPS.length - 1) * 88) + "%";
     stepno.textContent = LABEL[step] || "";
     backBtn.style.visibility = step === "name" ? "hidden" : "visible";
+    RU.stepMark(step);
+    RU.track("step_view", { step: step, step_index: idx, repeat: !!_seenSteps[step] });
+    _seenSteps[step] = true;
   }
 
   /* ------------------------------------------------------------------ steps */
@@ -294,17 +284,15 @@
       '<button class="linkbtn" id="skipName" type="button">Skip this</button></p></div>';
     repaintArt();
     var inp = document.getElementById("nameIn"), btn = document.getElementById("next");
-    var sync = function () { btn.disabled = !inp.value.trim(); };
-    inp.addEventListener("input", function () { S.name = inp.value; RU.save(); sync(); });
-    inp.addEventListener("keydown", function (e) { if (e.key === "Enter" && inp.value.trim()) btn.click(); });
-    sync();
+    inp.addEventListener("input", function () { S.name = inp.value; RU.save(); });
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") btn.click(); });
     btn.addEventListener("click", function () {
-      if (!inp.value.trim()) return;
-      S.name = inp.value.trim(); RU.save(); RU.track("ob_name", {});
+      S.name = inp.value.trim(); RU.save();
+      RU.track(S.name ? "step_complete" : "name_skipped", { step: "name", step_index: 0 });
       go(nextOf("name"));
     });
     document.getElementById("skipName").addEventListener("click", function () {
-      S.name = ""; RU.save(); RU.track("ob_name_skipped", {}); go(nextOf("name"));
+      S.name = ""; RU.save(); RU.track("name_skipped", {}); go(nextOf("name"));
     });
     setTimeout(function () { try { inp.focus(); } catch (e) {} }, 90);
   }
@@ -324,7 +312,7 @@
       b.setAttribute("aria-pressed", String(S.grade === g));
       b.innerHTML = esc(g) + '<span class="tick">✓</span>';
       b.addEventListener("click", function () {
-        S.grade = g; RU.save(); RU.track("ob_grade", { grade: g }); go(nextOf("grade"));
+        S.grade = g; RU.save(); RU.track("grade_set", { grade: g }); go(nextOf("grade"));
       });
       box.appendChild(b);
     });
@@ -345,7 +333,7 @@
       b.setAttribute("aria-pressed", String(S.feeling === f.v));
       b.innerHTML = esc(f.l) + '<span class="tick">&check;</span>';
       b.addEventListener("click", function () {
-        S.feeling = f.v; RU.save(); RU.track("ob_feeling", { feeling: f.v });
+        S.feeling = f.v; RU.save(); RU.track("feeling_set", { feeling: f.v });
         go(nextOf("feeling"));
       });
       box.appendChild(b);
@@ -353,78 +341,80 @@
   }
 
   function renderCourses() {
-    var cats = [
-      { key: "Chem/Phys", label: "Chemistry & Physics" },
-      { key: "Bio/Biochem", label: "Biology & Biochemistry" },
-      { key: "Psych/Soc", label: "Psychology & Sociology" }
-    ];
-    var h = '<div class="panel">' + stepArt("courses") + affirmStrip("courses") + '<h1>Which of these have you taken?</h1>' +
-      '<p class="sub">This is what sets your starting level in each subject. Leave anything you have not touched as “Not yet” — that subject starts in Preview and gets taught before it is tested.</p>' +
+    /* Subject-level controls: 7 decisions instead of 11. The per-course fan-out
+       is deterministic and produces byte-identical tiers, because both
+       consumers (isPreview, startingDifficulty) only ever ask .some() over the
+       subject's courses. Completed reveals an inline confidence segment, so
+       the old separate confidence step is gone. */
+    var h = '<div class="panel">' + stepArt("courses") + affirmStrip("courses") +
+      '<h1>Which of these have you taken?</h1>' +
+      '<p class="sub">Answer per subject. Anything you have not touched starts in Preview and gets taught before it is tested. If you marked it Completed, say how solid it feels &mdash; honest answers set the right starting level.</p>' +
       '<div class="courses">';
-    cats.forEach(function (c) {
-      h += '<div class="grouphead">' + esc(c.label) + '</div>';
-      RU.SUBJECTS.filter(function (s) { return s.category === c.key; }).forEach(function (s) {
-        s.courses.forEach(function (course) {
-          h += '<div class="crow"><div class="cname">' + esc(course) + '</div><div class="seg">';
-          RU.COURSE_STATES.forEach(function (o) {
-            h += '<button type="button" data-course="' + esc(course) + '" data-val="' + o.v +
-                 '" aria-pressed="' + (S.courses[course] === o.v) + '">' + esc(o.l) + '</button>';
-          });
-          h += '</div></div>';
-        });
+    RU.SUBJECTS.forEach(function (subj) {
+      var states = subj.courses.map(function (c) { return S.courses[c] || "none"; });
+      var subjState = states.indexOf("completed") !== -1 ? "completed"
+                    : states.indexOf("taking") !== -1 ? "taking" : "none";
+      h += '<div class="crow"><div class="cname">' + esc(subj.name) + '</div><div class="seg">';
+      RU.COURSE_STATES.forEach(function (o) {
+        h += '<button type="button" data-subj="' + esc(subj.name) + '" data-val="' + o.v +
+             '" aria-pressed="' + (subjState === o.v) + '">' + esc(o.l) + '</button>';
       });
+      h += '</div>';
+      if (subjState === "completed") {
+        h += '<div class="seg" style="margin-top:7px">';
+        RU.CONF_STATES.forEach(function (o) {
+          h += '<button type="button" data-conf="' + esc(subj.name) + '" data-val="' + o.v +
+               '" aria-pressed="' + (S.confidence[subj.name] === o.v) + '">' + esc(o.l) + '</button>';
+        });
+        h += '</div>';
+      }
+      h += '</div>';
     });
     h += '</div><p class="err" id="err"></p>' +
-         '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">Continue <span class="arw">&rarr;</span></button></div></div>';
+         '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">See my levels <span class="arw">&rarr;</span></button></div></div>';
     view.innerHTML = h;
     repaintArt();
 
-    view.querySelectorAll("[data-course]").forEach(function (b) {
+    view.querySelectorAll("[data-subj]").forEach(function (b) {
       b.addEventListener("click", function () {
-        var c = b.dataset.course, v = b.dataset.val;
-        // Tapping the active option clears it, matching the app.
-        S.courses[c] = (S.courses[c] === v && v !== "none") ? "none" : v;
+        var subj = RU.SUBJECTS.filter(function (x) { return x.name === b.dataset.subj; })[0];
+        if (!subj) return;
+        var v = b.dataset.val;
+        var states = subj.courses.map(function (c) { return S.courses[c] || "none"; });
+        var cur = states.indexOf("completed") !== -1 ? "completed"
+                : states.indexOf("taking") !== -1 ? "taking" : "none";
+        var next = (cur === v && v !== "none") ? "none" : v;
+        subj.courses.forEach(function (c) { S.courses[c] = next; });
+        if (next !== "completed") delete S.confidence[subj.name];
         RU.save(); renderCourses();
       });
     });
-    document.getElementById("next").addEventListener("click", function () {
-      RU.track("ob_courses", { touched: RU.touchedSubjects().length });
-      go(nextOf("courses"));
-    });
-  }
-
-  function renderConfidence() {
-    var touched = RU.touchedSubjects();
-    var h = '<div class="panel">' + stepArt("confidence") + affirmStrip("confidence") + '<h1>How solid does each one feel?</h1>' +
-      '<p class="sub">Only for subjects you have coursework in. Be honest — this decides whether you start at Easy, Medium or Hard, and starting too high is what makes people quit.</p>' +
-      '<div class="courses">';
-    touched.forEach(function (name) {
-      h += '<div class="crow"><div class="cname">' + esc(name) + '</div><div class="seg">';
-      RU.CONF_STATES.forEach(function (o) {
-        h += '<button type="button" data-conf="' + esc(name) + '" data-val="' + o.v +
-             '" aria-pressed="' + (S.confidence[name] === o.v) + '">' + esc(o.l) + '</button>';
-      });
-      h += '</div></div>';
-    });
-    h += '</div><p class="err" id="err"></p>' +
-         '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">Continue <span class="arw">&rarr;</span></button></div></div>';
-    view.innerHTML = h;
-    repaintArt();
-
     view.querySelectorAll("[data-conf]").forEach(function (b) {
       b.addEventListener("click", function () {
-        S.confidence[b.dataset.conf] = b.dataset.val; RU.save(); renderConfidence();
+        S.confidence[b.dataset.conf] = b.dataset.val; RU.save(); renderCourses();
       });
     });
     document.getElementById("next").addEventListener("click", function () {
-      var missing = touched.filter(function (n) { return !S.confidence[n]; });
+      var touched = RU.touchedSubjects();
+      var missing = touched.filter(function (n) {
+        var subj = RU.byName(n);
+        var completed = subj && subj.courses.some(function (c) { return S.courses[c] === "completed"; });
+        return completed && !S.confidence[n];
+      });
       if (missing.length) {
         document.getElementById("err").textContent =
-          "Pick one for " + missing[0] + (missing.length > 1 ? " and " + (missing.length - 1) + " more." : ".");
+          "How solid is " + missing[0] + "? Pick one" + (missing.length > 1 ? " (and " + (missing.length - 1) + " more)." : ".");
         return;
       }
-      RU.track("ob_confidence", {});
-      go(nextOf("confidence"));
+      /* The funnel is now complete enough to compute everything. This is where
+         done is earned — moving `when` earlier must not open #reveal deep links. */
+      S.done = true; RU.save();
+      var completedCount = RU.SUBJECTS.filter(function (x) {
+        return x.courses.some(function (c) { return S.courses[c] === "completed"; });
+      }).length;
+      RU.track("courses_set", { touched: touched.length, completed: completedCount, subjects_total: 8 });
+      RU.track("confidence_set", { answered: Object.keys(S.confidence).length, of: completedCount });
+      renderBuilding();
     });
   }
 
@@ -434,7 +424,7 @@
       '<div class="opts" id="opts"></div>' +
       '<div id="exact" hidden><input class="dateinput" type="date" id="dateIn" /></div>' +
       '<p class="err" id="err"></p>' +
-      '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">See my levels <span class="arw">&rarr;</span></button></div></div>';
+      '<div class="actions"><button class="btn btn-primary btn-block" id="next" type="button">Continue <span class="arw">&rarr;</span></button></div></div>';
     view.innerHTML = h;
     repaintArt();
     var box = document.getElementById("opts");
@@ -465,9 +455,11 @@
       if (!S.timeframe) { document.getElementById("err").textContent = "Pick one so the plan can be paced."; return; }
       if (S.timeframe === "exact" && !S.testDate) { document.getElementById("err").textContent = "Add your test date."; return; }
       if (S.timeframe === "exact" && S.testDate < today) { document.getElementById("err").textContent = "That date has already passed. Pick your real test date."; return; }
-      S.done = true; RU.save();
-      RU.track("ob_complete", { timeframe: S.timeframe, days: RU.daysUntilTest() });
-      renderBuilding();
+      RU.save();
+      var d = RU.daysUntilTest();
+      RU.track("when_set", { timeframe: S.timeframe,
+        days_bucket: d === null ? "none" : d <= 60 ? "0-60" : d <= 120 ? "61-120" : d <= 240 ? "121-240" : "241+" });
+      go(nextOf("when"));
     });
   }
 
@@ -487,8 +479,9 @@
       '<div id="bsteps" style="margin:18px auto 0; max-width:330px; text-align:left"></div></div>';
     repaintArt();
     var box = document.getElementById("bsteps"), i = 0;
+    var _b0 = Date.now();
     function tick() {
-      if (i >= lines.length) { go("reveal"); return; }
+      if (i >= lines.length) { RU.track("building_done", { ms: Date.now() - _b0 }); go("reveal"); return; }
       box.innerHTML += '<div style="display:flex; gap:9px; align-items:baseline; padding:7px 0; font-size:15.5px; color:var(--muted)">' +
         '<span style="color:var(--violet); font-weight:900">&check;</span><span>' + lines[i] + '</span></div>';
       i++;
@@ -556,10 +549,12 @@
     var mins = RU.paceMinutes(goal);
     if (d !== null && d > 0) {
       var hours = Math.round(d * mins / 60);
+      var hoursLater = Math.round(Math.max(0, d - 14) * mins / 60);
       h += '<div class="mathbox">' +
         '<div class="mrow"><span>Days until your MCAT</span><b>' + d + '</b></div>' +
         '<div class="mrow"><span>Daily practice, to start</span><b>' + mins + ' min</b></div>' +
-        '<div class="mrow"><span>Practice hours that builds</span><b>~' + hours + '</b></div>' +
+        '<div class="mrow"><span>Practice hours, if you hold that target</span><b>~' + hours + '</b></div>' +
+        '<div class="mrow"><span>Starting two weeks from now instead</span><b>~' + hoursLater + '</b></div>' +
         '<div class="mfoot">The honest number: AAMC\u2019s own survey says students average about 20 hours a week ' +
         'for 3 months \u2014 roughly 240 hours \u2014 and most prep companies recommend 300\u2013350. ' +
         'RampUp is the practice half of that: questions, review, and full-length sims. It ramps your daily ' +
@@ -583,14 +578,27 @@
            '<span><span class="pb-t">' + esc(b.title) + '</span>' +
            '<span class="pb-w">' + esc(b.why) + '</span></span></li>';
     });
-    h += '</ul>' +
-      '<div class="actions"><button class="btn btn-primary btn-lg btn-block" id="next" type="button">Continue <span class="arw">&rarr;</span></button></div>' +
+    h += '</ul>';
+    /* Risk reversal belongs BEFORE the price (plan §2.3-2.5): the guarantee,
+       the person behind it, and the baseline line that defuses the one sharp
+       objection a careful buyer will raise. All already true; just surfaced. */
+    h += '<div class="guarantee"><div class="g-head"><span class="g-shield">&check;</span> Score higher, or every dollar back</div>' +
+      '<div class="g-body">Do the work &mdash; 1,000+ questions and both full-length sims &mdash; then sit your MCAT. ' +
+      'If your score does not improve on your baseline, every subscription dollar comes back. ' +
+      'If you already have an official MCAT or AAMC full-length score from the last six months, <b>that</b> is your baseline &mdash; ' +
+      'not a practice test we score. We would rather you hold us to the harder number. ' +
+      '<a href="/terms.html#guarantee">The exact terms</a>.</div>' +
+      '<div class="g-body" style="margin-top:8px">RampUp is built by one person, and the refund address is a real inbox a human reads: rampupmcat@gmail.com.</div></div>';
+    h += '<div class="actions" style="margin-top:18px"><button class="btn btn-primary btn-lg btn-block" id="next" type="button">Continue <span class="arw">&rarr;</span></button></div>' +
       '<p class="tiny" style="text-align:center;margin:12px 0 0">Your levels are saved on this device. ' +
       '<button class="linkbtn" id="redo" type="button">Redo my answers</button></p>' +
       '</div>';
     view.innerHTML = h;
     repaintArt();
-    RU.track("reveal_view", { previews: previews, distinctLevels: distinct, goal: goal });
+    var dd = RU.daysUntilTest();
+    RU.track("reveal_view", { previews: previews, distinct_levels: distinct, goal: goal,
+      minutes: RU.paceMinutes(goal), has_date: dd !== null,
+      days_bucket: dd === null ? "none" : dd <= 60 ? "0-60" : dd <= 120 ? "61-120" : dd <= 240 ? "121-240" : "241+" });
     document.getElementById("next").addEventListener("click", function () { go("commit"); });
     var rd = document.getElementById("redo");
     if (rd) rd.addEventListener("click", function () { RU.reset(); go("name"); route(); });
@@ -726,14 +734,14 @@
 
   /* ------------------------------------------------------------------ route */
 
-  var RENDER = { name: renderName, grade: renderGrade, feeling: renderFeeling, courses: renderCourses, confidence: renderConfidence,
-                 when: renderWhen, reveal: renderReveal, commit: renderCommit, plan: renderPlan };
+  var RENDER = { name: renderName, grade: renderGrade, when: renderWhen, feeling: renderFeeling,
+                 courses: renderCourses, reveal: renderReveal, commit: renderCommit, plan: renderPlan };
 
   function route() {
     var step = current();
+    if (step === "confidence") { go("courses", true); step = "courses"; }   // legacy hash
     // Cannot land on the reveal or paywall without having actually answered.
     if ((step === "reveal" || step === "commit" || step === "plan") && !S.done) { go("name", true); step = "name"; }
-    if (step === "confidence" && skipConfidence()) { go("when", true); step = "when"; }
     chrome(step);
     (RENDER[step] || renderName)();
     window.scrollTo(0, 0);
