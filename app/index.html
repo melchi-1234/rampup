@@ -4677,7 +4677,10 @@ const SUBJECT_CATEGORY = (() => {
 const GRADES = ["High school","College freshman","College sophomore","College junior","College senior","Other"];
 const COURSE_STATES = [ {v:"none",l:"Not yet"}, {v:"taking",l:"Taking now"}, {v:"completed",l:"Completed"} ];
 const CONF_STATES   = [ {v:"started",l:"Just started"}, {v:"comfortable",l:"Comfortable"}, {v:"strong",l:"Strong"} ];
-const CONF_TO_DIFF  = { started:"easy", comfortable:"medium", strong:"hard" };
+/* strong on a completed course = MCAT tier from day one (persona fix
+   2026-08-14); the adaptive ladder walks them back down if it was optimism.
+   MUST stay identical to CONF_TO_DIFF in assets/funnel.js. */
+const CONF_TO_DIFF  = { started:"easy", comfortable:"medium", strong:"mcat" };
 const DIFF_ORDER = ["easy","medium","hard","mcat"];          // 4-tier ladder; MCAT is the earned ceiling
 const DIFF_LABEL = { easy:"Easy", medium:"Medium", hard:"Hard", mcat:"MCAT" };
 const diffLabel = d => DIFF_LABEL[d] || d;

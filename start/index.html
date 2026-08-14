@@ -427,7 +427,7 @@
        the old separate confidence step is gone. */
     var h = '<div class="panel">' + stepArt("courses") + affirmStrip("courses") +
       '<h1>Which of these have you taken?</h1>' +
-      '<p class="sub">Answer per subject. Anything you have not touched starts in Preview and gets taught before it is tested. If you marked it Completed, say how solid it feels &mdash; honest answers set the right starting level.</p>' +
+      '<p class="sub">Answer per subject. Anything you have not touched starts in Preview and gets taught before it is tested. AP credit with a 4 or 5 counts as Completed. If you marked it Completed, say how solid it feels &mdash; honest answers set the right starting level.</p>' +
       '<div class="courses">';
     RU.SUBJECTS.forEach(function (subj) {
       var states = subj.courses.map(function (c) { return S.courses[c] || "none"; });

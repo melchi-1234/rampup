@@ -43,7 +43,11 @@
   var GRADES = ["High school", "College freshman", "College sophomore", "College junior", "College senior", "Other"];
   var COURSE_STATES = [{ v: "none", l: "Not yet" }, { v: "taking", l: "Taking now" }, { v: "completed", l: "Completed" }];
   var CONF_STATES = [{ v: "started", l: "Just started" }, { v: "comfortable", l: "Comfortable" }, { v: "strong", l: "Strong" }];
-  var CONF_TO_DIFF = { started: "easy", comfortable: "medium", strong: "hard" };
+  /* strong on a COMPLETED course starts at the MCAT tier — a senior with As
+     was capped at "hard" and bounced (persona test 2026-08-14). The adaptive
+     ladder eases anyone back down after misses, so overshoot self-corrects.
+     MUST stay identical to CONF_TO_DIFF in logic.js. */
+  var CONF_TO_DIFF = { started: "easy", comfortable: "medium", strong: "mcat" };
   var WHEN_OPTIONS = [
     { v: "exact", l: "I have a date",     days: null },
     { v: "3mo",   l: "About 3 months",    days: 92 },
