@@ -65,9 +65,13 @@
     --font-display:'Crimson Pro',ui-serif,Georgia,'Times New Roman',serif;
     --font-body:'Atkinson Hyperlegible',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     --font-round:var(--font-display);
-    /* motion */
-    --dur-fast:120ms; --dur:200ms; --dur-slow:340ms;
-    --ease:cubic-bezier(.22,1,.36,1); --spring:cubic-bezier(.34,1.4,.5,1);
+    /* motion — five named tiers (design system §3.2); legacy names aliased */
+    --ease-standard:cubic-bezier(.2,0,0,1);
+    --ease-exit:cubic-bezier(.4,0,1,1);
+    --ease-arrive:cubic-bezier(.34,1.28,.64,1);
+    --motion-tick:100ms; --motion-state:180ms; --motion-move:260ms; --motion-arrive:420ms;
+    --dur-fast:100ms; --dur:180ms; --dur-slow:260ms;
+    --ease:var(--ease-standard); --spring:var(--ease-arrive);
   }
   /* Dark theme applies when data-theme="dark" is set on <html> (a tiny inline
      script below resolves the System/Light/Dark preference before first paint). */
@@ -417,7 +421,7 @@
   #rampyFab{position:fixed; right:14px; bottom:calc(74px + env(safe-area-inset-bottom, 0px)); z-index:9000;
     width:56px; height:56px; border-radius:50%; border:1.5px solid var(--border-strong);
     background:var(--card); box-shadow:var(--sh-2); cursor:pointer; display:grid; place-items:center;
-    padding:0; animation:fabBob 3.6s ease-in-out infinite; transition:transform .16s var(--spring)}
+    padding:0; transition:transform .16s var(--spring)}
   #rampyFab:hover{transform:scale(1.06)}
   #rampyFab .rampy{width:40px; height:40px; display:block; line-height:0}
   #rampyFab[hidden]{display:none}
@@ -5356,7 +5360,8 @@ function addXp(n){
   if (state.level > before){
     if (state.session) state.session.leveledTo = state.level;
     SFX.levelup(); haptic("success");
-    confettiBurst(window.innerWidth/2, window.innerHeight*0.3, 90);
+    if ([5,10,20,35,50].indexOf(levelForXp(state.xp).level) !== -1 && shouldCelebrate("level"))
+      confettiBurst(window.innerWidth/2, window.innerHeight*0.3, 90);
   }
   updateTopbar();
   return state.level > before;
@@ -5441,6 +5446,21 @@ function _cfLoop(){
     if (_cf.parts.length){ requestAnimationFrame(frame); } else { _cf.running = false; c.clearRect(0,0,W,H); }
   }
   if (!_cf.running){ _cf.running = true; requestAnimationFrame(frame); }
+}
+/* The only door to confetti (§6.3): <=2/session, >=90s apart, never in exam
+   mode, never on onboarding, honors reduced motion. Call sites stop carrying
+   their own REDUCED_MOTION checks. */
+let _celebrated = [];
+function shouldCelebrate(kind){
+  if (REDUCED_MOTION) return false;
+  if (state.test) return false;                              // never in exam mode
+  if (!state.onboarded) return false;                        // nothing earned yet
+  const now = Date.now();
+  _celebrated = _celebrated.filter(t => now - t < 90 * 60 * 1000);
+  if (_celebrated.length >= 2) return false;
+  if (_celebrated.length && now - _celebrated[_celebrated.length - 1] < 90 * 1000) return false;
+  _celebrated.push(now);
+  return true;
 }
 function confettiBurst(x, y, count){
   if (REDUCED_MOTION) return;
@@ -5840,7 +5860,7 @@ function renderSessionSummary(s, perfect){
   });
   window.scrollTo({ top:0 });
   SFX.complete(); haptic("success");
-  if (perfect || acc >= 70) setTimeout(confettiRain, 250);
+  if ((perfect || acc >= 70) && shouldCelebrate("session")) setTimeout(confettiRain, 250);
   if (s.newBadges.length) setTimeout(() => SFX.badge(), 700);
 }
 
@@ -6998,14 +7018,14 @@ function choose(chosen){
     if (entry.xp) xpFloat(entry.xp, btns[chosen]);
     sessRampyReact(state.session && state.session.combo >= 5 ? "celebrate" : "happy", "pop");
   } else {
-    SFX.wrong(); haptic("error");
+    SFX.wrong(); haptic("medium");   // an error buzz 40 times a session is an alarm, not feedback (L4)
     const b = btns[chosen]; if (b && !REDUCED_MOTION){ b.classList.add("shake"); setTimeout(() => b.classList.remove("shake"), 420); }
     sessRampyReact("sad", "shake");
   }
   if (entry.note === "mcat"){            // climbed to the top tier: celebrate the milestone
     SFX.levelup(); haptic("success");
     sessRampyReact("celebrate", "pop");
-    if (!REDUCED_MOTION) setTimeout(() => confettiBurst(window.innerWidth/2, window.innerHeight*0.4, 80), 140);
+    if (shouldCelebrate("tier")) setTimeout(() => confettiBurst(window.innerWidth/2, window.innerHeight*0.4, 80), 140);
   }
 }
 function snapFor(q){
@@ -8615,7 +8635,6 @@ function beginSection(n){
   const s = T.sections[n], cnt = s.end - s.start + 1;
   const wrap = $("#testRunView");
   wrap.innerHTML = `<div class="card sect-intro">
-    ${rampySvg("grad","bob")}
     <div class="sect-num">Section ${n+1} of ${T.sections.length}</div>
     <h2>${esc(s.cat)}</h2>
     <p class="sub">${cnt} questions · ${s.minutes} minutes</p>
@@ -8623,12 +8642,12 @@ function beginSection(n){
     <button class="btn primary" id="sectBegin">Begin section ${icon("arrowRight")}</button>
     <button class="btn ghost" id="sectQuit" style="margin-top:10px">End exam</button>
   </div>`;
-  const hero = wrap.querySelector(".rampy"); if (hero){ hero.style.width="64px"; hero.style.height="64px"; hero.style.display="block"; hero.style.margin="0 auto 6px"; }
   wrap.querySelector("#sectBegin").addEventListener("click", () => enterSection(n));
   wrap.querySelector("#sectQuit").addEventListener("click", () => { if (confirm("End this exam now? It will not be scored or saved.")){ stopTestTimer(); state.test = null; clearExam(); showTests(); } });
   window.scrollTo({ top:0 });
 }
 function enterSection(n){
+  haptic("medium");   // crossing into a timed section is a real boundary (L4/L5)
   const T = state.test; if (!T) return;
   const s = T.sections[n]; T.idx = s.start; T.sectionEndMs = Date.now() + s.minutes*60000;
   saveExam();
@@ -8933,6 +8952,7 @@ async function openExamReview(examId){
 }
 
 function finishTest(){
+  haptic("heavy");    // submitting an exam is the heaviest action in the app
   if (state.test) track("exam_completed", { exam:state.test.def && state.test.def.id, premium:!!(state.test.def && state.test.def.premium) });
   const T = state.test; if (!T) return;
   stopTestTimer();
@@ -9032,7 +9052,8 @@ function renderTestResults(T, R){
   const rcard = wrap.querySelector(".tres"); if (rcard){ rcard.setAttribute("tabindex","-1"); try { rcard.focus({ preventScroll:true }); } catch(e){} }
   window.scrollTo({ top:0 });
   SFX.complete(); haptic("success");
-  if (R.pct>=70 && !REDUCED_MOTION) setTimeout(confettiRain, 250);
+  // No confetti on a score, in either direction (design system §6.4): the app
+  // has no standing to judge what a good number is for this student.
   state.test = null;
 }
 
@@ -9540,7 +9561,7 @@ function afterUnlock(granted){
   if (SFX && SFX.complete) SFX.complete(); haptic("success");
   const msg = granted === "pro" ? "RampUp Pro unlocked. Enjoy." : granted === "short_bundle" ? "All 3 short exams unlocked." : "Exam unlocked. Good luck.";
   toast(msg);
-  if (!REDUCED_MOTION) confettiRain();
+  // No confetti for money (design system L3): the reward is the content itself.
   refreshAfterEntitlement();
 }
 function refreshAfterEntitlement(){
