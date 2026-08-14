@@ -24,10 +24,10 @@
       : (think ? '<circle cx="60" cy="82" r="3.5" fill="#1b1030"/>'
                : '<path d="M50 79 Q60 88 70 79" fill="none" stroke="#1b1030" stroke-width="5" stroke-linecap="round"/>');
     var arms = celebrate
-      ? '<ellipse cx="13" cy="38" rx="7" ry="13" transform="rotate(35 13 38)" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
-      + '<ellipse cx="107" cy="38" rx="7" ry="13" transform="rotate(-35 107 38)" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
-      : '<ellipse cx="13" cy="72" rx="6" ry="10" transform="rotate(18 13 72)" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
-      + '<ellipse cx="107" cy="72" rx="6" ry="10" transform="rotate(-18 107 72)" fill="#f59e0b" stroke="#472a86" stroke-width="3" paint-order="stroke"/>';
+      ? '<ellipse cx="13" cy="38" rx="7" ry="13" transform="rotate(35 13 38)" fill="#8b5cf6" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
+      + '<ellipse cx="107" cy="38" rx="7" ry="13" transform="rotate(-35 107 38)" fill="#8b5cf6" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
+      : '<ellipse cx="13" cy="72" rx="6" ry="10" transform="rotate(18 13 72)" fill="#8b5cf6" stroke="#472a86" stroke-width="3" paint-order="stroke"/>'
+      + '<ellipse cx="107" cy="72" rx="6" ry="10" transform="rotate(-18 107 72)" fill="#8b5cf6" stroke="#472a86" stroke-width="3" paint-order="stroke"/>';
     return '<svg class="rampy-mark" width="' + s + '" height="' + s + '" viewBox="-6 0 132 122" '
       + 'xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'
       + '<defs><linearGradient id="' + grad + '" x1="0" y1="0" x2="1" y2="1">'
