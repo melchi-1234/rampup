@@ -1678,7 +1678,7 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
       <div class="card" style="overflow:visible">
         <h2>Settings</h2>
         <div class="set-row">
-          <div class="lbl"><b>Remember my progress</b><span class="d">Save your stats, streak, review pile, and bookmarks on this device only — your progress never leaves your browser. (Questions you ask Rampy are answered by our server; see Privacy.)</span>
+          <div class="lbl"><b>Remember my progress</b><span class="d">Save your stats, streak, review pile, and bookmarks — your progress stays on this device unless you turn on sync below. (Questions you ask Rampy are answered by our server; see Privacy.)</span>
             <span class="storage-status" id="storageStatus"></span></div>
           <button class="toggle" id="persistToggle" aria-label="Toggle saving"></button>
         </div>
@@ -1785,7 +1785,7 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
       <div id="dashContent"></div>
     </div>
 
-    <div class="footer-note" id="footNote">No account, no backend. Your progress stays on this device.</div>
+    <div class="footer-note" id="footNote">Your progress stays on this device. Manage it in Settings.</div>
 
     <!-- bottom tab nav -->
     <nav id="tabnav">
@@ -6638,7 +6638,7 @@ function clearSaved(){ try { localStorage.removeItem(LS_KEY); localStorage.remov
    build that is already 8.6 MB. Everything here is plain fetch() against
    documented REST endpoints. The one cost is hand-rolled token refresh.
    ============================================================ */
-const SYNC_CONFIG = { url: "", anonKey: "" };   // <- the owner's project URL + anon key switch this on
+const SYNC_CONFIG = { url: "https://mnwjqmdbghufunmtvavj.supabase.co", anonKey: "sb_publishable_5gkgKZa_V6ALFiog_FwYMw_d0rwsoFr" };   // <- the owner's project URL + anon key switch this on
 
 const SYNC_SESSION_KEY = "rampup_sync_session";   // access/refresh token + who we are
 const SYNC_META_KEY    = "rampup_sync_meta";      // lastSeenServerAt, lastSyncedAt, this device's id
@@ -12146,7 +12146,7 @@ function updateTopbar(){
 }
 function updateFootNote(){
   $("#footNote").textContent = !STORAGE_OK ? "Progress can't be saved in this browser, so it resets when you close the tab."
-    : state.persist ? "Progress saves automatically on this device only. Manage it in Settings."
+    : state.persist ? "Progress saves automatically on this device. Manage it in Settings."
     : "Saving is off, progress resets when you close the tab. Turn it on in Settings.";
 }
 /* Study-activity heatmap: last 15 weeks, Mon-Sun rows, aggregated from
