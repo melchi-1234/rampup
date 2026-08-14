@@ -41,6 +41,18 @@
 </script>
 </head>
 <body class="home">
+<script>
+/* Returning users go straight into their RampUp (owner: landing back on the
+   pitch after signup "feels like a scam"). Same-origin localStorage holds the
+   app state; ?home=1 lets anyone view the homepage deliberately. */
+(function(){
+  try {
+    if (new URLSearchParams(location.search).get("home")) return;
+    var raw = localStorage.getItem("rampup_progress_v2");
+    if (raw && JSON.parse(raw).onboarded) { location.replace("/app/"); }
+  } catch(e){}
+})();
+</script>
 
 <nav>
   <div class="wrap nav-in">
@@ -393,6 +405,26 @@
       RU.track("cta_click", { where: a.dataset.cta });
     });
   });
+
+  /* The stat count-up writes a bare integer, which silently dropped the
+     thousands separator from "1,103" once the animation landed. Re-formatting
+     on mutation keeps the published figure exactly as written and makes the
+     count-up itself read with commas. Self-terminating: a formatted string no
+     longer matches /^\d+$/, so the rewrite never re-triggers itself. */
+  (function () {
+    var band = document.querySelector(".stats");
+    if (!band || !window.MutationObserver) return;
+    new MutationObserver(function (recs) {
+      recs.forEach(function (r) {
+        var el = r.target.nodeType === 3 ? r.target.parentNode : r.target;
+        if (!el || !el.classList || !el.classList.contains("n")) return;
+        var raw = el.textContent;
+        if (!/^\d+$/.test(raw)) return;
+        var pretty = Number(raw).toLocaleString("en-US");
+        if (pretty !== raw) el.textContent = pretty;
+      });
+    }).observe(band, { childList: true, characterData: true, subtree: true });
+  })();
 </script>
 <script>
 /* Scroll reveals — sections rise in as they enter the viewport, and grid/row
