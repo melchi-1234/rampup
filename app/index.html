@@ -1316,6 +1316,40 @@
   .testcard .tag.qotd-streak .ico{width:13px; height:13px}
   @media (max-width:360px){ .testcard.qotd .qotd-cta{padding:7px 11px; font-size:12.5px} }
 
+  /* Companion mode (the native app). Deliberately NO new visual language: every
+     rule here reuses the ink-plum tokens, the existing card idiom, and the
+     existing radii. Two design audits stripped gradients and glows out of this
+     file and the Sprint's "celebratory" surfaces are the most likely place they
+     come back, so there are none. */
+  .prog-pill.streak{font-size:14px; padding:6px 12px; background:var(--accent-soft); color:var(--accent)}
+  .prog-pill.streak .ico{width:16px; height:16px}
+  /* Quick Sprint: the only large accent-filled control on the phone Home, and
+     the label carries the cost so the promise is checkable before the tap. */
+  .btn.primary.sprint{width:100%; flex-direction:column; gap:2px; padding:14px 16px; min-height:64px;
+    font-size:17px; margin:14px 0 4px}
+  .btn.primary.sprint .cost{font-size:12.5px; font-weight:600; opacity:.92}
+  .btn.primary.sprint .ico{width:19px; height:19px; vertical-align:-3px; margin-right:5px}
+  /* Today's plan, one line. The multi-row plan with its "Why this?" expanders
+     stays on web; this row answers "am I done?" at a glance and nothing else. */
+  .plan-mini{display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:var(--card);
+    border:1px solid var(--border); border-radius:var(--r-lg); padding:13px 15px; margin:8px 0 4px;
+    box-shadow:var(--sh-1); cursor:pointer; font-family:inherit; font-size:13.5px; color:var(--text);
+    transition:transform .16s var(--spring), border-color .16s ease}
+  .plan-mini:hover{border-color:var(--accent); transform:translateY(-1px)}
+  .plan-mini .pm-n{display:inline-flex; align-items:center; gap:5px; font-weight:800; white-space:nowrap}
+  .plan-mini .pm-n .ico{width:15px; height:15px; color:var(--accent)}
+  .plan-mini .pm-t{flex:1; min-width:0; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .plan-mini .pl-go{color:var(--faint); flex:0 0 auto; display:inline-flex}
+  .plan-mini .pl-go .ico{width:18px; height:18px}
+  /* The cross-link line and the readiness peek. Muted body type, never a
+     banner, never a button. At most one of these is ever on screen. */
+  .web-note{color:var(--muted); font-size:12.5px; line-height:1.55; margin:14px 0 0; max-width:42ch}
+  .ready-peek{display:flex; gap:8px; align-items:flex-start; color:var(--muted); font-size:13px;
+    line-height:1.55; margin:14px 2px 0}
+  .ready-peek .ico{width:16px; height:16px; flex:0 0 auto; margin-top:2px; color:var(--accent)}
+  .sumstat.streak .n{color:var(--accent); display:inline-flex; align-items:center; gap:5px; justify-content:center}
+  .sumstat.streak .n .ico{width:22px; height:22px}
+
   /* exam runner top bar */
   .exambar{display:flex; align-items:center; gap:10px; margin:-22px -18px 16px; margin-top:calc(-22px - env(safe-area-inset-top,0px)); padding:calc(14px + env(safe-area-inset-top,0px)) 18px 14px;
     background:var(--bg);
@@ -7973,6 +8007,29 @@ const StoreKitProvider = {
 };
 const isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 const purchases = DEV_PURCHASE ? StubProvider : (isNative ? StoreKitProvider : StripeProvider);
+/* Companion mode. Runtime, not a build. The iOS bundle is a byte-for-byte copy
+   of the web artifact (sync-web.sh is a cp), so a runtime flag keeps it that
+   way — one artifact, one bank, zero divergence risk.
+
+   isNative ONLY, deliberately not a viewport breakpoint. Someone who opens
+   rampupmcat.com on a phone has chosen the study surface; demoting exams under
+   them because the screen is 390px wide is the app overruling an explicit
+   choice. isNative is also one value, fixed for the life of the install, and it
+   is already the axis this file reasons about surface on (purchase provider
+   above, and the gates at ~:1313 and ~:1773).
+
+   ?surface=mobile exists so this layout can be reviewed in a desktop browser
+   and in the preview harness without a device build. Nothing in the product or
+   on the site ever constructs that link; ?surface=web clears it. */
+function _companionOverride(){
+  try {
+    const q = new URLSearchParams(location.search).get("surface");
+    if (q === "mobile"){ localStorage.setItem("rampup_surface", "mobile"); return true; }
+    if (q === "web"){ localStorage.removeItem("rampup_surface"); return false; }
+    return localStorage.getItem("rampup_surface") === "mobile";
+  } catch(e){ return false; }
+}
+const COMPANION = isNative || _companionOverride();
 /* The marketing funnel stores its answers under this key. Same grade strings,
    same course names, same confidence values as this file — it is a mirror of
    the constants here, on purpose, so a handoff is a straight copy. */
@@ -8835,6 +8892,132 @@ function xpFloat(amount, el){
    v2, Session engine
    ============================================================ */
 const SESSION_LEN = 10;
+
+/* ---- Quick Sprint: five questions, about four minutes, zero configuration ----
+   Not a second session engine. A Sprint is `startSession("sprint", {len:5})`,
+   which means recordAnswer, XP, the day streak, missLog, seenLog, SRS boxes,
+   achievements, the heatmap and the coach all fire exactly as they do in a
+   ten-question session. The only differences are the length and the pool gate
+   below. That is what keeps the phone number and the web number the same
+   number. */
+const SPRINT_LEN = 5;
+const SPRINT_SRS_MAX = 3;          // at most three due reviews in a five-question run
+
+/* The thumb gate. INTERIM: the real answer is a `thumbable` flag written by the
+   content pipeline, and this defers to it the moment it lands. Until then this
+   is what stops a multi-step physics question or a CARS passage turning up in a
+   bus-stop Sprint, which would break the promise the button makes.
+
+   Note the stem field: this bank stores the question text on `q.question`
+   (normalizeQ, :81). Reading only `q.stem` — which no question in the bank has
+   — would make both length and arithmetic tests silently vacuous, so the flag
+   check comes first, then q.stem, then the field the data actually uses.
+
+   Measured over the free bank (1769 questions) before shipping: 781 survive.
+   Per subject: Org Chem 170, Physics 163, Gen Chem 133, Biochem 108, Biology
+   108, Psychology 58, Sociology 41, CARS 0 (by design). No non-CARS subject
+   falls under the ~40 floor, so the Sprint pool does not visibly recycle. The
+   thin cells are per-tier — Psych hard 1, Soc hard 1, Soc medium 5 — and the
+   existing tier ladder (difficultyPreference) already falls through them. */
+function thumbSafe(q){
+  if (!q) return false;
+  if (typeof q.thumbable === "boolean") return q.thumbable;   // real flag wins when it lands
+  const stem = q.stem || q.question || "";
+  if (q.passage) return false;                                // no passage sets on phone
+  if (q.subject === "CARS" || q.category === "CARS") return false;
+  if (stem.length > 320) return false;                        // measured against a 390px screen
+  if (/\b(calculate|compute)\b/i.test(stem) && /\d.*[×x*/^]/.test(stem)) return false;   // multi-step arithmetic
+  return true;
+}
+/* Due reviews a Sprint may serve, most-overdue first. Same pile the review
+   session draws from, minus anything that fails the thumb gate. */
+function sprintReviewPool(){
+  const now = Date.now();
+  return pileInFocus().filter(q => state.srs[q.key].due <= now && thumbSafe(q))
+    .sort((a, b) => state.srs[a.key].due - state.srs[b.key].due);
+}
+/* Unseen, in-focus, thumb-safe learn material. Counted the same way
+   learnRemaining() counts, so a Sprint never claims questions it cannot serve. */
+function sprintLearnPool(){
+  const subs = new Set(state.activeSubjects.filter(s => state.focus.has(categoryOfSubject(s))));
+  return BANK.filter(q => subs.has(q.subject) && inFocus(q) && !state.servedKeys.has(q.key) && thumbSafe(q));
+}
+/* How long a Sprint can honestly be right now. Short and honest beats padded:
+   never top a run up with a passage to reach five. */
+function sprintAvail(opts){
+  if (opts && opts.keys) return Math.min(SPRINT_LEN, opts.keys.length);
+  return Math.min(SPRINT_LEN, sprintReviewPool().length + sprintLearnPool().length);
+}
+/* Which subject the remaining Sprint material sits in, when it is all in one.
+   Used only so a short "Another 3" button can name it instead of going vague. */
+function sprintOnlySubject(){
+  const names = new Set(sprintReviewPool().concat(sprintLearnPool()).map(q => q.subject));
+  return names.size === 1 ? [...names][0] : null;
+}
+/* Fill order for a Sprint: up to three due reviews (most overdue first), then
+   new material biased to the weakest subject, then any remaining due reviews if
+   the learn pool ran dry. Deliberately no recycling of seen questions — a
+   Sprint that re-serves Sprint 1's questions reads as a thin demo bank. */
+function pickSprintLearn(){
+  const subs = state.activeSubjects.filter(s => state.focus.has(categoryOfSubject(s)));
+  if (!subs.length) return null;
+  // Weakest first. The per-subject ladder already knows which subject that is;
+  // accuracy breaks ties inside a tier. This is the thing RampUp does better
+  // than a random daily question, and it is free here.
+  const acc = n => { const s = state.stats[n] || {}; return s.answered ? s.correct / s.answered : 1; };
+  const ranked = subs.slice().sort((a, b) => {
+    const d = DIFF_ORDER.indexOf(state.difficulty[a]) - DIFF_ORDER.indexOf(state.difficulty[b]);
+    return d || (acc(a) - acc(b));
+  });
+  for (const name of ranked){ const q = pickForSubjectLearn(name); if (q) return q; }
+  return null;
+}
+function pickSprint(){
+  const s = state.session;
+  const seen = new Set(state.history.map(e => e.q.key));
+  // The misses micro-deck runs a Sprint over exactly its own questions.
+  if (s && s.deck && s.deck.length){
+    const key = s.deck.find(k => !seen.has(k));
+    return (key && BANK_BY_KEY.get(key)) || null;
+  }
+  const used = s ? (s.sprintReviews || 0) : 0;
+  const reviews = sprintReviewPool().filter(q => !seen.has(q.key));
+  if (used < SPRINT_SRS_MAX && reviews.length){
+    if (s) s.sprintReviews = used + 1;
+    return reviews[0];
+  }
+  const q = pickSprintLearn();
+  if (q) return q;
+  if (reviews.length){ if (s) s.sprintReviews = used + 1; return reviews[0]; }
+  return null;
+}
+/* The misses micro-deck, derivable today with no new state: a miss writes
+   state.srs[key] = { box:0, due:Date.now() } in recordAnswer, so for box 0 the
+   due timestamp IS the miss timestamp. */
+function recentMisses(hours){
+  const cut = Date.now() - (hours || 36) * 3600e3;
+  return Object.keys(state.srs)
+    .filter(k => state.srs[k].box === 0 && state.srs[k].due >= cut)
+    .map(k => BANK_BY_KEY.get(k))
+    .filter(q => q && inFocus(q) && thumbSafe(q));
+}
+function startSprint(opts){
+  opts = opts || {};
+  const n = sprintAvail(opts);
+  if (!n){
+    toast(state.focus.has("CARS") && state.focus.size === 1
+      ? "CARS passages need a real sitting. Add another section for Sprints."
+      : "Nothing thumb-sized left in your focus right now.");
+    return;
+  }
+  track("sprint_started", { len:n, deck: opts.keys ? "misses" : "auto" });
+  startSession("sprint", { len:n, thumbOnly:true, keys: opts.keys || null });
+  if (n < SPRINT_LEN && !opts.keys){
+    const only = sprintOnlySubject();
+    toast(n + " question" + (n === 1 ? "" : "s") + ", that's everything "
+      + (only ? "left in " + only : "in your focus") + " right now.");
+  }
+}
 function learnRemaining(){
   const subs = new Set(state.activeSubjects.filter(s => state.focus.has(categoryOfSubject(s))));
   return BANK.filter(q => subs.has(q.subject) && inFocus(q) && !state.servedKeys.has(q.key)).length;
@@ -8869,10 +9052,16 @@ function startSession(kind, opts){
   }
   state.mode = kind;
   const avail = kind === "review" ? pileInFocus().length : kind === "starred" ? starredInFocus().length
+    : kind === "sprint" ? sprintAvail(opts)
     : replay ? BANK.filter(q => inFocus(q)).length : learnRemaining();
-  const len = Math.max(1, Math.min(SESSION_LEN, avail));
+  // opts.len makes the 10-vs-5 difference data rather than a fork: a Sprint is a
+  // real session with a smaller len, not a separate scoring universe.
+  const len = Math.max(1, Math.min(opts.len || SESSION_LEN, avail));
   state.session = { kind, len, done:0, correct:0, combo:0, maxCombo:0, xp:0, leveledTo:0, newBadges:[], milestone:null,
     node: opts.node || null, allowSeen: replay, aborted: false,
+    // Sprint-only, and transient: state.session is never serialized, so this
+    // adds no persisted state and no new sync-merge case.
+    thumbOnly: !!opts.thumbOnly, deck: opts.keys || null, sprintReviews: 0,
     // Set by a coach recommendation so the session actually delivers what the
     // card promised: one subject, and passages first when that was the finding.
     onlySubject: opts.subject || null, preferPassage: !!opts.preferPassage };
@@ -8942,7 +9131,57 @@ function finishSession(){
   saveState();
   renderSessionSummary(s, perfect);
 }
+/* The Sprint finish. Compact on purpose: the celebration is the flame getting
+   bigger and the haptic landing, not confetti. Two design audits stripped
+   gradients and glows out of this codebase; a "celebratory" finish is the most
+   likely place they come back, so there are none here. */
+function renderSprintSummary(s){
+  state.view = "summary";
+  hideViews(); $("#summaryView").hidden = false; syncChrome();
+  const strong = s.len >= 4 && s.correct >= s.len - 1;      // 4/5 or 5/5, per §2.3(b)
+  const all = s.correct === s.len && s.len >= 3;
+  const title = all ? "All " + s.len + "." : "Sprint done.";
+  const sub = all ? "Straight through. Rampy approves."
+    : s.correct ? "The misses are in your review pile now, scheduled for when you are about to forget them."
+    : "Every one of those is scheduled for review now. That is the part that sticks.";
+  const left = sprintAvail();
+  const only = left && left < SPRINT_LEN ? sprintOnlySubject() : null;
+  let html = `<div class="sumcard">
+      ${rampySvg(all ? "celebrate" : s.correct >= Math.ceil(s.len/2) ? "happy" : "think", all ? "pop" : "bob")}
+      <div class="sumtitle">${esc(title)}</div>
+      <div class="sumsub">${esc(sub)}</div>
+      <div class="sumstats">
+        <div class="sumstat acc"><div class="n">${s.correct}/${s.len}</div><div class="l">Right</div></div>
+        <div class="sumstat xp"><div class="n">+${s.xp}</div><div class="l">XP</div></div>
+        ${state.day.streak > 0
+          ? `<div class="sumstat streak"><div class="n">${icon("flame")} ${state.day.streak}</div><div class="l">Day streak</div></div>`
+          : `<div class="sumstat best"><div class="n">${s.maxCombo}</div><div class="l">Best combo</div></div>`}
+      </div>`;
+  if (s.leveledTo) html += `<div class="levelup">${icon("trophy")} Level ${s.leveledTo}, ${esc(levelTitle(s.leveledTo))}!</div>`;
+  if (s.milestone) html += `<div class="milestone">${icon("flame")} ${s.milestone}-day streak!${s.milestone >= 7 ? " +1 streak freeze earned." : ""}</div>`;
+  if (s.newBadges.length) html += `<div class="newbadges">${s.newBadges.map(b => `<span class="badge-chip"><span class="e">${icon(b.ic)}</span>${esc(b.t)}</span>`).join("")}</div>`;
+  html += `<div style="display:flex;flex-direction:column;gap:10px;align-items:stretch">`;
+  if (left) html += `<button class="btn primary sprint" id="sprintAgain">
+      <span>Another ${left}</span>${left < SPRINT_LEN
+        ? `<span class="cost">${esc(only ? "that's what's left in " + only + " today" : "that's what's left in your focus today")}</span>` : ""}
+    </button>`;
+  html += `<button class="btn ghost" id="sprintDone">Done for now</button></div>`;
+  // §2.3(b), the one web pointer this screen may ever show, and only after a
+  // genuinely strong run. Muted type, no button, no drama.
+  if (strong) html += `<p class="web-note">You are doing well in this one. It is ready for harder passages than a phone can hold.</p>`;
+  html += `</div>`;
+  $("#summaryView").innerHTML = html;
+  const sc = $("#summaryView .sumcard");
+  if (sc){ sc.setAttribute("tabindex", "-1"); try { sc.focus({ preventScroll:true }); } catch(e){} }
+  const again = $("#sprintAgain");
+  if (again) again.addEventListener("click", () => { track("sprint_again", { left }); startSprint(); });
+  $("#sprintDone").addEventListener("click", showHome);
+  window.scrollTo({ top:0 });
+  SFX.complete();
+  haptic(s.milestone || s.leveledTo ? "heavy" : "success");
+}
 function renderSessionSummary(s, perfect){
+  if (COMPANION && s.kind === "sprint"){ renderSprintSummary(s); return; }
   state.view = "summary";
   hideViews(); $("#summaryView").hidden = false; syncChrome();
   const acc = s.len ? Math.round((s.correct/s.len)*100) : 0;
@@ -9045,7 +9284,10 @@ function bindPathNodes(wrap){
    ============================================================ */
 function greeting(){
   const due = dueInFocusCount();
-  const dLeft = daysUntilTest();
+  // Same reasoning as dropping the countdown pill from the companion hero: a
+  // deadline is the web's job. "12 days out. Make them count." is the loudest
+  // version of it, and it would have survived the pill being removed.
+  const dLeft = COMPANION ? null : daysUntilTest();
   if (dLeft === 0) return "Test day. You've got this.";
   if (dLeft !== null && dLeft > 0 && dLeft <= 14) return dLeft + (dLeft === 1 ? " day" : " days") + " out. Make them count.";
   if (state.day.streak >= 3 && state.day.todayCount === 0) return "Day " + state.day.streak + ", keep the flame alive!";
@@ -9221,12 +9463,123 @@ function qotdFinish(){
   saveState();
   showHome();
 }
+/* ---- COMPANION HOME ----
+   Same functions, same CSS classes, different order. No new visual language.
+   The phone owns the habit and the laptop owns the score, so the flame is the
+   largest thing on the screen and the curriculum path is one tap deeper.
+
+   Every block here is conditional on having something to say. Day one is
+   deliberately four things — hero, QOTD, Quick Sprint, Flashcards — because a
+   Home screen of six zeroes reads as broken software rather than a new account.
+   The misses deck, the plan line, the readiness peek, the freeze pill and the
+   streak pill all render NOTHING until they have data. */
+let _companionPathOpen = false;      // view state only, never persisted
+function sprintMinutes(n){ return Math.max(1, Math.round(n * 48 / 60)); }
+function companionHomeHtml(lvl, due, stars, today, goal){
+  const misses = recentMisses();
+  const missN = Math.min(SPRINT_LEN, misses.length);
+  const sprintN = sprintAvail();
+  const planBlocks = dailyPlan();
+  const readiness = (state.readinessRead && state.readinessRead.day === todayStr() && state.totalAnswered >= 30)
+    ? state.readinessRead.text : "";
+  return `<div class="hero">
+      ${rampySvg(due > 6 ? "think" : "happy", "bob")}
+      <div style="flex:1;min-width:0">
+        <div class="greet">${esc(greeting())}</div>
+        <div class="subgreet">Level ${lvl.level} · ${esc(levelTitle(lvl.level))}</div>
+        <div class="prog-row">
+          ${state.day.streak > 0 ? `<span class="prog-pill streak" title="Day streak">${icon("flame")} ${state.day.streak}d</span>` : ""}
+          ${state.streakFreezes > 0 ? `<span class="prog-pill" title="Streak freezes: a missed day won't break your streak">${icon("snowflake")} ${state.streakFreezes}</span>` : ""}
+          <span class="prog-pill" title="Daily goal">${icon("target")} ${today}/${goal} today</span>
+        </div>
+        <div class="prog-row">
+          <div class="lvlbar" title="${lvl.into} / ${lvl.need} XP to level ${lvl.level+1}">
+            <div class="track"><div class="fill" style="width:${Math.min(100,(lvl.into/lvl.need)*100)}%"></div></div>
+            <span style="font-size:12px;font-weight:800;color:var(--muted);white-space:nowrap">${lvl.into}/${lvl.need} XP</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    ${rampyIntroHtml()}
+    ${qotdCardHtml()}
+    ${sprintN ? `<button class="btn primary sprint" id="homeSprint">
+      <span>${icon("zap")} Quick Sprint</span>
+      <span class="cost">${sprintN} question${sprintN === 1 ? "" : "s"}, about ${sprintMinutes(sprintN)} minute${sprintMinutes(sprintN) === 1 ? "" : "s"}</span>
+    </button>` : ""}
+    ${missN >= 2 ? `<button class="testcard" id="homeMisses" style="margin:14px 0 4px">
+      <span class="ti">${icon("repeat")}</span>
+      <span class="tbody"><span class="tt">Review yesterday's misses</span>
+        <span class="td">${missN} from yesterday · about ${sprintMinutes(missN)} minutes</span></span>
+      <span class="go">${icon("arrowRight")}</span>
+    </button>` : ""}
+    ${flashcardsCardHtml()}
+    ${planBlocks.length ? `<button class="plan-mini" id="homePlanMini">
+      <span class="pm-n">${icon("target")} ${today}/${goal} today</span>
+      <span class="pm-t">${esc(today >= goal ? "Goal met. " + planBlocks[0].title + " is a bonus." : "Next: " + planBlocks[0].title)}</span>
+      <span class="pl-go">${icon("arrowRight")}</span>
+    </button>` : ""}
+    ${explainerCount() ? `<button class="testcard" id="homeWatch" style="margin:8px 0 4px">
+      <span class="ti">${icon("bulb")}</span>
+      <span class="tbody"><span class="tt">Watch</span><span class="td">${explainerCount()} narrated animations. The hardest questions, explained step by step.</span></span>
+      <span class="go">${icon("arrowRight")}</span>
+    </button>` : ""}
+    <button class="testcard" id="homePath" style="margin:8px 0 4px" aria-expanded="${_companionPathOpen}">
+      <span class="ti">${icon("trending")}</span>
+      <span class="tbody"><span class="tt">Keep going${due ? ` <span class="pill mcat">${due} due</span>` : ""}</span>
+        <span class="td">Your learning path, section by section.</span></span>
+      <span class="go">${_companionPathOpen ? icon("arrowDown") : icon("arrowRight")}</span>
+    </button>
+    ${_companionPathOpen ? `<div class="pathwrap" id="pathView">${renderPathHtml(due)}</div>` : ""}
+    <h3 style="margin:18px 0 8px">Extras</h3>
+    <div class="extras">
+      <button class="sesscard free mini" data-kind="mixed">
+        <span class="si">${icon("shuffle")}</span>
+        <span style="flex:1;min-width:0"><span class="st">Mixed</span><span class="sd" style="display:block">New + due reviews</span></span>
+      </button>
+      <button class="sesscard free mini" data-kind="starred" ${stars ? "" : "disabled style='opacity:.55'"}>
+        <span class="si">${starIcon(true)}</span>
+        <span style="flex:1;min-width:0"><span class="st">Bookmarked</span><span class="sd" style="display:block">${stars ? stars + " starred" : "Star questions to fill this"}</span></span>
+      </button>
+    </div>
+    <button class="testcard" id="homeLessons" style="margin:14px 0 4px">
+      <span class="ti">${icon("book")}</span>
+      <span class="tbody"><span class="tt">Lessons</span><span class="td">Short, friendly explainers for every concept. Reread anytime.</span></span>
+      <span class="go">${icon("arrowRight")}</span>
+    </button>
+    <button class="testcard" id="homeTests" style="margin:8px 0 4px">
+      <span class="ti">${icon("clipboard")}</span>
+      <span class="tbody"><span class="tt">Practice Tests</span>
+        <span class="td">Full-lengths run about three and a half hours under real conditions. That is a laptop job. Sit one at rampupmcat.com and the report shows up here.</span></span>
+      <span class="go">${icon("arrowRight")}</span>
+    </button>
+    ${readiness ? `<p class="ready-peek">${icon("trending")} ${esc(readiness)}</p>` : ""}
+    <h3 style="margin:20px 0 10px">Focus, which MCAT sections</h3>
+    <div class="focus-checks" id="homeFocus"></div>`;
+}
+function bindCompanionHome(wrap){
+  const sp = $("#homeSprint");
+  if (sp) sp.addEventListener("click", () => startSprint());
+  const hm = $("#homeMisses");
+  if (hm) hm.addEventListener("click", () => {
+    const keys = recentMisses().slice(0, SPRINT_LEN).map(q => q.key);
+    if (keys.length < 2){ renderHome(); return; }        // it emptied under us; no dead tap
+    startSprint({ keys });
+  });
+  const hp = $("#homePath");
+  if (hp) hp.addEventListener("click", () => {
+    _companionPathOpen = !_companionPathOpen;
+    SFX.tick(); renderHome();
+    if (_companionPathOpen){ const pv = $("#pathView"); if (pv) pv.scrollIntoView({ block:"nearest", behavior: REDUCED_MOTION ? "auto" : "smooth" }); }
+  });
+  const pm = $("#homePlanMini");
+  if (pm) pm.addEventListener("click", () => { const b = dailyPlan()[0]; if (b) runPlanBlock(b); });
+}
 function renderHome(){
   const wrap = $("#homeView");
   const lvl = levelForXp(state.xp);
   const due = dueInFocusCount(), pile = pileInFocus().length, stars = starredInFocus().length;
   const today = state.day.todayCount, goal = state.day.goal;
-  let html = `<div class="hero">
+  let html = COMPANION ? companionHomeHtml(lvl, due, stars, today, goal) : `<div class="hero">
       ${rampySvg(due > 6 ? "think" : "happy", "bob")}
       <div style="flex:1;min-width:0">
         <div class="greet">${esc(greeting())}</div>
@@ -9280,9 +9633,10 @@ function renderHome(){
     <div class="focus-checks" id="homeFocus"></div>`;
   wrap.innerHTML = html;
   wrap.querySelectorAll(".sesscard").forEach(b => b.addEventListener("click", () => startSession(b.dataset.kind)));
-  bindPathNodes(wrap);
-  bindPlan(wrap);
+  bindPathNodes(wrap);       // no-op on companion until the path card is opened
+  bindPlan(wrap);            // no-op on companion: the plan is one line, bound below
   bindRampyIntro(wrap);
+  if (COMPANION) bindCompanionHome(wrap);
   const ht = $("#homeTests"); if (ht) ht.addEventListener("click", () => { SFX.tick(); showTests(); });
   const hl = $("#homeLessons"); if (hl) hl.addEventListener("click", () => { SFX.tick(); showLessons(); });
   const hw = $("#homeWatch"); if (hw) hw.addEventListener("click", () => { SFX.tick(); showLessons("watch"); });
@@ -9717,8 +10071,12 @@ function pickForSubjectLearn(subjectName){
   const inThisSession = new Set(state.history.map(e => e.q.key));
   const earned = state.difficulty[subjectName];
   const order = difficultyPreference(earned);
+  // The thumb gate rides the existing tier ladder rather than sitting beside it,
+  // so a Sprint still climbs and falls through tiers exactly like any session.
+  const thumbGate = !!(state.session && state.session.thumbOnly);
   const base = d => BANK.filter(q => q.subject === subjectName && q.difficulty === d && inFocus(q)
-      && !inThisSession.has(q.key) && (allowSeen || !state.servedKeys.has(q.key)));
+      && !inThisSession.has(q.key) && (allowSeen || !state.servedKeys.has(q.key))
+      && (!thumbGate || thumbSafe(q)));
   // A passage drill sweeps the WHOLE tier order for passages before giving up on
   // them. Filtering per tier meant an easy-tier learner never reached the medium
   // tier where their subject's passages actually live, and the card promised a
@@ -9734,7 +10092,10 @@ function pickForSubjectLearn(subjectName){
     if (pool.length){
       // Only a REPLAY may legitimately serve below the earned tier; a fresh
       // serve doing it means the tier is out of unseen material.
-      if (!allowSeen && DIFF_ORDER.indexOf(d) < DIFF_ORDER.indexOf(earned)) noteTierExhausted(subjectName, earned);
+      // Not while the thumb gate is on: a tier that is dry only of phone-sized
+      // questions is not an exhausted tier, and logging it as one would put a
+      // false "cleared" pill on the learner's real ladder.
+      if (!allowSeen && !thumbGate && DIFF_ORDER.indexOf(d) < DIFF_ORDER.indexOf(earned)) noteTierExhausted(subjectName, earned);
       return pool[Math.floor(Math.random() * pool.length)];
     }
   }
@@ -9764,6 +10125,7 @@ function pickStarred(){
   return pool[0];
 }
 function pickQuestion(){
+  if (state.mode === "sprint")  return pickSprint();
   if (state.mode === "review")  return pickReview();
   if (state.mode === "starred") return pickStarred();
   if (state.mode === "mixed"){
