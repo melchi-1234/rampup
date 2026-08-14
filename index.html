@@ -40,7 +40,7 @@
 }
 </script>
 </head>
-<body>
+<body class="home">
 
 <nav>
   <div class="wrap nav-in">
@@ -56,7 +56,7 @@
 
 <header class="hero">
   <div class="wrap hero-grid">
-    <div>
+    <div class="hero-copy">
       <span class="eyebrow">MCAT preparation</span>
       <h1>MCAT prep that starts where you are.</h1>
       <p class="lede">
@@ -65,12 +65,12 @@
         subjects</strong> — Preview to MCAT — and moves each one on its own as you
         get stronger.
       </p>
-      <p class="proof-row">1,700+ questions, every answer verified &middot; 132 narrated walkthroughs &middot; The 511+ Guarantee</p>
       <div class="cta-row">
         <a class="btn btn-primary btn-lg" href="/start/" data-cta="hero" data-magnetic>Start my 7-day free trial <span class="arw">&rarr;</span></a>
         <a class="btn btn-ghost btn-lg" href="#levels">See how it works</a>
       </div>
       <p class="cta-note">Takes about two minutes. No account, no card to see your levels.</p>
+      <p class="proof-row">1,700+ questions, every answer verified &middot; 132 narrated walkthroughs &middot; The 511+ Guarantee</p>
     </div>
 
     <div class="levelcard" aria-label="Example of per-subject starting levels">
@@ -81,17 +81,17 @@
       <div class="lvl-row"><span class="lvl-name">Physics</span><span class="pill p-medium">Medium</span><span class="lvl-bar"><i style="width:52%"></i></span></div>
       <div class="lvl-row"><span class="lvl-name">General Chemistry</span><span class="pill p-hard">Hard</span><span class="lvl-bar"><i style="width:75%"></i></span></div>
       <div class="lvl-row"><span class="lvl-name">Psychology</span><span class="pill p-mcat">MCAT</span><span class="lvl-bar"><i style="width:100%"></i></span></div>
-      <p class="tiny" style="margin:14px 0 0">
+      <p class="tiny lc-foot">
         One student, five different levels, all at the same time. That is the point.
       </p>
     </div>
   </div>
 </header>
 
-<section style="padding-top:0">
+<section class="s-stats" aria-label="RampUp by the numbers">
   <div class="wrap">
     <div class="stats">
-      <div class="stat"><div class="n">1,081</div><div class="l">practice questions,<br>262 at MCAT level</div></div>
+      <div class="stat"><div class="n">1,103</div><div class="l">practice questions,<br>277 at MCAT level</div></div>
       <div class="stat"><div class="n">132</div><div class="l">narrated walkthroughs</div></div>
       <div class="stat"><div class="n">7</div><div class="l">timed exams, including<br>two full 230-question sittings</div></div>
       <div class="stat"><div class="n">5</div><div class="l">levels per subject,<br>Preview to MCAT</div></div>
@@ -101,7 +101,7 @@
 
 <section id="levels">
   <div class="wrap">
-    <div class="center" style="margin-bottom:42px">
+    <div class="sec-head center">
       <span class="eyebrow">The core idea</span>
       <h2>Every subject gets its own level</h2>
       <p class="lede">
@@ -116,7 +116,7 @@
           <span class="rung-step">Start</span>
           <span class="rung-bar"><i style="width:12%"></i></span>
         </div>
-        <div>
+        <div class="rung-body">
           <h3>Preview <span class="pill p-preview rung-tag">Preview</span></h3>
           <p>A subject you have not taken yet. RampUp teaches the concept first and
              uses gentler questions, so it is stretch practice rather than a wall.
@@ -128,7 +128,7 @@
           <span class="rung-step">Climb</span>
           <span class="rung-bar"><i style="width:52%"></i></span>
         </div>
-        <div>
+        <div class="rung-body">
           <h3>Easy, Medium, Hard
             <span class="pill p-easy rung-tag">Easy</span>
             <span class="pill p-medium rung-tag">Medium</span>
@@ -143,7 +143,7 @@
           <span class="rung-step">Ceiling</span>
           <span class="rung-bar"><i style="width:100%"></i></span>
         </div>
-        <div>
+        <div class="rung-body">
           <h3>MCAT <span class="pill p-mcat rung-tag">MCAT</span></h3>
           <p>Full-difficulty, passage-based reasoning. You get there subject by
              subject, by being right consistently. There is no tier above it and
@@ -154,9 +154,9 @@
   </div>
 </section>
 
-<section class="wash">
+<section id="day">
   <div class="wrap">
-    <div class="center" style="margin-bottom:40px">
+    <div class="sec-head">
       <span class="eyebrow">What a day looks like</span>
       <h2>A plan built from what you actually got wrong</h2>
       <p class="lede">Four rules decide your day, in this order. You can see why each block is there.</p>
@@ -164,28 +164,28 @@
     <div class="steps">
       <div class="step">
         <div class="step-n">1</div>
-        <div><h3>Clear what is due for review</h3>
+        <div class="step-body"><h3>Clear what is due for review</h3>
         <p>Questions you missed come back on the day you are most likely to be
            forgetting them. Postponing review is the most expensive habit in
            spaced repetition, so it goes first.</p></div>
       </div>
       <div class="step">
         <div class="step-n">2</div>
-        <div><h3>Work on a pattern RampUp has spotted</h3>
+        <div class="step-body"><h3>Work on a pattern RampUp has spotted</h3>
         <p>Not a vague nudge — a measured one. "You've missed acid–base 4 of the 9
            times it came up this week," or "you're at 78% on standalone Physics
            questions and 41% once there's a passage."</p></div>
       </div>
       <div class="step">
         <div class="step-n">3</div>
-        <div><h3>Learn something new to you</h3>
+        <div class="step-body"><h3>Learn something new to you</h3>
         <p>For a Preview subject, the concept lesson comes before the first
            question — you are never tested on material RampUp knows you have not
            been taught.</p></div>
       </div>
       <div class="step">
         <div class="step-n">4</div>
-        <div><h3>Sit a timed exam when it is time</h3>
+        <div class="step-body"><h3>Sit a timed exam when it is time</h3>
         <p>Seven of them: two full-length 230-question simulations across four
            timed sections, two half-lengths, and three short timed sets &mdash;
            all run in an interface styled after the real testing software:
@@ -198,16 +198,18 @@
 </section>
 
 <section id="rampy">
-  <div class="wrap narrow center">
-    <span class="eyebrow">The proof it is working</span>
-    <h2>Rampy explains the question you just missed</h2>
-    <p class="lede" style="margin-bottom:26px">
-      Rampy is a coach that sits inside the question, not a chatbot bolted on the side.
-      When you get something wrong it already has the question, the answer you chose,
-      the correct answer, and RampUp's own written explanation — so you never have to
-      re-type or re-explain anything.
-    </p>
-    <div class="grid" style="text-align:left">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The proof it is working</span>
+      <h2>Rampy explains the question you just missed</h2>
+      <p class="lede">
+        Rampy is a coach that sits inside the question, not a chatbot bolted on the side.
+        When you get something wrong it already has the question, the answer you chose,
+        the correct answer, and RampUp's own written explanation — so you never have to
+        re-type or re-explain anything.
+      </p>
+    </div>
+    <div class="grid">
       <div class="card">
         <h3>Why was mine wrong?</h3>
         <p>It answers about the specific choice you picked and the misconception it
@@ -224,7 +226,7 @@
            rather than inventing one.</p>
       </div>
     </div>
-    <p class="small" style="margin-top:22px; max-width:640px; margin-left:auto; margin-right:auto">
+    <p class="small sec-note">
       Rampy answers from RampUp's own explanations rather than improvising. That
       constraint is deliberate — it is why its answers agree with the material you
       are being graded against.
@@ -232,9 +234,9 @@
   </div>
 </section>
 
-<section class="wash" id="pricing">
+<section id="pricing">
   <div class="wrap">
-    <div class="center" style="margin-bottom:34px">
+    <div class="sec-head center">
       <span class="eyebrow">Pricing</span>
       <h2>One subscription. Everything included.</h2>
       <p class="lede">No tiers, no separate exam purchases, nothing held back for an upgrade. A single MCAT question bank usually runs several hundred dollars.</p>
@@ -255,27 +257,28 @@
         <div class="plan-num">$19.99<span> /month</span></div>
         <p class="plan-billed">$19.99 billed monthly</p>
       </div>
+      <div class="plan plan-guarantee">
+        <div class="plan-name">The 511+ Guarantee</div>
+        <p class="plan-blurb">Score a 511 or above, or your money back.</p>
+        <p class="plan-note">
+          Do the work — 1,000+ questions and both full-length sims — then sit your
+          MCAT. If your official score comes in below 511, we refund every
+          subscription dollar you paid.
+          <a href="/terms.html#guarantee">The exact terms</a>
+          are five short paragraphs, not twenty pages.</p>
+      </div>
     </div>
 
-    <div class="price-card" style="border:1.6px solid var(--violet); margin:0 0 22px; text-align:left">
-      <div class="plan-name" style="margin-bottom:8px">The 511+ Guarantee</div>
-      <p style="font-size:15px; color:var(--muted); line-height:1.6; margin:0">
-        Score a 511 or above, or your money back. Do the work — 1,000+ questions
-        and both full-length sims — then sit your MCAT. If your official score
-        comes in below 511, we refund every subscription dollar you paid.
-        <a href="/terms.html#guarantee" style="color:var(--violet-strong);font-weight:700">The exact terms</a>
-        are five short paragraphs, not twenty pages.</p>
-    </div>
-    <p class="price-reassure">511+ Guarantee &middot; Cancel any time &middot; No account needed</p>
     <div class="price-cta">
+      <p class="price-reassure">511+ Guarantee &middot; Cancel any time &middot; No account needed</p>
       <a class="btn btn-primary btn-lg btn-block" href="/start/" data-cta="pricing">Start my 7-day free trial <span class="arw">&rarr;</span></a>
-      <p class="tiny" style="text-align:center;margin:12px 0 0">7 days free. You pick the plan after you see your levels.</p>
+      <p class="tiny price-fine">7 days free. You pick the plan after you see your levels.</p>
     </div>
 
-    <div class="price-card" style="border-color:var(--line); box-shadow:var(--shadow); margin-top:34px; text-align:left">
-      <div class="plan-name" style="text-align:center;margin-bottom:14px">Everything is included in both</div>
+    <div class="included">
+      <div class="plan-name incl-head">Everything is included in both</div>
       <ul class="incl">
-        <li>All 1,081 practice questions, 262 of them at MCAT level</li>
+        <li>All 1,103 practice questions, 277 of them at MCAT level</li>
         <li>Per-subject levels from Preview to MCAT, moving independently</li>
         <li>Concept lessons across 12 courses, before you are tested</li>
         <li>132 narrated walkthroughs of the questions people miss most</li>
@@ -287,68 +290,73 @@
   </div>
 </section>
 
-<section>
-  <div class="wrap faq">
-    <h2 class="center" style="margin-bottom:26px">Questions</h2>
+<section class="s-faq">
+  <div class="wrap faq-grid">
+    <div class="faq-head">
+      <h2>Questions</h2>
+    </div>
 
-    <details>
-      <summary>What exactly is the 511+ Guarantee?</summary>
-      <p>Score a 511 or above, or your money back. Answer at least 1,000 questions
-      in RampUp, complete both full-length practice exams, then take the real
-      MCAT. If your official score comes in below 511, email us your AAMC score
-      report within 60 days and we refund 100% of the subscription fees you paid
-      — a score below 511 is the only score that qualifies. Each claim is
-      reviewed individually against those conditions. The full terms are in
-      <a href="/terms.html#guarantee">the Terms</a> — five short paragraphs.</p>
-    </details>
-    <details>
-      <summary>Can I see my starting levels before paying?</summary>
-      <div class="body"><p>Yes. The onboarding is free and needs no account and no card.
-      You answer a few questions about your coursework and see a real level for every
-      subject plus your first day's plan. The subscription is what unlocks the practice
-      itself.</p></div>
-    </details>
+    <div class="faq">
+      <details>
+        <summary>What exactly is the 511+ Guarantee?</summary>
+        <div class="body"><p>Score a 511 or above, or your money back. Answer at least 1,000 questions
+        in RampUp, complete both full-length practice exams, then take the real
+        MCAT. If your official score comes in below 511, email us your AAMC score
+        report within 60 days and we refund 100% of the subscription fees you paid
+        — a score below 511 is the only score that qualifies. Each claim is
+        reviewed individually against those conditions. The full terms are in
+        <a href="/terms.html#guarantee">the Terms</a> — five short paragraphs.</p></div>
+      </details>
 
-    <details>
-      <summary>Is this a replacement for AAMC official material?</summary>
-      <div class="body"><p>No, and you should sit the official practice too. RampUp is
-      original material written to match MCAT structure and level, aimed at the stretch
-      before and between official full-lengths. We are not affiliated with the AAMC.</p></div>
-    </details>
+      <details>
+        <summary>Can I see my starting levels before paying?</summary>
+        <div class="body"><p>Yes. The onboarding is free and needs no account and no card.
+        You answer a few questions about your coursework and see a real level for every
+        subject plus your first day's plan. The subscription is what unlocks the practice
+        itself.</p></div>
+      </details>
 
-    <details>
-      <summary>Will RampUp predict my score?</summary>
-      <div class="body"><p>Only from a timed full-length or half-length sitting, and it is
-      clearly labelled as an unofficial estimate. We deliberately do not project a score
-      from everyday practice: the difficulty adapts to you, so that number would mostly
-      measure the adapting, not your ability.</p></div>
-    </details>
+      <details>
+        <summary>Is this a replacement for AAMC official material?</summary>
+        <div class="body"><p>No, and you should sit the official practice too. RampUp is
+        original material written to match MCAT structure and level, aimed at the stretch
+        before and between official full-lengths. We are not affiliated with the AAMC.</p></div>
+      </details>
 
-    <details>
-      <summary>What happens to my progress if I cancel?</summary>
-      <div class="body"><p>Your progress is stored on your own device, so it stays there.
-      Access to the questions, exams and Rampy ends when the subscription does.</p></div>
-    </details>
+      <details>
+        <summary>Will RampUp predict my score?</summary>
+        <div class="body"><p>Only from a timed full-length or half-length sitting, and it is
+        clearly labelled as an unofficial estimate. We deliberately do not project a score
+        from everyday practice: the difficulty adapts to you, so that number would mostly
+        measure the adapting, not your ability.</p></div>
+      </details>
 
-    <details>
-      <summary>Do I need an account?</summary>
-      <div class="body"><p>No. There is no sign-up and no login. Your progress lives in
-      your browser or on your phone, which is also why it does not follow you between
-      devices automatically.</p></div>
-    </details>
+      <details>
+        <summary>What happens to my progress if I cancel?</summary>
+        <div class="body"><p>Your progress is stored on your own device, so it stays there.
+        Access to the questions, exams and Rampy ends when the subscription does.</p></div>
+      </details>
 
-    <details>
-      <summary>I bought exams from RampUp before. What happens to them?</summary>
-      <div class="body"><p>You keep them, permanently. Anything bought under the old
-      one-time pricing stays unlocked and is not affected by the subscription.</p></div>
-    </details>
+      <details>
+        <summary>Do I need an account?</summary>
+        <div class="body"><p>No. There is no sign-up and no login. Your progress lives in
+        your browser or on your phone, which is also why it does not follow you between
+        devices automatically.</p></div>
+      </details>
+
+      <details>
+        <summary>I bought exams from RampUp before. What happens to them?</summary>
+        <div class="body"><p>You keep them, permanently. Anything bought under the old
+        one-time pricing stays unlocked and is not affected by the subscription.</p></div>
+      </details>
+    </div>
   </div>
 </section>
 
-<section class="wash">
+<section class="s-close">
   <div class="wrap narrow center">
     <h2>See where you'd actually start</h2>
-    <p class="lede" style="margin-bottom:24px">Two minutes, no account, no card.</p>
+    <p class="lede close-lede">Two minutes, no account, no card.</p>
     <a class="btn btn-primary btn-lg" href="/start/" data-cta="footer" data-magnetic>Start my 7-day free trial <span class="arw">&rarr;</span></a>
   </div>
 </section>
