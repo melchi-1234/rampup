@@ -30,7 +30,22 @@
   }
   .backbtn:hover{color:var(--ink)}
   .prog{flex:1; height:7px; background:var(--line); border-radius:99px; overflow:hidden}
-  .prog i{display:block; width:0; height:100%; background:linear-gradient(90deg,var(--lav),var(--violet)); transition:width .3s ease}
+  .prog i{
+    display:block; width:0; height:100%; background:linear-gradient(90deg,var(--lav),var(--violet));
+    transition:width .55s cubic-bezier(.22,1,.36,1); position:relative; overflow:hidden; transform-origin:left center;
+  }
+  .prog i::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+    transform:translateX(-100%); animation:progShine 2.2s ease-in-out infinite;
+  }
+  @keyframes progShine{0%{transform:translateX(-100%)}55%,100%{transform:translateX(100%)}}
+  @keyframes progPulse{0%{transform:scaleY(1)}35%{transform:scaleY(1.7)}100%{transform:scaleY(1)}}
+  .prog.pulse i{animation:progPulse .45s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes lineIn{from{opacity:0; transform:translateX(-10px)}to{opacity:1; transform:none}}
+  @keyframes checkPop{from{transform:scale(0)}to{transform:scale(1)}}
+  .bstep-line{animation:lineIn .32s cubic-bezier(.22,1,.36,1) both}
+  .bstep-check{display:inline-block; animation:checkPop .3s .06s cubic-bezier(.34,1.56,.64,1) both}
   .stepno{font-size:13px; font-weight:740; color:var(--faint); white-space:nowrap}
 
   .panel{background:#fff; border:1px solid var(--line); border-radius:var(--r-xl); padding:26px 22px; box-shadow:var(--shadow)}
@@ -47,8 +62,16 @@
   }
   .opt:hover{border-color:var(--lav)}
   .opt[aria-pressed="true"]{border-color:var(--violet); background:var(--violet-soft); font-weight:740}
-  .opt .tick{margin-left:auto; color:var(--violet); font-weight:900; opacity:0; font-size:18px}
-  .opt[aria-pressed="true"] .tick{opacity:1}
+  .opt .tick{
+    margin-left:auto; color:var(--violet); font-weight:900; opacity:0; font-size:18px;
+    transform:scale(.4); transition:opacity .16s ease, transform .24s cubic-bezier(.34,1.56,.64,1);
+  }
+  .opt[aria-pressed="true"] .tick{opacity:1; transform:scale(1)}
+  /* Press feedback: tap acknowledgment on touch, where :hover never fires. */
+  .opt,.seg button,.planopt,.sampleq .sq-choice{
+    transition:border-color .14s, background .14s, transform .1s cubic-bezier(.2,0,0,1);
+  }
+  .opt:active,.seg button:active,.planopt:active,.sampleq .sq-choice:active{transform:scale(.965)}
 
   /* Plan rows: label | price | badge. Nothing wraps at 320px. */
   .planopt{display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center; padding:15px 17px}
@@ -180,6 +203,8 @@
 <script src="/assets/brand.js"></script>
 <script src="/assets/funnel.js"></script>
 <script src="/assets/billing.js"></script>
+<script src="/assets/vendor/gsap/gsap.min.js" defer></script>
+<script src="/assets/motion-funnel.js" defer></script>
 <script>
 (function () {
   "use strict";
@@ -276,6 +301,9 @@
     /* Endowed progress: the meter starts 12% full (goal-gradient) and measures
        the PLAN being built, not pages seen. */
     bar.style.width = Math.round(12 + idx / (STEPS.length - 1) * 88) + "%";
+    bar.parentElement.classList.remove("pulse");
+    void bar.parentElement.offsetWidth;   // restart the pulse animation
+    bar.parentElement.classList.add("pulse");
     stepno.textContent = LABEL[step] || "";
     backBtn.style.visibility = step === "name" ? "hidden" : "visible";
     RU.stepMark(step);
@@ -340,7 +368,11 @@
       b.setAttribute("aria-pressed", String(S.grade === g));
       b.innerHTML = esc(g) + '<span class="tick">✓</span>';
       b.addEventListener("click", function () {
-        S.grade = g; RU.save(); RU.track("grade_set", { grade: g }); go(nextOf("grade"));
+        if (b.getAttribute("aria-pressed") === "true") return;   // double-tap during the hold
+        box.querySelectorAll(".opt").forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+        b.setAttribute("aria-pressed", "true");
+        S.grade = g; RU.save(); RU.track("grade_set", { grade: g });
+        setTimeout(function () { go(nextOf("grade")); }, 240);   // the tap is SEEN before the panel leaves
       });
       box.appendChild(b);
     });
@@ -361,8 +393,11 @@
       b.setAttribute("aria-pressed", String(S.feeling === f.v));
       b.innerHTML = esc(f.l) + '<span class="tick">&check;</span>';
       b.addEventListener("click", function () {
+        if (b.getAttribute("aria-pressed") === "true") return;
+        box.querySelectorAll(".opt").forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+        b.setAttribute("aria-pressed", "true");
         S.feeling = f.v; RU.save(); RU.track("feeling_set", { feeling: f.v });
-        go(nextOf("feeling"));
+        setTimeout(function () { go(nextOf("feeling")); }, 240);
       });
       box.appendChild(b);
     });
@@ -516,9 +551,12 @@
       b.setAttribute("aria-pressed", String(S.target === t.v && (t.v !== null || S.targetSet === true)));
       b.innerHTML = esc(t.l) + '<span class="tick">✓</span>';
       b.addEventListener("click", function () {
+        if (b.getAttribute("aria-pressed") === "true") return;
+        box.querySelectorAll(".opt").forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+        b.setAttribute("aria-pressed", "true");
         S.target = t.v; S.targetSet = true; RU.save();
         RU.track("target_set", { target: t.v === null ? "unsure" : String(t.v) });
-        go(nextOf("target"));
+        setTimeout(function () { go(nextOf("target")); }, 240);
       });
       box.appendChild(b);
     });
@@ -543,8 +581,8 @@
     var _b0 = Date.now();
     function tick() {
       if (i >= lines.length) { RU.track("building_done", { ms: Date.now() - _b0 }); go("reveal"); return; }
-      box.innerHTML += '<div style="display:flex; gap:9px; align-items:baseline; padding:7px 0; font-size:15.5px; color:var(--muted)">' +
-        '<span style="color:var(--violet); font-weight:900">&check;</span><span>' + lines[i] + '</span></div>';
+      box.innerHTML += '<div class="bstep-line" style="display:flex; gap:9px; align-items:baseline; padding:7px 0; font-size:15.5px; color:var(--muted)">' +
+        '<span class="bstep-check" style="color:var(--violet); font-weight:900">&check;</span><span>' + lines[i] + '</span></div>';
       i++;
       setTimeout(tick, 620);
     }
@@ -856,13 +894,19 @@
   var RENDER = { name: renderName, grade: renderGrade, when: renderWhen, target: renderTarget, feeling: renderFeeling,
                  courses: renderCourses, reveal: renderReveal, commit: renderCommit, plan: renderPlan };
 
+  var _prevStepIdx = -1;
   function route() {
     var step = current();
     if (step === "confidence") { go("courses", true); step = "courses"; }   // legacy hash
     // Cannot land on the reveal or paywall without having actually answered.
     if ((step === "reveal" || step === "commit" || step === "plan") && !S.done) { go("name", true); step = "name"; }
     chrome(step);
-    (RENDER[step] || renderName)();
+    var idx = STEPS.indexOf(step);
+    var direction = (_prevStepIdx === -1 || idx >= _prevStepIdx) ? 1 : -1;   // back slides the other way
+    _prevStepIdx = idx;
+    var render = function () { (RENDER[step] || renderName)(); };
+    if (window.RUMotion) RUMotion.panelTransition(view, render, direction);
+    else render();
     window.scrollTo(0, 0);
   }
 
