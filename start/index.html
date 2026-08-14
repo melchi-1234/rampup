@@ -189,12 +189,12 @@
   var stepno = document.getElementById("stepno");
   var backBtn = document.getElementById("back");
 
-  var STEPS = ["name", "grade", "when", "feeling", "courses", "reveal", "commit", "plan"];
-  var LABEL = { name: "Hello", grade: "About you", when: "Test timing", feeling: "Where you are",
+  var STEPS = ["name", "grade", "when", "target", "feeling", "courses", "reveal", "commit", "plan"];
+  var LABEL = { name: "Hello", grade: "About you", when: "Test timing", target: "Target score", feeling: "Where you are",
                 courses: "Coursework", reveal: "Your levels", commit: "One question", plan: "Your plan" };
   // One Rampy mood per step — our equivalent of a per-step illustration, and
   // it is the character already in the product rather than stock art.
-  var MOOD = { name: "happy", grade: "happy", when: "grad", feeling: "happy",
+  var MOOD = { name: "happy", grade: "happy", when: "grad", target: "think", feeling: "happy",
                courses: "think", reveal: "celebrate", commit: "think", plan: "grad" };
 
   /* The previous answer, converted into a consequence for THEIR plan. This is
@@ -202,7 +202,18 @@
      built only from true inputs — their words in, plan mechanics out. */
   function affirmFor(step) {
     var n = RU.firstName();
+    if (step === "target") {
+      var dt = RU.daysUntilTest();
+      if (dt !== null && dt > 0)
+        return "<b>" + dt + " days out.</b> " + (dt >= 150
+          ? "That is real runway - your plan gets to teach subjects before it ever tests them."
+          : dt >= 90 ? "Enough runway for a full ramp, if it starts now."
+          : "A focused window. Your plan will spend it converting knowledge into points, not re-teaching.");
+      return "";
+    }
     if (step === "feeling") {
+      if (S.targetSet)
+        return "<b>A " + (S.target === null ? "510" : S.target) + " plan.</b> Every daily session from here is paced against that number.";
       var d = RU.daysUntilTest();
       if (d !== null && d > 0)
         return "<b>" + d + " days out.</b> " + (d >= 150
@@ -477,6 +488,39 @@
     });
   }
 
+  /* Target score: the number the whole plan (and the 510 Guarantee) points at.
+     Chips auto-advance like grade; "Not sure yet" stores null and the plan
+     defaults to 510. Deliberately no guarantee fine print here — that lives in
+     the FAQ and Terms. */
+  var TARGETS = [
+    { v: 500, l: "500+ — get me over the bar" },
+    { v: 505, l: "505+ — solidly competitive" },
+    { v: 510, l: "510+ — top-quartile territory" },
+    { v: 515, l: "515+ — aiming high" },
+    { v: null, l: "Not sure yet" }
+  ];
+  function renderTarget() {
+    var n = RU.firstName();
+    view.innerHTML = '<div class="panel">' + stepArt("target") + affirmStrip("target") +
+      '<h1>' + (n ? "What score are you aiming for, " + esc(n) + "?" : "What score are you aiming for?") + '</h1>' +
+      '<p class="sub">Your plan paces toward this number &mdash; and it is the score the guarantee holds us to.</p>' +
+      '<div class="opts" id="opts"></div><p class="err" id="err"></p></div>';
+    repaintArt();
+    var box = document.getElementById("opts");
+    TARGETS.forEach(function (t) {
+      var b = document.createElement("button");
+      b.className = "opt"; b.type = "button";
+      b.setAttribute("aria-pressed", String(S.target === t.v && (t.v !== null || S.targetSet === true)));
+      b.innerHTML = esc(t.l) + '<span class="tick">✓</span>';
+      b.addEventListener("click", function () {
+        S.target = t.v; S.targetSet = true; RU.save();
+        RU.track("target_set", { target: t.v === null ? "unsure" : String(t.v) });
+        go(nextOf("target"));
+      });
+      box.appendChild(b);
+    });
+  }
+
   /* Between the last answer and the reveal: the plan is visibly assembled.
      The pause is deliberate (labor illusion — Flo/Noom both do this): work the
      user can see raises the value of what comes next. Every line names a real
@@ -710,7 +754,7 @@
     h += '</div>';
 
     h += '<ul class="incl" style="margin-top:20px">' +
-      '<li>911 practice questions, 240 at MCAT level</li>' +
+      '<li>935 practice questions, 240 at MCAT level</li>' +
       '<li>Your ' + esc(String(goal)) + '-question daily plan, rebuilt every day</li>' +
       '<li>Concept lessons before anything new to you</li>' +
       '<li>129 narrated walkthroughs</li>' +
@@ -792,7 +836,7 @@
 
   /* ------------------------------------------------------------------ route */
 
-  var RENDER = { name: renderName, grade: renderGrade, when: renderWhen, feeling: renderFeeling,
+  var RENDER = { name: renderName, grade: renderGrade, when: renderWhen, target: renderTarget, feeling: renderFeeling,
                  courses: renderCourses, reveal: renderReveal, commit: renderCommit, plan: renderPlan };
 
   function route() {
