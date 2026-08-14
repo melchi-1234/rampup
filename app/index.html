@@ -4493,6 +4493,7 @@ const state = {
   day:{ lastDay:null, streak:0, todayCount:0, goal:10 },
   testDate:null,          // optional "YYYY-MM-DD"; drives the countdown + goal suggestion
   targetScore:null,       // the 510 Guarantee target (472-528), from funnel or Settings
+  readinessRead:null,     // cached { text, day } from the gateway's readiness action
   testTimeframe:null,     // "exact"|"3mo"|"6mo"|"later"|"none" - what the learner ACTUALLY said,
                           // kept alongside testDate so a rough window is never redisplayed as a
                           // hard date the learner never gave us
@@ -4539,6 +4540,7 @@ function serialize(){
     testScores:state.testScores, testsCompleted:state.testsCompleted, conceptsSeen:state.conceptsSeen,
     examReviews:state.examReviews,
     testDate:state.testDate, testTimeframe:state.testTimeframe, remind:state.remind, targetScore:state.targetScore,
+    readinessRead:state.readinessRead,
     missLog:state.missLog, seenLog:state.seenLog, coachDismissed:state.coachDismissed };
 }
 function saveState(){ if (!state.persist || !STORAGE_OK) return; try { localStorage.setItem(LS_KEY, JSON.stringify(serialize())); } catch(e){} }
@@ -5348,6 +5350,7 @@ function rehydrate(s){
   if (typeof state.day.goal !== "number") state.day.goal = 10;
   state.testDate = validDateStr(s.testDate) ? s.testDate : null;
   state.targetScore = (typeof s.targetScore === "number" && s.targetScore >= 472 && s.targetScore <= 528) ? s.targetScore : null;
+  state.readinessRead = (s.readinessRead && typeof s.readinessRead.text === "string") ? s.readinessRead : null;
   // Saves written before the test-date step existed have no timeframe. Infer
   // one from whatever date they DO have so a returning user is never sent back
   // through onboarding to answer a question they effectively already answered.
@@ -8585,6 +8588,15 @@ function renderDashboard(){
            <p class="disc" style="margin:2px 0 12px">An unofficial estimate from your best full-length, not an AAMC score.</p>`}
       <div class="heatgrid">${heat}</div>
       <div class="trend"><span class="trend-lab">Full-length trend</span><div class="trend-bars">${trend}</div></div>
+      <div id="aiRead" style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">${
+        state.readinessRead && state.readinessRead.day === todayStr()
+          ? `<p style="font-size:14px;line-height:1.55;margin:0">${esc(state.readinessRead.text)}</p>
+             <button class="btn ghost sm" id="rrGet" style="margin-top:8px">${icon("repeat")} Re-read my numbers</button>`
+          : (state.totalAnswered >= 30
+              ? `<button class="btn ghost sm" id="rrGet">${icon("bulb")} Rampy's readiness read</button>
+                 <p class="disc" style="margin:6px 0 0">A real read of your numbers — range, weakest link, fastest fix.</p>`
+              : `<p class="disc" style="margin:0">Answer 30+ questions and Rampy can read your readiness from real data.</p>`)
+      }</div>
     </div>`;
   } else {
     readyHtml = `<button class="ready-card upsell" id="readyUpsell">
@@ -8643,6 +8655,7 @@ function renderDashboard(){
   });
   wrap.innerHTML = html;
   const up = $("#readyUpsell"); if (up) up.addEventListener("click", () => openPaywall(null));
+  const rr = $("#rrGet"); if (rr) rr.addEventListener("click", () => fetchReadinessRead(true));
 }
 /* ============================================================
    v2, Practice Tests (unlockable, exam-mode, scored report)
@@ -8655,6 +8668,42 @@ const READINESS = [
   { min:0,  label:"Keep building", cls:"building", sub:"Early days. Work the learning path, then come back and watch this climb." }
 ];
 function readinessFor(pct){ return READINESS.find(r => pct >= r.min) || READINESS[READINESS.length-1]; }
+/* Rampy's readiness read: the AI-powered predictor. Sends REAL aggregated
+   performance data to the gateway's `readiness` action and renders an honest
+   scaled-score RANGE with the clearest drag and the fastest lever. Cached one
+   read per day (a stats snapshot barely moves within a day; refresh forces). */
+function buildReadinessStats(){
+  const bySubject = {};
+  state.activeSubjects.forEach(s => {
+    const st = state.stats[s] || {};
+    if (!st.answered) return;
+    bySubject[s] = { answered: st.answered, correct: st.correct,
+                     pct: Math.round(st.correct / st.answered * 100),
+                     tier: state.difficulty[s] || "easy" };
+  });
+  const fulls = PREMIUM_TESTS.filter(t => t.sectionPlan && state.testScores[t.id])
+    .map(t => ({ id: t.id, pctBest: state.testScores[t.id].best || null,
+                 scaledBest: projectedScore(state.testScores[t.id].best || 0) }));
+  return { totalAnswered: state.totalAnswered, totalCorrect: state.totalCorrect,
+           bySubject, fullLengths: fulls, daysToTest: daysUntilTest(),
+           sessionsCompleted: state.sessionsCompleted || 0,
+           reviewPile: Object.keys(state.srs).length };
+}
+async function fetchReadinessRead(force){
+  const box = $("#aiRead"); if (!box) return;
+  if (!force && state.readinessRead && state.readinessRead.day === todayStr()){ return; }
+  box.innerHTML = `<div class="ry-load">${icon("bulb")} Rampy is reading your numbers…</div>`;
+  const r = await rampyGenerate({ action: "readiness",
+    learner: { target: state.targetScore || null, daysToTest: daysUntilTest() },
+    stats: buildReadinessStats() });
+  if (r.ok){
+    state.readinessRead = { text: stripMd(r.text), day: todayStr() };
+    saveState();
+    renderDashboard();
+  } else {
+    box.innerHTML = `<p class="disc">Could not reach Rampy right now — the projection above still stands.</p>`;
+  }
+}
 // Rough linear map of % correct to the MCAT 472-528 band. Explicitly unofficial.
 function projectedScore(pct){ return Math.round(472 + (528 - 472) * (Math.max(0, Math.min(100, pct)) / 100)); }
 function projectedSection(pct){ return Math.round(118 + (132 - 118) * (Math.max(0, Math.min(100, pct)) / 100)); }
