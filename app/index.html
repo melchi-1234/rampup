@@ -7129,6 +7129,11 @@ function rampyContext(entry, action){
       accuracyInSubject: (() => { const s = state.stats[q.subject] || {}; return s.answered ? Math.round(100*s.correct/s.answered) : null; })(),
       state: ls.kind, repeatsThisConcept: ls.repeats,
       daysToTest: daysUntilTest(),
+      weakest: (() => { let w = null, worst = 101;
+        Object.keys(state.stats || {}).forEach(n => { const st = state.stats[n];
+          if (st && st.answered >= 8){ const a = 100*st.correct/st.answered; if (a < worst){ worst = a; w = n; } } });
+        return w; })(),
+      goalPerDay: state.day && state.day.goal,
       coursesTaken: Object.keys(state.courses).filter(c => state.courses[c] === "completed").slice(0, 12)
     },
     item: {
@@ -7136,6 +7141,7 @@ function rampyContext(entry, action){
       concept: cf ? cf.concept.id : null, conceptName: cf ? cf.concept.name : null,
       primer: cf ? (cf.concept.primer || "") : "",
       hasPassage: !!q.passage,
+      passage: q.passage ? String(q.passage).slice(0, 5000) : "",
       question: q.question, choices: q.choices,
       answerIndex: q.answer, chosenIndex: entry.idk ? null : entry.chosen,
       correct: !!entry.correct, idk: !!entry.idk,
@@ -7224,11 +7230,11 @@ function wireContext(ctx){
       tier: l.tier, preview: l.preview,
       answeredInSubject: l.answeredInSubject, accuracyInSubject: l.accuracyInSubject,
       state: l.state, repeatsThisConcept: l.repeatsThisConcept,
-      daysToTest: l.daysToTest
+      daysToTest: l.daysToTest, weakest: l.weakest, goalPerDay: l.goalPerDay
     },
     item: {
       subject: i.subject, section: i.section, difficulty: i.difficulty,
-      conceptName: i.conceptName, primer: i.primer,
+      conceptName: i.conceptName, primer: i.primer, passage: i.passage,
       question: i.question, choices: i.choices,
       answerIndex: i.answerIndex, chosenIndex: i.chosenIndex,
       explanation: i.explanation, notes: i.notes
