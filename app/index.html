@@ -95,6 +95,9 @@
   /* Premium entrance: list cards rise in with a light stagger whenever their
      view is shown ([hidden] toggles display, so the animation replays on every
      view switch). Two elements of motion max per screen; reduced-motion off. */
+  body.motion-still *{animation:none !important; transition:none !important}
+  body.motion-calm .testcard,body.motion-calm .sesscard,body.motion-calm .lib-card,body.motion-calm .plan-row,
+  body.motion-calm #rampyBubble,body.motion-calm .xpfloat{animation:none !important}
   @keyframes cardIn{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
   .testcard,.sesscard,.lib-card,.plan-row{animation:cardIn .34s var(--ease) both}
   .testcard:nth-child(2),.sesscard:nth-child(2),.lib-card:nth-child(2),.plan-row:nth-child(2){animation-delay:.05s}
@@ -1406,6 +1409,14 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
         <div class="set-row">
           <div class="lbl"><b>Sound effects</b><span class="d">Little dings and fanfares for answers, streaks, and level-ups.</span></div>
           <button class="toggle" id="soundToggle" aria-label="Toggle sound effects"></button>
+        </div>
+        <div class="set-row">
+          <div class="lbl"><b>Motion</b><span class="d">Full has celebrations and transitions. Calm keeps only the useful movement. Still is no movement at all.</span></div>
+          <div class="seg" id="motionSeg">
+            <button type="button" data-motion="full">Full</button>
+            <button type="button" data-motion="calm">Calm</button>
+            <button type="button" data-motion="still">Still</button>
+          </div>
         </div>
         <div class="set-row">
           <div class="lbl"><b>Appearance</b><span class="d">Match your device, or force light or dark.</span></div>
@@ -4227,7 +4238,7 @@ function serialize(){
     mode:state.mode, focus:[...state.focus], persist:state.persist,
     xp:state.xp, level:state.level, achievements:state.achievements, streakFreezes:state.streakFreezes,
     sound:state.sound, sessionsCompleted:state.sessionsCompleted, bestCombo:state.bestCombo,
-    ryGeneralThread:state.ryGeneralThread, rampyNotes:state.rampyNotes, rampyIntroDone:state.rampyIntroDone, onboardXp:state.onboardXp,
+    ryGeneralThread:state.ryGeneralThread, rampyNotes:state.rampyNotes, rampyIntroDone:state.rampyIntroDone, onboardXp:state.onboardXp, motionPref:state.motionPref,
     celebratedStreak:state.celebratedStreak, previewAnswered:state.previewAnswered,
     reviewCleared:state.reviewCleared, perfectSessions:state.perfectSessions, path:state.path,
     testScores:state.testScores, testsCompleted:state.testsCompleted, conceptsSeen:state.conceptsSeen,
@@ -5056,6 +5067,8 @@ function rehydrate(s){
   state.ryGeneralThread = Array.isArray(s.ryGeneralThread) ? s.ryGeneralThread.slice(-24) : [];
   state.rampyNotes = Array.isArray(s.rampyNotes) ? s.rampyNotes.slice(-100) : [];
   state.rampyIntroDone = !!s.rampyIntroDone; state.onboardXp = !!s.onboardXp;
+  state.motionPref = ["full","calm","still"].indexOf(s.motionPref) !== -1 ? s.motionPref : "full";
+  setTimeout(applyMotionClass, 0);
   state.achievements = Array.isArray(s.achievements) ? s.achievements : [];
   state.streakFreezes = (typeof s.streakFreezes === "number") ? s.streakFreezes : 2;
   state.sound = s.sound !== false;
@@ -5454,9 +5467,18 @@ function _cfLoop(){
 /* The only door to confetti (§6.3): <=2/session, >=90s apart, never in exam
    mode, never on onboarding, honors reduced motion. Call sites stop carrying
    their own REDUCED_MOTION checks. */
+function motionLevel(){
+  const pref = state.motionPref || "full";
+  if (REDUCED_MOTION) return pref === "still" ? "still" : "calm";   // OS floor
+  return pref;
+}
+function applyMotionClass(){
+  document.body.classList.toggle("motion-calm", motionLevel() === "calm");
+  document.body.classList.toggle("motion-still", motionLevel() === "still");
+}
 let _celebrated = [];
 function shouldCelebrate(kind){
-  if (REDUCED_MOTION) return false;
+  if (motionLevel() !== "full") return false;
   if (state.test) return false;                              // never in exam mode
   if (!state.onboarded) return false;                        // nothing earned yet
   const now = Date.now();
@@ -8158,6 +8180,13 @@ function renderGuaranteeCard(){
 }
 function renderSettings(){
   renderGuaranteeCard();
+  const ms = $("#motionSeg");
+  if (ms){
+    ms.querySelectorAll("[data-motion]").forEach(b => {
+      b.classList.toggle("on", (state.motionPref || "full") === b.dataset.motion);
+      b.onclick = () => { state.motionPref = b.dataset.motion; saveState(); applyMotionClass(); renderSettings(); };
+    });
+  }
   const t = $("#persistToggle"); t.classList.toggle("on", state.persist && STORAGE_OK); t.disabled = !STORAGE_OK;
   t.setAttribute("role", "switch"); t.setAttribute("aria-checked", String(state.persist && STORAGE_OK));
   const st = $("#soundToggle"); st.classList.toggle("on", state.sound);

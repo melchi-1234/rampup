@@ -803,6 +803,10 @@
     window.scrollTo(0, 0);
   }
 
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest(".guarantee a");
+    if (a) RU.track("guarantee_expanded", { step: current() });
+  });
   backBtn.addEventListener("click", function () {
     var p = prevOf(current());
     if (p) location.hash = p; else history.back();
