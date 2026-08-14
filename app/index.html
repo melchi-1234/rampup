@@ -22,8 +22,20 @@
 
   /* DESIGN_SYSTEM_VERSION = 1 (docs/RAMPUP-DESIGN-SYSTEM.md) */
   :root{
-    /* Brand: study violet + correct green (data-backed via ui-ux-pro-max) */
-    --accent:#7c3aed; --accent-strong:#6d28d9; --accent-soft:#f2ecff; --on-accent:#ffffff;
+    /* Brand: study plum + correct green (data-backed via ui-ux-pro-max)
+       Palette V1 (ink-plum), matched to the marketing site 2026-08-14 — the
+       judge's read on the old violet was "#7c3aed is Tailwind violet-600,
+       the AI-wrapper tell". Mapping table (see rampup-web/assets/site.css):
+         7c3aed (accent)        -> 6d3fa0 (--violet)
+         6d28d9 (accent-strong) -> 5a2f86 (--violet-strong)
+         f2ecff (accent-soft)   -> f5eef9 (--violet-soft)
+         a78bfa (dark accent)   -> b48fc9 (--lav)
+       Values below with no site.css counterpart (dark accent-strong/soft/
+       on-accent, the 500/900 neighbors, the rgba shadow tints, the SVG
+       gradient) are DERIVED, not copied: same HSL offset / same blend-with-
+       background ratio the original violet dark tokens used relative to
+       their light tokens. Contrast re-verified ~2026-08-14, see below. */
+    --accent:#6d3fa0; --accent-strong:#5a2f86; --accent-soft:#f5eef9; --on-accent:#ffffff;
     --bg:#ffffff; --bg-glow:transparent;
     --card:#ffffff; --surface:#f8f6fd; --surface-2:#f1edfa;
     /* Contrast, measured 2026-08-13. --faint was #8b8799: 3.49:1 on white and
@@ -74,7 +86,19 @@
   /* Dark theme applies when data-theme="dark" is set on <html> (a tiny inline
      script below resolves the System/Light/Dark preference before first paint). */
   :root[data-theme="dark"]{
-      --accent:#a78bfa; --accent-strong:#c4b5fd; --accent-soft:#241c3a; --on-accent:#160f28;
+      /* Dark plum, derived off the light plum tokens the same way the old
+         violet dark block related to violet light:
+           --accent: a78bfa (violet-400) -> b48fc9 (--lav, site.css)
+           --accent-strong: c4b5fd (violet-300) is violet-400 shifted
+             (H-2.6, S+3.0, L+8.8); the same HSL shift applied to --lav
+             gives c7acd9 (was 10.6:1 on bg-dark, c7acd9 is 9.7:1)
+           --accent-soft: 241c3a is accent~15% blended into bg-dark
+             (#0c0a14); same 15% blend of --lav into bg-dark gives 261e30
+             (5.9:1 for --lav text on it, was 5.9:1 for a78bfa on 241c3a)
+           --on-accent: 160f28 is accent~13% blended into black; same blend
+             of --lav into black gives 18131b (6.7:1 against --lav bg,
+             was 6.8:1 against a78bfa) */
+      --accent:#b48fc9; --accent-strong:#c7acd9; --accent-soft:#261e30; --on-accent:#18131b;
       --bg:#0c0a14; --bg-glow:transparent;
       --card:#17141f; --surface:#1c1830; --surface-2:#241f38;
       --text:#eeecf6; --muted:#a7a2ba; --faint:#848098; --border:#2a2440; --border-strong:#372f52;
@@ -194,7 +218,7 @@
   .seg{display:inline-flex; gap:4px; background:var(--surface-2)}
   .seg button{border:none; border-radius:999px; background:transparent; padding:9px 13px; font:inherit; font-size:13px; font-weight:700; cursor:pointer; color:var(--muted); white-space:nowrap; transition:background var(--dur-fast), color var(--dur-fast)}
   .seg button:hover{color:var(--text); background:var(--surface)}
-  .seg button.on{background:var(--accent); color:var(--on-accent); box-shadow:0 2px 6px rgba(124,58,237,.30)}
+  .seg button.on{background:var(--accent); color:var(--on-accent); box-shadow:0 2px 6px rgba(109,63,160,.30)}
   .always-note{display:flex; gap:9px; align-items:flex-start; font-size:13px; color:var(--muted); background:var(--info-soft);
     border:1px solid var(--border); border-radius:var(--r-sm); padding:11px 13px; margin-top:8px}
   .always-note .ico{color:var(--info); font-size:17px; margin-top:1px}
@@ -214,8 +238,8 @@
     padding:12px 20px; cursor:pointer; border:1.5px solid transparent; transition:transform var(--dur-fast) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease); min-height:44px}
   .btn .ico{font-size:17px}
   .btn.primary{background:var(--accent); color:#fff; border-radius:var(--r-lg);
-    box-shadow:0 10px 22px rgba(124,58,237,.34), inset 0 2px 1px rgba(255,255,255,.30), inset 0 -3px 5px rgba(84,28,168,.28)}
-  .btn.primary:hover:not(:disabled){transform:translateY(-2px); box-shadow:0 14px 30px rgba(124,58,237,.42)}
+    box-shadow:0 10px 22px rgba(109,63,160,.34), inset 0 2px 1px rgba(255,255,255,.30), inset 0 -3px 5px rgba(67,35,100,.28)}
+  .btn.primary:hover:not(:disabled){transform:translateY(-2px); box-shadow:0 14px 30px rgba(109,63,160,.42)}
   .btn.primary:active:not(:disabled){transform:translateY(0) scale(.98)}
   .btn.ghost{background:var(--card); color:var(--muted); border-color:var(--border-strong)}
   .btn.ghost:hover:not(:disabled){color:var(--text); border-color:var(--accent); transform:translateY(-1px)}
@@ -272,7 +296,7 @@
   .pill.easy{background:var(--correct-soft); color:var(--correct)}
   .pill.medium{background:var(--warn-soft); color:var(--warn)}
   .pill.hard{background:var(--incorrect-soft); color:var(--incorrect)}
-  .pill.mcat{background:var(--accent); color:#fff; box-shadow:0 2px 8px rgba(124,58,237,.35); letter-spacing:.02em}
+  .pill.mcat{background:var(--accent); color:#fff; box-shadow:0 2px 8px rgba(109,63,160,.35); letter-spacing:.02em}
   .pill.review-flag{background:var(--warn-soft); color:var(--warn); border:1px solid color-mix(in srgb,var(--warn) 30%,transparent)}
   .pill.preview{background:var(--info-soft); color:var(--info)}
   .pill.tolearn{background:var(--accent-soft); color:var(--accent)}
@@ -341,7 +365,7 @@
   .srsnote{background:var(--surface); color:var(--muted)} .srsnote .ico{color:var(--accent)}
   .levelnote.up{background:var(--correct-soft); color:var(--correct)}
   .levelnote.down{background:var(--warn-soft); color:var(--warn)}
-  .levelnote.mcat{background:rgba(124,58,237,.12); color:var(--accent); border:1px solid rgba(124,58,237,.3)}
+  .levelnote.mcat{background:rgba(109,63,160,.12); color:var(--accent); border:1px solid rgba(109,63,160,.3)}
   .flagnote{display:flex; gap:8px; font-size:12.5px; color:var(--muted); margin-top:12px; font-style:italic}
   .qfoot{margin-top:22px; display:flex; justify-content:space-between; align-items:center; gap:10px}
   .kbdhint{display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; text-align:center; color:var(--faint); font-size:12px; margin-top:14px}
@@ -501,7 +525,10 @@
   .btn.sm{padding:8px 14px; font-size:13px; min-height:38px}
   .testcard.prem{position:relative}
   .testcard.prem.lockedpro{border-color:color-mix(in srgb,var(--accent) 34%,var(--border-strong))}
-  .testcard.prem .ti{background:color-mix(in srgb,#8b5cf6 12%,var(--card))}
+  /* #905db9 is the plum stand-in for violet-500 (#8b5cf6, no site.css
+     counterpart) — interpolated in HSL between --accent and dark --accent
+     at violet-500's fractional position between violet-600/violet-400 */
+  .testcard.prem .ti{background:color-mix(in srgb,#905db9 12%,var(--card))}
   .protag{display:inline-block; font-size:10px; font-weight:700; letter-spacing:.06em; color:#fff; background:#c026d3; padding:2px 7px; border-radius:var(--pill); vertical-align:middle; margin-left:6px}
   .tag.pro{color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 40%,transparent); background:color-mix(in srgb,var(--accent) 10%,var(--card)); font-weight:700}
   .paywall{text-align:center}
@@ -651,7 +678,7 @@
   .reveal-row .rv-s{font-weight:700; font-size:14.5px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
   .reveal-row .rv-t{font-size:11px; font-weight:700; letter-spacing:.05em; padding:3px 9px;
     border-radius:var(--pill); white-space:nowrap}
-  .rv-t.preview{color:#7c3aed; background:color-mix(in srgb,#8b5cf6 14%,var(--card))}
+  .rv-t.preview{color:#6d3fa0; background:color-mix(in srgb,#905db9 14%,var(--card))}
   .rv-t.easy{color:#0d9488; background:color-mix(in srgb,#0d9488 13%,var(--card))}
   .rv-t.medium{color:#0369a1; background:color-mix(in srgb,#0ea5e9 14%,var(--card))}
   .rv-t.hard{color:#b45309; background:color-mix(in srgb,#f59e0b 16%,var(--card))}
@@ -837,13 +864,13 @@
       font-family:Georgia,'Times New Roman',serif; line-height:1.45}
     @page{margin:16mm 14mm}
     html,body{background:#fff !important}
-    #printRoot .pr-brand{font-family:var(--font-display); font-weight:700; color:#6d28d9; font-size:15px; letter-spacing:-.01em}
+    #printRoot .pr-brand{font-family:var(--font-display); font-weight:700; color:#5a2f86; font-size:15px; letter-spacing:-.01em}
     #printRoot h1{font-size:25px; margin:6px 0 4px; font-family:var(--font-display)}
     #printRoot .pr-sub{color:#333; font-size:13px; margin:0 0 16px}
     #printRoot .pr-instr{font-size:12.5px; color:#222; line-height:1.55; margin:0 0 14px; padding-left:18px}
     #printRoot .pr-disc{font-size:10px; color:#666; border-top:1px solid #ccc; padding-top:8px; margin-top:10px}
     #printRoot .pr-cover{page-break-after:always}
-    #printRoot .pr-sec{font-size:16px; margin:0 0 2px; border-bottom:2px solid #6d28d9; padding-bottom:3px;
+    #printRoot .pr-sec{font-size:16px; margin:0 0 2px; border-bottom:2px solid #5a2f86; padding-bottom:3px;
       page-break-after:avoid; font-family:var(--font-display)}
     #printRoot .pr-secmeta{font-size:11px; color:#666; margin:0 0 11px}
     #printRoot .pr-passage{font-size:11.5px; line-height:1.5; background:#f5f4f8; border:1px solid #ddd;
@@ -855,7 +882,7 @@
     #printRoot .pr-let{font-weight:700; margin-right:4px}
     #printRoot .pr-key{page-break-before:always}
     #printRoot .pr-key h1{margin-bottom:8px}
-    #printRoot .pr-keysec{font-size:14px; margin:14px 0 4px; color:#6d28d9; font-family:var(--font-display)}
+    #printRoot .pr-keysec{font-size:14px; margin:14px 0 4px; color:#5a2f86; font-family:var(--font-display)}
     #printRoot .pr-ans{font-size:11px; line-height:1.45; margin:0 0 6px}
   }
   .cc-step{font-size:11px; font-weight:700; color:var(--faint); letter-spacing:.04em}
@@ -950,10 +977,13 @@
   :root[data-theme="dark"] .chip.xp{background:#2a2110; color:#fbbf24}
   .chip.lvl{background:var(--accent-soft); color:var(--accent); font-weight:700}
 
-  /* ---- Mascot (Rampy): inline SVG, expression via [data-mood] ---- */
-  .rampy{display:inline-block; line-height:0; filter:drop-shadow(0 6px 14px rgba(124,58,237,.28))}
+  /* ---- Mascot (Rampy): inline SVG, expression via [data-mood] ----
+     .body stroke #331c4a is the plum stand-in for violet-900 (#4c1d95, no
+     site.css counterpart) — same HSL offset violet-900 has from violet-700,
+     applied to --accent-strong. #rampyGrad below is --lav -> --accent. */
+  .rampy{display:inline-block; line-height:0; filter:drop-shadow(0 6px 14px rgba(109,63,160,.28))}
   .rampy svg{width:100%; height:100%; overflow:visible}
-  .rampy .body{fill:url(#rampyGrad); stroke:#4c1d95; stroke-width:3.5; paint-order:stroke}
+  .rampy .body{fill:url(#rampyGrad); stroke:#331c4a; stroke-width:3.5; paint-order:stroke}
   .rampy .eye-w{fill:#fff} .rampy .pupil{fill:#1b1030} .rampy .shine{fill:#fff}
   .rampy .mouth{fill:none; stroke:#1b1030; stroke-width:5; stroke-linecap:round}
   .rampy .cheek{fill:#f472b6; opacity:.5}
@@ -1293,7 +1323,7 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
   </div>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
     <linearGradient id="rampyGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/>
+      <stop offset="0" stop-color="#b48fc9"/><stop offset="1" stop-color="#6d3fa0"/>
     </linearGradient>
   </defs></svg>
 
