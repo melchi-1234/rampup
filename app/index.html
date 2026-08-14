@@ -1696,8 +1696,8 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
               <button class="btn ghost sm" id="syncSendBtn" type="button">Send code</button>
             </div>
             <div class="datepick" id="syncStepCode" hidden>
-              <input type="text" id="syncCode" placeholder="6-digit code" aria-label="Six-digit code from your email"
-                     autocomplete="one-time-code" inputmode="numeric" maxlength="6" pattern="[0-9]*">
+              <input type="text" id="syncCode" placeholder="Code from email" aria-label="Sign-in code from your email"
+                     autocomplete="one-time-code" inputmode="numeric" maxlength="10" pattern="[0-9]*">
               <button class="btn sm" id="syncVerifyBtn" type="button">Verify</button>
             </div>
             <div class="datepick" id="syncStepIn" hidden>
@@ -6750,7 +6750,7 @@ function syncDevices(prev){
 /* ---- auth: plain REST against GoTrue. Code entry, not magic-link redirect:
    a link tapped in Mail opens Safari, not the Capacitor app, and making it jump
    into the app needs Universal Links (an Apple entitlement + a re-provisioned
-   build). One email carries both; the app reads the 6 digits. ---- */
+   build). One email carries both; the app reads the numeric code. ---- */
 function syncHeaders(token){
   const h = { "apikey": SYNC_CONFIG.anonKey, "Content-Type": "application/json" };
   if (token) h["Authorization"] = "Bearer " + token;
@@ -7185,7 +7185,7 @@ async function syncSendCode(){
   try {
     await authSend(email);
     _syncUi.step = "code";
-    _syncUi.msg = "<span>Check your email for a 6-digit code, then enter it below.</span>";
+    _syncUi.msg = "<span>Check your email for a sign-in code, then enter it below.</span>";
   } catch(e){ _syncUi.msg = "<span>" + esc((e && e.message) || "Could not send the code.") + "</span>"; }
   _syncUi.busy = false; renderSyncCard();
   const c = document.getElementById("syncCode");
@@ -7194,8 +7194,8 @@ async function syncSendCode(){
 async function syncVerifyCode(){
   const el = document.getElementById("syncCode"); if (!el || _syncUi.busy) return;
   const code = String(el.value || "").replace(/\D/g, "");
-  if (code.length !== 6){
-    _syncUi.msg = "<span>Enter the 6-digit code from the email.</span>"; renderSyncCard(); el.focus(); return;
+  if (code.length < 6 || code.length > 10){
+    _syncUi.msg = "<span>Enter the code from the email.</span>"; renderSyncCard(); el.focus(); return;
   }
   _syncUi.busy = true; _syncUi.msg = "<span>Signing in…</span>"; renderSyncCard();
   try {
