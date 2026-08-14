@@ -953,8 +953,7 @@
   /* ---- Mascot (Rampy): inline SVG, expression via [data-mood] ---- */
   .rampy{display:inline-block; line-height:0; filter:drop-shadow(0 6px 14px rgba(124,58,237,.28))}
   .rampy svg{width:100%; height:100%; overflow:visible}
-  .rampy .body{fill:url(#rampyGrad); stroke:#472a86; stroke-width:3.5; paint-order:stroke}
-  .rampy .arm,.rampy .leg{fill:var(--accent); stroke:#472a86; stroke-width:3; paint-order:stroke}
+  .rampy .body{fill:url(#rampyGrad); stroke:#4c1d95; stroke-width:3.5; paint-order:stroke}
   .rampy .eye-w{fill:#fff} .rampy .pupil{fill:#1b1030} .rampy .shine{fill:#fff}
   .rampy .mouth{fill:none; stroke:#1b1030; stroke-width:5; stroke-linecap:round}
   .rampy .cheek{fill:#f472b6; opacity:.5}
@@ -964,7 +963,6 @@
   .rampy.bob{animation:rampyBob 2.6s ease-in-out infinite}
   .rampy.pop{animation:rampyPop .5s var(--spring)}
   .rampy.shake{animation:rampyShake .4s ease}
-  .rampy[data-mood="celebrate"] .arm{transform-origin:center; transform:rotate(0)}
   .zzz{fill:var(--muted); font-weight:700; font-family:inherit}
 
   /* ---- Home / launcher ---- */
@@ -6172,15 +6170,11 @@ function rampySvg(mood, cls){
     think: '<circle cx="60" cy="82" r="3.5" fill="#1b1030"/>'
   };
   const brows = m === "sad" ? '<path class="mouth" d="M32 40 Q40 36 48 40" stroke-width="4"/><path class="mouth" d="M72 40 Q80 36 88 40" stroke-width="4"/>' : "";
-  const arms = m === "celebrate"
-    ? '<ellipse class="arm" cx="13" cy="38" rx="7" ry="13" transform="rotate(35 13 38)"/><ellipse class="arm" cx="107" cy="38" rx="7" ry="13" transform="rotate(-35 107 38)"/>'
-    : '<ellipse class="arm" cx="13" cy="72" rx="6" ry="10" transform="rotate(18 13 72)"/><ellipse class="arm" cx="107" cy="72" rx="6" ry="10" transform="rotate(-18 107 72)"/>';
   const zzz = m === "sleep" ? '<text class="zzz" x="88" y="26" font-size="15">z</text><text class="zzz" x="98" y="16" font-size="11">z</text>' : "";
-  const cap = m === "grad" ? '<path d="M40 27 Q60 20 80 27 L80 33 Q60 40 40 33 Z" fill="#241a3d"/><path d="M60 13 L95 25 L60 37 L25 25 Z" fill="#1b1030"/><path d="M25 25 L60 37 L95 25 L95 27 L60 39.5 L25 27 Z" fill="#120a24"/><circle cx="60" cy="25" r="2.6" fill="#f59e0b"/><path d="M60 25 Q86 28 88 32 L88 45" fill="none" stroke="#f59e0b" stroke-width="2.6" stroke-linecap="round"/><path d="M84.6 45 h6.8 l-1.3 6.6 q-2.1 1.7 -4.2 0 z" fill="#f59e0b"/>' : "";
+  const cap = m === "grad" ? '<path d="M40 27 Q60 20 80 27 L80 33 Q60 40 40 33 Z" fill="#241a3d"/><path d="M60 13 L95 25 L60 37 L25 25 Z" fill="#1b1030"/><path d="M25 25 L60 37 L95 25 L95 27 L60 39.5 L25 27 Z" fill="#120a24"/><circle cx="60" cy="25" r="2.6" fill="#f472b6"/><path d="M60 25 Q86 28 88 32 L88 45" fill="none" stroke="#f472b6" stroke-width="2.6" stroke-linecap="round"/><path d="M84.6 45 h6.8 l-1.3 6.6 q-2.1 1.7 -4.2 0 z" fill="#f472b6"/>' : "";
+  // Rampy is a pure round blob: no arms, no legs, no feet.
   return `<span class="rampy ${cls || ""}" data-mood="${m}"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    ${arms}
     <path class="body" d="M60 12 C90 12 106 34 106 62 C106 92 86 110 60 110 C34 110 14 92 14 62 C14 34 30 12 60 12 Z"/>
-    <ellipse class="leg" cx="44" cy="109" rx="9" ry="5"/><ellipse class="leg" cx="76" cy="109" rx="9" ry="5"/>
     ${eyes}${brows}${mouths[m] || mouths.happy}
     <ellipse class="cheek" cx="29" cy="72" rx="6.5" ry="4.5"/><ellipse class="cheek" cx="91" cy="72" rx="6.5" ry="4.5"/>
     ${zzz}${cap}
