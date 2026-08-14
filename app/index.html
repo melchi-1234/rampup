@@ -87,6 +87,10 @@
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
+  ::view-transition-old(root){animation:vtOut 100ms var(--ease-exit) both}
+  ::view-transition-new(root){animation:vtIn var(--motion-state) var(--ease-standard) both}
+  @keyframes vtOut{to{opacity:0}}
+  @keyframes vtIn{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
   .stat .num,.tres .pct,.timer,.qn,.pv-time,#testTimer,.rc-score,.ws .n,.prog-pill,.pl-price{font-variant-numeric:tabular-nums}
   /* Premium entrance: list cards rise in with a light stagger whenever their
      view is shown ([hidden] toggles display, so the animation replays on every
@@ -445,6 +449,7 @@
     padding:10px 20px calc(22px + env(safe-area-inset-bottom,0px)); max-height:88dvh; overflow-y:auto;
     transform:translateY(100%); transition:transform var(--dur-slow) var(--spring)}
   #sheetRoot.in .sheet{transform:translateY(0)}
+  #sheetRoot:not(.in) .sheet{transition-duration:220ms}
   .sheet-grip{width:38px; height:4px; border-radius:3px; background:var(--border-strong); margin:6px auto 12px;
     cursor:grab; touch-action:none; position:relative}
   .pdfbtn.exrev{right:132px}
@@ -681,7 +686,7 @@
   .pv{--pv-bar:#1f5c99; --pv-bar-text:#ffffff; --pv-line:#c9d4e0; --pv-body:#ffffff; --pv-text:#111418;
     position:fixed; inset:0; z-index:8000; background:var(--pv-body); color:var(--pv-text);
     display:flex; flex-direction:column; font-family:Verdana,Arial,Helvetica,sans-serif}
-  .pv *{box-sizing:border-box}
+  .pv *{box-sizing:border-box; transition:none !important; animation:none !important}
   .pv-top{background:var(--pv-bar); color:var(--pv-bar-text); display:flex; align-items:center;
     gap:14px; padding:8px 14px; font-size:13px; font-weight:700; flex:0 0 auto}
   .pv-top .pv-title{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
@@ -5684,6 +5689,7 @@ function _sheetTrap(e){
     e.preventDefault(); first.focus({ preventScroll:true });
   }
 }
+const SHEET_OUT_MS = 220;   // exits are ~15% faster than entries (§3, exit-faster rule)
 let _sheetCloseTimer = null;
 function closeSheet(){
   const root = $("#sheetRoot"); root.classList.remove("in");
@@ -5695,7 +5701,7 @@ function closeSheet(){
     if (root.classList.contains("in")) return;   // re-opened during the fade — leave it alone
     root.hidden = true; root.setAttribute("aria-hidden","true"); $("#sheetBody").innerHTML = "";
     if (_sheetPrevFocus){ try { _sheetPrevFocus.focus({ preventScroll:true }); } catch(e){} } };
-  if (REDUCED_MOTION) done(); else _sheetCloseTimer = setTimeout(done, 260);
+  if (REDUCED_MOTION) done(); else _sheetCloseTimer = setTimeout(done, SHEET_OUT_MS);
 }
 function xpFloat(amount, el){
   if (REDUCED_MOTION) return;
@@ -9616,12 +9622,20 @@ function stopAllExplainers(){
 }
 function switchView(view, renderFn, elId){
   stopAllExplainers();
-  state.view = view;
-  if (renderFn) renderFn();
-  hideViews(); const el = $("#"+elId); el.hidden = false; syncChrome();
-  window.scrollTo({ top:0 });
-  el.setAttribute("tabindex", "-1");
-  try { el.focus({ preventScroll:true }); } catch(e){}
+  const apply = () => {
+    state.view = view;
+    if (renderFn) renderFn();
+    hideViews(); const el = $("#"+elId); el.hidden = false; syncChrome();
+    window.scrollTo({ top:0 });                    // reset happens under the fade
+    el.setAttribute("tabindex", "-1");
+    try { el.focus({ preventScroll:true }); } catch(e){}
+  };
+  /* Cross-dissolve with a settle (design system §4.1): tabs are peers, so no
+     lateral slide. Native View Transitions where present; a cut otherwise. */
+  if (!REDUCED_MOTION && document.startViewTransition && !state.test){
+    try { document.startViewTransition(apply); return; } catch(e){}
+  }
+  apply();
 }
 function showHome(){ state.session = null; switchView("home", renderHome, "homeView"); updateTopbar(); }
 function showTests(){ state.test = null; stopTestTimer(); switchView("tests", renderTestHub, "testsView"); }
