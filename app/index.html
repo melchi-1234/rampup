@@ -422,6 +422,7 @@
   #rampyFab .rampy{width:40px; height:40px; display:block; line-height:0}
   #rampyFab[hidden]{display:none}
   @keyframes fabBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  #rampyFab.asleep{animation:none; opacity:.75}
   body:has(#sheetRoot:not([hidden])) #rampyFab{display:none}
   #rampyBubble{position:fixed; right:14px; bottom:calc(140px + env(safe-area-inset-bottom, 0px)); z-index:9000;
     max-width:230px; background:var(--card); border:1.5px solid var(--border-strong); border-radius:16px 16px 4px 16px;
@@ -7234,13 +7235,23 @@ function ensureRampyFab(){
     fab = document.createElement("button");
     fab.id = "rampyFab"; fab.setAttribute("aria-label", "Ask Rampy");
     fab.innerHTML = rampySvg("happy");
-    fab.addEventListener("click", () => { hideRampyBubble(); openRampyGeneral(); });
+    fab.addEventListener("click", () => {
+      if (fab.dataset.mode === "sleep"){ toast("Rampy sleeps during scored sections. See you at review."); return; }
+      hideRampyBubble(); openRampyGeneral();
+    });
     document.body.appendChild(fab);
   }
-  const ok = (typeof access === "function" && access("rampy")) && !state.test
-          && ["home","practice","lessons","tests"].indexOf(state.view) !== -1;
+  const inTest = !!state.test && state.view === "testrun";
+  const ok = (typeof access === "function" && access("rampy"))
+          && (inTest || ["home","practice","lessons","tests"].indexOf(state.view) !== -1);
   fab.hidden = !ok;
-  if (ok && !_fabBubbleShown) scheduleRampyBubble();
+  /* During a scored section Rampy is ASLEEP, visibly: tutoring stays off (the
+     worker refuses exam-mode too), but the character keeps integrity charming
+     instead of vanishing. */
+  fab.classList.toggle("asleep", inTest);
+  fab.innerHTML = rampySvg(inTest ? "sleep" : "happy");
+  fab.dataset.mode = inTest ? "sleep" : "awake";
+  if (ok && !inTest && !_fabBubbleShown) scheduleRampyBubble();
 }
 function scheduleRampyBubble(){
   _fabBubbleShown = true;
