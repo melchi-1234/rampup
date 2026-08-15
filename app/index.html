@@ -1702,6 +1702,7 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
             </div>
             <div class="datepick" id="syncStepIn" hidden>
               <button class="btn ghost sm" id="syncOutBtn" type="button">Sign out</button>
+              <button class="btn ghost sm danger" id="syncDeleteBtn" type="button">Delete account</button>
             </div>
           </div>
         </div>
@@ -6651,6 +6652,13 @@ const SYNC_DEVICE_CAP  = 5;
    localStorage key (ENT_KEY) precisely so a progress reset never wipes
    purchases, and serialize() deliberately omits them. So the envelope carries
    two things and keeps them apart on the way back down. */
+/* Sign-in works on BOTH web and iOS (cross-platform accounts): a web subscriber
+   signs in on the app and their subscription is honored, and an iOS subscriber
+   signs in on the web and theirs is too. In-app account deletion (App Store
+   5.1.1(v)) ships alongside this. isNativeApp() stays for the code-vs-link nuance
+   (native reads the typed code; the magic link opens Safari, which needs Universal
+   Links to bounce back into the app). */
+function isNativeApp(){ try { return !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform()); } catch(e){ return false; } }
 function syncEnabled(){ return !!(SYNC_CONFIG.url && SYNC_CONFIG.anonKey) && STORAGE_OK; }
 
 /* ---- tiny defensive readers. A blob off the network is untrusted input. ---- */
@@ -7208,6 +7216,29 @@ async function syncVerifyCode(){
   }
   _syncUi.busy = false; renderSyncCard();
 }
+/* Account deletion — App Store 5.1.1(v) requires it in-app once accounts exist.
+   Calls a SECURITY DEFINER Supabase function (delete_own_account) that removes the
+   caller's progress row and their auth user in one shot. The subscription is billed
+   elsewhere (Apple or Stripe) and is NOT cancelled here — the confirm text says so.
+   Local device progress is deliberately left alone. */
+async function authDeleteAccount(){
+  if (!syncEnabled()) return false;
+  const t = await syncToken(); if (!t) return false;
+  const res = await fetch(SYNC_CONFIG.url + "/rest/v1/rpc/delete_own_account", { method:"POST", headers: syncHeaders(t) });
+  return res.ok || res.status === 204;
+}
+async function syncDeleteAccountClick(){
+  if (!syncSession() || _syncUi.busy) return;
+  if (!window.confirm("Delete your RampUp account?\n\nThis permanently removes your account and your synced progress from our server. It does NOT cancel your subscription — cancel that separately if you don't want to keep paying. Your progress on this device stays. This cannot be undone.")) return;
+  _syncUi.busy = true; _syncUi.msg = "<span>Deleting your account…</span>"; renderSyncCard();
+  let ok = false; try { ok = await authDeleteAccount(); } catch(e){}
+  if (!ok){ _syncUi.busy = false; _syncUi.msg = "<span>Could not delete the account. Try again, or email us.</span>"; renderSyncCard(); return; }
+  syncSignOut();
+  if (_syncTimer){ clearTimeout(_syncTimer); _syncTimer = null; }
+  _syncDirty = false; _syncPullWanted = false;
+  _syncUi = { step:"email", email:"", busy:false, msg:"<span>Account deleted. Your progress on this device is untouched.</span>" };
+  renderSyncCard();
+}
 function syncSignOutClick(){
   syncSignOut();
   if (_syncTimer){ clearTimeout(_syncTimer); _syncTimer = null; }
@@ -7460,7 +7491,7 @@ function centsPerQ(sku){
    behaves EXACTLY as it does today (everything open) — so this whole layer can
    land, be reviewed and be shipped without changing a single user's experience,
    and the gate is one constant away in either direction. */
-const PAID_LAUNCH = false;
+const PAID_LAUNCH = true;
 
 const TRANSITION_DAYS = 30;   // D-005; set to 0 to disable the courtesy period entirely
 const OFFLINE_GRACE_DAYS = 7; /* How long a known-good subscription keeps working with no
@@ -7930,6 +7961,7 @@ function applySubscriptionStatus(s, authoritative){
   const had = subActive();
   if (!s || !s.productId){
     if (authoritative === false && ent.sub) return false;   // unknown, not revoked
+    if (ent.sub && ent.sub.sid) return false;               // a web/Stripe sub (has a checkout session) — StoreKit is NOT authoritative over it and may not revoke it
     clearSubscription();
     return had !== subActive();
   }
@@ -13771,6 +13803,7 @@ $("#resetBtn").addEventListener("click", resetAll);
 { const b = $("#syncSendBtn");   if (b) b.addEventListener("click", syncSendCode); }
 { const b = $("#syncVerifyBtn"); if (b) b.addEventListener("click", syncVerifyCode); }
 { const b = $("#syncOutBtn");    if (b) b.addEventListener("click", syncSignOutClick); }
+{ const b = $("#syncDeleteBtn"); if (b) b.addEventListener("click", syncDeleteAccountClick); }
 { const e = $("#syncEmail");     if (e) e.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); syncSendCode(); } }); }
 { const c = $("#syncCode");      if (c) c.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); syncVerifyCode(); } }); }
 
