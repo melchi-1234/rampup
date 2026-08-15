@@ -7216,15 +7216,58 @@ function syncSignOutClick(){
               msg:"<span>Signed out. Your progress is still here on this device.</span>" };
   renderSyncCard();
 }
+/* ---- magic-link return (WEB only). Supabase's emailed "Sign in" link verifies at
+   GoTrue and redirects to the Site URL with the session in the URL FRAGMENT
+   (#access_token=…&refresh_token=…). A tapped link opens the website, not the
+   Capacitor app (that would need Universal Links), so only the web build ever lands
+   here. The redirect carries no user object, so the user id + email come from the
+   access token's own JWT claims — `sub` is exactly the user_id the row is keyed by. */
+function _syncJwtClaims(jwt){
+  try {
+    let b = String(jwt).split(".")[1] || ""; b = b.replace(/-/g, "+").replace(/_/g, "/");
+    while (b.length % 4) b += "=";
+    const bin = atob(b); let pct = "";
+    for (let i = 0; i < bin.length; i++) pct += "%" + ("00" + bin.charCodeAt(i).toString(16)).slice(-2);
+    return JSON.parse(decodeURIComponent(pct)) || {};
+  } catch(e){ return {}; }
+}
+function syncConsumeMagicLink(){
+  if (!syncEnabled()) return false;
+  const h = String(location.hash || "");
+  if (h.indexOf("access_token=") < 0 && h.indexOf("error") < 0) return false;
+  const p = new URLSearchParams(h.replace(/^#/, ""));
+  // Always scrub the fragment first: tokens must never linger in history or replay on refresh.
+  try { history.replaceState(null, "", location.pathname + location.search); } catch(e){}
+  const access = p.get("access_token"), refresh = p.get("refresh_token");
+  if (!access || !refresh){
+    const err = p.get("error_description") || p.get("error");
+    if (err) toast(String(err));
+    return false;
+  }
+  const claims = _syncJwtClaims(access);
+  const s = syncSetSession({
+    access_token: access, refresh_token: refresh,
+    expires_at: Number(p.get("expires_at")) || 0,
+    expires_in: Number(p.get("expires_in")) || 3600,
+    user: { id: claims.sub, email: claims.email }
+  });
+  if (!s){ toast("Could not finish sign-in — enter the code from the email instead."); return false; }
+  _syncUi = { step: "email", email: "", busy: false, msg: "" };
+  toast("Signed in — syncing your progress.");
+  return true;
+}
+
 /* Registered once at boot, and only in a build that has a project to talk to. */
 function syncInit(){
   if (!syncEnabled()) return;
+  const linked = syncConsumeMagicLink();   // emailed "Sign in" link → establish the session (web)
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") syncFlush(); else syncPullNow();
   });
   // iOS Safari does not reliably fire visibilitychange on app suspend.
   window.addEventListener("pagehide", () => { syncFlush(); });
   syncPullNow();
+  if (linked) syncRepaint();
 }
 
 /* ============================================================
