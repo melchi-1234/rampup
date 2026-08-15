@@ -4,13 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>RampUp — Privacy Policy</title>
-<meta name="description" content="What RampUp collects, what leaves your device, and what does not. No tracking, no ads; an optional email sign-in only if you turn on cross-device sync." />
+<meta name="description" content="What RampUp collects, what leaves your device, and what does not. No tracking or ads; your email account carries your subscription and study progress across devices." />
 <link rel="canonical" href="https://rampupmcat.com/privacy.html" />
 <meta name="theme-color" content="#7c3aed" />
 <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/site.css" />
 </head>
 <body>
@@ -21,43 +18,41 @@
 
 <div class="doc">
   <h1>Privacy Policy</h1>
-  <p class="updated">Last updated: 14 August 2026</p>
+  <p class="updated">Last updated: 15 August 2026</p>
 
-  <p><strong>Short version: no tracking, no ads, and no account unless you want one.
-  Your progress stays on your device by default. Two things reach the internet, and
-  each only if you choose it: Rampy, the in-app tutor, when you tap it; and optional
-  sync, if you sign in with your email to carry your progress between devices.</strong></p>
+  <p><strong>Short version: no tracking and no ads. RampUp uses an email account so
+  your subscription and study progress work on the website and iPhone. Rampy, the
+  in-app tutor, also reaches the internet when you ask it a question.</strong></p>
 
   <h2>What we collect</h2>
-  <p>By default, no personal information at all. RampUp works with no account, no
-  sign-up and no login. We do not sell or share anything, and there are no advertising
+  <p>RampUp receives your email address so we can send your sign-in code and connect
+  your subscription and study progress to your account. We also store that synced study
+  progress, including answers, levels, streaks, review state, bookmarks and exam scores.
+  We do not sell or share this information for advertising, and there are no advertising
   or analytics SDKs in RampUp.</p>
-  <p>The one exception is optional sync. If you choose to sign in, we receive your
-  email address — so we can send your sign-in code and store your progress under your
-  account. That is the only personal information RampUp ever collects, and only if you
-  turn sync on. We never receive your name, phone number, location, contacts, or
-  advertising identifier, because RampUp never asks for them.</p>
+  <p>We never receive your phone number, location, contacts, or advertising identifier,
+  because RampUp never asks for them. The first name entered during website onboarding
+  is used only to personalize that setup and remains in that browser.</p>
 
   <h2>What stays on your device</h2>
-  <p>Everything, except the Rampy requests and — if you turn it on — optional sync,
-  both described below. Specifically: all practice questions, all exam questions, every
+  <p>All practice questions, all exam questions, every
   concept lesson and every narrated explanation are stored in the app itself. Your
-  answers, progress, streak, daily goal, review schedule, bookmarks, exam scores, your
-  starting levels and your daily plan are kept in local storage on the device you are
-  using, are not transmitted unless you turn on sync, and are erased if you clear your
-  browser data, delete the app, or use “Reset everything” in Settings.</p>
+  answers, progress, streak, daily goal, review schedule, bookmarks, exam scores,
+  starting levels and daily plan are also kept locally so RampUp continues to work
+  offline. A copy of that study progress is synced to your account as described below.
+  Clearing browser data or deleting the app removes the local copy from that device.</p>
   <p>The same is true of the onboarding on this website. Your coursework answers and
   the levels calculated from them are stored in your browser and are not sent anywhere.</p>
 
-  <h2>Progress sync (optional)</h2>
-  <p>Sync is off unless you turn it on. If you sign in with your email in Settings, two
-  things are then stored on our side: your email address, and your study progress (the
-  same stats, streak, review pile and bookmarks described above). They are kept in our
+  <h2>Account and progress sync</h2>
+  <p>When you create or use your RampUp account, two things are stored on our side:
+  your email address, and your study progress (the same stats, streak, review pile and
+  bookmarks described above). They are kept in our
   database — Supabase, hosted in the United States — so your other devices can load them
   when you sign in there too.</p>
   <p>Your sign-in codes are delivered by email through Resend. Signing out on a device
   stops that device syncing and leaves your local progress untouched. Deleting your
-  account removes the synced copy from our database. Sync changes nothing else: no
+  account removes the account and synced copy from our database. Sync changes nothing else: no
   tracking, no ads, and we never sell your data. Your questions to Rampy and your
   reading passages are never part of sync.</p>
 
@@ -103,7 +98,8 @@
   needed to take payment and are the controller of that information under their own
   privacy policy. After you pay, RampUp sends only the checkout session ID from your
   return link to our verification endpoint, which asks Stripe whether that session was
-  actually paid. We store nothing from that exchange except the unlock, on your device.</p>
+  actually paid. The verified subscription status is then saved to your RampUp account
+  so it can unlock your other devices.</p>
 
   <h2>Third parties in the path</h2>
   <ul>
@@ -111,11 +107,10 @@
     host, sees the request including the originating IP address.</li>
     <li><strong>Anthropic</strong> receives the Rampy prompt and returns the answer.</li>
     <li><strong>Stripe</strong> processes web payments.</li>
-    <li><strong>Supabase</strong> stores your account and your synced progress, and only
-    if you turn on sync. It is our database and authentication provider, hosted in the
+    <li><strong>Supabase</strong> stores your account and synced progress. It is our
+    database and authentication provider, hosted in the
     United States.</li>
-    <li><strong>Resend</strong> delivers your sign-in code emails, and only if you turn
-    on sync.</li>
+    <li><strong>Resend</strong> delivers your sign-in code emails.</li>
     <li><strong>GitHub Pages</strong> serves this website and, like any web host,
     records ordinary server logs. We use those only as aggregate traffic counts and
     they are not linked to anything you do in the app.</li>
@@ -125,19 +120,15 @@
 
   <h2>Children</h2>
   <p>RampUp is study material for a graduate-school admissions test and is not directed
-  at children. Aside from optional sync, it collects no personal information from
-  anyone, including children.</p>
+  at children.</p>
 
   <h2>Your choices</h2>
-  <p>If you have not turned on sync, we hold no personal information about you, so there
-  is nothing for us to export or delete on request. You control your own data directly:
-  “Reset everything” in Settings erases your progress, and clearing your browser data or
-  deleting the app removes it entirely. If you want a copy of what is stored, it is all
-  in your device's local storage.</p>
-  <p>If you have turned on sync, your email address and your synced progress are held
-  under your account. Signing out stops syncing and leaves your device untouched. To
-  remove the stored copy entirely, email us at the address below and we will delete your
-  account and its synced row.</p>
+  <p>Your email address and synced progress are held under your account. Signing out
+  stops that device syncing and leaves its local progress untouched. To remove the
+  account and server copy, use <strong>Delete account</strong> in Settings. Account
+  deletion does not cancel an Apple or Stripe subscription, which must be cancelled
+  separately through the store that billed it. “Reset everything” erases local progress
+  from the current device.</p>
 
   <h2>Changes</h2>
   <p>If this policy changes, the updated version is posted at this URL with a new

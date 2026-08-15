@@ -62,6 +62,14 @@
   ];
 
   var TRIAL_DAYS = 7;
+  var SESSION_KEY = "rampup_sync_session";
+
+  function signedIn() {
+    try {
+      var s = JSON.parse(global.localStorage.getItem(SESSION_KEY) || "null");
+      return !!(s && s.access_token && s.refresh_token && s.user_id);
+    } catch (e) { return false; }
+  }
 
   function linkFor(key) { return (LINKS[key] || "").trim(); }
   function isLive() { return PLANS.some(function (p) { return linkFor(p.key); }); }
@@ -80,6 +88,14 @@
   function startCheckout(key) {
     var url = linkFor(key);
     if (!url) return false;
+    /* The personalized funnel deliberately comes before account creation, but
+       payment never does. Keep the chosen plan in the URL while the shared app
+       runs the existing email-code account flow on the same origin. */
+    if (!signedIn()) {
+      try { global.RU && global.RU.track && global.RU.track("account_required", { plan: key }); } catch (e) {}
+      global.location.href = "/app/?signup=1&checkout=" + encodeURIComponent(key);
+      return true;
+    }
     try { global.RU && global.RU.track && global.RU.track("checkout_started", { plan: key }); } catch (e) {}
     global.location.href = url;
     return true;
@@ -87,6 +103,6 @@
 
   global.RUBilling = {
     PLANS: PLANS, TRIAL_DAYS: TRIAL_DAYS, buyablePlans: buyablePlans,
-    isLive: isLive, linkFor: linkFor, planByKey: planByKey, startCheckout: startCheckout
+    isLive: isLive, linkFor: linkFor, planByKey: planByKey, signedIn: signedIn, startCheckout: startCheckout
   };
 })(window);

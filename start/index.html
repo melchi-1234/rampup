@@ -4,15 +4,12 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Start your RampUp — see your levels in two minutes</title>
-<meta name="description" content="Answer a few questions about your coursework and see a real starting level for every MCAT subject, plus your first day's plan. No account, no card." />
+<meta name="description" content="Answer a few questions about your coursework and see a real starting level for every MCAT subject, plus your first day's plan. No card required to see your levels." />
 <meta name="robots" content="noindex" />
 <link rel="canonical" href="https://rampupmcat.com/start/" />
 <meta name="theme-color" content="#7c3aed" />
 <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" />
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/site.css" />
 <style>
   body{background:var(--wash)}
@@ -370,8 +367,7 @@
     view.innerHTML =
       '<div class="panel">' + stepArt("name") +
       '<h1>First things first — what should we call you?</h1>' +
-      '<p class="sub">Just a first name. It stays on this device and is never sent anywhere ' +
-      '&mdash; there is no account to put it in.</p>' +
+      '<p class="sub">Just a first name, used to personalize the plan you are about to build.</p>' +
       '<input class="dateinput" id="nameIn" type="text" autocomplete="given-name" ' +
       'placeholder="Your first name" maxlength="40" value="' + esc(S.name) + '" />' +
       '<p class="err" id="err"></p>' +
@@ -854,7 +850,7 @@
     h += '</div>';
 
     h += '<ul class="incl" style="margin-top:20px">' +
-      '<li>1,786 practice questions, 427 at MCAT level</li>' +
+      '<li>2,500+ practice and exam questions</li>' +
       '<li>Your ' + esc(String(goal)) + '-question daily plan, rebuilt every day</li>' +
       '<li>Concept lessons before anything new to you</li>' +
       '<li>132 narrated walkthroughs</li>' +
@@ -875,7 +871,7 @@
       ["Score 511+ or every dollar back", "A guarantee tied to a specific 511+ number is rare at any price"],
       ["Starting level set per subject, from your own answers", "One syllabus, one pace for every student"],
       ["Daily plan rebuilt each day from what you missed", "A schedule fixed at enrollment"],
-      ["1,786 questions, every answer choice explained", "Per-choice explanations are not a given"],
+      ["2,500+ practice and exam questions", "Per-choice explanations are not a given"],
       ["Rampy on every question, the moment you are stuck", "Help runs on the course\u2019s timetable"],
       ["Cancel any time, in one click", "Refund windows vary by provider"]
     ];
@@ -901,7 +897,7 @@
       h += '<p class="tiny" style="text-align:center;margin:14px 0 0">' +
         'Day 1: everything unlocks. Day 7: first charge &mdash; cancel in one click before then and you pay nothing.</p>';
     }
-    h += '<p class="reassure">Full access on both &middot; Cancel any time &middot; No account needed</p>';
+    h += '<p class="reassure">Full access on web and iPhone &middot; Cancel any time &middot; Account created before checkout</p>';
 
     if (live) {
       h += '<div class="actions" style="margin-top:14px"><button class="btn btn-primary btn-lg btn-block" id="buy" type="button">Start my 7 days free <span class="arw">&rarr;</span></button></div>' +
