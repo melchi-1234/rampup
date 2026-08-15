@@ -45,9 +45,13 @@
   the levels calculated from them are stored in your browser and are not sent anywhere.</p>
 
   <h2>Account and progress sync</h2>
-  <p>When you create or use your RampUp account, two things are stored on our side:
-  your email address, and your study progress (the same stats, streak, review pile and
-  bookmarks described above). They are kept in our
+  <p>When you create or use your RampUp account, we store your email address, account
+  identifier, study progress (the same stats, streak, review pile and bookmarks described
+  above), and the subscription status that controls your access. Sync also keeps a small
+  set of random installation identifiers so recent updates from your signed-in devices can
+  be merged without an older copy overwriting newer progress. For web subscriptions, the
+  access record can include the Stripe checkout-session identifier and verified plan,
+  status and expiration date; it never includes card details. These records are kept in our
   database — Supabase, hosted in the United States — so your other devices can load them
   when you sign in there too.</p>
   <p>Your sign-in codes are delivered by email through Resend. Signing out on a device
