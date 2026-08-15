@@ -576,7 +576,7 @@
   #guarCard .card{margin-bottom:18px}
   #guarCard h2{font-size:22px}
   #guarCard .g-eyebrow{display:block; font-size:11px; font-weight:700; letter-spacing:.08em; color:var(--accent); margin-bottom:2px}
-  .sheet-x{position:absolute; top:10px; right:12px; width:34px; height:34px; border-radius:50%;
+  .sheet-x{position:absolute; top:6px; right:8px; width:44px; height:44px; border-radius:50%;
     border:1px solid var(--border); background:var(--card); color:var(--muted); font-size:14px;
     line-height:1; cursor:pointer; display:grid; place-items:center; z-index:2}
   .sheet-x:hover{color:var(--text); border-color:var(--border-strong)}
@@ -1499,6 +1499,8 @@
   .auth-gate .datepick .btn{flex:0 0 auto}
   .auth-gate .storage-status{display:block; min-height:24px; margin:10px 0 0}
   .auth-gate .auth-note{font-size:12.5px; color:var(--faint); margin:16px 0 0; line-height:1.55}
+  .auth-gate .auth-back{min-width:44px; min-height:44px; margin:-12px 0 6px -8px; padding:8px;
+    display:inline-flex; align-items:center; justify-content:center}
   @media(max-width:480px){
     .auth-gate .card{padding:22px 18px}
     .auth-gate .datepick{align-items:stretch}
@@ -1584,6 +1586,7 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
     <div class="ob-head"><div class="brand"><span class="logo"></span> RampUp</div></div>
     <div class="ob-body">
       <div class="card">
+        <button class="linkbtn auth-back" id="authGateBack" type="button" hidden>&larr; Back</button>
         <h2 id="authGateTitle">Log in to RampUp</h2>
         <p class="sub" id="authGateSub">Use the email connected to your progress or subscription. No password needed.</p>
         <div class="datepick" id="authGateEmailStep">
@@ -7206,16 +7209,37 @@ function renderAuthGate(){
 function showAuthGate(intent){
   const gate = document.getElementById("authGate"); if (!gate) return;
   const signup = intent === "signup";
-  const title = document.getElementById("authGateTitle"), sub = document.getElementById("authGateSub");
+  const title = document.getElementById("authGateTitle"), sub = document.getElementById("authGateSub"), back = document.getElementById("authGateBack");
   if (title) title.textContent = signup ? "Create your RampUp account" : "Log in to RampUp";
   if (sub) sub.textContent = signup
     ? "Save the plan you just built, then start your trial. One account unlocks RampUp on the website and iPhone."
     : "Use the email connected to your progress or subscription. No password needed.";
+  if (back) back.hidden = signup;
   gate.hidden = false;
   const w = document.getElementById("welcome"), o = document.getElementById("onboarding"), m = document.getElementById("main");
   if (w) w.hidden = true; if (o) o.hidden = true; if (m) m.hidden = true;
   renderAuthGate();
   setTimeout(() => { const e = document.getElementById("authGateEmail"); if (e) e.focus(); }, 0);
+}
+function leaveAuthGate(){
+  if (_authGateUi.busy) return;
+  const gate = document.getElementById("authGate"), onboarding = document.getElementById("onboarding");
+  if (gate) gate.hidden = true;
+  if (onboarding) onboarding.hidden = false;
+  const welcome = document.getElementById("welcome"), main = document.getElementById("main");
+  if (welcome) welcome.hidden = true;
+  if (main) main.hidden = true;
+  _accountEntry = "";
+  _authGateUi = { step:"email", email:"", msg:"", busy:false };
+  const email = document.getElementById("authGateEmail"), code = document.getElementById("authGateCode");
+  if (email) email.value = "";
+  if (code) code.value = "";
+  try {
+    const url = new URL(location.href);
+    url.searchParams.delete("login");
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+  } catch(e){}
+  goToStep(0);
 }
 async function authGateSendCode(){
   const el = document.getElementById("authGateEmail"); if (!el || _authGateUi.busy) return;
@@ -13985,6 +14009,7 @@ $("#resetBtn").addEventListener("click", resetAll);
 { const c = $("#syncCode");      if (c) c.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); syncVerifyCode(); } }); }
 { const b = $("#authGateSend");   if (b) b.addEventListener("click", authGateSendCode); }
 { const b = $("#authGateVerify"); if (b) b.addEventListener("click", authGateVerifyCode); }
+{ const b = $("#authGateBack");   if (b) b.addEventListener("click", leaveAuthGate); }
 { const e = $("#authGateEmail");  if (e) e.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); authGateSendCode(); } }); }
 { const c = $("#authGateCode");   if (c) c.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); authGateVerifyCode(); } }); }
 { const b = $("#onboardingLogin"); if (b) b.addEventListener("click", () => {
