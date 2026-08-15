@@ -7904,12 +7904,10 @@ const StubProvider = {
 // Stripe (web): real Payment Links. A completed payment redirects back with a
 // session_id, which is verified server-side (VERIFY_ENDPOINT) before anything unlocks.
 const STRIPE_LINKS = {
-  pro:          "https://buy.stripe.com/8x23cwghye6l97WdnMdIA06",
-  short_bundle: "https://buy.stripe.com/4gM3cwe9qd2h4RGerQdIA01",
-  hx1:          "https://buy.stripe.com/8x214o8P61jzck8erQdIA02",
-  hx2:          "https://buy.stripe.com/8x23cw2qIbYddoc97wdIA03",
-  fx1:          "https://buy.stripe.com/eVqdRa6GY5zPfwkerQdIA04",
-  fx2:          "https://buy.stripe.com/14A4gA2qIbYdbg45VkdIA05"
+  // The subscription is the only thing sold now (à-la-carte Pro + exam packs retired).
+  // These are the SAME Payment Links the marketing funnel uses (rampup-web/assets/billing.js).
+  sub_monthly:   "https://buy.stripe.com/bJe00k0iA8M183SbfEdIA07",
+  sub_quarterly: "https://buy.stripe.com/8x26oI8P6get83S2J8dIA08"
 };
 // Cloudflare Worker that verifies a Stripe checkout session before unlocking.
 // Empty => web checkout stays "coming soon" (never take money we cannot verify).
