@@ -8117,6 +8117,18 @@ function applyOwnedProductIds(owned){
   return n;
 }
 
+/* Subscription fields that matter to another signed-in device. checkedAt and
+   revalidatedAt are local freshness bookkeeping, so they do not turn every
+   foreground check into an account write. */
+function subscriptionSyncFingerprint(s){
+  if (!s || typeof s !== "object") return "";
+  return JSON.stringify({
+    key:s.key || null, productId:s.productId || null, expires:s.expires || null,
+    willRenew:!!s.willRenew, trial:!!s.trial, state:s.state || null,
+    source:s.source || null, sid:s.sid || null
+  });
+}
+
 /* Subscription status straight from StoreKit. `s` is null when nothing is
    subscribed, which must CLEAR any stored subscription — a cancellation that
    only ever adds and never removes is a subscription nobody can leave. */
@@ -8124,12 +8136,12 @@ function applyOwnedProductIds(owned){
    same as "this person has no subscription". Only the former may leave an
    existing record alone; only the latter may delete it. */
 function applySubscriptionStatus(s, authoritative){
-  const had = subActive();
+  const before = subscriptionSyncFingerprint(ent.sub);
   if (!s || !s.productId){
     if (authoritative === false && ent.sub) return false;   // unknown, not revoked
     if (ent.sub && (ent.sub.source === "stripe" || ent.sub.sid)) return false; // StoreKit is not authoritative over Stripe
     clearSubscription();
-    return had !== subActive();
+    return before !== subscriptionSyncFingerprint(ent.sub);
   }
   const rev = {}; Object.keys(PRODUCTS).forEach(k => { rev[PRODUCTS[k]] = k; });
   grantSubscription({
@@ -8141,7 +8153,19 @@ function applySubscriptionStatus(s, authoritative){
     state: s.state || "subscribed",
     source: "apple"
   });
-  return had !== subActive();
+  return before !== subscriptionSyncFingerprint(ent.sub);
+}
+
+/* A provider-verified change is both a UI event and an account event. This is
+   what carries renewals, trial conversions and revocations to the learner's
+   other signed-in browsers instead of waiting for the next answered question. */
+function publishVerifiedEntitlementChange(changed){
+  if (!changed) return;
+  refreshAfterEntitlement();
+  if (syncReady()){
+    _syncDirty = true;
+    syncPushNow();
+  }
 }
 
 const STORE_INTRO = {};   // key -> { days, unit, type } from StoreKit, when an intro offer exists
@@ -8201,7 +8225,7 @@ async function syncNativeEntitlements(){
       if (openTransitionWindow(res.originalPurchaseDate || null)) changed++;
     }
   } catch(e){}
-  if (changed > 0) refreshAfterEntitlement();
+  publishVerifiedEntitlementChange(changed > 0);
 }
 const StoreKitProvider = {
   id:"storekit",
@@ -8388,10 +8412,14 @@ function applyWebSubscription(key, sub, sid){
    affirmative "this subscription is not active" revokes. */
 const WEB_RECHECK_MS = 6 * 60 * 60 * 1000;    // at most 4 checks a day
 async function revalidateWebSub(){
-  if (isNative) return;                        // iOS re-checks through StoreKit
   const sub = ent.sub;
-  if (!sub || !sub.sid || !VERIFY_ENDPOINT) return;
+  // Stripe remains authoritative even when this account is currently open in
+  // the iOS shell. StoreKit correctly knows nothing about a web purchase, so
+  // the phone uses the synced checkout-session handle to keep that entitlement
+  // current after renewals and cancellations.
+  if (!sub || sub.source !== "stripe" || !sub.sid || !VERIFY_ENDPOINT) return;
   if (sub.revalidatedAt && Date.now() - sub.revalidatedAt < WEB_RECHECK_MS) return;
+  const before = subscriptionSyncFingerprint(sub);
   let data = null;
   try {
     const res = await fetch(VERIFY_ENDPOINT + "?session_id=" + encodeURIComponent(sub.sid),
@@ -8399,7 +8427,6 @@ async function revalidateWebSub(){
     data = await res.json().catch(() => null);
   } catch(e){ return; }                        // unreachable -> keep what we have
   if (!data || !data.ok) return;               // unparseable -> keep what we have
-  const had = subActive();
   if (data.subscription){
     if (data.subscription.active){
       applyWebSubscription(sub.key || "sub_monthly", data.subscription, sub.sid);
@@ -8410,7 +8437,7 @@ async function revalidateWebSub(){
     }
     if (ent.sub) ent.sub.revalidatedAt = Date.now();
     entSave();
-    if (had !== subActive()) refreshAfterEntitlement();
+    publishVerifiedEntitlementChange(before !== subscriptionSyncFingerprint(ent.sub));
   }
 }
 
@@ -14219,12 +14246,13 @@ async function bootRampUp(){
     }
   } catch(e){}
 
-  if (!isNative){
-    revalidateWebSub();
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") revalidateWebSub();
-    });
-  }
+  // A Stripe subscription can be used in either shell. Re-check it in either
+  // shell too, so someone who buys on the web stays paid in the iPhone app after
+  // the first billing period without needing to revisit the website.
+  revalidateWebSub();
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") revalidateWebSub();
+  });
 
   // iOS: silently restore any App Store purchases this account already owns.
   if (isNative){
@@ -14239,7 +14267,7 @@ async function bootRampUp(){
         let changed = applyOwnedProductIds(res && res.owned) > 0;
         const authoritative = !(res && res.synced === false);
         if (applySubscriptionStatus(res && res.subscription, authoritative)) changed = true;
-        if (changed) refreshAfterEntitlement();
+        publishVerifiedEntitlementChange(changed);
       });
     } catch(e){}
   }
