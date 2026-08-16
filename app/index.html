@@ -8081,11 +8081,29 @@ const STRIPE_LINKS = {
 // Empty => web checkout stays "coming soon" (never take money we cannot verify).
 const VERIFY_ENDPOINT = "https://still-fire-9735.melchiorjgg.workers.dev/";
 const SUPPORT_EMAIL = "rampupmcat@gmail.com";
+
+/* Account-first checkout should also be account-identifiable inside Stripe.
+   Payment Links preserve these documented query parameters on the Checkout
+   Session, so support can reconcile a completed trial even if the learner
+   closes the tab before the success redirect writes the session id locally. */
+function stripeCheckoutUrl(short){
+  const base = STRIPE_LINKS[short];
+  if (!base) return base;
+  const session = syncSession();
+  if (!session || !session.user_id) return base;
+  try {
+    const url = new URL(base);
+    url.searchParams.set("client_reference_id", session.user_id);
+    if (session.email) url.searchParams.set("prefilled_email", session.email);
+    return url.toString();
+  } catch(e){ return base; }
+}
+
 const StripeProvider = {
   id:"stripe",
   async getProducts(){ return Object.keys(PRICE).map(k => ({ id:k, price:PRICE[k] })); },
   async buy(short){
-    const url = STRIPE_LINKS[short];
+    const url = stripeCheckoutUrl(short);
     if (!url || !VERIFY_ENDPOINT) return { ok:false, reason:"coming_soon" };  // no verifier => don't charge
     window.location.href = url;                 // Stripe redirects back to ?purchased=<short>&session_id=... on success
     return { ok:true, pending:true };
