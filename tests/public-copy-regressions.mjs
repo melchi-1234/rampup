@@ -21,6 +21,8 @@ assert.match(home, /same RampUp account/i,
   "homepage must explain that one account connects web and iPhone");
 assert.match(home, /progress and subscription/i,
   "homepage must explain that both progress and subscription follow the account");
+assert.match(home, /3-month MCAT plan/i);
+assert.match(home, /Monthly Flex/i);
 assert.match(home, /\$49\.99 billed every 3 months/i);
 assert.match(home, /\$19\.99 billed monthly/i);
 assert.match(home, /2,500\+ practice and exam questions/i);
