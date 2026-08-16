@@ -46,16 +46,16 @@
      because $40 a year is concrete and "17% off" is not. */
   var PLANS = [
     {
-      key: "sub_quarterly", label: "3 months", price: "$49.99",
+      key: "sub_quarterly", label: "3-month MCAT plan", price: "$49.99",
       perMonthNum: "$16.66", billed: "$49.99 billed every 3 months",
-      blurb: "The realistic window for building up to MCAT-level reasoning.",
+      blurb: "The clearest runway for building up to MCAT-level reasoning.",
       save: "Save $40 a year", best: true,
       renewLine: "7 days free, then $49.99 every 3 months (about $16.66 a month). Renews automatically until you cancel."
     },
     {
-      key: "sub_monthly", label: "Monthly", price: "$19.99",
+      key: "sub_monthly", label: "Monthly Flex", price: "$19.99",
       perMonthNum: "$19.99", billed: "$19.99 billed monthly",
-      blurb: "Make the most of the study time you have left.",
+      blurb: "Flexible month-to-month access for the study time you have left.",
       save: null, best: false,
       renewLine: "7 days free, then $19.99 a month. Renews automatically until you cancel."
     }
