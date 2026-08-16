@@ -7584,9 +7584,9 @@ const SUB_GROUP  = "rampup.allaccess";     // App Store Connect subscription gro
 const TRIAL_DAYS = 7;                      // introductory offer; the store is the authority
 const PLANS = [
   { key:"sub_quarterly", months:3, cadence:"3 months", period:"every 3 months", recommended:true,
-    label:"3 months", blurb:"Best value" },
+    label:"3-month MCAT plan", blurb:"Best value" },
   { key:"sub_monthly",   months:1, cadence:"month",    period:"a month",        recommended:false,
-    label:"Monthly",  blurb:"" }
+    label:"Monthly Flex", blurb:"Flexible" }
 ];
 const planByKey = k => PLANS.find(p => p.key === k) || null;
 
