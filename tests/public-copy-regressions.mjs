@@ -48,7 +48,11 @@ assert.match(terms, /passwordless email account/i,
   "terms must describe the account users actually create");
 assert.match(terms, /signed-in iPhone and web browsers/i,
   "terms must describe cross-device progress restoration");
-assert.match(terms, /Deleting your RampUp account does not cancel/i,
+assert.match(terms, /Deleting your\s+RampUp account does not cancel/i,
   "terms must clearly separate account deletion from billing cancellation");
+assert.match(terms, /3-month MCAT plan/i,
+  "terms must use the same three-month plan name as checkout");
+assert.match(terms, /Monthly Flex/i,
+  "terms must use the same monthly plan name as checkout");
 
 console.log("PASS public trust, account-linking, product-count, pricing, privacy, and terms copy is internally consistent");
