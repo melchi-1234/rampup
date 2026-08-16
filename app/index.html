@@ -6675,8 +6675,9 @@ function clearSaved(){ try { localStorage.removeItem(LS_KEY); localStorage.remov
         the study loop waits on the network, and every failure here is silent
         and retried on the next trigger.
      2. We never subtract. Additive things (questions seen, review pile,
-        bookmarks, XP, badges) are unioned or maxed, never replaced. Entitlements
-        are grant-only in BOTH directions — a merge may never revoke a purchase.
+        bookmarks, XP, badges) are unioned or maxed, never replaced. Verified
+        provider revocations are the narrow exception: a tombstone can end only
+        the matching Stripe session or Apple subscription term.
      3. Settings are last-write-wins, decided by which side is the newer writer,
         never by a device clock (see mergeBlobs' `localNewer`).
 
@@ -6888,7 +6889,8 @@ async function syncPushRow(envelope){
 
 /* ---- the envelope ---- */
 function entSnapshot(){
-  return { v:2, pro: !!ent.pro, exams: [...ent.exams], sub: ent.sub || null, transition: ent.transition || null };
+  return { v:3, pro: !!ent.pro, exams: [...ent.exams], sub: ent.sub || null,
+           revoked: _syncObj(ent.revoked), transition: ent.transition || null };
 }
 function syncEnvelope(){
   return { v: SYNC_ENVELOPE_V, progress: serialize(), ent: entSnapshot(),
@@ -6902,38 +6904,46 @@ function syncStamp(env, prevDevices){
   return env;
 }
 
-/* ---- entitlements: grant-only, in both directions ----
+/* ---- entitlements: grants plus provider-scoped revocations ----
    Verification does not move: Stripe is still checked server-side by the
    Worker, StoreKit is still authoritative on iOS. Sync is not a way to buy
-   anything and is not a source of truth about whether you paid — it only ever
-   carries a grant sideways, so a web Stripe subscriber opening the iOS app
-   isn't wiped by a StoreKit check that correctly says "Apple has no record". */
+   anything and is not a source of truth about whether you paid. It carries a
+   verified grant sideways and remembers the precise provider term that ended,
+   so StoreKit cannot erase Stripe while stale account data cannot revive either. */
 function _syncSubRank(s){
   if (!s || typeof s !== "object") return -1;
   return (s.expires == null) ? Infinity : _syncNum(s.expires);   // no expiry known = store said active
 }
 function mergeEnt(a, b){
   a = _syncObj(a); b = _syncObj(b);
-  const ra = _syncSubRank(a.sub), rb = _syncSubRank(b.sub);
+  const revoked = mergeSubRevocations(a.revoked, b.revoked);
+  const aSub = subBlockedByRevocation(a.sub, revoked) ? null : a.sub;
+  const bSub = subBlockedByRevocation(b.sub, revoked) ? null : b.sub;
+  const ra = _syncSubRank(aSub), rb = _syncSubRank(bSub);
   const tA = _syncObj(a.transition), tB = _syncObj(b.transition);
   return {
-    v: 2,
+    v: 3,
     pro: !!a.pro || !!b.pro,
     exams: _syncUnion(a.exams, b.exams),
-    sub: (ra < 0 && rb < 0) ? null : (rb > ra ? b.sub : a.sub),
+    sub: (ra < 0 && rb < 0) ? null : (rb > ra ? bSub : aSub),
+    revoked,
     transition: (!a.transition && !b.transition) ? null
               : (_syncNum(tB.endsAt) > _syncNum(tA.endsAt) ? b.transition : a.transition)
   };
 }
-/* Apply a merged `ent` to the live entitlement layer. Only ever adds. There is
-   no branch in here that can set a flag to false, clear a subscription, or
-   shrink the exam set. */
+/* Apply a merged `ent` to the live layer. Permanent purchases stay additive;
+   only a provider-scoped marker may clear its matching subscription term. */
 function entApplySynced(e){
   e = _syncObj(e);
   let changed = false;
+  const revoked = mergeSubRevocations(ent.revoked, e.revoked);
+  if (JSON.stringify(revoked) !== JSON.stringify(_syncObj(ent.revoked))){ ent.revoked = revoked; changed = true; }
+  if (ent.sub && subBlockedByRevocation(ent.sub, revoked)){ ent.sub = null; changed = true; }
   if (e.pro && !ent.pro){ ent.pro = true; changed = true; }
   _syncArr(e.exams).forEach(id => { if (typeof id === "string" && !ent.exams.has(id)){ ent.exams.add(id); changed = true; } });
-  if (e.sub && _syncSubRank(e.sub) > _syncSubRank(ent.sub)){ ent.sub = e.sub; changed = true; }
+  if (e.sub && !subBlockedByRevocation(e.sub, revoked) && _syncSubRank(e.sub) > _syncSubRank(ent.sub)){
+    ent.sub = e.sub; changed = true;
+  }
   if (e.transition && _syncNum(e.transition.endsAt) > _syncNum(_syncObj(ent.transition).endsAt)){
     ent.transition = e.transition; changed = true;
   }
@@ -7430,7 +7440,7 @@ function syncInit(){
 /* Restore an account before boot chooses onboarding, welcome-back or the
    paywall. The normal pull deliberately refuses to rehydrate while #main is
    hidden; that is right during use, but wrong at first paint on a new browser.
-   This narrow bootstrap performs the same grant-only merge before any product
+   This narrow bootstrap performs the same provider-aware merge before any product
    screen is shown. */
 async function syncBootstrapAccount(localSaved){
   if (!syncReady()) return localSaved;
@@ -7668,6 +7678,7 @@ const ent = {
   pro: false,                 // legacy one-time all-access
   exams: new Set(),           // legacy individual exam ids
   sub: null,                  // { key, productId, expires, willRenew, trial, checkedAt }
+  revoked: {},                // provider-specific tombstones; stale devices cannot resurrect an ended term
   transition: null            // { endsAt }  — bounded courtesy for pre-cutover installs
 };
 
@@ -7678,12 +7689,14 @@ function entLoad(){
     ent.pro   = !!o.pro;
     ent.exams = new Set(Array.isArray(o.exams) ? o.exams : []);
     ent.sub   = (o.sub && typeof o.sub === "object") ? o.sub : null;
+    ent.revoked = _syncObj(o.revoked);
     ent.transition = (o.transition && typeof o.transition === "object") ? o.transition : null;
   } catch(e){}
 }
 function entSave(){
   try { localStorage.setItem(ENT_KEY, JSON.stringify({
-    v:2, pro:ent.pro, exams:[...ent.exams], sub:ent.sub, transition:ent.transition })); } catch(e){}
+    v:3, pro:ent.pro, exams:[...ent.exams], sub:ent.sub,
+    revoked:_syncObj(ent.revoked), transition:ent.transition })); } catch(e){}
 }
 
 /* ---- Subscription state, evaluated at read time ----
@@ -7752,6 +7765,48 @@ function ownsExam(id){
 /* ---- Grants ---- */
 function grantExam(id){ ent.exams.add(id); entSave(); }
 function grantPro(){ ent.pro = true; entSave(); }
+
+/* A cancellation/refund is authority over one provider term, not every way the
+   learner might have access. Stripe sessions never reactivate after ending, so
+   their session id is the permanent key. Apple can sell the same product again;
+   a later expiry is therefore a genuinely new term and may beat the old marker. */
+function subRevocationKey(s){
+  s = _syncObj(s);
+  const source = s.source || (s.sid ? "stripe" : "");
+  if (source === "stripe" && typeof s.sid === "string" && s.sid) return "stripe:" + s.sid;
+  if (source === "apple" && typeof s.productId === "string" && s.productId) return "apple:" + s.productId;
+  return "";
+}
+function mergeSubRevocations(a, b){
+  a = _syncObj(a); b = _syncObj(b);
+  const out = {};
+  Object.keys(a).forEach(k => { out[k] = _syncObj(a[k]); });
+  Object.keys(b).forEach(k => {
+    const next = _syncObj(b[k]);
+    const prev = _syncObj(out[k]);
+    if (!out[k] || _syncNum(next.through) > _syncNum(prev.through)
+        || (_syncNum(next.through) === _syncNum(prev.through) && _syncNum(next.at) > _syncNum(prev.at))) out[k] = next;
+  });
+  return out;
+}
+function subBlockedByRevocation(s, revoked){
+  s = _syncObj(s);
+  const key = subRevocationKey(s); if (!key) return false;
+  const marker = _syncObj(_syncObj(revoked)[key]); if (!Object.keys(marker).length) return false;
+  if ((s.source || (s.sid ? "stripe" : "")) === "stripe") return true;
+  return !_syncNum(s.expires) || _syncNum(s.expires) <= _syncNum(marker.through);
+}
+function rememberSubscriptionRevocation(s){
+  s = _syncObj(s);
+  const key = subRevocationKey(s); if (!key) return false;
+  const marker = { source:s.source || (s.sid ? "stripe" : ""),
+    through:_syncNum(s.expires), at:Date.now() };
+  if (s.sid) marker.sid = s.sid;
+  if (s.productId) marker.productId = s.productId;
+  ent.revoked = mergeSubRevocations(ent.revoked, { [key]:marker });
+  return true;
+}
+
 function grantSubscription(info){
   // info: { key, productId, expires (ms|null), willRenew, trial, state, source, sid }
   // state mirrors StoreKit's Product.SubscriptionInfo.Status:
@@ -7759,7 +7814,7 @@ function grantSubscription(info){
   // here -- the native side returns nil for those.
   const source = (info && info.source) || ((info && info.sid) ? "stripe" : null)
     || (ent.sub && ent.sub.source) || null;
-  ent.sub = {
+  const next = {
     key: (info && info.key) || null,
     productId: (info && info.productId) || null,
     expires: (info && info.expires) || null,
@@ -7767,17 +7822,23 @@ function grantSubscription(info){
     trial: !!(info && info.trial),
     state: (info && info.state) || "subscribed",
     source: source,
-    // Web only: the Stripe checkout session, which is the sole handle an
-    // accountless client has on its own subscription. Preserved across
-    // re-grants so a revalidation never loses the ability to revalidate again.
+    // Web only: the Stripe checkout session is the provider handle synced with
+    // the account. Preserve it across re-grants so revalidation never loses it.
     sid: source === "stripe"
       ? ((info && info.sid) || (ent.sub && ent.sub.source === "stripe" && ent.sub.sid) || null)
       : null,
     checkedAt: Date.now()
   };
+  if (subBlockedByRevocation(next, ent.revoked)) return false;
+  ent.sub = next;
   entSave();
+  return true;
 }
-function clearSubscription(){ if (ent.sub){ ent.sub = null; entSave(); } }
+function clearSubscription(){
+  if (!ent.sub) return false;
+  rememberSubscriptionRevocation(ent.sub);
+  ent.sub = null; entSave(); return true;
+}
 
 /* Open the courtesy window for a pre-cutover install. Idempotent: the window is
    opened once and never extended, so reinstalling cannot farm another 30 days
@@ -7793,7 +7854,7 @@ function openTransitionWindow(originalMs){
 }
 
 function entReset(){   // dev/debug only
-  ent.pro = false; ent.exams = new Set(); ent.sub = null; ent.transition = null; entSave();
+  ent.pro = false; ent.exams = new Set(); ent.sub = null; ent.revoked = {}; ent.transition = null; entSave();
 }
 
 /* ---- Plan status, in the learner's words ----
@@ -8157,7 +8218,7 @@ function applySubscriptionStatus(s, authoritative){
   const before = subscriptionSyncFingerprint(ent.sub);
   if (!s || !s.productId){
     if (authoritative === false && ent.sub) return false;   // unknown, not revoked
-    if (ent.sub && (ent.sub.source === "stripe" || ent.sub.sid)) return false; // StoreKit is not authoritative over Stripe
+    if (ent.sub && ent.sub.source && ent.sub.source !== "apple") return false; // StoreKit is authoritative only over Apple
     clearSubscription();
     return before !== subscriptionSyncFingerprint(ent.sub);
   }
@@ -8417,8 +8478,8 @@ function applyWebSubscription(key, sub, sid){
 
 /* Re-check a WEB subscription against Stripe.
 
-   The web app has no accounts, so a checkout session is the only handle it has
-   on its own subscription -- and a session is a historical fact that stays
+   The signed-in account carries the checkout-session handle across devices,
+   but the session itself is a historical fact that stays
    "paid" forever. Without this, someone who started a trial and cancelled on day
    three kept the full month they never paid for, because nothing on the device
    could ever learn about the cancellation.
@@ -13871,12 +13932,21 @@ async function doBuy(short){
     toast("That didn't go through. Try again."); }
 }
 async function doRestore(){
-  // On the web there is no account and nothing server-side keyed to this
-  // browser, so "restore" could only ever re-read local state - which told a
-  // genuine customer on a new device "No purchases found to restore", and on
-  // the other branch blamed the App Store on a Stripe path. Their receipt is
-  // the real proof of purchase, so ask for it.
-  if (!isNative){ openReceiptEntry(); return; }
+  // A new browser should recover from the signed-in account without making a
+  // subscriber hunt through email. The Stripe receipt remains the fallback for
+  // older purchases that predate account-first checkout.
+  if (!isNative){
+    if (syncReady()){
+      toast("Checking your RampUp account…");
+      await syncPullNow();
+      if (entTier() !== "none"){
+        track("restore_completed", { tier:entTier(), source:"account" });
+        closeSheet(); toast("Access restored from your account."); refreshAfterEntitlement();
+        return;
+      }
+    }
+    openReceiptEntry(); return;
+  }
   const r = await purchases.restore();
   if (r && r.ok && entTier() !== "none"){ track("restore_completed", { tier:entTier() });
     closeSheet(); toast("Purchases restored."); refreshAfterEntitlement(); }
