@@ -27,7 +27,8 @@
   <h2>What we collect</h2>
   <p>RampUp receives your email address so we can send your sign-in code and connect
   your subscription and study progress to your account. We also store that synced study
-  progress, including answers, levels, streaks, review state, bookmarks and exam scores.
+  progress, including answers, levels, streaks, review state, bookmarks, exam scores,
+  your general Rampy conversation and any Rampy answers you save as notes.
   We do not sell or share this information for advertising, and there are no advertising
   or analytics SDKs in RampUp.</p>
   <p>We never receive your phone number, location, contacts, or advertising identifier,
@@ -41,13 +42,15 @@
   starting levels and daily plan are also kept locally so RampUp continues to work
   offline. A copy of that study progress is synced to your account as described below.
   Clearing browser data or deleting the app removes the local copy from that device.</p>
-  <p>The same is true of the onboarding on this website. Your coursework answers and
-  the levels calculated from them are stored in your browser and are not sent anywhere.</p>
+  <p>Website onboarding begins in your browser. If you continue into the signed-in app,
+  your coursework answers and the levels calculated from them become part of the study
+  progress synced to your account.</p>
 
   <h2>Account and progress sync</h2>
   <p>When you create or use your RampUp account, we store your email address, account
   identifier, study progress (the same stats, streak, review pile and bookmarks described
-  above), and the subscription status that controls your access. Sync also keeps a small
+  above), your general Rampy conversation, saved Rampy notes, and the subscription status
+  that controls your access. Sync also keeps a small
   set of random installation identifiers so recent updates from your signed-in devices can
   be merged without an older copy overwriting newer progress. For web subscriptions, the
   access record can include the Stripe checkout-session identifier and verified plan,
@@ -56,9 +59,10 @@
   when you sign in there too.</p>
   <p>Your sign-in codes are delivered by email through Resend. Signing out on a device
   stops that device syncing and leaves your local progress untouched. Deleting your
-  account removes the account and synced copy from our database. Sync changes nothing else: no
-  tracking, no ads, and we never sell your data. Your questions to Rampy and your
-  reading passages are never part of sync.</p>
+  account removes the account and synced copy from our database. Sync changes nothing else:
+  no tracking, no ads, and we never sell your data. A conversation about one specific
+  practice question remains in the current app session unless you save an answer to your
+  Rampy notes; your general Rampy conversation and saved notes are synced.</p>
 
   <h2>Rampy, and the one time RampUp uses the internet</h2>
   <p>Rampy is the tutor built into RampUp. Most of what it does happens entirely on
@@ -70,27 +74,34 @@
   to our server, which passes it to Anthropic's API and returns the answer. Nothing is
   sent unless you tap.</p>
   <p><strong>What that request contains:</strong> the practice question you are looking
-  at, its answer choices, which one you picked, the correct answer, and RampUp's own
+  at, its answer choices, which answer you picked, the correct answer, and RampUp's own
   written explanation and per-choice notes — so the tutor answers from our material
-  rather than improvising. It also includes the subject, the difficulty level you are
+  rather than improvising. If the question has a reading passage, that passage is sent
+  too. The request also includes the subject, the difficulty level you are
   working at, how many questions you have answered in that subject and what percentage
   you got right, and how many days until your test, so the answer can be pitched at the
-  right level.</p>
+  right level. For general Rampy chat, the request contains what you type, up to eight
+  recent turns in that conversation, and a small study summary such as days to your test,
+  total questions answered and your weakest subject. Readiness coaching sends aggregate
+  study statistics rather than a list of individual answers.</p>
   <p><strong>What that request deliberately does not contain:</strong> your name, your
   email, or any account identifier — the tutor request carries none of them, even if you
-  have signed in to sync. Which courses you told us you have taken. And <em>reading
-  passages are never sent at all</em> — CARS passages and science passages stay on your
-  device.</p>
+  have signed in to sync. It also does not contain which courses you told us you have
+  taken.</p>
   <p><strong>The one identifier:</strong> a random string generated on your device the
   first time you open RampUp, sent with these requests so we can stop any single device
   from running up an unreasonable number of them. It is not linked to you, it is not
   linked to anything else, and it cannot be traced back to a person. Erasing the app
   erases it.</p>
   <p><strong>What our server records:</strong> that a request happened — the random
-  string, which kind of request it was, how long it took and how large it was.
-  <strong>Not the question, and not the answer Rampy gave.</strong> Rampy conversations
-  are not stored anywhere, including on your device; the answer disappears when you
-  close it.</p>
+  string, which kind of request it was, the model used, how long it took and token-count
+  metadata. <strong>Not the question, and not the answer Rampy gave.</strong> Anthropic
+  receives the prompt so it can return Rampy's answer.</p>
+  <p><strong>What RampUp saves:</strong> the conversation about one specific practice
+  question stays in the current app session. Your general Rampy conversation and any
+  Rampy answers you choose to save as notes are kept locally and synced with your signed-in
+  account, so they can appear on your other devices. Deleting your account removes the
+  server copy.</p>
 
   <h2>Payments</h2>
   <p>We never see or store your card details.</p>
