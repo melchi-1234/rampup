@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111024">
+  <title>Your 5-minute MCAT starting plan | RampUp</title>
+  <style>
+    :root{--ink:#f7f4ff;--muted:#b9b2d4;--panel:#1d1938;--edge:#393063;--violet:#9b7bff;--mint:#8be7c2;--paper:#111024}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% -10%,#33235e 0,transparent 38rem),var(--paper);color:var(--ink);font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}main{width:min(760px,calc(100% - 32px));margin:auto;padding:48px 0 80px}.eyebrow{margin:0 0 10px;color:var(--mint);font-weight:800;letter-spacing:.13em;text-transform:uppercase;font-size:.72rem}h1{font-size:clamp(2.3rem,9vw,4.8rem);line-height:.96;letter-spacing:-.055em;margin:0 0 20px;max-width:12ch}h2{font-size:1.35rem;margin:0 0 8px}p{color:var(--muted);margin:0 0 16px}.lead{font-size:1.12rem;max-width:58ch}.card{background:linear-gradient(150deg,rgba(255,255,255,.06),rgba(255,255,255,.025));border:1px solid var(--edge);border-radius:24px;padding:22px;margin:18px 0;box-shadow:0 18px 60px rgba(0,0,0,.18)}fieldset{border:0;padding:0;margin:0;display:grid;gap:10px}legend{font-weight:800;margin-bottom:12px}label{display:flex;gap:11px;align-items:flex-start;background:#17142c;border:1px solid #312a55;border-radius:14px;padding:13px;cursor:pointer}input{margin-top:5px;accent-color:var(--violet)}button,.cta{display:inline-flex;justify-content:center;align-items:center;border:0;border-radius:999px;background:var(--violet);color:#100d20;font-weight:900;text-decoration:none;padding:15px 22px;font-size:1rem;cursor:pointer}.result{display:none}.result.show{display:block}.week{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px 0}.day{background:#17142c;border:1px solid #312a55;border-radius:14px;padding:14px}.day b{color:var(--mint);display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em}.note{font-size:.86rem;border-left:3px solid var(--mint);padding-left:12px}.brand{display:flex;align-items:center;justify-content:space-between;margin-top:34px;color:var(--muted);font-size:.9rem}@media(max-width:560px){main{padding-top:30px}.week{grid-template-columns:1fr}.card{border-radius:20px;padding:18px}h1{font-size:3rem}.brand{align-items:flex-start;gap:12px;flex-direction:column}}</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">RampUp field guide 01</p>
+  <h1>Stop planning the whole MCAT tonight.</h1>
+  <p class="lead">Use three honest answers to choose the first seven-day loop. This is a starting sorter, not a prediction of your exam score.</p>
+  <section class="card" aria-labelledby="sorter-title">
+    <h2 id="sorter-title">Pick the answers that are true today</h2>
+    <form id="sorter">
+      <fieldset><legend>1. What stops you most often?</legend>
+        <label><input type="radio" name="gap" value="content" required> I open a question and do not know the underlying content.</label>
+        <label><input type="radio" name="gap" value="passage"> I know the topic, but the passage makes it hard to use.</label>
+        <label><input type="radio" name="gap" value="mixed"> It changes by subject. I need a clean baseline.</label>
+      </fieldset>
+      <fieldset style="margin-top:20px"><legend>2. Which subject are you avoiding?</legend>
+        <label><input type="radio" name="subject" value="the subject you picked" required> Biology or Biochemistry</label>
+        <label><input type="radio" name="subject" value="the subject you picked"> Chemistry or Physics</label>
+        <label><input type="radio" name="subject" value="the subject you picked"> Psychology or Sociology</label>
+        <label><input type="radio" name="subject" value="the subject you picked"> CARS</label>
+      </fieldset>
+      <fieldset style="margin-top:20px"><legend>3. What can you repeat for seven days?</legend>
+        <label><input type="radio" name="time" value="25" required> 25 focused minutes</label>
+        <label><input type="radio" name="time" value="45"> 45 focused minutes</label>
+        <label><input type="radio" name="time" value="75"> 75 focused minutes</label>
+      </fieldset>
+      <button type="submit" style="margin-top:22px">Build my first week</button>
+    </form>
+  </section>
+  <section class="card result" id="result" aria-live="polite">
+    <p class="eyebrow">Your seven-day starting loop</p><h2 id="resultTitle">Start with one subject</h2>
+    <div class="week">
+      <div class="day"><b>Day 1</b><span id="day1">Find the baseline.</span></div>
+      <div class="day"><b>Days 2–3</b><span id="day23">Work one narrow gap.</span></div>
+      <div class="day"><b>Day 4</b>Redo every miss without looking at the answer.</div>
+      <div class="day"><b>Days 5–6</b><span id="day56">Mix content and application.</span></div>
+      <div class="day"><b>Day 7</b>Write three lines: what repeated, what improved, what comes next.</div>
+    </div>
+    <p class="note">A practice result tells you what to work on next. It does not convert into an official MCAT score.</p>
+    <a class="cta" id="primary" href="https://rampupmcat.com/get?src=ig-rampup-start-plan">Try the subject map in RampUp</a>
+  </section>
+  <div class="brand"><strong>RampUp</strong><span>MCAT prep that starts where you are.</span></div>
+</main>
+<script>
+const src=new URLSearchParams(location.search).get('src');if(src&&/^(ig|tt|yt)-rampup-start-plan$/.test(src)){document.getElementById('primary').href='https://rampupmcat.com/get?src='+encodeURIComponent(src)}
+document.getElementById('sorter').addEventListener('submit',e=>{e.preventDefault();const d=new FormData(e.currentTarget),gap=d.get('gap'),minutes=d.get('time');document.getElementById('resultTitle').textContent=`Start with ${minutes} minutes on the subject you picked`;document.getElementById('day1').textContent=gap==='mixed'?'Do a small mixed baseline and mark the subject with the most repeated misses.':gap==='content'?'Do a small set and name the missing idea behind every miss.':'Do one short passage and mark where your reasoning left the text.';document.getElementById('day23').textContent=gap==='content'?'Review one narrow content gap, then answer new questions on only that gap.':'Use one passage at a time. Write why every wrong choice is wrong.';document.getElementById('day56').textContent=`Use ${minutes} minutes: half review, half new questions. Stop when the block ends.`;document.getElementById('result').classList.add('show');document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'})});
+</script>
+</body></html>
