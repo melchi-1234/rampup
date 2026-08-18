@@ -118,45 +118,47 @@ try {
       if (!ok) failures.push(`${width}px: ${name}`);
     }
   }
-  await send("Emulation.setDeviceMetricsOverride", {
-    width: 390,
-    height: 844,
-    deviceScaleFactor: 1,
-    mobile: true,
-    screenWidth: 390,
-    screenHeight: 844
-  });
-  await send("Page.navigate", { url: `http://127.0.0.1:${SITE_PORT}/app/?nogate=1` });
-  await waitForPage(`!!document.getElementById("onboardingLogin")`);
-  const accountEntry = await evaluate(`(function(){
-    document.getElementById("onboardingLogin").click();
-    const back = document.getElementById("authGateBack");
-    const result = {
-      backVisible: !!back && back.getBoundingClientRect().height >= 44,
-      returnedToOnboarding: false
-    };
-    if (back) {
-      back.click();
-      result.returnedToOnboarding = !document.getElementById("onboarding").hidden
-        && document.getElementById("authGate").hidden;
+  for (const width of [320, 390]) {
+    await send("Emulation.setDeviceMetricsOverride", {
+      width,
+      height: 844,
+      deviceScaleFactor: 1,
+      mobile: true,
+      screenWidth: width,
+      screenHeight: 844
+    });
+    await send("Page.navigate", { url: `http://127.0.0.1:${SITE_PORT}/app/?nogate=1` });
+    await waitForPage(`!!document.getElementById("onboardingLogin") && typeof openPaywall === "function"`);
+    const accountEntry = await evaluate(`(function(){
+      document.getElementById("onboardingLogin").click();
+      const back = document.getElementById("authGateBack");
+      const result = {
+        backVisible: !!back && back.getBoundingClientRect().height >= 44,
+        returnedToOnboarding: false
+      };
+      if (back) {
+        back.click();
+        result.returnedToOnboarding = !document.getElementById("onboarding").hidden
+          && document.getElementById("authGate").hidden;
+      }
+      return result;
+    })()`);
+    for (const [name, ok] of Object.entries(accountEntry)) {
+      if (!ok) failures.push(`${width}px account entry: ${name}`);
     }
-    return result;
-  })()`);
-  for (const [name, ok] of Object.entries(accountEntry)) {
-    if (!ok) failures.push(`account entry: ${name}`);
-  }
-  await evaluate(`openPaywall(null); true`);
-  await sleep(800);
-  const paywallClose = await evaluate(`(function(){
-    const close = document.querySelector(".sheet-x");
-    const rect = close && close.getBoundingClientRect();
-    return {
-      visible: !!rect && rect.width > 0 && rect.height > 0,
-      usableTarget: !!rect && rect.width >= 44 && rect.height >= 44
-    };
-  })()`);
-  for (const [name, ok] of Object.entries(paywallClose)) {
-    if (!ok) failures.push(`paywall close: ${name}`);
+    await evaluate(`openPaywall(null); true`);
+    await sleep(800);
+    const paywallClose = await evaluate(`(function(){
+      const close = document.querySelector(".sheet-x");
+      const rect = close && close.getBoundingClientRect();
+      return {
+        visible: !!rect && rect.width > 0 && rect.height > 0,
+        usableTarget: !!rect && rect.width >= 44 && rect.height >= 44
+      };
+    })()`);
+    for (const [name, ok] of Object.entries(paywallClose)) {
+      if (!ok) failures.push(`${width}px paywall close: ${name}`);
+    }
   }
   ws.close();
   if (failures.length) {
