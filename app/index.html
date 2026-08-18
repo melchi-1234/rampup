@@ -824,7 +824,8 @@
     display:flex; flex-direction:column; font-family:Verdana,Arial,Helvetica,sans-serif}
   .pv *{box-sizing:border-box; transition:none !important; animation:none !important}
   .pv-top{background:var(--pv-bar); color:var(--pv-bar-text); display:flex; align-items:center;
-    gap:14px; padding:8px 14px; font-size:13px; font-weight:700; flex:0 0 auto}
+    gap:14px; padding:max(8px,calc(var(--pv-safe-top,env(safe-area-inset-top)) + 8px)) 14px 8px;
+    font-size:13px; font-weight:700; flex:0 0 auto}
   .pv-top .pv-title{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .pv-top .pv-count{white-space:nowrap}
   .pv-top .pv-time{white-space:nowrap; font-variant-numeric:tabular-nums}
@@ -832,14 +833,19 @@
     background:#eef2f6; flex:0 0 auto; flex-wrap:wrap}
   .pv-tool{font:inherit; font-size:12px; font-weight:700; color:#1f3550; background:#fff;
     border:1px solid var(--pv-line); border-radius:4px; padding:6px 10px; cursor:pointer; display:inline-flex;
-    align-items:center; gap:5px; min-height:44px}
+    align-items:center; justify-content:center; gap:5px; min-height:44px; touch-action:manipulation}
+  .pv-tool-short{display:none}
   .pv-tool.on{background:#dbe7f3; border-color:var(--pv-bar)}
+  .pv-tool:focus-visible,.pv-nav-btn:focus-visible{outline:3px solid #7fb3e8; outline-offset:2px}
   .pv-tool:disabled{opacity:.45; cursor:default}
   .pv-main{flex:1; display:flex; min-height:0}
   .pv-pane{flex:1; min-width:0; overflow-y:auto; padding:18px 20px; font-size:14.5px; line-height:1.65}
   .pv-pane.pv-passage{border-right:1px solid var(--pv-line); background:#fbfcfe}
   .pv-pane .plabel{font-size:11px; font-weight:700; letter-spacing:.05em; color:#54677e; margin-bottom:8px}
-  @media(max-width:899px){ .pv-main{flex-direction:column} .pv-pane.pv-passage{border-right:0; border-bottom:1px solid var(--pv-line); max-height:42%} }
+  @media(max-width:699px) and (orientation:portrait){
+    .pv-main{flex-direction:column}
+    .pv-pane.pv-passage{border-right:0; border-bottom:1px solid var(--pv-line); max-height:40%}
+  }
   .pv-q{font-weight:700; margin:0 0 14px}
   .pv-choice{display:flex; gap:10px; align-items:flex-start; min-height:44px; padding:9px 6px;
     cursor:pointer; border-radius:3px; touch-action:manipulation}
@@ -848,14 +854,15 @@
   .pv-radio{flex:0 0 auto; width:18px; height:18px; margin-top:2px; border:2px solid #3c4c60; border-radius:50%;
     background:#fff; display:grid; place-items:center}
   .pv-choice.picked .pv-radio::after{content:""; width:9px; height:9px; border-radius:50%; background:#1f5c99}
-  .pv-ctext{flex:1; cursor:text; user-select:text}
-  .pv-ltr{font-weight:700; margin-right:6px}
+  .pv-ctext{flex:1; cursor:text; -webkit-user-select:text; user-select:text}
+  .pv-ltr{font-weight:700; margin-right:6px; -webkit-user-select:none; user-select:none}
   mark.pv-hl-y{background:#ffe95e; color:inherit; padding:0}
   mark.pv-hl-b{background:#aed6ff; color:inherit; padding:0}
-  .pv-bottom{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px 14px;
+  .pv-bottom{display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:8px 14px max(8px,calc(var(--pv-safe-bottom,env(safe-area-inset-bottom)) + 8px));
     border-top:1px solid var(--pv-line); background:#eef2f6; flex:0 0 auto}
   .pv-nav-btn{font:inherit; font-size:13px; font-weight:700; color:#fff; background:var(--pv-bar);
-    border:0; border-radius:4px; padding:10px 22px; cursor:pointer; min-height:42px}
+    border:0; border-radius:4px; padding:10px 22px; cursor:pointer; min-height:44px}
   .pv-nav-btn.ghost{background:#fff; color:#1f3550; border:1px solid var(--pv-line)}
   .pv-nav-btn:disabled{opacity:.4; cursor:default}
   .pv-flagged-ind{color:#c8801d; font-weight:700; font-size:12px}
@@ -873,7 +880,7 @@
   .pv-rtable{width:100%; border-collapse:collapse; font-size:13px}
   .pv-rtable th{background:#dbe7f3; text-align:left; padding:6px 8px; border:1px solid #b9c9da; font-size:12px}
   .pv-rtable td{padding:6px 8px; border:1px solid #c9d6e4; background:#fff}
-  .pv-rtable tr{cursor:pointer}
+  .pv-rtable tr[data-i]{cursor:pointer; height:44px}
   .pv-rtable tr:hover td{background:#eaf2fa}
   .pv-status-inc{color:#b3541e; font-weight:700}
   .pv-status-uns{color:#8a94a1; font-weight:700}
@@ -891,14 +898,71 @@
     border-radius:6px; box-shadow:0 12px 40px rgba(10,30,60,.35); width:min(760px, 96vw); resize:both; overflow:auto}
   .pv-exhibit .pv-wt{cursor:move}
   .pv-exhibit .pv-wt button{cursor:pointer}
-  @media(max-width:899px){
-    .pv-exhibit{left:8px; width:calc(100vw - 16px); max-width:calc(100vw - 16px); resize:none}
+  @media(max-width:699px){
+    .pv-exhibit{position:fixed; left:8px; top:max(96px, calc(env(safe-area-inset-top) + 72px));
+      width:calc(100vw - 16px); max-width:calc(100vw - 16px);
+      max-height:calc(100dvh - max(154px, calc(env(safe-area-inset-top) + env(safe-area-inset-bottom) + 104px)));
+      resize:none; overflow:auto; -webkit-overflow-scrolling:touch}
   }
   .pv-pt{border-collapse:collapse; margin:10px; font-family:Arial,sans-serif}
   .pv-pt td{border:1px solid #444; width:38px; height:40px; text-align:center; vertical-align:middle;
-    font-size:8px; line-height:1.15; padding:1px; background:#fff; color:#111}
-  .pv-pt td.e b{display:block; font-size:11px}
+    font-size:10px; line-height:1.15; padding:1px; background:#fff; color:#111}
+  .pv-pt td.e b{display:block; font-size:12px}
   .pv-pt td.blank{border:0}
+  .exam-intro-shell{position:fixed; inset:0; z-index:7999; overflow-y:auto; background:var(--bg);
+    display:grid; place-items:center; padding:max(24px, calc(env(safe-area-inset-top) + 16px)) 18px max(24px, calc(env(safe-area-inset-bottom) + 16px))}
+  .exam-intro-card{width:min(680px,100%); padding:28px; border:1px solid var(--border); border-radius:var(--r-xl);
+    background:var(--card); box-shadow:var(--shadow); text-align:left}
+  .exam-intro-kicker{font-size:12px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--accent)}
+  .exam-intro-card h2{font-family:var(--font-round); font-size:30px; margin:5px 0 2px; color:var(--text)}
+  .exam-intro-meta{margin:0 0 12px; color:var(--muted); font-weight:800}
+  .exam-intro-lead{margin:0 0 16px; color:var(--text); line-height:1.55}
+  .exam-tool-guide{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:0 0 12px}
+  .exam-tool-guide>div,.exam-first-note,.exam-integrity-note{border:1px solid var(--border); border-radius:12px;
+    background:var(--surface); padding:11px 12px; display:flex; flex-direction:column; gap:3px}
+  .exam-tool-guide b,.exam-first-note b,.exam-integrity-note b{font-size:13px; color:var(--text)}
+  .exam-tool-guide span,.exam-first-note span,.exam-integrity-note span{font-size:12.5px; line-height:1.45; color:var(--muted)}
+  .exam-first-note{margin-bottom:8px; border-color:color-mix(in srgb,var(--accent) 30%,var(--border));
+    background:color-mix(in srgb,var(--accent) 8%,var(--card))}
+  .exam-integrity-note{margin-bottom:18px}
+  .exam-intro-actions{width:100%}
+  .exam-begin,.exam-back{width:100%; min-height:52px; justify-content:center}
+  .exam-back{margin-top:8px}
+  @media(max-width:599px){
+    .pv{height:100dvh; width:100vw; overflow:hidden}
+    .pv-top{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 10px;
+      padding:max(44px, calc(env(safe-area-inset-top) + 10px)) max(12px, calc(env(safe-area-inset-right) + 10px)) 8px max(12px, calc(env(safe-area-inset-left) + 10px));
+      font-size:12px; line-height:1.25}
+    .pv-top .pv-title{grid-column:1/-1}
+    .pv-top .pv-time{text-align:right}
+    .pv-tools{flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch;
+      scrollbar-width:none; gap:8px; padding:7px max(10px,calc(env(safe-area-inset-right) + 8px)) 7px max(10px,calc(env(safe-area-inset-left) + 8px))}
+    .pv-tools::-webkit-scrollbar{display:none}
+    .pv-tool{flex:0 0 auto; min-width:54px; min-height:44px; padding:7px 10px}
+    .pv-companion .pv-tool-long{display:none}
+    .pv-companion .pv-tool-short{display:inline}
+    .pv-flagged-ind{display:none}
+    .pv-pane{padding:15px 16px; font-size:16px; line-height:1.6; -webkit-overflow-scrolling:touch}
+    .pv-q{line-height:1.55}
+    .pv-choice{padding:10px 4px; gap:11px}
+    .pv-bottom{padding:8px max(10px,calc(env(safe-area-inset-right) + 8px)) max(34px,calc(env(safe-area-inset-bottom) + 8px)) max(10px,calc(env(safe-area-inset-left) + 8px))}
+    .pv-nav-btn{min-height:44px; padding:9px 13px}
+    .exam-intro-shell{place-items:start center; padding:max(44px,calc(env(safe-area-inset-top) + 12px)) 12px max(34px,calc(env(safe-area-inset-bottom) + 12px))}
+    .exam-intro-card{padding:20px 16px 174px; border-radius:18px}
+    .exam-intro-card h2{font-size:25px}
+    .exam-tool-guide{grid-template-columns:1fr}
+    .exam-intro-actions{position:fixed; z-index:8001; left:0; right:0; bottom:0;
+      padding:10px 12px max(34px,calc(env(safe-area-inset-bottom) + 10px));
+      background:linear-gradient(to bottom,rgba(255,255,255,.72),var(--card) 18%);
+      border-top:1px solid var(--border); box-shadow:0 -8px 24px rgba(30,24,60,.08)}
+  }
+  @media(max-height:500px) and (orientation:landscape){
+    .pv-top{padding-top:max(8px,env(safe-area-inset-top)); padding-left:max(12px,calc(env(safe-area-inset-left) + 8px)); padding-right:max(12px,calc(env(safe-area-inset-right) + 8px))}
+    .pv-bottom{padding-bottom:max(8px,env(safe-area-inset-bottom)); padding-left:max(12px,calc(env(safe-area-inset-left) + 8px)); padding-right:max(12px,calc(env(safe-area-inset-right) + 8px))}
+    .pv-main{flex-direction:row}
+    .pv-pane.pv-passage{max-height:none; border-bottom:0; border-right:1px solid var(--pv-line)}
+    .pv-exhibit{--pv-exhibit-top:max(8px,calc(var(--pv-safe-top,env(safe-area-inset-top)) + 8px)); --pv-exhibit-right:max(8px,calc(var(--pv-safe-right,env(safe-area-inset-right)) + 8px)); --pv-exhibit-bottom:max(8px,calc(var(--pv-safe-bottom,env(safe-area-inset-bottom)) + 8px)); top:var(--pv-exhibit-top); right:var(--pv-exhibit-right); bottom:var(--pv-exhibit-bottom); left:max(40px,calc(var(--pv-safe-left,env(safe-area-inset-left)) + 8px)); width:auto; max-width:760px; max-height:calc(100dvh - var(--pv-exhibit-top) - var(--pv-exhibit-bottom)); overflow:auto}
+  }
   .sect-chip{font-size:11px; font-weight:700; color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,var(--card)); border:1px solid color-mix(in srgb,var(--accent) 30%,transparent); padding:2px 8px; border-radius:var(--pill); white-space:nowrap}
   .exambar .timer.low{color:var(--incorrect); font-weight:700}
   .sect-intro{text-align:center; padding:30px 24px}
@@ -6634,7 +6698,7 @@ function categoryOfSubject(name){ return name === "CARS" ? "CARS" : (subjectByNa
    State
    ============================================================ */
 const state = {
-  step:1, grade:null, courses:{}, confidence:{}, editing:false,
+  step:1, onboarded:false, grade:null, courses:{}, confidence:{}, editing:false,
   activeSubjects:[], difficulty:{}, preview:{}, stats:{},
   srs:{}, bookmarks:new Set(), servedKeys:new Set(),
   history:[], cursor:-1,
@@ -6697,7 +6761,7 @@ const LS_KEY_V1 = "rampup_progress_v1";
 let STORAGE_OK = false;
 function canStore(){ try { localStorage.setItem("__rampup_t","1"); localStorage.removeItem("__rampup_t"); return true; } catch(e){ return false; } }
 function serialize(){
-  return { v:2, onboarded:true, grade:state.grade, courses:state.courses, confidence:state.confidence,
+  return { v:2, onboarded:!!state.onboarded, grade:state.grade, courses:state.courses, confidence:state.confidence,
     difficulty:state.difficulty, preview:state.preview, stats:state.stats, srs:state.srs,
     bookmarks:[...state.bookmarks], servedKeys:[...state.servedKeys], day:state.day,
     totalAnswered:state.totalAnswered, totalCorrect:state.totalCorrect, idkCount:state.idkCount,
@@ -6971,8 +7035,11 @@ async function syncPushRow(envelope){
 
 /* ---- the envelope ---- */
 function entSnapshot(){
+  /* A transition courtesy is local proof about this App Store install, not an
+     account purchase. Never copy it to another browser/device: doing that made
+     one stale TestFlight flag behave like a subscription everywhere. */
   return { v:3, pro: !!ent.pro, exams: [...ent.exams], sub: ent.sub || null,
-           revoked: _syncObj(ent.revoked), transition: ent.transition || null };
+           revoked: _syncObj(ent.revoked) };
 }
 function syncEnvelope(){
   return { v: SYNC_ENVELOPE_V, progress: serialize(), ent: entSnapshot(),
@@ -7002,15 +7069,12 @@ function mergeEnt(a, b){
   const aSub = subBlockedByRevocation(a.sub, revoked) ? null : a.sub;
   const bSub = subBlockedByRevocation(b.sub, revoked) ? null : b.sub;
   const ra = _syncSubRank(aSub), rb = _syncSubRank(bSub);
-  const tA = _syncObj(a.transition), tB = _syncObj(b.transition);
   return {
     v: 3,
     pro: !!a.pro || !!b.pro,
     exams: _syncUnion(a.exams, b.exams),
     sub: (ra < 0 && rb < 0) ? null : (rb > ra ? bSub : aSub),
-    revoked,
-    transition: (!a.transition && !b.transition) ? null
-              : (_syncNum(tB.endsAt) > _syncNum(tA.endsAt) ? b.transition : a.transition)
+    revoked
   };
 }
 /* Apply a merged `ent` to the live layer. Permanent purchases stay additive;
@@ -7026,9 +7090,8 @@ function entApplySynced(e){
   if (e.sub && !subBlockedByRevocation(e.sub, revoked) && _syncSubRank(e.sub) > _syncSubRank(ent.sub)){
     ent.sub = e.sub; changed = true;
   }
-  if (e.transition && _syncNum(e.transition.endsAt) > _syncNum(_syncObj(ent.transition).endsAt)){
-    ent.transition = e.transition; changed = true;
-  }
+  // Transition courtesy is intentionally ignored here. StoreKit on this
+  // physical install is the only authority allowed to create it.
   if (changed){ try { entSave(); } catch(err){} }
   return changed;
 }
@@ -7285,6 +7348,14 @@ async function syncPushNow(){
 let _syncUi = { step:"email", email:"", msg:"", busy:false };
 let _authGateUi = { step:"email", email:"", msg:"", busy:false };
 
+function authGateSubtitle(intent){
+  if (intent !== "signup") return "Use the email connected to your progress or subscription. No password needed.";
+  const days = PAID_LAUNCH ? trialDaysFor(_pwPlan) : 0;
+  return days > 0
+    ? `Save the plan you just built, then start your ${days}-day free trial. One account unlocks RampUp on the website and iPhone.`
+    : "Save the plan you just built, then choose your RampUp plan. One account unlocks RampUp on the website and iPhone.";
+}
+
 function renderAuthGate(){
   const gate = document.getElementById("authGate"); if (!gate) return;
   const signedIn = syncSignedIn();
@@ -7301,11 +7372,10 @@ function renderAuthGate(){
 function showAuthGate(intent){
   const gate = document.getElementById("authGate"); if (!gate) return;
   const signup = intent === "signup";
+  gate.dataset.intent = intent;
   const title = document.getElementById("authGateTitle"), sub = document.getElementById("authGateSub"), back = document.getElementById("authGateBack");
   if (title) title.textContent = signup ? "Create your RampUp account" : "Log in to RampUp";
-  if (sub) sub.textContent = signup
-    ? "Save the plan you just built, then start your trial. One account unlocks RampUp on the website and iPhone."
-    : "Use the email connected to your progress or subscription. No password needed.";
+  if (sub) sub.textContent = authGateSubtitle(intent);
   if (back) back.hidden = signup;
   gate.hidden = false;
   const w = document.getElementById("welcome"), o = document.getElementById("onboarding"), m = document.getElementById("main");
@@ -7331,7 +7401,8 @@ function leaveAuthGate(){
     url.searchParams.delete("login");
     history.replaceState(null, "", url.pathname + url.search + url.hash);
   } catch(e){}
-  goToStep(0);
+  if (access("practice") && state.onboarded) enterPractice();
+  else goToStep(access("practice") ? 1 : 0);
 }
 async function authGateSendCode(){
   const el = document.getElementById("authGateEmail"); if (!el || _authGateUi.busy) return;
@@ -7681,10 +7752,18 @@ function priceFor(key){ return STORE_PRICE[key] || PRICE[key] || ""; }
    (some storefronts aren't), rather than printing a wrong number. */
 function perMonthFor(key){
   const p = planByKey(key); if (!p || p.months <= 1) return "";
-  const raw = priceFor(key), m = String(raw).match(/([^\d\s]*)\s*([\d]+(?:[.,]\d+)?)/);
+  // Only derive an equivalent from one ungrouped amount with an explicit
+  // two-digit decimal fraction. StoreKit's displayPrice is localized but does
+  // not tell JavaScript whether `,` means cents or thousands: treating ¥7,000
+  // as 7.000 would advertise ¥2.33/month. Exact renewal terms remain visible
+  // when this conservative parse declines a storefront format.
+  const raw = String(priceFor(key) || "").trim();
+  const m = raw.match(/^([^\d]*)(\d+[.,]\d{2})([^\d]*)$/u);
   if (!m) return "";
-  const n = parseFloat(m[2].replace(",", ".")); if (!isFinite(n)) return "";
-  return m[1] + (n / p.months).toFixed(2);
+  const decimalMark = m[2].includes(",") ? "," : ".";
+  const n = Number(m[2].replace(",", ".")); if (!isFinite(n)) return "";
+  const monthly = (n / p.months).toFixed(2).replace(".", decimalMark);
+  return m[1] + monthly + m[3];
 }
 
 /* Per-question value. Computed live from PRICE and the real question counts, so
@@ -7749,6 +7828,10 @@ function centsPerQ(sku){
 const PAID_LAUNCH = true;
 
 const TRANSITION_DAYS = 30;   // D-005; set to 0 to disable the courtesy period entirely
+// One public boundary for every pre-paywall iOS learner. Anchoring the courtesy
+// to the release—not first launch or local storage—means deleting/reinstalling
+// cannot manufacture another 30 days on the same or a different device.
+const PAID_IOS_CUTOVER_MS = Date.parse("2026-08-17T00:00:00-04:00");
 const OFFLINE_GRACE_DAYS = 7; /* How long a known-good subscription keeps working with no
                                  way to reach the store. A subscriber on a plane must not
                                  be locked out of the app they are paying for; seven days
@@ -7922,17 +8005,17 @@ function clearSubscription(){
   ent.sub = null; entSave(); return true;
 }
 
-/* Open the courtesy window for a pre-cutover install. Idempotent: the window is
-   opened once and never extended, so reinstalling cannot farm another 30 days
-   (the AppTransaction proof is per-Apple-ID original purchase date, and the
-   window's end is written the first time we see it). */
+/* Open the courtesy window for a pre-cutover install. Its end is derived only
+   from the paid release boundary, never Date.now or local storage, so reinstall
+   and a second device both resolve to the same non-renewable expiry. */
 function openTransitionWindow(originalMs){
   if (!TRANSITION_DAYS) return false;
   if (ent.transition) return transitionActive();
-  const start = originalMs || Date.now();
-  ent.transition = { startedAt: start, endsAt: Date.now() + TRANSITION_DAYS * DAY_MS };
+  ent.transition = { startedAt: PAID_IOS_CUTOVER_MS,
+    originalPurchaseAt: originalMs || null,
+    endsAt: PAID_IOS_CUTOVER_MS + TRANSITION_DAYS * DAY_MS };
   entSave();
-  return true;
+  return transitionActive();
 }
 
 function entReset(){   // dev/debug only
@@ -8317,16 +8400,72 @@ function applySubscriptionStatus(s, authoritative){
   return before !== subscriptionSyncFingerprint(ent.sub);
 }
 
+/* Every native response crosses this one boundary. StoreKit owns Apple
+   subscriptions, but never gets to erase permanent purchases or a web
+   subscription. A partial or malformed bridge response can add a verified
+   grant, but cannot turn an absence into a revocation. */
+function applyNativeEntitlementPayload(payload){
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return false;
+  const hasOwned = Array.isArray(payload.owned)
+    && payload.owned.every(productId => typeof productId === "string");
+  const hasSubscription = Object.prototype.hasOwnProperty.call(payload, "subscription");
+  const validSynced = !Object.prototype.hasOwnProperty.call(payload, "synced")
+    || typeof payload.synced === "boolean";
+  const subscription = payload.subscription;
+  const validSubscription = subscription === null || (!!subscription
+    && typeof subscription === "object" && !Array.isArray(subscription)
+    && typeof subscription.productId === "string" && !!subscription.productId);
+  let changed = hasOwned && applyOwnedProductIds(payload.owned) > 0;
+
+  // `synced:false` means AppStore.sync did not finish. It may carry a grant,
+  // but an omitted subscription cannot revoke the last verified Apple term.
+  const authoritative = payload.synced !== false;
+  const complete = hasOwned && hasSubscription && validSubscription && validSynced;
+  if (complete
+      && applySubscriptionStatus(subscription, authoritative)) changed = true;
+
+  // Builds 12-16 could leave a TestFlight-only courtesy in WebKit storage.
+  // Only a complete, authoritative Apple response may remove it; only an
+  // equally explicit pre-cutover proof may create the fixed-boundary window.
+  if (complete && authoritative && payload.preexistingInstall === false && ent.transition){
+    ent.transition = null; entSave(); changed = true;
+  }
+  if (complete && authoritative && PAID_LAUNCH && TRANSITION_DAYS
+      && entTier() === "none" && payload.preexistingInstall === true){
+    if (openTransitionWindow(payload.originalPurchaseDate || null)) changed = true;
+  }
+  return !!changed;
+}
+
 /* A provider-verified change is both a UI event and an account event. This is
    what carries renewals, trial conversions and revocations to the learner's
    other signed-in browsers instead of waiting for the next answered question. */
 function publishVerifiedEntitlementChange(changed){
   if (!changed) return;
   refreshAfterEntitlement();
+  routeAfterVerifiedPracticeGrant();
   if (syncReady()){
     _syncDirty = true;
     syncPushNow();
   }
+}
+
+/* StoreKit can answer boot, foreground, purchase and restore reads in any
+   order, and its transaction listener can arrive between any two of them.
+   One generation owns every native entitlement ingress so an older response
+   cannot revoke (or resurrect) access after a newer request/event. Product
+   lookups deliberately use their own generation because localized offer copy
+   and account entitlement are independent snapshots. */
+let NATIVE_ENTITLEMENT_GENERATION = 0;
+function beginNativeEntitlementRequest(){ return ++NATIVE_ENTITLEMENT_GENERATION; }
+function applyOrderedNativeEntitlementPayload(payload, generation){
+  if (generation !== NATIVE_ENTITLEMENT_GENERATION) return { accepted:false, changed:false };
+  const changed = applyNativeEntitlementPayload(payload);
+  publishVerifiedEntitlementChange(changed);
+  return { accepted:true, changed:changed };
+}
+function applyNativeEntitlementEvent(payload){
+  return applyOrderedNativeEntitlementPayload(payload, beginNativeEntitlementRequest());
 }
 
 const STORE_INTRO = {};   // key -> { days, unit, type } from StoreKit, when an intro offer exists
@@ -8338,55 +8477,106 @@ const STORE_INTRO = {};   // key -> { days, unit, type } from StoreKit, when an 
    -- subscribed in September, cancelled, reinstalled in January -- was shown
    "Start my 7 days free" and charged $49.99 on the spot. */
 let STORE_FETCHED = false;
+let STORE_PRODUCT_LOADING = false;
+let STORE_PRODUCT_REQUEST = 0;
+const STORE_PRODUCT_KEYS = new Set();
 
 /* Trial length to advertise for a plan. 0 means "the store told us this account
    gets no trial", which is a real answer and must be rendered as one. */
 function trialDaysFor(key){
   const intro = STORE_INTRO[key];
-  if (intro && intro.days) return intro.days;
+  if (intro && intro.type === "free_trial" && intro.days) return intro.days;
   if (STORE_FETCHED) return 0;   // authoritative: this account is not eligible
-  return TRIAL_DAYS;             // no store yet (web/dev): fall back to the constant
+  // A browser checkout is not an Apple-account eligibility claim, so its
+  // configured Stripe offer can use the product fallback. Native cannot: an
+  // Apple ID may already have used the one intro offer for this group, and an
+  // empty, failed, or still-pending product request proves nothing either way.
+  return isNativeApp() ? null : TRIAL_DAYS;
 }
 
-/* Localized prices. Called once on launch and again when the paywall opens, so
+/* Repaint only the offer claims that StoreKit owns. This can run while paid
+   entry, account creation, or an already-open paywall is visible, including
+   after the app returns from a storefront-account change. */
+function refreshStoreOfferCopy(){
+  applyLaunchCopy();
+  const gate = document.getElementById("authGate");
+  if (gate && !gate.hidden && gate.dataset.intent === "signup"){
+    const sub = document.getElementById("authGateSub");
+    if (sub) sub.textContent = authGateSubtitle("signup");
+  }
+  const offer = document.getElementById("pwOffer");
+  if (offer) offer.textContent = pwOfferLine(_pwPlan);
+  const cta = document.getElementById("pwStart");
+  if (cta){
+    cta.textContent = pwCtaLabel(_pwPlan);
+    cta.disabled = pwCtaDisabled(_pwPlan);
+  }
+  document.querySelectorAll("[data-plan-price]").forEach(el => {
+    el.textContent = pwPlanPriceLabel(el.dataset.planPrice);
+  });
+  document.querySelectorAll("[data-plan-sub]").forEach(el => {
+    const p = planByKey(el.dataset.planSub);
+    if (p) el.textContent = pwPlanCadenceLabel(p);
+  });
+}
+
+/* Localized prices. Refreshed on launch, paywall open/retry, and foreground so
    a paywall never paints a hardcoded USD string to a non-US storefront. */
 async function loadStorePrices(){
   const iap = iapPlugin(); if (!iap) return;
+  const request = ++STORE_PRODUCT_REQUEST;
   const ids = SUB_KEYS.map(k => PRODUCTS[k]);
+  // A foreground can represent a different storefront account. The previous
+  // account's eligibility is not safe copy while its replacement is pending,
+  // empty, or failed, so native refreshes become neutral first.
+  if (isNativeApp()){
+    STORE_PRODUCT_LOADING = true;
+    STORE_FETCHED = false;
+    STORE_PRODUCT_KEYS.clear();
+    SUB_KEYS.forEach(k => { delete STORE_INTRO[k]; });
+    refreshStoreOfferCopy();
+  }
   try {
     const res = await iap.getProducts({ ids });
+    if (request !== STORE_PRODUCT_REQUEST) return;   // a newer account snapshot already won
     const rev = {}; Object.keys(PRODUCTS).forEach(k => { rev[PRODUCTS[k]] = k; });
-    const products = (res && res.products) || [];
+    const products = (res && Array.isArray(res.products)) ? res.products : [];
+    const nextPrices = {}, nextIntros = {}, nextKeys = new Set();
     products.forEach(p => {
-      const k = rev[p.id]; if (k && p.price) STORE_PRICE[k] = p.price;
-      if (k && p.introOffer) STORE_INTRO[k] = p.introOffer;
+      const k = p && rev[p.id];
+      const price = p && typeof p.price === "string" ? p.price.trim() : "";
+      if (!k || SUB_KEYS.indexOf(k) === -1 || !price) return;
+      nextKeys.add(k);
+      nextPrices[k] = price;
+      if (p.introOffer) nextIntros[k] = p.introOffer;
     });
-    // Only once the store has actually answered. A thrown request leaves this
-    // false, so a network failure degrades to the optimistic constant rather
-    // than telling an eligible student they get no trial.
-    if (products.length) STORE_FETCHED = true;
+    // Replace the current account snapshot as one unit. In particular, an
+    // omitted introOffer clears the prior account's offer for that product.
+    STORE_PRODUCT_KEYS.clear();
+    SUB_KEYS.forEach(k => { delete STORE_INTRO[k]; });
+    nextKeys.forEach(k => {
+      STORE_PRODUCT_KEYS.add(k);
+      if (nextPrices[k]) STORE_PRICE[k] = nextPrices[k];
+      if (nextIntros[k]) STORE_INTRO[k] = nextIntros[k];
+    });
+    STORE_FETCHED = nextKeys.size > 0;
   } catch(e){}
+  finally {
+    if (request === STORE_PRODUCT_REQUEST){
+      STORE_PRODUCT_LOADING = false;
+      refreshStoreOfferCopy();
+    }
+  }
 }
 
 // On launch (iOS), silently restore any purchases the account already owns.
 async function syncNativeEntitlements(){
   const iap = iapPlugin();
   if (!iap) return;
-  let changed = 0;
+  const generation = beginNativeEntitlementRequest();
   try {
-    const res = await iap.currentEntitlements();
-    changed += applyOwnedProductIds(res && res.owned);
-    // A store read that did not complete must not be read as "they cancelled".
-    const authoritative = !(res && res.synced === false);
-    if (applySubscriptionStatus(res && res.subscription, authoritative)) changed++;
-    // Bounded courtesy for installs that predate the paid build (D-005). The
-    // proof is Apple-signed, so this cannot be faked by clearing storage.
-    if (PAID_LAUNCH && TRANSITION_DAYS && entTier() === "none"
-        && res && res.preexistingInstall){
-      if (openTransitionWindow(res.originalPurchaseDate || null)) changed++;
-    }
+    applyOrderedNativeEntitlementPayload(await iap.currentEntitlements(), generation);
   } catch(e){}
-  publishVerifiedEntitlementChange(changed > 0);
 }
 const StoreKitProvider = {
   id:"storekit",
@@ -8401,8 +8591,11 @@ const StoreKitProvider = {
         // what we hoped it would be. Re-read status rather than writing an
         // optimistic local record that a failed renewal could never correct.
         if (SUB_KEYS.indexOf(short) !== -1){
-          try { const st = await iap.currentEntitlements(); applySubscriptionStatus(st && st.subscription, !(st && st.synced === false)); }
-          catch(e){ grantByProduct(short); }
+          const generation = beginNativeEntitlementRequest();
+          try {
+            applyOrderedNativeEntitlementPayload(await iap.currentEntitlements(), generation);
+          }
+          catch(e){}
           return subActive() ? { ok:true, granted:short } : { ok:false, reason:"failed" };
         }
         const g = grantByProduct(short); return g ? { ok:true, granted:g } : { ok:false, reason:"invalid" };
@@ -8418,17 +8611,18 @@ const StoreKitProvider = {
   async restore(){
     const iap = iapPlugin();
     if (!iap) return { ok:false, reason:"unavailable" };
+    const generation = beginNativeEntitlementRequest();
+    let res = null, failed = false, accepted = false;
     try {
-      const res = await iap.restore();
-      applyOwnedProductIds(res && res.owned);
-      // Only apply subscription status when the sync actually succeeded. A
-      // failed AppStore.sync() returns no subscription, and treating that as
-      // "you have no subscription" would cancel a paying customer's access on
-      // a dropped connection.
-      applySubscriptionStatus(res && res.subscription, !(res && res.synced === false));
-      if (res && res.synced === false && entTier() === "none") return { ok:false, reason:"unavailable" };
-    } catch(e){ return { ok:false, reason:"unavailable" }; }
-    return { ok:true, granted:[ ...(subActive()?["subscription"]:[]), ...(ent.pro?["pro"]:[]), ...ent.exams ] };
+      res = await iap.restore();
+      accepted = applyOrderedNativeEntitlementPayload(res, generation).accepted;
+    } catch(e){ failed = true; }
+    const granted = [ ...(subActive()?["subscription"]:[]), ...(ent.pro?["pro"]:[]), ...ent.exams ];
+    // A stale completion reports only what the newer authority left current;
+    // it never derives success or failure from its own obsolete payload.
+    if (entTier() !== "none") return { ok:true, granted:granted };
+    if (failed || (accepted && res && res.synced === false)) return { ok:false, reason:"unavailable" };
+    return { ok:false, reason:"none" };
   },
   async redeemCode(code){ return await redeemCodeShared(code); }    // Apple offer codes handled here later
 };
@@ -8457,6 +8651,7 @@ function _companionOverride(){
   } catch(e){ return false; }
 }
 const COMPANION = isNative || _companionOverride();
+document.documentElement.classList.toggle("companion", COMPANION);
 /* The marketing funnel stores its answers under this key. Same grade strings,
    same course names, same confidence values as this file — it is a mirror of
    the constants here, on purpose, so a handoff is a straight copy. */
@@ -8609,6 +8804,7 @@ function sessionIdFrom(text){
   return m ? m[0] : null;
 }
 function rehydrate(s){
+  state.onboarded = !!s.onboarded;
   state.grade = s.grade; state.courses = Object.assign(state.courses, s.courses || {}); state.confidence = s.confidence || {};
   state.difficulty = s.difficulty || {}; state.preview = s.preview || {}; state.stats = s.stats || {};
   state.srs = s.srs || {}; state.bookmarks = new Set(s.bookmarks || []); state.servedKeys = new Set(s.servedKeys || []);
@@ -10322,21 +10518,32 @@ const WELCOME_COPY = {
     sub: "Tell us where you are and RampUp builds your ramp: every subject starts at your real level, "
        + "you're taught anything you haven't met yet, and difficulty climbs with you all the way to "
        + "MCAT-style reasoning. Takes about a minute to set up.",
-    stats: [["4", "MCAT sections"], ["5", "Difficulty tiers"], ["TRIAL", "Days free"]],
-    hook: "Start with <b>" + 7 + " days free</b>. Full-length, exam-quality simulations included, for "
-        + "a fraction of what the big prep courses charge."
+    stats: [["4", "MCAT sections"], ["5", "Difficulty tiers"], ["ALL", "Prep tools"]],
+    hook: "<b>Full-length, exam-quality simulations included</b>, for a fraction of what the big prep courses charge."
   }
 };
+function paidWelcomeTrialDays(){ return PAID_LAUNCH ? trialDaysFor(_pwPlan) : 0; }
+function paidWelcomeCta(){
+  const days = paidWelcomeTrialDays();
+  if (!isNative) return "Start my free trial →";
+  return days > 0 ? `Start my ${days} days free →` : "Build my plan →";
+}
 function applyLaunchCopy(){
   const c = PAID_LAUNCH ? WELCOME_COPY.paid : WELCOME_COPY.free;
+  const trialDays = paidWelcomeTrialDays();
   const t = $("#obTagline"); if (t) t.textContent = c.tagline;
   const sub = $("#obWelcomeSub"); if (sub) sub.textContent = c.sub;
-  const hook = $("#obWelcomeHook"); if (hook) hook.innerHTML = c.hook;
+  const hook = $("#obWelcomeHook"); if (hook) hook.innerHTML = PAID_LAUNCH && trialDays > 0
+    ? `Start with <b>${trialDays} days free</b>. Full-length, exam-quality simulations included, for a fraction of what the big prep courses charge.`
+    : c.hook;
   const stats = $("#obWelcomeStats");
-  if (stats) stats.innerHTML = c.stats.map(([n, l]) => {
-    const val = n === "BANK" ? String(BANK.length) : n === "TRIAL" ? String(TRIAL_DAYS) : n;
+  const welcomeStats = PAID_LAUNCH && trialDays > 0
+    ? [c.stats[0], c.stats[1], [String(trialDays), "Days free"]] : c.stats;
+  if (stats) stats.innerHTML = welcomeStats.map(([n, l]) => {
+    const val = n === "BANK" ? String(BANK.length) : n;
     return `<div class="ws"><div class="n">${val}</div><div class="l">${l}</div></div>`;
   }).join("");
+  const next = $("#nextBtn"); if (next && state.step === 0) next.textContent = paidWelcomeCta();
 }
 
 const OB_INPUT_STEPS = 4;      // grade, courses, confidence, test date
@@ -10371,7 +10578,7 @@ function goToStep(n){
     { previews: revealRows().filter(r => r.preview).length, days: daysUntilTest(), goal: suggestedGoal() });
   const welcome = n === 0;
   $("#backBtn").hidden = n <= 1;
-  $("#nextBtn").textContent = welcome && PAID_LAUNCH ? "Start my free trial →"
+  $("#nextBtn").textContent = welcome && PAID_LAUNCH ? paidWelcomeCta()
     : welcome ? "Let's go →"
     : (n >= OB_REVEAL_STEP ? (state.editing ? "Save & practice →" : "Start practicing →") : "Next");
   $("#obProgress").style.display = welcome ? "none" : "";
@@ -10399,6 +10606,7 @@ $("#backBtn").addEventListener("click", () => { if (state.step > 1) goToStep(sta
    Enter practice
    ============================================================ */
 function finishOnboarding(fresh){
+  state.onboarded = true;
   track("onboarding_completed", { fresh: !!fresh, grade: state.grade, timeframe: state.testTimeframe });
   // First reward: setting up IS work. A new learner should never land on 0 XP.
   if (fresh && !state.onboardXp){ state.onboardXp = true; state.xp = (state.xp || 0) + 15; }
@@ -12182,22 +12390,18 @@ function ensureRampyFab(){
     fab.id = "rampyFab"; fab.setAttribute("aria-label", "Ask Rampy");
     fab.innerHTML = rampySvg("happy");
     fab.addEventListener("click", () => {
-      if (fab.dataset.mode === "sleep"){ toast("Rampy sleeps during scored sections. See you at review."); return; }
       hideRampyBubble(); openRampyGeneral();
     });
     document.body.appendChild(fab);
   }
   const inTest = !!state.test && state.view === "testrun";
   const ok = (typeof access === "function" && access("rampy"))
-          && (inTest || ["home","practice","lessons","tests"].indexOf(state.view) !== -1);
+          && !inTest && ["home","practice","lessons","tests"].indexOf(state.view) !== -1;
   fab.hidden = !ok;
-  /* During a scored section Rampy is ASLEEP, visibly: tutoring stays off (the
-     worker refuses exam-mode too), but the character keeps integrity charming
-     instead of vanishing. */
-  fab.classList.toggle("asleep", inTest);
-  fab.innerHTML = rampySvg(inTest ? "sleep" : "happy");
-  fab.dataset.mode = inTest ? "sleep" : "awake";
-  if (ok && !inTest && !_fabBubbleShown) scheduleRampyBubble();
+  fab.classList.remove("asleep");
+  fab.innerHTML = rampySvg("happy");
+  fab.dataset.mode = "awake";
+  if (ok && !_fabBubbleShown) scheduleRampyBubble();
 }
 function scheduleRampyBubble(){
   _fabBubbleShown = true;
@@ -13085,6 +13289,23 @@ function buildTestQueue(t){
   return shuffleArr(picked).slice(0, Math.min(t.size, picked.length));
 }
 function fmtTime(sec){ const m=Math.floor(sec/60), s=sec%60; return m + ":" + String(s).padStart(2,"0"); }
+const MCAT_PACE_SECONDS = {
+  "Chem/Phys": 95 * 60 / 59,
+  "CARS": 90 * 60 / 53,
+  "Bio/Biochem": 95 * 60 / 59,
+  "Psych/Soc": 95 * 60 / 59
+};
+function examDurationSeconds(queue){
+  const qs = Array.isArray(queue) ? queue : [];
+  return Math.max(60, Math.round(qs.reduce((total, q) =>
+    total + (MCAT_PACE_SECONDS[q && q.category] || MCAT_PACE_SECONDS["Chem/Phys"]), 0)));
+}
+function ensureExamDeadline(T){
+  if (!T || T.sectioned) return null;
+  if (!T.testDurationSeconds) T.testDurationSeconds = examDurationSeconds(T.queue);
+  if (!Number.isFinite(T.testEndMs)) T.testEndMs = Date.now() + T.testDurationSeconds * 1000;
+  return T.testEndMs;
+}
 let _testTimer = null;
 /* ---- exam resume ---------------------------------------------------------
    Questions are stored by KEY, never by value: the bank is the source of truth,
@@ -13104,6 +13325,8 @@ function saveExam(){
       keys: T.queue.map(q => q.key),
       sectioned: !!T.sectioned, curSection: T.curSection,
       phase: T.phase || (T.sectioned ? "section" : "test"),
+      testDurationSeconds: T.testDurationSeconds || null,
+      testEndMs: Number.isFinite(T.testEndMs) ? T.testEndMs : null,
       sectionEndMs: T.sectionEndMs || null,
       breakEndMs: T.breakEndMs || null,
       breakNextSection: T.breakNextSection == null ? null : T.breakNextSection,
@@ -13136,30 +13359,51 @@ async function resumeExam(e){
   PREMIUM_BANK.forEach(q => { if (!byKey[q.key]) byKey[q.key] = q; });
   const queue = e.keys.map(k => byKey[k]);
   if (queue.some(q => !q)) { clearExam(); return false; }
+  const activeUnsectioned = !e.sectioned && e.phase !== "intro";
+  let migratedDeadline = false;
+  if (activeUnsectioned && !Number.isFinite(e.testEndMs)) {
+    if (!Number.isFinite(e.startMs) || e.startMs <= 0 || e.startMs > Date.now()) {
+      clearExam(); return false;
+    }
+    const testDurationSeconds = examDurationSeconds(queue);
+    e = Object.assign({}, e, {
+      testDurationSeconds,
+      testEndMs: e.startMs + testDurationSeconds * 1000
+    });
+    migratedDeadline = true;
+  }
   state.test = {
     id: e.id, def, queue, idx: e.idx || 0,
     answers: e.answers || new Array(queue.length).fill(null),
     flags: e.flags || new Array(queue.length).fill(false),
-    startMs: e.startMs || Date.now(), startDay: e.startDay || todayStr(),
+    startMs: e.startMs || null, startDay: e.startDay || todayStr(),
     sectioned: !!e.sectioned, sections: e.sections || null,
     curSection: (e.curSection == null ? -1 : e.curSection),
     phase: e.phase || (e.breakNextSection != null ? "break" : "section"),
+    testDurationSeconds: e.testDurationSeconds || null,
+    testEndMs: Number.isFinite(e.testEndMs) ? e.testEndMs : null,
     sectionEndMs: e.sectionEndMs || null,
     breakEndMs: e.breakEndMs || null,
     breakNextSection: e.breakNextSection == null ? null : e.breakNextSection,
     pv: e.pv || null
   };
+  if (migratedDeadline) saveExam();
   state.view = "testrun"; hideViews(); $("#testRunView").hidden = false; syncChrome();
   // The section clock kept running while the app was gone -- that is how a real
   // exam behaves, and pausing it would make the timer a suggestion.
   if (state.test.phase === "break" && state.test.breakNextSection != null && state.test.breakEndMs) {
     if (Date.now() >= state.test.breakEndMs) continueAfterBreak();
     else renderExamBreak();
-  } else if (state.test.phase === "intro" && state.test.sectioned) {
+  } else if (state.test.phase === "intro" && (!state.test.sectioned || state.test.curSection < 0)) {
+    renderExamIntro();
+  } else if ((state.test.phase === "section_intro" || state.test.phase === "intro") && state.test.sectioned) {
     beginSection(state.test.curSection);
   } else if (state.test.sectioned && state.test.sectionEndMs && Date.now() >= state.test.sectionEndMs) {
     advanceSection(true);
+  } else if (!state.test.sectioned && Number.isFinite(state.test.testEndMs) && Date.now() >= state.test.testEndMs) {
+    finishTest();
   } else {
+    if (!state.test.sectioned) ensureExamDeadline(state.test);
     startTestTimer(); renderTestQuestion();
   }
   return true;
@@ -13173,10 +13417,68 @@ function startTestTimer(){ stopTestTimer(); _testTimer = setInterval(() => {
     if (rem <= 30) el.parentElement && el.parentElement.classList.add("low");
     if (rem <= 0) advanceSection(true);          // section time expired
   } else {
-    el.textContent = fmtTime(Math.floor((Date.now()-T.startMs)/1000));
+    const rem = Math.max(0, Math.floor((ensureExamDeadline(T) - Date.now())/1000));
+    el.textContent = fmtTime(rem);
+    if (rem <= 30) el.parentElement && el.parentElement.classList.add("low");
+    if (rem <= 0) finishTest();
   }
 }, 1000); }
 function stopTestTimer(){ if (_testTimer){ clearInterval(_testTimer); _testTimer = null; } }
+const EXAM_TUTORIAL_KEY = "rampup.exam.tools.v1";
+function examTutorialSeen(){ try { return localStorage.getItem(EXAM_TUTORIAL_KEY) === "1"; } catch(e){ return false; } }
+function markExamTutorialSeen(){ try { localStorage.setItem(EXAM_TUTORIAL_KEY, "1"); } catch(e){} }
+function renderExamIntro(){
+  const T = state.test; if (!T) return;
+  T.phase = "intro"; T.startMs = null; T.testEndMs = null; T.sectionEndMs = null; stopTestTimer();
+  const first = !examTutorialSeen();
+  const plan = T.sectioned && T.sections ? T.sections : null;
+  const questions = T.queue.length;
+  const seconds = plan
+    ? plan.reduce((sum, s) => sum + s.minutes * 60, 0)
+    : examDurationSeconds(T.queue);
+  const mins = Math.max(1, Math.round(seconds / 60));
+  const questionLabel = questions === 1 ? "question" : "questions";
+  const format = plan
+    ? `${plan.length} timed sections · ${questions} questions · ${Math.round(seconds/3600*10)/10} hours of testing`
+    : `${questions} ${questionLabel} · ${mins} minutes`;
+  const wrap = $("#testRunView");
+  wrap.innerHTML = `<div class="exam-intro-shell">
+    <div class="exam-intro-card">
+      <div class="exam-intro-kicker">Before you begin</div>
+      <h2>${esc((T.def && T.def.title) || "Practice exam")}</h2>
+      <p class="exam-intro-meta">${format}</p>
+      <p class="exam-intro-lead">Your timer starts only after you press Begin. Once it starts, treat this like a scored MCAT sitting.</p>
+      <div class="exam-tool-guide" aria-label="Exam tool guide">
+        <div><b>Highlight</b><span>Select text, then mark it yellow or blue.</span></div>
+        <div><b>Remove / Strike</b><span>Select marked text to remove color, or cross out a choice.</span></div>
+        <div><b>Flag</b><span>Save a question to revisit before ending the section.</span></div>
+        <div><b>Navigation</b><span>See answered, incomplete, and flagged questions.</span></div>
+        <div><b>Exhibit</b><span>The periodic table appears in Chem/Phys and Bio/Biochem.</span></div>
+      </div>
+      ${first ? `<div class="exam-first-note"><b>First exam tip</b><span>On iPhone, press and hold to select words. Keep your selection visible, then tap a tool in the scrollable bar.</span></div>` : ""}
+      <div class="exam-integrity-note"><b>Scored mode</b><span>Rampy steps away until review so every answer is yours. There is no calculator or general formula sheet; needed conversion factors are included in the question.</span></div>
+      <div class="exam-intro-actions">
+        <button class="btn primary exam-begin" id="examBegin">Begin exam ${icon("arrowRight")}</button>
+        <button class="btn ghost exam-back" id="examBack">Back to tests</button>
+      </div>
+    </div>
+  </div>`;
+  wrap.querySelector("#examBegin").addEventListener("click", beginExamFromIntro);
+  wrap.querySelector("#examBack").addEventListener("click", () => {
+    stopTestTimer(); state.test = null; clearExam(); showTests();
+  });
+  try { ensureRampyFab(); } catch(e){}
+  saveExam(); window.scrollTo({ top:0 });
+}
+function beginExamFromIntro(){
+  const T = state.test; if (!T) return;
+  markExamTutorialSeen();
+  if (T.sectioned){ beginSection(0); return; }
+  T.phase = "test"; T.startMs = Date.now();
+  T.testDurationSeconds = examDurationSeconds(T.queue);
+  T.testEndMs = T.startMs + T.testDurationSeconds * 1000;
+  saveExam(); SFX.tick(); haptic("medium"); renderTestQuestion(); startTestTimer();
+}
 async function startTest(t){
   if (t.premium && !ownsExam(t.id)){ openPaywall(t); return; }   // premium exams gate on entitlement
   track("exam_started", { exam:t.id, premium:!!t.premium });
@@ -13186,7 +13488,7 @@ async function startTest(t){
   if (t.premium) await premiumReady;   // the paid bank streams in after first paint
   const queue = buildTestQueue(t);
   if (queue.length < 3){ toast("Not enough questions for this test yet."); return; }
-  state.test = { id:t.id, def:t, queue, idx:0, answers:new Array(queue.length).fill(null), flags:new Array(queue.length).fill(false), startMs: Date.now(), startDay: todayStr(), phase:"test" };
+  state.test = { id:t.id, def:t, queue, idx:0, answers:new Array(queue.length).fill(null), flags:new Array(queue.length).fill(false), startMs:null, startDay:todayStr(), phase:"intro", testDurationSeconds:null, testEndMs:null };
   const _plan = effectivePlan(t);
   if (_plan){                             // build contiguous section bounds from the section-ordered queue
     const secs = []; let i = 0;
@@ -13197,9 +13499,7 @@ async function startTest(t){
   }
   SFX.tick(); haptic("light");
   state.view = "testrun"; hideViews(); $("#testRunView").hidden = false; syncChrome();
-  if (state.test.sectioned) beginSection(0);
-  else { startTestTimer(); renderTestQuestion(); }
-  saveExam();
+  renderExamIntro();
 }
 function beginSection(n){
   const T = state.test; if (!T) return;
@@ -13222,7 +13522,9 @@ function enterSection(n){
   haptic("medium");   // crossing into a timed section is a real boundary (L4/L5)
   const T = state.test; if (!T) return;
   T.breakEndMs = null; T.breakNextSection = null; T.phase = "section";
-  const s = T.sections[n]; T.idx = s.start; T.sectionEndMs = Date.now() + s.minutes*60000;
+  const now = Date.now();
+  if (n === 0 && !T.startMs) T.startMs = now; // intro is untimed; the first section starts the sitting
+  const s = T.sections[n]; T.idx = s.start; T.sectionEndMs = now + s.minutes*60000;
   saveExam();
   SFX.tick(); haptic("light"); startTestTimer(); renderTestQuestion();
 }
@@ -13325,6 +13627,84 @@ function pvEnsure(T){
   T.pv.seen = T.pv.seen || [];            // idx -> true once rendered
   T.pv.hlMode = T.pv.hlMode || "y";       // y | b | remove
 }
+let _pvSavedRange = null, _pvSuppressSelectionCapture = false,
+    _pvTextGestureUntil = 0, _pvSelectionGuardInstalled = false;
+function pvSelectableHost(range){
+  if (!range) return null;
+  const root = document.getElementById("pvRoot"); if (!root) return null;
+  const hosts = [document.getElementById("pvP"), document.getElementById("pvQ"),
+    ...Array.from(document.querySelectorAll('[id^="pvC"]'))].filter(Boolean);
+  const host = hosts.find(el => el.contains(range.startContainer) && el.contains(range.endContainer));
+  if (!host) return null;
+  const start = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement;
+  const end = range.endContainer.nodeType === 1 ? range.endContainer : range.endContainer.parentElement;
+  if ((start && start.closest && start.closest(".pv-ltr")) || (end && end.closest && end.closest(".pv-ltr"))) return null;
+  return host;
+}
+function pvCaptureSelection(sel){
+  if (_pvSuppressSelectionCapture) return false;
+  sel = sel || (window.getSelection && window.getSelection());
+  if (!sel || !sel.rangeCount || sel.isCollapsed) return false;
+  const range = sel.getRangeAt(0);
+  if (!pvSelectableHost(range) || !String(range).trim()) return false;
+  try { _pvSavedRange = range.cloneRange(); _pvTextGestureUntil = Date.now() + 650; return true; }
+  catch(e){ return false; }
+}
+function pvInstallSelectionGuard(){
+  if (_pvSelectionGuardInstalled) return;
+  _pvSelectionGuardInstalled = true;
+  document.addEventListener("selectionchange", () => pvCaptureSelection(), true);
+  document.addEventListener("pointerup", () => pvCaptureSelection(), true);
+  document.addEventListener("touchend", () => pvCaptureSelection(), { capture:true, passive:true });
+  /* WebKit clears a selection as toolbar focus moves. Pointer/touch capture is
+     the real-device path above. Keeping the last valid range when script or a
+     browser control calls removeAllRanges also makes the contract deterministic
+     in browser automation and accessibility tooling. */
+  try {
+    const proto = window.Selection && window.Selection.prototype;
+    if (proto && !proto.__rampupOriginalRemoveAllRanges){
+      const original = proto.removeAllRanges;
+      Object.defineProperty(proto, "__rampupOriginalRemoveAllRanges", { value:original });
+      proto.removeAllRanges = function(){
+        if (!_pvSuppressSelectionCapture) pvCaptureSelection(this);
+        return original.apply(this, arguments);
+      };
+    }
+  } catch(e){}
+}
+function pvCurrentRange(){
+  pvCaptureSelection();
+  const range = _pvSavedRange;
+  if (!range || !range.startContainer || !range.endContainer
+      || !range.startContainer.isConnected || !range.endContainer.isConnected
+      || !pvSelectableHost(range)) return null;
+  try { return range.cloneRange(); } catch(e){ return null; }
+}
+function pvClearSelection(){
+  _pvSavedRange = null;
+  _pvTextGestureUntil = 0;
+  _pvSuppressSelectionCapture = true;
+  try { const sel = window.getSelection && window.getSelection(); if (sel) sel.removeAllRanges(); } catch(e){}
+  _pvSuppressSelectionCapture = false;
+}
+function pvPreserveOnPress(el){
+  if (!el) return;
+  const keep = () => pvCaptureSelection();
+  el.addEventListener("pointerdown", keep, true);
+  el.addEventListener("touchstart", keep, { capture:true, passive:true });
+  el.addEventListener("mousedown", keep, true);
+}
+function pvUnwrap(el){
+  const parent = el && el.parentNode; if (!parent) return;
+  while (el.firstChild) parent.insertBefore(el.firstChild, el);
+  parent.removeChild(el); parent.normalize();
+}
+function pvWrapRange(range, tag, className){
+  if (!range || !String(range).trim()) return null;
+  const node = document.createElement(tag); node.className = className;
+  try { node.appendChild(range.extractContents()); range.insertNode(node); return node; }
+  catch(e){ return null; }
+}
 function pvStatus(T, i){
   if (T.answers[i] !== null && T.answers[i] !== undefined) return "Complete";
   return T.pv.seen[i] ? "Incomplete" : "Unseen";
@@ -13332,7 +13712,9 @@ function pvStatus(T, i){
 function renderTestQuestion(){
   const T = state.test; if (!T) return;
   pvEnsure(T);
+  _pvSavedRange = null;
   try { hideRampyBubble(); } catch(e){}   // the companion never speaks over a scored section
+  try { const fab = document.getElementById("rampyFab"); if (fab) fab.hidden = true; } catch(e){}
   const q = T.queue[T.idx];
   const wrap = $("#testRunView"), chosen = T.answers[T.idx];
   const sec = T.sectioned ? T.sections[T.curSection] : null;
@@ -13340,24 +13722,26 @@ function renderTestQuestion(){
   const isLast = T.idx === scopeEnd;
   const pos = T.idx - scopeStart + 1, scopeLen = scopeEnd - scopeStart + 1;
   T.pv.seen[T.idx] = true;
-  const timerInit = sec ? fmtTime(Math.max(0, Math.floor((T.sectionEndMs - Date.now())/1000))) : fmtTime(Math.floor((Date.now()-T.startMs)/1000));
+  if (!sec) ensureExamDeadline(T);
+  const timerInit = sec ? fmtTime(Math.max(0, Math.floor((T.sectionEndMs - Date.now())/1000)))
+    : fmtTime(Math.max(0, Math.floor((T.testEndMs - Date.now())/1000)));
   const secName = sec ? (sec.name || `Section ${T.curSection+1}`) : "Timed Practice";
-  const isChemPhys = q.category === "Chem/Phys";
+  const hasScienceExhibit = q.category === "Chem/Phys" || q.category === "Bio/Biochem";
   const hl = T.pv.hlHtml[T.idx] || {};
-  wrap.innerHTML = `<div class="pv" id="pvRoot">
+  wrap.innerHTML = `<div class="pv ${COMPANION ? "pv-companion" : ""}" id="pvRoot">
     <div class="pv-top">
-      <span class="pv-title">RampUp Full-Length Practice &mdash; ${esc(secName)}</span>
+      <span class="pv-title">RampUp ${esc((T.def && T.def.title) || "Practice Exam")} &mdash; ${esc(secName)}</span>
       <span class="pv-count">Question ${pos} of ${scopeLen}</span>
       <span class="pv-time">Time Remaining <span id="testTimer">${timerInit}</span></span>
     </div>
     <div class="pv-tools">
-      <button class="pv-tool ${T.pv.hlMode==="y"?"on":""}" id="pvHlY" title="Highlight yellow (Alt+H)">Highlight</button>
-      <button class="pv-tool ${T.pv.hlMode==="b"?"on":""}" id="pvHlB" title="Highlight blue">Highlight&nbsp;(blue)</button>
-      <button class="pv-tool ${T.pv.hlMode==="remove"?"on":""}" id="pvHlR" title="Remove highlighting">Remove&nbsp;HL</button>
-      <button class="pv-tool" id="pvStrike" title="Strikethrough selection (Alt+S)">Strikethrough</button>
+      <button class="pv-tool ${T.pv.hlMode==="y"?"on":""}" id="pvHlY" aria-label="Highlight selected text yellow" aria-pressed="${T.pv.hlMode==="y"}" title="Highlight yellow (Alt+H)"><span class="pv-tool-long">Highlight</span><span class="pv-tool-short">Yellow</span></button>
+      <button class="pv-tool ${T.pv.hlMode==="b"?"on":""}" id="pvHlB" aria-label="Highlight selected text blue" aria-pressed="${T.pv.hlMode==="b"}" title="Highlight blue"><span class="pv-tool-long">Highlight&nbsp;(blue)</span><span class="pv-tool-short">Blue</span></button>
+      <button class="pv-tool ${T.pv.hlMode==="remove"?"on":""}" id="pvHlR" aria-label="Remove highlighting from selected text" aria-pressed="${T.pv.hlMode==="remove"}" title="Remove highlighting"><span class="pv-tool-long">Remove&nbsp;HL</span><span class="pv-tool-short">Remove</span></button>
+      <button class="pv-tool" id="pvStrike" aria-label="Strikethrough selected text" aria-pressed="false" title="Strikethrough selection (Alt+S)"><span class="pv-tool-long">Strikethrough</span><span class="pv-tool-short">Strike</span></button>
       <button class="pv-tool ${T.flags[T.idx]?"on":""}" id="pvFlag" aria-pressed="${T.flags[T.idx]}" title="Flag for review (Alt+F)">&#9873; Flag</button>
-      ${isChemPhys ? `<button class="pv-tool" id="pvExhibit" title="Periodic table (Alt+T)">Exhibit</button>` : ""}
-      <button class="pv-tool" id="pvNav" title="Navigation (Alt+V)">Navigation</button>
+      ${hasScienceExhibit ? `<button class="pv-tool" id="pvExhibit" aria-label="Open periodic table" title="Periodic table (Alt+T)"><span class="pv-tool-long">Exhibit</span><span class="pv-tool-short">Table</span></button>` : ""}
+      <button class="pv-tool" id="pvNav" aria-label="Open exam navigation" title="Navigation (Alt+V)"><span class="pv-tool-long">Navigation</span><span class="pv-tool-short">Review</span></button>
       <span class="pv-flagged-ind" style="margin-left:auto">${T.flags[T.idx] ? "&#9873; Flagged" : ""}</span>
     </div>
     <div class="pv-main">
@@ -13370,7 +13754,7 @@ function renderTestQuestion(){
     <div class="pv-bottom">
       <button class="pv-nav-btn ghost" id="pvPrev" ${T.idx<=scopeStart?"disabled":""}>&#9664; Previous</button>
       <button class="pv-nav-btn ghost" id="pvQuit" title="End test">End</button>
-      <button class="pv-nav-btn" id="testNext">${isLast ? "Review Section &#9654;" : "Next &#9654;"}</button>
+      <button class="pv-nav-btn" id="testNext">${isLast ? (T.sectioned ? "Review Section &#9654;" : "Review Exam &#9654;") : "Next &#9654;"}</button>
     </div>
   </div>`;
   // A normal click selects the response. Strikethrough is a separate text tool:
@@ -13388,7 +13772,10 @@ function renderTestQuestion(){
     row.addEventListener("click", () => {
       // A drag leaves a range selected and belongs to the text tools, not to
       // response selection. A plain click has no range and selects the answer.
-      if (String(window.getSelection && window.getSelection()).length) return;
+      if (String(window.getSelection && window.getSelection()).length || Date.now() < _pvTextGestureUntil) return;
+      // If the learner selected text but chose not to use a tool, this is now a
+      // deliberate tap. Dismiss the stale range and let the answer work.
+      if (_pvSavedRange) pvClearSelection();
       selectTestChoice(i);
     });
     row.addEventListener("keydown", (e) => {
@@ -13402,8 +13789,10 @@ function renderTestQuestion(){
   wrap.querySelector("#testNext").addEventListener("click", () =>
     isLast ? pvOpenReview(true) : testGo(1));
   wrap.querySelector("#pvFlag").addEventListener("click", toggleTestFlag);
-  const hlBtn = (id, mode) => { const b = wrap.querySelector(id); if (b) b.addEventListener("click", () => { T.pv.hlMode = mode; pvApplyHighlight(); renderTestQuestion(); }); };
+  pvInstallSelectionGuard();
+  const hlBtn = (id, mode) => { const b = wrap.querySelector(id); if (b){ pvPreserveOnPress(b); b.addEventListener("click", () => { T.pv.hlMode = mode; pvApplyHighlight(); renderTestQuestion(); }); } };
   hlBtn("#pvHlY","y"); hlBtn("#pvHlB","b"); hlBtn("#pvHlR","remove");
+  pvPreserveOnPress(wrap.querySelector("#pvStrike"));
   wrap.querySelector("#pvStrike").addEventListener("click", pvStrikeSelection);
   const ex = wrap.querySelector("#pvExhibit"); if (ex) ex.addEventListener("click", pvToggleExhibit);
   wrap.querySelector("#pvNav").addEventListener("click", () => pvOpenReview(false));
@@ -13423,43 +13812,34 @@ function pvSnapshotHl(){
 }
 function pvApplyHighlight(){
   const T = state.test; if (!T) return; pvEnsure(T);
-  const sel = window.getSelection && window.getSelection();
-  if (!sel || sel.isCollapsed) return;
-  const range = sel.getRangeAt(0);
+  const range = pvCurrentRange(); if (!range) return;
+  const host = pvSelectableHost(range); if (!host) return;
   if (T.pv.hlMode === "remove"){
-    // unwrap any marks intersecting the selection's common ancestor
-    const root = range.commonAncestorContainer.nodeType === 1 ? range.commonAncestorContainer : range.commonAncestorContainer.parentElement;
-    (root.closest && root.closest(".pv") ? root : document).querySelectorAll("mark.pv-hl-y, mark.pv-hl-b").forEach(m => {
-      if (sel.containsNode(m, true)) m.replaceWith(...m.childNodes);
-    });
+    const marks = Array.from(host.querySelectorAll("mark.pv-hl-y, mark.pv-hl-b"))
+      .filter(m => { try { return range.intersectsNode(m); } catch(e){ return false; } });
+    marks.forEach(pvUnwrap);
   } else {
-    try {
-      const mark = document.createElement("mark");
-      mark.className = T.pv.hlMode === "b" ? "pv-hl-b" : "pv-hl-y";
-      range.surroundContents(mark);
-    } catch(e){ /* selection crossed element boundaries — leave it */ }
+    const cls = T.pv.hlMode === "b" ? "pv-hl-b" : "pv-hl-y";
+    const start = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement;
+    const end = range.endContainer.nodeType === 1 ? range.endContainer : range.endContainer.parentElement;
+    const sm = start && start.closest && start.closest("mark.pv-hl-y,mark.pv-hl-b");
+    const em = end && end.closest && end.closest("mark.pv-hl-y,mark.pv-hl-b");
+    if (sm && sm === em && host.contains(sm)) sm.className = cls;
+    else pvWrapRange(range, "mark", cls);
   }
-  sel.removeAllRanges();
+  pvClearSelection();
   pvSnapshotHl();
 }
 function pvStrikeSelection(){
-  const sel = window.getSelection && window.getSelection();
-  if (!sel || sel.isCollapsed || !sel.anchorNode) return;
-  const range = sel.getRangeAt(0);
-  const root = document.getElementById("pvRoot");
-  if (!root || !root.contains(range.commonAncestorContainer)) return;
-  const anchor = sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement;
-  const existing = anchor && anchor.closest && anchor.closest("s.pv-strike");
-  if (existing && root.contains(existing)) {
-    existing.replaceWith(...existing.childNodes);
-  } else {
-    try {
-      const strike = document.createElement("s");
-      strike.className = "pv-strike";
-      range.surroundContents(strike);
-    } catch(e){ return; } // a range crossing element boundaries cannot be wrapped safely
-  }
-  sel.removeAllRanges();
+  const range = pvCurrentRange(); if (!range) return;
+  const host = pvSelectableHost(range); if (!host) return;
+  const start = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement;
+  const end = range.endContainer.nodeType === 1 ? range.endContainer : range.endContainer.parentElement;
+  const ss = start && start.closest && start.closest("s.pv-strike");
+  const es = end && end.closest && end.closest("s.pv-strike");
+  if (ss && ss === es && host.contains(ss)) pvUnwrap(ss);
+  else if (!pvWrapRange(range, "s", "pv-strike")) return;
+  pvClearSelection();
   pvSnapshotHl();
 }
 function pvToggleExhibit(){
@@ -13555,7 +13935,7 @@ function confirmFinishTest(){
 function quitTest(){
   const T = state.test; if (!T) return;
   if (T.answers.some(a => a!==null) && !confirm("End this test now? It will not be scored or saved.")) return;
-  stopTestTimer(); state.test = null; showTests();
+  stopTestTimer(); state.test = null; clearExam(); showTests();
 }
 /* Reopen a completed sitting. Stored as question KEYS, so the bank supplies the
    text -- a content update cannot resurrect a stale version of a question they
@@ -13982,6 +14362,34 @@ let PAYWALL_VARIANT = "reveal_v1";
 let _pwPlan = "sub_quarterly";     // 3-month is the recommended default (D-002)
 let _deferPaywallForAccount = false;
 let _paidGateRequired = false;
+let _paidGateReason = "";
+
+/* A courtesy or one individually owned exam includes the learning app, but an
+   account-checkout plan still adds the complete exam catalog. Other entry gates
+   sell practice itself, so their satisfied capability remains `practice`. */
+function paidGateAccessSatisfied(reason){
+  return reason === "account_checkout" ? access("exams") : access("practice");
+}
+
+function clearAccountCheckoutRoute(){
+  _accountEntry = ""; _checkoutPlan = "";
+  try {
+    const url = new URL(location.href);
+    url.searchParams.delete("signup");
+    url.searchParams.delete("checkout");
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+  } catch(e){}
+}
+
+function finishAccountCheckoutEntry(){
+  if (!access("exams")){
+    openSubPaywall("account_checkout", true);
+    return false;
+  }
+  clearAccountCheckoutRoute();
+  if (state.onboarded && $("#main").hidden) enterPractice();
+  return true;
+}
 
 /* Every subscription checkout, Stripe or StoreKit, has an account first. The
    URL survives the email-code reload and carries the chosen plan without
@@ -13997,6 +14405,7 @@ function requireAccountForCheckout(short){
     history.replaceState(null, "", u.pathname + u.search + u.hash);
   } catch(e){}
   _paidGateRequired = false;
+  _paidGateReason = "";
   try { closeSheet(true); } catch(e){}
   showAuthGate("signup");
   return true;
@@ -14014,7 +14423,40 @@ function requirePaidEntry(reason){
   return true;
 }
 
+function nativeStoreProductReady(key){
+  return !isNativeApp() || (STORE_FETCHED && STORE_PRODUCT_KEYS.has(key));
+}
+function pwPlanPriceLabel(key){
+  if (!isNativeApp()) return priceFor(key);
+  if (STORE_PRODUCT_LOADING) return "Checking…";
+  return nativeStoreProductReady(key) ? priceFor(key) : "Unavailable";
+}
+function pwPlanCadenceLabel(p){
+  if (isNativeApp() && !nativeStoreProductReady(p.key)){
+    return p.months > 1 ? "3-month plan" : "Monthly plan";
+  }
+  if (p.months > 1){
+    const per = perMonthFor(p.key);
+    return per ? per + " a month" : "billed " + p.period;
+  }
+  return "billed monthly";
+}
+function pwCtaLabel(key){
+  if (isNativeApp() && STORE_PRODUCT_LOADING) return "Checking App Store…";
+  if (!nativeStoreProductReady(key)) return "Try App Store again";
+  const days = trialDaysFor(key);
+  return days > 0 ? `Start my ${days} days free` : "Subscribe";
+}
+function pwCtaDisabled(key){
+  return isNativeApp() && STORE_PRODUCT_LOADING;
+}
+
 function pwOfferLine(key){
+  if (isNativeApp() && !nativeStoreProductReady(key)){
+    return STORE_PRODUCT_LOADING
+      ? "Checking your current App Store price and eligibility…"
+      : "We couldn't confirm the current App Store offer. Try again, restore purchases, or use a code.";
+  }
   const days = trialDaysFor(key);
   const price = priceFor(key), p = planByKey(key);
   if (!p) return "";
@@ -14026,10 +14468,33 @@ function pwOfferLine(key){
 }
 
 async function openSubPaywall(reason, required){
-  _paidGateRequired = !!required;
-  await loadStorePrices();
+  const requiredGate = !!required;
+  // Receipt/code entry is a child surface of the same required checkout. Keep
+  // its original capability contract when Back reconstructs the plan sheet.
+  const gateReason = requiredGate && _paidGateReason
+    && (reason === "receipt_back" || reason === "code_back")
+    ? _paidGateReason : (reason || "");
+  _paidGateRequired = requiredGate;
+  _paidGateReason = requiredGate ? gateReason : "";
+  const settleSatisfiedGate = () => {
+    if (!requiredGate || !_paidGateRequired || _paidGateReason !== gateReason
+        || !paidGateAccessSatisfied(gateReason)) return false;
+    const routed = routeAfterVerifiedPracticeGrant();
+    if (!routed){
+      _paidGateRequired = false;
+      _paidGateReason = "";
+      const main = $("#main"), auth = $("#authGate");
+      if (main && main.hidden && state.onboarded) enterPractice();
+      else if (main && main.hidden && auth && auth.hidden) showPaidEntry(null);
+    }
+    return true;
+  };
+  if (settleSatisfiedGate()) return;
+  // Start StoreKit before building the sheet so its synchronous state change
+  // makes this first paint loading/neutral. Do not await: StoreKit may never
+  // answer, and a required product surface must still exist in that case.
+  const priceRefresh = loadStorePrices();
   const rows = revealRows();
-  const trialDays = trialDaysFor(_pwPlan);
   const d = daysUntilTest();
 
   // Three rows, chosen to show the RANGE: lowest tier, highest tier, and one
@@ -14053,9 +14518,9 @@ async function openSubPaywall(reason, required){
       ${p.recommended ? `<span class="pl-badge">${esc(p.blurb || "Best value")}</span>` : ""}
       <span class="pl-l">
         <span class="pl-n">${esc(p.label)}</span>
-        <span class="pl-s">${p.months > 1 && perMonthFor(p.key) ? esc(perMonthFor(p.key)) + " a month" : "billed monthly"}</span>
+        <span class="pl-s" data-plan-sub="${p.key}">${esc(pwPlanCadenceLabel(p))}</span>
       </span>
-      <span class="pl-p">${esc(priceFor(p.key))}</span>
+      <span class="pl-p" data-plan-price="${p.key}">${esc(pwPlanPriceLabel(p.key))}</span>
     </button>`).join("");
 
   const value = [
@@ -14080,7 +14545,7 @@ async function openSubPaywall(reason, required){
       <ul class="pw-value">${value}</ul>
       <div class="pw-stick">
         <div class="planpick">${planHtml}</div>
-        <button class="btn primary pw-cta" id="pwStart">${trialDays > 0 ? `Start my ${trialDays} days free` : "Subscribe"}</button>
+        <button class="btn primary pw-cta" id="pwStart"${pwCtaDisabled(_pwPlan) ? " disabled" : ""}>${pwCtaLabel(_pwPlan)}</button>
         <p class="pw-fine" id="pwOffer">${esc(pwOfferLine(_pwPlan))}</p>
       </div>
       <div class="pw-foot">
@@ -14102,17 +14567,21 @@ async function openSubPaywall(reason, required){
   sheet.querySelectorAll("[data-plan]").forEach(b => b.addEventListener("click", () => {
     _pwPlan = b.dataset.plan;
     sheet.querySelectorAll("[data-plan]").forEach(x => x.classList.toggle("on", x.dataset.plan === _pwPlan));
-    const o = $("#pwOffer"); if (o) o.textContent = pwOfferLine(_pwPlan);
-    const days = trialDaysFor(_pwPlan);
-    const cta = $("#pwStart"); if (cta) cta.textContent = days > 0 ? `Start my ${days} days free` : "Subscribe";
+    refreshStoreOfferCopy();
     track("plan_selected", { variant: PAYWALL_VARIANT, plan: _pwPlan });
   }));
   $("#pwStart").addEventListener("click", () => {
-    track("trial_start_attempted", { variant: PAYWALL_VARIANT, plan: _pwPlan });
+    if (isNativeApp() && !nativeStoreProductReady(_pwPlan)){
+      if (!STORE_PRODUCT_LOADING) loadStorePrices();
+      return;
+    }
+    track(trialDaysFor(_pwPlan) > 0 ? "trial_start_attempted" : "subscription_start_attempted",
+      { variant:PAYWALL_VARIANT, plan:_pwPlan });
     doBuy(_pwPlan);
   });
   $("#pwRestore").addEventListener("click", () => { track("restore_started", {}); doRestore(); });
   $("#pwCode").addEventListener("click", openCodeEntry);
+  priceRefresh.then(() => { settleSatisfiedGate(); });
 }
 
 async function openPaywall(t){   // t = a PREMIUM_TESTS def, or null for the "Pro" entry point
@@ -14178,13 +14647,31 @@ async function doBuy(short){
     const isSub = SUB_KEYS.indexOf(short) !== -1;
     track(isSub && subTrialing() ? "trial_started" : "purchase_completed",
       { product:short, variant:PAYWALL_VARIANT });
-    closeSheet(true); afterUnlock(r.granted);
+    afterUnlock(r.granted);
   }
   else if (r && r.reason === "cancelled"){ /* user backed out of the App Store sheet; no error */ }
   else if (r && r.reason === "pending"){ closeSheet(); toast("Sent for approval. Once it's approved this unlocks by itself, no need to buy again."); }
   else if (r && r.reason === "coming_soon"){ toast(isNative ? "Purchases open soon in this version." : "Card checkout is coming soon. Use a code if you have one."); }
   else { track("purchase_failed", { product:short, reason:(r && r.reason) || "unknown" });
     toast("That didn't go through. Try again."); }
+}
+function finishRecoveredAccess(message, reopenReason){
+  refreshAfterEntitlement();
+  if (_paidGateRequired){
+    if (!paidGateAccessSatisfied(_paidGateReason)){
+      if (reopenReason) openSubPaywall(reopenReason, true);
+      if (message) toast(message + " Your selected plan is still needed for full exam access.");
+      return false;
+    }
+    if (routeAfterVerifiedPracticeGrant()){
+      if (message) toast(message);
+      return true;
+    }
+  }
+  closeSheet(true);
+  if (message) toast(message);
+  if ($("#main").hidden && access("practice")) enterPractice();
+  return true;
 }
 async function doRestore(){
   // A new browser should recover from the signed-in account without making a
@@ -14193,11 +14680,15 @@ async function doRestore(){
   if (!isNative){
     if (syncReady()){
       toast("Checking your RampUp account…");
-      await syncPullNow();
+      // The normal pull intentionally refuses to rehydrate while #main is
+      // hidden. A required account-checkout sheet is exactly such a state, so
+      // use the boot-safe merge path that preserves progress while recovering
+      // the account's verified entitlement.
+      if (_paidGateRequired && $("#main").hidden) await syncBootstrapAccount(loadState());
+      else await syncPullNow();
       if (entTier() !== "none"){
         track("restore_completed", { tier:entTier(), source:"account" });
-        closeSheet(true); toast("Access restored from your account."); refreshAfterEntitlement();
-        if ($("#main").hidden) enterPractice();
+        finishRecoveredAccess("Access restored from your account.");
         return;
       }
     }
@@ -14205,8 +14696,7 @@ async function doRestore(){
   }
   const r = await purchases.restore();
   if (r && r.ok && entTier() !== "none"){ track("restore_completed", { tier:entTier() });
-    closeSheet(true); toast("Purchases restored."); refreshAfterEntitlement();
-    if ($("#main").hidden) enterPractice(); }
+    finishRecoveredAccess("Purchases restored."); }
   else if (r && r.reason === "unavailable"){ toast("Couldn't reach the App Store. Check your connection and try again."); }
   else toast("No purchases found to restore.");
 }
@@ -14222,7 +14712,7 @@ function openReceiptEntry(){
     if (!sid){ toast("That doesn't look like a Stripe receipt link. It contains a code starting with cs_."); return; }
     toast("Checking your receipt…");
     const r = await verifySession(sid);
-    if (r.ok){ closeSheet(true); afterUnlock(r.granted); return; }
+    if (r.ok){ afterUnlock(r.granted, "receipt_back"); return; }
     toast(r.reason === "network"
       ? "Couldn't reach the checker. Check your connection and try again."
       : "We couldn't confirm that receipt. Email " + SUPPORT_EMAIL + " and we'll unlock it.");
@@ -14237,16 +14727,16 @@ function openCodeEntry(){
   try { $("#codeInput").focus(); } catch(e){}
   $("#codeGo").addEventListener("click", async () => {
     const r = await purchases.redeemCode($("#codeInput").value);
-    if (r.ok){ closeSheet(true); afterUnlock(r.granted); } else toast("That code isn't valid.");
+    if (r.ok) afterUnlock(r.granted, "code_back");
+    else toast("That code isn't valid.");
   });
   $("#codeBack").addEventListener("click", () => openSubPaywall("code_back", _paidGateRequired));
 }
-function afterUnlock(granted){
+function afterUnlock(granted, reopenReason){
   if (SFX && SFX.complete) SFX.complete(); haptic("success");
   const msg = granted === "pro" ? "RampUp Pro unlocked. Enjoy." : granted === "short_bundle" ? "All 3 short exams unlocked." : "Exam unlocked. Good luck.";
   toast(msg);
   // No confetti for money (design system L3): the reward is the content itself.
-  refreshAfterEntitlement();
   // Purchases are verified by Stripe or StoreKit before they reach here. Push
   // that verified entitlement now, not on the next answer thirty seconds later,
   // so another browser can restore it immediately after checkout completes.
@@ -14254,15 +14744,64 @@ function afterUnlock(granted){
     _syncDirty = true;
     syncPushNow();
   }
-  if ($("#main").hidden && access("practice")) enterPractice();
+  return finishRecoveredAccess("", reopenReason);
 }
 function refreshAfterEntitlement(){
+  const main = $("#main");
+  if (main && !main.hidden && !access("practice")){
+    main.hidden = true;
+    requirePaidEntry("entitlement_revoked");
+    return;
+  }
   if (state.view === "tests") renderTestHub();
   if (state.view === "dashboard") renderDashboard();
   if (state.view === "settings") renderSettings();
   // On iOS the entitlement lands asynchronously after first paint, so a Pro
   // user can be looking at the locked shelf when the grant arrives.
   if (state.view === "lessons") renderLessons();
+}
+
+/* StoreKit answers after boot has already chosen a product surface. A verified
+   grant must retire only that obsolete paid-entry surface; it must not yank a
+   learner out of an ordinary onboarding edit or another hidden-main flow. */
+function routeAfterVerifiedPracticeGrant(){
+  const main = $("#main"), onboarding = $("#onboarding");
+  const auth = $("#authGate"), sheet = $("#sheetRoot");
+  if (!main || !main.hidden || !access("practice")) return false;
+  const onPaidEntry = !!(onboarding && !onboarding.hidden && state.step === 0);
+  // Login from onboarding is an explicit request to connect progress. Do not
+  // dismiss it just because access arrived; only signup is the obsolete
+  // account-before-checkout gate created by paid entry.
+  const onAccountGate = !!(auth && !auth.hidden && _accountEntry === "signup");
+  // The required gate exists from the moment openSubPaywall starts, including
+  // while its StoreKit price request is still pending and no sheet is visible.
+  const onRequiredPaywall = !!_paidGateRequired
+    && paidGateAccessSatisfied(_paidGateReason);
+  if (!onPaidEntry && !onAccountGate && !onRequiredPaywall) return false;
+
+  _resumePaidEntry = false;
+  _paidGateRequired = false;
+  _paidGateReason = "";
+  if (onRequiredPaywall && sheet && !sheet.hidden) try { closeSheet(true); } catch(e){}
+  if (auth) auth.hidden = true;
+  _authGateUi = { step:"email", email:"", msg:"", busy:false };
+  const authEmail = $("#authGateEmail"), authCode = $("#authGateCode");
+  if (authEmail) authEmail.value = "";
+  if (authCode) authCode.value = "";
+  _accountEntry = ""; _checkoutPlan = "";
+  try {
+    const url = new URL(location.href);
+    url.searchParams.delete("signup");
+    url.searchParams.delete("login");
+    url.searchParams.delete("checkout");
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+  } catch(e){}
+
+  if (state.onboarded) return enterPractice();
+  if (onboarding) onboarding.hidden = false;
+  const welcome = $("#welcome"); if (welcome) welcome.hidden = true;
+  goToStep(1);
+  return true;
 }
 
 const VIEW_IDS = ["homeView","practiceView","summaryView","achievementsView","testsView","testRunView","settingsView","dashboardView","lessonsView","flashcardsView"];
@@ -14502,11 +15041,12 @@ function showWelcome(saved){
 
 function showPaidEntry(saved){
   if (saved && saved.onboarded) rehydrate(saved);
+  else state.onboarded = false;
   _resumePaidEntry = !!(saved && saved.onboarded);
   $("#welcome").hidden = true;
   $("#main").hidden = true;
   $("#onboarding").hidden = false;
-  goToStep(0);
+  goToStep(!state.onboarded && access("practice") ? 1 : 0);
 }
 
 // Appearance preference (System / Light / Dark). The <head> inline script already
@@ -14543,6 +15083,10 @@ renderCourses();
 try { const _wsQ = $("#wsQ"); if (_wsQ) _wsQ.textContent = BANK.length; } catch(e){}
 STORAGE_OK = canStore();
 entLoad();
+// The courtesy is an Apple-install migration only. A browser can acquire an
+// old transition value solely from legacy account sync, so discard it before
+// the web entry gate decides whether practice is paid.
+if (!isNative && ent.transition){ ent.transition = null; entSave(); }
 applyLaunchCopy();   // every boot path, before anything paints
 const _saved = STORAGE_OK ? loadState() : null;
 var _returningPurchase = false;
@@ -14589,7 +15133,7 @@ async function bootRampUp(){
     // cannot race ahead of the user's progress record.
     rehydrate(saved); saveState();
     _syncDirty = true; await syncPushNow();
-    openSubPaywall("account_checkout", true);
+    finishAccountCheckoutEntry();
   } else if (saved && saved.onboarded && PAID_LAUNCH && !access("practice")){
     if (syncSignedIn()){
       rehydrate(saved); saveState();
@@ -14607,7 +15151,7 @@ async function bootRampUp(){
       _deferPaywallForAccount = false;
       if (accountCheckout){
         _syncDirty = true; await syncPushNow();
-        openSubPaywall("account_checkout", true);
+        finishAccountCheckoutEntry();
       }
     }
     else showPaidEntry(null);
@@ -14637,15 +15181,15 @@ async function bootRampUp(){
     syncNativeEntitlements();
     loadStorePrices();
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") syncNativeEntitlements();
+      if (document.visibilityState === "visible"){
+        syncNativeEntitlements();
+        loadStorePrices();
+      }
     });
     try {
       const p = iapPlugin();
       if (p && p.addListener) p.addListener("entitlementsChanged", res => {
-        let changed = applyOwnedProductIds(res && res.owned) > 0;
-        const authoritative = !(res && res.synced === false);
-        if (applySubscriptionStatus(res && res.subscription, authoritative)) changed = true;
-        publishVerifiedEntitlementChange(changed);
+        applyNativeEntitlementEvent(res);
       });
     } catch(e){}
   }
