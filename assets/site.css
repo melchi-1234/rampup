@@ -1,18 +1,21 @@
 /* RampUp — shared design system for the marketing site and the funnel.
    One file so the homepage, onboarding, terms and privacy cannot drift apart. */
 :root{
-  --violet:#6d3fa0; --violet-strong:#5a2f86; --violet-soft:#f5eef9; --lav:#b48fc9;
-  --ink:#201631; --muted:#6b5f78;
-  /* --faint measured 2026-08-13: #7a7590 was 4.40:1 on white and 4.10:1 on the
-     wash background, failing WCAG AA (4.5) for the real text that uses it —
-     .tiny, .cta-note, .lc-sub, .catname, the reveal stat labels. #71707b is
-     4.55 on wash / 4.88 on white, and deliberately stays LIGHTER than --muted
-     (6.10 on wash) so the three-tier type hierarchy survives the fix. */
-  --faint:#776a83;   /* 5.03:1 white / 4.70:1 wash — re-verified for the plum palette */
-  --line:#ece3f2; --bg:#ffffff; --wash:#faf6fb;
+  /* Registrar cobalt/navy palette (owner call: "Cobalt", 2026-08-26). The token
+     names stay --violet* so no component has to change; they now hold cobalt +
+     navy. The semantic accents below (amber/teal/pink/orange/ok) are UNCHANGED
+     on purpose — they are the site's colour variety and carry the difficulty
+     pills; draining them is what made the first recolor read flat. */
+  --violet:#2648db; --violet-strong:#1c37b8; --violet-soft:#eef1fe; --lav:#a9b6ef;
+  --ink:#1b2b50; --muted:#5c6784;
+  /* --faint re-measured 2026-08-26 for the navy palette: #697088 is 4.91:1 on
+     white / 4.62:1 on wash (both pass WCAG AA 4.5) and stays LIGHTER than
+     --muted (#5c6784, 5.3:1 on wash) so the three-tier type hierarchy holds. */
+  --faint:#697088;   /* 4.91:1 white / 4.62:1 wash — navy palette */
+  --line:#e6e8f2; --bg:#ffffff; --wash:#f6f8fd;
   --amber:#f59e0b; --teal:#0d9488; --pink:#db2777; --orange:#ea580c; --ok:#0d9f6e;
   --r:14px; --r-lg:20px; --r-xl:26px;
-  --shadow:0 1px 2px rgba(32,22,49,.06), 0 8px 28px rgba(32,22,49,.08);
+  --shadow:0 1px 2px rgba(27,43,80,.06), 0 8px 28px rgba(27,43,80,.09);
   --maxw:1080px;
   --ease-standard:cubic-bezier(.2,.8,.2,1); --dur-fast:200ms; --dur-panel:350ms;
   --font-display:"Crimson Pro",ui-serif,Georgia,"Times New Roman",serif;
@@ -81,7 +84,7 @@ h3{font-family:var(--font-display); font-size:19px; font-weight:700; line-height
 /* opacity alone left the primary button looking like a paler purple button,
    i.e. still tappable. A disabled control should read as grey and inert. */
 .btn[disabled],.btn[aria-disabled="true"]{
-  background:#e6e3ef !important; color:#8b8798 !important;
+  background:#e7e9f1 !important; color:#8a91a4 !important;
   cursor:not-allowed; box-shadow:none !important;
 }
 .btn[disabled] .arw{opacity:.6}
@@ -164,7 +167,7 @@ section{padding:72px 0}
   font-size:11.5px; font-weight:820; letter-spacing:.055em; text-transform:uppercase;
   padding:5px 11px; border-radius:99px; white-space:nowrap;
 }
-.p-preview{background:#f3ecff; color:#6d28d9}
+.p-preview{background:#eceff6; color:#4a5578}
 .p-easy{background:#e4f7ee; color:#0b7a56}
 .p-medium{background:#e3f0fd; color:#1668b8}
 .p-hard{background:#fdf0dd; color:#a35b00}
@@ -275,7 +278,7 @@ footer{border-top:1px solid var(--line); padding:40px 0 56px; background:var(--b
 .doc{max-width:720px; margin:0 auto; padding:44px 20px 72px}
 .doc h1{font-size:clamp(27px,4.4vw,36px); margin-bottom:6px}
 .doc h2{font-size:19px; margin:30px 0 8px}
-.doc p,.doc li{color:#2c2648; font-size:16px; line-height:1.68}
+.doc p,.doc li{color:#24304d; font-size:16px; line-height:1.68}
 .doc ul{padding-left:22px}
 .doc .updated{color:var(--faint); font-size:14px; margin-bottom:26px}
 .doc table{width:100%; border-collapse:collapse; margin:14px 0; font-size:15px}
@@ -324,13 +327,13 @@ footer{border-top:1px solid var(--line); padding:40px 0 56px; background:var(--b
 /* ---- tactile polish (feel audit 2026-08-14): transform/shadow only, global
    reduced-motion kill switch above already covers all of it ---- */
 .card,.stat,.step{transition:transform .22s cubic-bezier(.2,0,0,1), box-shadow .22s cubic-bezier(.2,0,0,1)}
-.card:hover,.stat:hover,.step:hover{transform:translateY(-4px); box-shadow:0 16px 34px rgba(24,18,49,.13)}
+.card:hover,.stat:hover,.step:hover{transform:translateY(-4px); box-shadow:0 16px 34px rgba(27,43,80,.13)}
 .btn{transition:transform .16s cubic-bezier(.2,0,0,1), box-shadow .22s ease, background .18s ease, border-color .18s ease}
 .btn:hover{transform:translateY(-2px)}
 .btn:active{transform:translateY(0)}
 .hero .btn-primary:hover,.price-cta .btn-primary:hover{box-shadow:none}
 .plan{transition:border-color .16s, box-shadow .16s, transform .18s cubic-bezier(.2,0,0,1)}
-.plan:hover{transform:translateY(-3px); box-shadow:0 14px 30px rgba(24,18,49,.12)}
+.plan:hover{transform:translateY(-3px); box-shadow:0 14px 30px rgba(27,43,80,.12)}
 
 
 /* ==========================================================================
@@ -352,7 +355,7 @@ footer{border-top:1px solid var(--line); padding:40px 0 56px; background:var(--b
   --s-6:32px; --s-7:48px; --s-8:64px; --s-9:88px; --s-10:120px;
   --hair:1px solid var(--line);
   --sec-y:clamp(56px, 7.5vw, 88px);
-  --lift:0 1px 2px rgba(24,18,49,.04), 0 20px 44px -22px rgba(24,18,49,.22);
+  --lift:0 1px 2px rgba(27,43,80,.04), 0 20px 44px -22px rgba(27,43,80,.22);
 }
 
 /* ---- section rhythm: hairline rules, never colour blocks ---- */

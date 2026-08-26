@@ -49,20 +49,38 @@
   var rows = gsap.utils.toArray(".levelcard .lvl-row", card);
   var bars = rows.map(function (r) { return r.querySelector(".lvl-bar i"); });
 
-  gsap.set(bars, { scaleX: 0, transformOrigin: "left center" });
+  var played = false;
+  function play() {
+    if (played) return; played = true;
+    gsap.timeline({ defaults: { ease: "power3.out" } })
+      .from(card.querySelectorAll("h3, .lc-sub"), { autoAlpha: 0, y: 10, duration: 0.4 })
+      .from(rows, { autoAlpha: 0, x: -14, duration: 0.45, stagger: 0.08 }, 0.15)
+      .to(bars, { scaleX: 1, duration: 0.7, stagger: 0.08, ease: "power2.out" }, "-=0.35")
+      .from(card.querySelector(".tiny"), { autoAlpha: 0, y: 6, duration: 0.4 }, "-=0.25");
+  }
 
-  ScrollTrigger.create({
-    trigger: card,
-    start: "top 85%",
-    once: true,
-    onEnter: function () {
-      gsap.timeline({ defaults: { ease: "power3.out" } })
-        .from(card.querySelectorAll("h3, .lc-sub"), { autoAlpha: 0, y: 10, duration: 0.4 })
-        .from(rows, { autoAlpha: 0, x: -14, duration: 0.45, stagger: 0.08 }, 0.15)
-        .to(bars, { scaleX: 1, duration: 0.7, stagger: 0.08, ease: "power2.out" }, "-=0.35")
-        .from(card.querySelector(".tiny"), { autoAlpha: 0, y: 6, duration: 0.4 }, "-=0.25");
-    }
-  });
+  /* The bars' CSS default is FILLED. We only hide-then-reveal them once the tab
+     is actually painting — a hidden/backgrounded tab freezes rAF, so hiding
+     first would strand the bars at scaleX(0) forever (the owner-reported
+     collapsed-bars bug). And because the card sits in the always-in-view hero,
+     a plain "top 85%" trigger can be created already-past its start and never
+     fire; so when the card is on screen we play immediately instead. */
+  function armWhenVisible() {
+    gsap.set(bars, { scaleX: 0, transformOrigin: "left center" });
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    if (card.getBoundingClientRect().top < vh * 0.9) play();
+    else ScrollTrigger.create({ trigger: card, start: "top 85%", once: true, onEnter: play });
+  }
+
+  if (document.visibilityState === "visible") {
+    armWhenVisible();
+  } else {
+    document.addEventListener("visibilitychange", function onVis() {
+      if (document.visibilityState !== "visible") return;
+      document.removeEventListener("visibilitychange", onVis);
+      armWhenVisible();
+    });
+  }
 })();
 
 /* SCENE 3 — Scroll-pinned "how it works" ladder. Desktop only; scrub means the
