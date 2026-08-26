@@ -24,7 +24,7 @@
   :root{
     /* Brand: study plum + correct green (data-backed via ui-ux-pro-max)
        Palette V1 (ink-plum), matched to the marketing site 2026-08-14 — the
-       judge's read on the old violet was "#7c3aed is Tailwind violet-600,
+       judge's read on the old violet was "#2648db is Tailwind violet-600,
        the AI-wrapper tell". Mapping table (see rampup-web/assets/site.css):
          7c3aed (accent)        -> 6d3fa0 (--violet)
          6d28d9 (accent-strong) -> 5a2f86 (--violet-strong)
@@ -35,15 +35,15 @@
        gradient) are DERIVED, not copied: same HSL offset / same blend-with-
        background ratio the original violet dark tokens used relative to
        their light tokens. Contrast re-verified ~2026-08-14, see below. */
-    --accent:#6d3fa0; --accent-strong:#5a2f86; --accent-soft:#f5eef9; --on-accent:#ffffff;
+    --accent:#2648db; --accent-strong:#1c37b8; --accent-soft:#eef1fe; --on-accent:#ffffff;
     --bg:#ffffff; --bg-glow:transparent;
-    --card:#ffffff; --surface:#f8f6fd; --surface-2:#f1edfa;
+    --card:#ffffff; --surface:#f6f8fd; --surface-2:#eef1fb;
     /* Contrast, measured 2026-08-13. --faint was #8b8799: 3.49:1 on white and
        3.22:1 on the nav, so five of the six tab labels -- Watch, Tests, Awards,
        Stats, Settings, at 10.5px -- failed WCAG AA (4.5:1) on the default light
        theme, along with every rule in the 32 that use it for real text. Dark was
        4.14:1 and also failed.
-       Now #756c8a (4.55 nav / 4.92 white) and #848098 (4.72 on dark). Both were
+       Now #756c8a (4.55 nav / 4.92 white) and #838da3 (4.72 on dark). Both were
        chosen to clear AA while staying LIGHTER than --muted (4.96 nav), because
        darkening past --muted would invert the type hierarchy this token exists
        to create. Do not "tidy" these values without re-measuring.
@@ -52,7 +52,7 @@
        colour. Twenty-nine rules use --faint believing it is a quieter third tier, so
        section labels and counts were competing with body text everywhere instead of
        receding. #8b8799 still measures 4.6:1 on the card, so it stays readable. */
-    --text:#181231; --muted:#5f5a76; --faint:#71707b; --border:#e9e5f4; --border-strong:#dcd6ee;
+    --text:#16203c; --muted:#5c6784; --faint:#697088; --border:#e4e7f1; --border-strong:#d6dbeb;
     /* Measured, not guessed: #059669 is 3.38:1 on --correct-soft and 3.77:1 on white,
        and #e11d48 is 4.07:1 on its tint - all under AA 4.5:1, on the two colours that
        tell a student whether they got it right. #047857 measures 5.48:1 on white and
@@ -61,11 +61,11 @@
     --correct:#047857; --correct-soft:#e7f6ef; --incorrect:#be123c; --incorrect-soft:#fdeaef;
     --warn:#b45309; --warn-soft:#fbf1e3; --info:#0e7490; --info-soft:#e2f4f8; --star:#f59e0b;
     /* category accents */
-    --c-chem:#7c3aed; --c-bio:#0d9488; --c-psych:#db2777; --c-cars:#ea580c;
+    --c-chem:#2648db; --c-bio:#0d9488; --c-psych:#db2777; --c-cars:#ea580c;
     /* elevation */
-    --sh-1:0 1px 2px rgba(23,20,35,.05);
-    --sh-2:0 2px 6px rgba(23,20,35,.06), 0 1px 2px rgba(23,20,35,.04);
-    --sh-3:0 12px 34px rgba(24,18,49,.09), 0 4px 10px rgba(24,18,49,.05);
+    --sh-1:0 1px 2px rgba(27,43,80,.05);
+    --sh-2:0 2px 6px rgba(27,43,80,.06), 0 1px 2px rgba(27,43,80,.04);
+    --sh-3:0 12px 34px rgba(27,43,80,.09), 0 4px 10px rgba(27,43,80,.05);
     --sh-accent:none;
     /* radius */
     --r-sm:10px; --r:14px; --r-lg:20px; --r-xl:26px; --pill:999px;
@@ -93,18 +93,18 @@
              (H-2.6, S+3.0, L+8.8); the same HSL shift applied to --lav
              gives c7acd9 (was 10.6:1 on bg-dark, c7acd9 is 9.7:1)
            --accent-soft: 241c3a is accent~15% blended into bg-dark
-             (#0c0a14); same 15% blend of --lav into bg-dark gives 261e30
+             (#0b0f1a); same 15% blend of --lav into bg-dark gives 261e30
              (5.9:1 for --lav text on it, was 5.9:1 for a78bfa on 241c3a)
            --on-accent: 160f28 is accent~13% blended into black; same blend
              of --lav into black gives 18131b (6.7:1 against --lav bg,
              was 6.8:1 against a78bfa) */
-      --accent:#b48fc9; --accent-strong:#c7acd9; --accent-soft:#261e30; --on-accent:#18131b;
-      --bg:#0c0a14; --bg-glow:transparent;
-      --card:#17141f; --surface:#1c1830; --surface-2:#241f38;
-      --text:#eeecf6; --muted:#a7a2ba; --faint:#848098; --border:#2a2440; --border-strong:#372f52;
+      --accent:#8aa8f5; --accent-strong:#a9c0fb; --accent-soft:#1e2740; --on-accent:#0f1626;
+      --bg:#0b0f1a; --bg-glow:transparent;
+      --card:#141a28; --surface:#1a2236; --surface-2:#222c42;
+      --text:#eceffa; --muted:#9aa4bd; --faint:#838da3; --border:#28304a; --border-strong:#333d5c;
       --correct:#34d399; --correct-soft:#122a20; --incorrect:#fb7185; --incorrect-soft:#2c1620;
       --warn:#fbbf24; --warn-soft:#2a2110; --info:#67e8f9; --info-soft:#0c2b31; --star:#fbbf24;
-      --c-chem:#a78bfa; --c-bio:#2dd4bf; --c-psych:#f472b6; --c-cars:#fb923c;
+      --c-chem:#8aa8f5; --c-bio:#2dd4bf; --c-psych:#f472b6; --c-cars:#fb923c;
       --sh-1:0 1px 2px rgba(0,0,0,.4);
       --sh-2:0 2px 8px rgba(0,0,0,.44);
       --sh-3:0 16px 40px rgba(0,0,0,.5), 0 4px 12px rgba(0,0,0,.4);
@@ -294,7 +294,7 @@
   .cat-tag .dotc{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.85)}
   .cat-tag.chem{--tagc:var(--c-chem)} .cat-tag.bio{--tagc:var(--c-bio)} .cat-tag.psych{--tagc:var(--c-psych)} .cat-tag.cars{--tagc:var(--c-cars)}
   /* dark theme lightens the accents, so use dark text on the tag for AA contrast */
-  :root[data-theme="dark"] .cat-tag{color:#160f28; text-shadow:none}
+  :root[data-theme="dark"] .cat-tag{color:#0f1626; text-shadow:none}
   :root[data-theme="dark"] .cat-tag .dotc{background:rgba(0,0,0,.5)}
   .course-tag{font-size:12.5px; color:var(--faint); font-weight:700}
   .qcount{font-size:12px; color:var(--faint); font-weight:700; font-variant-numeric:tabular-nums}
@@ -608,10 +608,10 @@
   .btn.sm{padding:8px 14px; font-size:13px; min-height:38px}
   .testcard.prem{position:relative}
   .testcard.prem.lockedpro{border-color:color-mix(in srgb,var(--accent) 34%,var(--border-strong))}
-  /* #905db9 is the plum stand-in for violet-500 (#8b5cf6, no site.css
+  /* #4a63c8 is the plum stand-in for violet-500 (#8b5cf6, no site.css
      counterpart) — interpolated in HSL between --accent and dark --accent
      at violet-500's fractional position between violet-600/violet-400 */
-  .testcard.prem .ti{background:color-mix(in srgb,#905db9 12%,var(--card))}
+  .testcard.prem .ti{background:color-mix(in srgb,#4a63c8 12%,var(--card))}
   /* the same PRO chip as .rc-pro, on locked test cards — recoloured with it, or the
      app would ship two PRO badges in two different colours */
   .protag{display:inline-block; font-size:10px; font-weight:700; letter-spacing:.06em; color:var(--on-accent); background:var(--accent); padding:2px 7px; border-radius:var(--pill); vertical-align:middle; margin-left:6px}
@@ -771,12 +771,12 @@
   .reveal-row .rv-s{font-weight:700; font-size:14.5px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
   .reveal-row .rv-t{font-size:11px; font-weight:700; letter-spacing:.05em; padding:3px 9px;
     border-radius:var(--pill); white-space:nowrap}
-  .rv-t.preview{color:#6d3fa0; background:color-mix(in srgb,#905db9 14%,var(--card))}
+  .rv-t.preview{color:#2648db; background:color-mix(in srgb,#4a63c8 14%,var(--card))}
   .rv-t.easy{color:#0d9488; background:color-mix(in srgb,#0d9488 13%,var(--card))}
   .rv-t.medium{color:#0369a1; background:color-mix(in srgb,#0ea5e9 14%,var(--card))}
   .rv-t.hard{color:#b45309; background:color-mix(in srgb,#f59e0b 16%,var(--card))}
   /* #c026d3 is a hot magenta in no token; it was the most saturated pixel on the tab.
-     --on-accent, not #fff: the dark theme lightens --accent to #b48fc9, where white
+     --on-accent, not #fff: the dark theme lightens --accent to #8aa8f5, where white
      text would drop to about 2:1. */
   .rv-t.mcat{color:var(--on-accent); background:var(--accent)}
   .reveal-stats{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:12px 0 4px}
@@ -1041,13 +1041,13 @@
       font-family:Georgia,'Times New Roman',serif; line-height:1.45}
     @page{margin:16mm 14mm}
     html,body{background:#fff !important}
-    #printRoot .pr-brand{font-family:var(--font-display); font-weight:700; color:#5a2f86; font-size:15px; letter-spacing:-.01em}
+    #printRoot .pr-brand{font-family:var(--font-display); font-weight:700; color:#1c37b8; font-size:15px; letter-spacing:-.01em}
     #printRoot h1{font-size:25px; margin:6px 0 4px; font-family:var(--font-display)}
     #printRoot .pr-sub{color:#333; font-size:13px; margin:0 0 16px}
     #printRoot .pr-instr{font-size:12.5px; color:#222; line-height:1.55; margin:0 0 14px; padding-left:18px}
     #printRoot .pr-disc{font-size:10px; color:#666; border-top:1px solid #ccc; padding-top:8px; margin-top:10px}
     #printRoot .pr-cover{page-break-after:always}
-    #printRoot .pr-sec{font-size:16px; margin:0 0 2px; border-bottom:2px solid #5a2f86; padding-bottom:3px;
+    #printRoot .pr-sec{font-size:16px; margin:0 0 2px; border-bottom:2px solid #1c37b8; padding-bottom:3px;
       page-break-after:avoid; font-family:var(--font-display)}
     #printRoot .pr-secmeta{font-size:11px; color:#666; margin:0 0 11px}
     #printRoot .pr-passage{font-size:11.5px; line-height:1.5; background:#f5f4f8; border:1px solid #ddd;
@@ -1059,7 +1059,7 @@
     #printRoot .pr-let{font-weight:700; margin-right:4px}
     #printRoot .pr-key{page-break-before:always}
     #printRoot .pr-key h1{margin-bottom:8px}
-    #printRoot .pr-keysec{font-size:14px; margin:14px 0 4px; color:#5a2f86; font-family:var(--font-display)}
+    #printRoot .pr-keysec{font-size:14px; margin:14px 0 4px; color:#1c37b8; font-family:var(--font-display)}
     #printRoot .pr-ans{font-size:11px; line-height:1.45; margin:0 0 6px}
   }
   .cc-step{font-size:11px; font-weight:700; color:var(--faint); letter-spacing:.04em}
@@ -1656,7 +1656,7 @@ details.ex-tr p{font-size:13.5px; line-height:1.7; color:var(--muted); margin:6p
   </div>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
     <linearGradient id="rampyGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#b48fc9"/><stop offset="1" stop-color="#6d3fa0"/>
+      <stop offset="0" stop-color="#8aa8f5"/><stop offset="1" stop-color="#2648db"/>
     </linearGradient>
   </defs></svg>
 
@@ -9243,7 +9243,7 @@ function haptic(kind){
    ============================================================ */
 const REDUCED_MOTION = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function scrollTopSmart(){ window.scrollTo({ top:0, behavior: REDUCED_MOTION ? "auto" : "smooth" }); }
-const CONFETTI_COLORS = ["#8b5cf6","#a78bfa","#f59e0b","#fbbf24","#0ea5a4","#f472b6","#60a5fa"];
+const CONFETTI_COLORS = ["#2648db","#8aa8f5","#f59e0b","#fbbf24","#0ea5a4","#f472b6","#60a5fa"];
 const _cf = { parts:[], running:false };
 function _cfLoop(){
   const cv = $("#confetti"), c = cv.getContext("2d");
@@ -12921,7 +12921,7 @@ function renderDashboard(){
           <svg viewBox="0 0 74 74" width="74" height="74" aria-hidden="true">
             <circle cx="37" cy="37" r="32" fill="none" stroke="var(--surface-2)" stroke-width="7"/>
             <circle cx="37" cy="37" r="32" fill="none" stroke="url(#gring)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${(C*(1-frac)).toFixed(1)}" transform="rotate(-90 37 37)"/>
-            <defs><linearGradient id="gring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>
+            <defs><linearGradient id="gring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8aa8f5"/><stop offset="1" stop-color="#2648db"/></linearGradient></defs>
           </svg>
           <div class="rt tnum">${today}</div>
         </div>
@@ -14038,7 +14038,7 @@ function renderTestResults(T, R){
       <div class="ringwrap">
         <svg viewBox="0 0 120 120" width="150" height="150" aria-hidden="true"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--surface-2)" stroke-width="10"/>
           <circle cx="60" cy="60" r="52" fill="none" stroke="url(#tgrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${(C*(1-frac)).toFixed(1)}"/>
-          <defs><linearGradient id="tgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#c026d3"/></linearGradient></defs></svg>
+          <defs><linearGradient id="tgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8aa8f5"/><stop offset="1" stop-color="#2648db"/></linearGradient></defs></svg>
         <div class="rt"><div class="pct">${R.pct}%</div><div class="cnt">${R.correct}/${T.queue.length}</div></div>
       </div>
       ${T.def.premium ? `<div class="proj-pill">Raw accuracy <b>${R.pct}%</b></div>` : ""}
