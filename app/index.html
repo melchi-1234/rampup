@@ -9910,7 +9910,7 @@ function renderPathHtml(due){
       const cls = done ? (gold ? "node gold" : "node") : isOpen ? "node" + (current ? " current" : "") : "node locked";
       const ic = done ? (gold ? icon("crown") : icon("check")) : isOpen ? icon("zap") : icon("book");
       html += `<button class="${cls}" data-section="${esc(cat.key)}" data-idx="${i}" data-state="${done ? "done" : isOpen ? "open" : "locked"}"
-          aria-label="${esc(cat.key)} node ${i+1}${done ? ", completed" + (gold ? ", gold" : "") : isOpen ? ", start" : ", locked"}">
+          aria-label="${esc(cat.key)} lesson ${i+1} of ${total}${done ? ", completed" + (gold ? ", gold" : "") : isOpen ? (current ? ", start here" : ", start") : ", locked"}">
           <span class="disc">${ic}</span>${gold ? '<span class="crown">★</span>' : ""}
         </button>`;
     }
