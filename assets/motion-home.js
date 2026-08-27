@@ -128,14 +128,18 @@
     once: true,
     onEnter: function (els) {
       els.forEach(function (el) {
-        var target = parseInt(el.textContent.replace(/\D/g, ""), 10);
+        var orig = el.textContent;                                  // e.g. "5,000+"
+        var target = parseInt(orig.replace(/\D/g, ""), 10);
         if (!isFinite(target)) return;
+        var suffix = /\+\s*$/.test(orig) ? "+" : "";                 // preserve the "more than" hedge
         var counter = { val: 0 };
         gsap.to(counter, {
           val: target,
           duration: Math.min(1.3, Math.max(0.5, target / 700)),
           ease: "power2.out",
-          onUpdate: function () { el.textContent = Math.round(counter.val); }
+          // keep thousands separators + the "+" while rolling, don't strip to a bare int
+          onUpdate: function () { el.textContent = Math.round(counter.val).toLocaleString("en-US") + suffix; },
+          onComplete: function () { el.textContent = orig; }         // land on the exact original formatting
         });
       });
     }
