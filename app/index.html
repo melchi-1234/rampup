@@ -1259,6 +1259,30 @@
   #pathView .unit-head.psych{background:color-mix(in srgb, #db2777 12%, var(--card)); border-left-color:#db2777}
   #pathView .unit-head.cars{background:color-mix(in srgb, #ea580c 12%, var(--card)); border-left-color:#ea580c}
   #pathView .unit-head .ut{font-weight:700; font-size:16px} #pathView .unit-head .us{font-size:12.5px; opacity:.9}
+  /* ---- topic modules (redesigned 2026-08-27) ----
+     One card per canonical subject — name, progress bar, a single Continue/Start
+     action — instead of a flat wall of numbered nodes that grew one square per
+     SESSION_LEN questions. A section is now 1-3 cards you resume. */
+  #pathView .modlist{display:flex; flex-direction:column; gap:10px; margin:2px 0 18px}
+  .modcard{display:flex; align-items:center; gap:14px; width:100%; text-align:left;
+    background:var(--card); border:1px solid var(--border-strong); border-radius:var(--r-lg);
+    padding:14px 16px; cursor:pointer; font:inherit; color:var(--text); box-shadow:var(--sh-1);
+    transition:transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease)}
+  .modcard:hover{transform:translateY(-2px); box-shadow:var(--sh-2); border-color:color-mix(in srgb, var(--accent) 42%, var(--border-strong))}
+  .modcard:active{transform:translateY(0); box-shadow:var(--sh-1)}
+  .modcard .mi{flex:none; width:40px; height:40px; border-radius:12px; display:grid; place-items:center;
+    background:color-mix(in srgb, var(--accent) 14%, var(--card)); color:var(--accent)}
+  .modcard .mi svg{width:20px; height:20px}
+  .modcard .mbody{flex:1; min-width:0; display:flex; flex-direction:column; gap:7px}
+  .modcard .mname{font-weight:700; font-size:15.5px; line-height:1.2}
+  .modcard .mbar{height:7px; border-radius:99px; background:var(--surface-2); overflow:hidden}
+  .modcard .mfill{display:block; height:100%; border-radius:99px; background:var(--accent);
+    transition:width var(--dur-fast) var(--ease)}
+  .modcard .msub{font-size:12px; color:var(--faint); font-variant-numeric:tabular-nums}
+  .modcard .mgo{flex:none; color:var(--faint); display:grid; place-items:center}
+  .modcard .mgo svg{width:18px; height:18px}
+  .modcard.done .mi{background:color-mix(in srgb, var(--star) 26%, var(--card)); color:#7a5200}
+  .modcard.done .mfill{background:var(--star)}
   /* ---- the mastery track (redesigned 2026-08-26) ----
      The old winding disc-path was the generic gamified-module look, and at 74
      nodes it stretched into a mile-long candy trail. This is a compact numbered
@@ -6620,16 +6644,53 @@ const FC_SESSION_MAX = 20;
    Build the working bank
    ============================================================ */
 function keyOf(text){ let h = 0; const s = String(text); for (let i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) | 0; } return "k" + (h >>> 0).toString(36); }
+/* Canonicalize a question's subject onto the app's fixed subject spine so the
+   learn engine (which serves strictly by q.subject === a canonical name and
+   tracks the per-subject difficulty ladder) can actually serve and group it.
+   Descriptive generated subjects ("Electrostatics & DC Circuits", "Memory",
+   "Sociology \u2014 Culture") otherwise count in the bank but are never served or
+   shown. Guarded by the question's OWN category \u2014 no cross-category leakage;
+   within a category the split is best-effort by keyword. */
+const CANON_SUBJECTS = {
+  "Chem/Phys":   ["General Chemistry", "Physics", "Organic Chemistry"],
+  "Bio/Biochem": ["Biology", "Biochemistry"],
+  "Psych/Soc":   ["Psychology", "Sociology"],
+  "CARS":        ["CARS"]
+};
+const _CANON_EXACT = { "general chemistry":"General Chemistry", "physics":"Physics",
+  "organic chemistry":"Organic Chemistry", "biology":"Biology", "intro biology":"Biology",
+  "biochemistry":"Biochemistry", "psychology":"Psychology", "sociology":"Sociology", "cars":"CARS" };
+function canonSubject(rawSubject, rawCourse, category){
+  if (category === "CARS") return "CARS";
+  const s0 = String(rawSubject || "").trim().toLowerCase();
+  if (_CANON_EXACT[s0] && CANON_SUBJECTS[category].indexOf(_CANON_EXACT[s0]) >= 0) return _CANON_EXACT[s0];
+  const t = (String(rawSubject || "") + " " + String(rawCourse || "")).toLowerCase();
+  if (category === "Chem/Phys"){
+    if (/organic|orgo|stereochem|spectroscop|\bnmr\b|nucleophil|electrophil|carbonyl|\bisomer|functional group|\bir spectr|chiral|resonance structure|reaction mechanism/.test(t)) return "Organic Chemistry";
+    if (/physic|kinemat|newton|\bforce|projectile|\bmomentum|impulse|\btorque|circuit|electrostat|electric (field|potential)|magnet|\boptic|\blens|refract|snell|\bwave|sound|doppler|decibel|fluid|buoyan|bernoulli|thermal|\bheat\b|calorimetr|latent|nuclear|radioact|gravit|\bwork\b|\benergy|\bpower\b|harmonic/.test(t)) return "Physics";
+    return "General Chemistry";
+  }
+  if (category === "Bio/Biochem"){
+    if (/biochem|enzyme|michaelis|amino acid|\bprotein|peptide|metabol|glycol|gluconeo|citric|krebs|\btca\b|oxidative phos|electron transport|bioenerg|\blipid|carbohydrate|nucleic acid|nucleotide|dna (replicat|repair)|transcription|translation|molecular (biolog|genetic)|\bpcr\b|\bblot|central dogma|gene (regulat|express)/.test(t)) return "Biochemistry";
+    return "Biology";
+  }
+  if (category === "Psych/Soc"){
+    if (/sociolog|social institution|social movement|social interaction|social structure|social strat|social class|socioeconomic|\bses\b|social determinant|health disparit|\bculture\b|subculture|deviance|stratif|demograph|\bgovernment|\beconomy|capitalis|socializ|urban|globaliz|inequality|dramaturg|generalized other|looking.glass|folkways|\bmores\b|weber|durkheim|\bmarx|bureaucra/.test(t)) return "Sociology";
+    return "Psychology";
+  }
+  return rawSubject;
+}
 function normalizeQ(q){
-  const subject = q.subject === "Intro Biology" ? "Biology" : q.subject;
+  const category = q.category || SUBJECT_CATEGORY[q.subject] || "Chem/Phys";
+  const subject = canonSubject(q.subject, q.course, category);
   // A passage is part of a question's identity. CARS intentionally reuses
   // stock stems such as "main argument" across unrelated passages; hashing
   // only the stem caused a selected full-length item to pull every unrelated
   // item with the same wording into the exam slice.
   const identity = (q.passage ? q.passage + "\u241e" : "") + q.question;
   return {
-    subject, course: q.course || subject,
-    category: q.category || SUBJECT_CATEGORY[subject] || "Chem/Phys",
+    subject, course: q.course || q.subject || subject, topic: q.subject || subject,
+    category,
     difficulty: q.difficulty || "medium",
     passage: q.passage || "", question: q.question, choices: q.choices, answer: q.answer,
     explanation: q.explanation, notes: q.notes || ["","","",""],
@@ -8866,6 +8927,7 @@ function rehydrate(s){
   state.sessionsCompleted = s.sessionsCompleted || 0; state.bestCombo = s.bestCombo || 0;
   state.celebratedStreak = s.celebratedStreak || 0; state.previewAnswered = s.previewAnswered || 0;
   state.reviewCleared = s.reviewCleared || 0; state.perfectSessions = s.perfectSessions || 0; state.path = s.path || {};
+  migratePathToModules();   // old category-keyed climbs -> per-module (idempotent)
   state.testScores = s.testScores || {}; state.testsCompleted = s.testsCompleted || 0;
   state.conceptsSeen = s.conceptsSeen || {};
   state.examReviews = (s.examReviews && typeof s.examReviews === "object") ? s.examReviews : {};
@@ -9767,7 +9829,8 @@ function finishSession(){
   state.session = s; addXp(bonus); state.session = null;  // bonus counts toward the session tally
   if (s.kind === "review" && pileInFocus().length === 0) state.reviewCleared++;
   if (s.node && !s.aborted){
-    const p = state.path[s.node.section] || (state.path[s.node.section] = { done:0, gold:{} });
+    const key = s.node.subject || s.node.section;
+    const p = state.path[key] || (state.path[key] = { done:0, gold:{} });
     if (s.node.idx === p.done) p.done++;
     if (perfect) p.gold[s.node.idx] = true;
   }
@@ -9860,12 +9923,12 @@ function renderSessionSummary(s, perfect){
   bindCoachCard();
   $("#sumHome").addEventListener("click", showHome);
   $("#sumAgain").addEventListener("click", () => {
-    if (s.node){
-      const p = pathState(s.node.section), total = unitNodeCount(s.node.section);
-      if (p.done < total){ startSession("learn", { node:{ section:s.node.section, idx:p.done } }); return; }
-      const nextCat = CATEGORIES.find(c => state.focus.has(c.key) && pathState(c.key).done < unitNodeCount(c.key));
-      if (nextCat){ startSession("learn", { node:{ section:nextCat.key, idx:pathState(nextCat.key).done } }); return; }
-      showHome(); toast("Path complete! Replay any node for gold."); return;
+    if (s.node && s.node.subject){
+      const subj = s.node.subject, p = pathState(subj), total = moduleTotal(subj);
+      if (p.done < total){ startSession("learn", { node:{ section:s.node.section, subject:subj, idx:p.done }, subject:subj }); return; }
+      const next = focusedModules().find(m => moduleDone(m.subject) < m.total);
+      if (next){ startSession("learn", { node:{ section:next.section, subject:next.subject, idx:pathState(next.subject).done }, subject:next.subject }); return; }
+      showHome(); toast("Every module complete! Practice any of them again for gold."); return;
     }
     let kind = s.kind;
     if (kind === "review" && pileInFocus().length === 0) kind = "learn";
@@ -9882,14 +9945,48 @@ function renderSessionSummary(s, perfect){
    v2, Learning path
    ============================================================ */
 const UNIT_CLASS = { "Chem/Phys":"", "Bio/Biochem":"bio", "Psych/Soc":"psych", "CARS":"cars" };
+
+/* The learning path is organized into named topic MODULES (one per canonical
+   subject) rather than one flat run of numbered nodes per section. Every
+   question maps to a canonical subject (canonSubject/normalizeQ), so a section
+   shows 1-3 scannable module cards — each a progress bar the learner picks up
+   where they left off — instead of a wall of 80+ dots. */
+const MODULES_BY_CAT = (() => {
+  const m = {};
+  CATEGORIES.forEach(cat => {
+    m[cat.key] = (CANON_SUBJECTS[cat.key] || []).map(sub => {
+      const n = BANK.filter(q => q.category === cat.key && q.subject === sub).length;
+      return { subject: sub, section: cat.key, total: Math.max(1, Math.ceil(n / SESSION_LEN)), questions: n };
+    }).filter(mod => mod.questions > 0);
+  });
+  return m;
+})();
+const MODULE_TOTAL = (() => { const t = {}; for (const k in MODULES_BY_CAT) MODULES_BY_CAT[k].forEach(m => t[m.subject] = m.total); return t; })();
+function moduleTotal(subject){ return MODULE_TOTAL[subject] || 1; }
 function unitNodeCount(section){
-  const n = BANK.filter(q => q.category === section).length;
-  return Math.max(1, Math.ceil(n / SESSION_LEN));
+  return (MODULES_BY_CAT[section] || []).reduce((s, m) => s + m.total, 0) || 1;
 }
-function pathState(section){ return state.path[section] || { done:0, gold:{} }; }
+function pathState(key){ return state.path[key] || { done:0, gold:{} }; }
+function moduleDone(subject){ return Math.min(pathState(subject).done, moduleTotal(subject)); }
+function focusedModules(){
+  return CATEGORIES.filter(c => state.focus.has(c.key)).flatMap(c => MODULES_BY_CAT[c.key] || []);
+}
+function migratePathToModules(){
+  CATEGORIES.forEach(cat => {
+    const old = state.path[cat.key];
+    if (!old || typeof old.done !== "number") return;
+    let carry = old.done;
+    (MODULES_BY_CAT[cat.key] || []).forEach(m => {
+      const take = Math.min(carry, m.total); carry -= take;
+      const cur = state.path[m.subject] || { done:0, gold:{} };
+      cur.done = Math.max(cur.done, take);
+      state.path[m.subject] = cur;
+    });
+    delete state.path[cat.key];
+  });
+}
 function renderPathHtml(due){
   let html = "";
-  let firstOpenMarked = false;
   if (due > 0){
     html += `<div class="path single" style="padding-bottom:4px">
       <button class="node review" data-review="1" aria-label="Review session, ${due} due">
@@ -9897,33 +9994,40 @@ function renderPathHtml(due){
       </button></div>`;
   }
   CATEGORIES.filter(c => state.focus.has(c.key)).forEach(cat => {
-    const total = unitNodeCount(cat.key), p = pathState(cat.key);
-    const doneCount = Math.min(p.done, total);
+    const mods = MODULES_BY_CAT[cat.key] || [];
+    if (!mods.length) return;
+    const secDone = mods.reduce((s, m) => s + moduleDone(m.subject), 0);
+    const secTot  = mods.reduce((s, m) => s + m.total, 0);
     html += `<div class="unit-head ${UNIT_CLASS[cat.key]}">
-        <div style="flex:1"><div class="ut">${esc(cat.key)}</div><div class="us">${esc(cat.full)} · ${doneCount}/${total}</div></div>
-        ${doneCount >= total ? icon("crown") : ""}
-      </div><div class="path">`;
-    for (let i = 0; i < total; i++){
-      const done = i < p.done, gold = !!p.gold[i], isOpen = i === p.done;
-      const current = isOpen && !firstOpenMarked;
-      if (current) firstOpenMarked = true;
-      const cls = done ? (gold ? "node gold" : "node") : isOpen ? "node" + (current ? " current" : "") : "node locked";
-      const ic = done ? (gold ? icon("crown") : icon("check")) : isOpen ? icon("zap") : icon("book");
-      html += `<button class="${cls}" data-section="${esc(cat.key)}" data-idx="${i}" data-state="${done ? "done" : isOpen ? "open" : "locked"}"
-          aria-label="${esc(cat.key)} lesson ${i+1} of ${total}${done ? ", completed" + (gold ? ", gold" : "") : isOpen ? (current ? ", start here" : ", start") : ", locked"}">
-          <span class="disc">${ic}</span>${gold ? '<span class="crown">★</span>' : ""}
+        <div style="flex:1"><div class="ut">${esc(cat.key)}</div><div class="us">${esc(cat.full)} · ${secDone}/${secTot} lessons</div></div>
+        ${secDone >= secTot ? icon("crown") : ""}
+      </div><div class="modlist">`;
+    mods.forEach(m => {
+      const done = moduleDone(m.subject), total = m.total, complete = done >= total;
+      const pct = Math.max(done > 0 ? 6 : 0, Math.round((done / total) * 100));
+      const ic = complete ? icon("crown") : done > 0 ? icon("zap") : icon("book");
+      const action = complete ? "Practice again" : done > 0 ? "Continue" : "Start";
+      html += `<button class="modcard${complete ? " done" : ""}" data-subject="${esc(m.subject)}" data-section="${esc(cat.key)}"
+          aria-label="${esc(m.subject)}, ${done} of ${total} lessons${complete ? ", complete" : ""}. ${action}.">
+          <span class="mi">${ic}</span>
+          <span class="mbody">
+            <span class="mname">${esc(m.subject)}</span>
+            <span class="mbar"><span class="mfill" style="width:${pct}%"></span></span>
+            <span class="msub">${done} / ${total} lessons · ${action}</span>
+          </span>
+          <span class="mgo" aria-hidden="true">${icon("play")}</span>
         </button>`;
-    }
+    });
     html += "</div>";
   });
   return html;
 }
 function bindPathNodes(wrap){
-  wrap.querySelectorAll(".node").forEach(b => b.addEventListener("click", () => {
-    if (b.dataset.review){ startSession("review"); return; }
-    const section = b.dataset.section, idx = +b.dataset.idx, st = b.dataset.state;
-    if (st === "locked"){ toast("Finish the node above to unlock this one."); return; }
-    startSession("learn", { node:{ section, idx }, allowSeen: st === "done" });
+  wrap.querySelectorAll(".node[data-review]").forEach(b => b.addEventListener("click", () => startSession("review")));
+  wrap.querySelectorAll(".modcard").forEach(b => b.addEventListener("click", () => {
+    const subject = b.dataset.subject, section = b.dataset.section;
+    const p = pathState(subject), total = moduleTotal(subject), complete = p.done >= total;
+    startSession("learn", { node:{ section, subject, idx: complete ? total - 1 : p.done }, subject, allowSeen: complete });
   }));
 }
 
