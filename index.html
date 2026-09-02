@@ -48,17 +48,24 @@ src="https://www.facebook.com/tr?id=1069871998737993&ev=PageView&noscript=1"/></
 
 <style>
 :root{
-  --ground:#F5F4EF; --surface:#FFFFFF; --well:#EDEBE3;
-  --ink:#1B2B50; --ink-dim:#5C6784;
-  --cobalt:#2648DB; --cobalt-tint:#EFF1FC; --hairline:#E2E0D7;
-  --clay:#9C6432;  --clay-tint:#F6EEE4;
-  --olive:#5F7C4E; --olive-tint:#EEF2E9;
-  --mauve:#77608A; --mauve-tint:#F1EDF5;
-  --amber:#C6841F; --amber-tint:#FAF1DF;
-  --teal:#3F6E7A;  --teal-tint:#E9F1F2;
-  --shadow-1:0 1px 2px rgba(27,43,80,.06);
-  --shadow-2:0 1px 2px rgba(27,43,80,.05),0 10px 28px -10px rgba(27,43,80,.13),0 28px 56px -24px rgba(27,43,80,.16);
-  --shadow-3:0 2px 6px rgba(27,43,80,.08),0 18px 44px -14px rgba(27,43,80,.24);
+  /* warm, navy-biased neutral ramp — no pure white, no system gray.
+     3 tonal surfaces: raised (lightest) on ground on sunken. */
+  --ground:#F5F4EF; --surface:#FAF9F5; --well:#EEECE4;
+  --ink:#1B2B50; --ink-2:#3D4658; --ink-dim:#5C6784; --ink-muted:#6B6B63; --ink-faint:#9A9488;
+  --cobalt:#2648DB; --cobalt-hover:#2340C4; --cobalt-pressed:#1C33A0; --cobalt-tint:#ECEEFB;
+  --hairline:#E4E1D8; --border-strong:#D6D2C6; --focus:rgba(38,72,219,.35);
+  /* subject accents — muted siblings (one lightness/chroma band), carriers only */
+  --clay:#B0603D;  --clay-tint:#F4E7DF;
+  --olive:#6E7A43; --olive-tint:#ECEEE1;
+  --mauve:#8A5E80; --mauve-tint:#EFE6EC;
+  --amber:#BE8A34; --amber-tint:#F4ECD9;
+  --teal:#2E7C77;  --teal-tint:#E0ECEB;
+  /* navy-tinted layered shadows — one light source, scale with elevation */
+  --shadow-1:0 1px 2px rgba(27,43,75,.06),0 1px 1px rgba(27,43,75,.04);
+  --shadow-2:0 1px 2px rgba(27,43,75,.05),0 2px 4px rgba(27,43,75,.05),0 4px 8px rgba(27,43,75,.05),0 8px 16px rgba(27,43,75,.05);
+  --shadow-3:0 2px 4px rgba(27,43,75,.04),0 4px 8px rgba(27,43,75,.05),0 8px 16px rgba(27,43,75,.06),0 16px 32px rgba(27,43,75,.07),0 32px 48px rgba(27,43,75,.06);
+  --edge:inset 0 1px 0 rgba(255,255,255,.7);
+  --shadow-cobalt:0 1px 2px rgba(27,43,75,.20),0 2px 6px rgba(38,72,219,.28);
   --ease-out:cubic-bezier(.22,1,.36,1);
   --ease-inout:cubic-bezier(.65,0,.35,1);
   --font-display:"Newsreader",Georgia,serif;
@@ -85,7 +92,7 @@ img{max-width:100%}
 .band{width:100%}
 .band-teal{background:var(--teal-tint)}
 .band-mauve{background:var(--mauve-tint)}
-.band-white{background:var(--surface)}
+.band-white{background:var(--well)} /* sunken band so raised warm-paper cards lift above it */
 .band-navy{background:var(--ink)}
 
 .eyebrow{font-family:var(--font-mono);font-weight:500;font-size:12px;
@@ -174,7 +181,7 @@ img{max-width:100%}
 .card-stage{position:relative;display:flex;justify-content:center;padding:8px 6px 6px}
 .level-card{position:relative;width:100%;max-width:420px;background:var(--surface);
   border:1px solid var(--hairline);border-radius:18px;
-  box-shadow:0 2px 4px rgba(27,43,80,.05),0 22px 48px -18px rgba(27,43,80,.22);
+  box-shadow:0 2px 4px rgba(27,43,75,.05),0 22px 48px -18px rgba(27,43,75,.20),var(--edge);
   transform:none;padding:28px 28px 30px;z-index:2}
 .level-card::before{content:none}
 .lc-head{display:flex;align-items:center;justify-content:space-between;
@@ -402,6 +409,14 @@ img{max-width:100%}
   .seg.on{transform:none!important;opacity:1!important}
   .seg.on.past{opacity:.6!important}
 }
+
+/* premium lit edge on raised warm-paper surfaces — the "expensive on paper" detail
+   (a 1px top highlight simulating a real light source above the card) */
+.plan,.screen,.explain,.exam-mock,.mini,.rung,.contact-card{
+  box-shadow:var(--shadow-2),var(--edge);
+}
+.plan.hero-plan{box-shadow:var(--shadow-3),var(--edge)}
+.plan:hover,.plan.hero-plan:hover{box-shadow:var(--shadow-3),var(--edge)}
 </style>
 
 <!-- ============ NAV ============ -->
