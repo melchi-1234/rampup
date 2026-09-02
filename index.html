@@ -171,6 +171,12 @@ img{max-width:100%}
 .win-titlebar .wd:nth-child(3){background:var(--olive);opacity:.55}
 .win-titlebar .wt{margin-left:8px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--ink-dim)}
+/* per-subject ascending ladder in the Levels cards — rungs rise Preview→MCAT,
+   filled to the subject's current tier (echoes the hero ramp + onboarding reveal) */
+.mini-ladder{display:flex;align-items:flex-end;gap:5px;height:46px;margin-top:16px}
+.ml-seg{flex:1;height:var(--h);border-radius:4px 4px 2px 2px;background:var(--well)}
+.ml-seg.on{background:var(--acc)}
+.ml-seg.cur{box-shadow:0 0 0 2.5px color-mix(in srgb,var(--acc) 26%,transparent)}
 
 .hero h1{font-size:clamp(52px,8.6vw,104px);line-height:.98;letter-spacing:-.032em}
 .hero h1 .lineMask{display:block;overflow:hidden}
@@ -531,10 +537,10 @@ img{max-width:100%}
     </div>
 
     <div class="subjmini">
-      <div class="mini reveal" data-below style="--acc:var(--teal);--i:0"><div class="mono">Chem / Phys</div><div class="nm">Slate-teal track</div><div class="st">Currently Medium</div></div>
-      <div class="mini reveal" data-below style="--acc:var(--mauve);--i:1"><div class="mono">CARS</div><div class="nm">Mauve track</div><div class="st">Currently Easy</div></div>
-      <div class="mini reveal" data-below style="--acc:var(--olive);--i:2"><div class="mono">Bio / Biochem</div><div class="nm">Olive track</div><div class="st">Currently Hard</div></div>
-      <div class="mini reveal" data-below style="--acc:var(--clay);--i:3"><div class="mono">Psych / Soc</div><div class="nm">Clay track</div><div class="st">Currently Hard</div></div>
+      <div class="mini reveal" data-below style="--acc:var(--teal);--i:0"><div class="mono">Chem / Phys</div><div class="nm">Slate-teal track</div><div class="st">Currently Medium</div><div class="mini-ladder"><i class="ml-seg on" style="--h:38%"></i><i class="ml-seg on" style="--h:54%"></i><i class="ml-seg on cur" style="--h:70%"></i><i class="ml-seg" style="--h:85%"></i><i class="ml-seg" style="--h:100%"></i></div></div>
+      <div class="mini reveal" data-below style="--acc:var(--mauve);--i:1"><div class="mono">CARS</div><div class="nm">Mauve track</div><div class="st">Currently Easy</div><div class="mini-ladder"><i class="ml-seg on" style="--h:38%"></i><i class="ml-seg on cur" style="--h:54%"></i><i class="ml-seg" style="--h:70%"></i><i class="ml-seg" style="--h:85%"></i><i class="ml-seg" style="--h:100%"></i></div></div>
+      <div class="mini reveal" data-below style="--acc:var(--olive);--i:2"><div class="mono">Bio / Biochem</div><div class="nm">Olive track</div><div class="st">Currently Hard</div><div class="mini-ladder"><i class="ml-seg on" style="--h:38%"></i><i class="ml-seg on" style="--h:54%"></i><i class="ml-seg on" style="--h:70%"></i><i class="ml-seg on cur" style="--h:85%"></i><i class="ml-seg" style="--h:100%"></i></div></div>
+      <div class="mini reveal" data-below style="--acc:var(--clay);--i:3"><div class="mono">Psych / Soc</div><div class="nm">Clay track</div><div class="st">Currently Hard</div><div class="mini-ladder"><i class="ml-seg on" style="--h:38%"></i><i class="ml-seg on" style="--h:54%"></i><i class="ml-seg on" style="--h:70%"></i><i class="ml-seg on cur" style="--h:85%"></i><i class="ml-seg" style="--h:100%"></i></div></div>
     </div>
   </div>
 </section>
